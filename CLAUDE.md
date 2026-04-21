@@ -22,25 +22,25 @@ Every non-trivial Claude Code session in this ecosystem must:
 
 ### 1. Load canonical state at start
 
-Before beginning substantial work, use the hub CLI as the canonical
-read interface:
+Before beginning substantial work, load the canonical state. Preferred
+path is the hub CLI:
 
 ```bash
 npm --prefix "$SUNNY_HUB_PATH" run pull -- --summary
 ```
 
-That command is the contract. Raw file reads are fallback only.
+This bypasses `sync_pull_state` and returns a compact view of
+`shared-state.json`. Drop `--summary` for the full JSON.
 
-If `npm run pull` is unavailable but the hub filesystem is reachable,
-fall back to reading:
+Fallback, if the CLI is unavailable, is to read the files directly:
 
 - `thousand-sunny-hub/state/shared-state.json` - machine-readable state
 - `thousand-sunny-hub/state/STATE_OF_THE_SHIP.md` - prose briefing
 - `thousand-sunny-hub/state/PROJECT_REGISTRY.md` - active project index
 
-If the hub is not reachable from the session (e.g. running on GitHub
-infrastructure rather than on the captain's machine), say so explicitly
-instead of proceeding blind. Do not fabricate state.
+If the hub is not reachable from the session at all (e.g. running on
+GitHub infrastructure rather than on the captain's machine), say so
+explicitly instead of proceeding blind. Do not fabricate state.
 
 ### 2. Write a checkpoint at end
 
@@ -70,8 +70,9 @@ or Antigravity can mirror it into the sumidero.
 - The sumidero is canonical. Anything not persisted there does not exist
   for the rest of the crew.
 - `sync_pull_state` is currently broken (`SYNC_VIEW_TOKEN invalido`). The
-  bypass is to read the local state files directly; see
-  `puentedemando/docs/COWORK-CONTEXT-BRIDGE.md` for the contract.
+  bypass is `npm run pull` (canonical read) or direct file reads
+  (fallback); see `puentedemando/docs/COWORK-CONTEXT-BRIDGE.md` for the
+  full contract.
 
 ## Crew aboard
 
