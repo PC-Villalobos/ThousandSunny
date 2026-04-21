@@ -88,3 +88,6 @@ More nakamas are added as skills under `.claude/skills/<name>/SKILL.md`.
   enemy; real artefacts are the goal.
 - Prefer editing existing files to creating new ones.
 - When in doubt about canonical paths, ask the captain; do not guess.
+- Any scheduled task that cannot observe its target must classify itself
+  `pending-rearchitect` and abstain from emitting empty alerts. Honest
+  silence beats false noise.
