@@ -22,7 +22,17 @@ Every non-trivial Claude Code session in this ecosystem must:
 
 ### 1. Load canonical state at start
 
-Before beginning substantial work, read the canonical state:
+Before beginning substantial work, use the hub CLI as the canonical
+read interface:
+
+```bash
+npm --prefix "$SUNNY_HUB_PATH" run pull -- --summary
+```
+
+That command is the contract. Raw file reads are fallback only.
+
+If `npm run pull` is unavailable but the hub filesystem is reachable,
+fall back to reading:
 
 - `thousand-sunny-hub/state/shared-state.json` - machine-readable state
 - `thousand-sunny-hub/state/STATE_OF_THE_SHIP.md` - prose briefing
