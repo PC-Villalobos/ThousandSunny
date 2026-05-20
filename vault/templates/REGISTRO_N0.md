@@ -4,6 +4,11 @@ title:
 status: PEN
 domain:
 registro_level: N0
+geometria:
+vertice:
+celda_primaria:
+dimension:
+fase_metatron:
 created:
 updated:
 source:
@@ -17,6 +22,18 @@ guards:
   requires_vivi: false
   requires_chopper: false
   hold_reason:
+metatron:
+  geometry_family:
+  polytope:
+  vertex_id:
+  cell_primary:
+  dimension:
+  phase:
+  coordinates_r4: []
+  neighbors: []
+  dashboard:
+  role:
+  rationale:
 ---
 
 # {{title}}
@@ -30,5 +47,7 @@ guards:
 - Raiz:
 - Tronco:
 - Fruto:
+
+## Lectura Metatron
 
 ## Notas

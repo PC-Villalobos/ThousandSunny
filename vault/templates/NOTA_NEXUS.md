@@ -6,6 +6,11 @@ migration_protocol: OBSIDIAN_MIGRATION_PROTOCOL_v0.1
 deckard_level:
 status: MIRROR
 domain:
+geometria:
+vertice:
+celda_primaria:
+dimension:
+fase_metatron:
 source:
   type:
   path:
@@ -30,8 +35,12 @@ metatron:
   geometry_family:
   polytope:
   vertex_id:
-  coordinates: []
+  cell_primary:
+  dimension:
+  phase:
+  coordinates_r4: []
   neighbors: []
+  dashboard:
   role:
   rationale:
 mudra:
@@ -57,5 +66,7 @@ links:
 ## Fuente
 
 ## Lectura NEXUS
+
+## Lectura Metatron
 
 ## Contenido Reflejado

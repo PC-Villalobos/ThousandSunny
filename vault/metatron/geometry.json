@@ -1,0 +1,164 @@
+{
+  "schema_version": "metatron.geometry.v0.1",
+  "updated_at": "2026-05-21",
+  "current": {
+    "phase": "pentacoro",
+    "batch": "OBS-BATCH-0003-METATRON-PENTACORO-20260520",
+    "status": "SEALED",
+    "polytope": "metatron_pentachoron_0001"
+  },
+  "polytopes": {
+    "metatron_pentachoron_0001": {
+      "name": "pentacoro",
+      "family": "simplex",
+      "dimension": 4,
+      "vertices_expected": 5,
+      "edges_expected": 10,
+      "combinatorics": "K5",
+      "status": "SEALED",
+      "vertices": [
+        {
+          "id": "V0",
+          "cell_primary": "Origen",
+          "coordinates_r4": ["1", "1", "1", "-1/sqrt(5)"]
+        },
+        {
+          "id": "V1",
+          "cell_primary": "Direccion",
+          "coordinates_r4": ["1", "-1", "-1", "-1/sqrt(5)"]
+        },
+        {
+          "id": "V2",
+          "cell_primary": "Medida",
+          "coordinates_r4": ["-1", "1", "-1", "-1/sqrt(5)"]
+        },
+        {
+          "id": "V3",
+          "cell_primary": "Vinculo",
+          "coordinates_r4": ["-1", "-1", "1", "-1/sqrt(5)"]
+        },
+        {
+          "id": "V4",
+          "cell_primary": "Eco",
+          "coordinates_r4": ["0", "0", "0", "4/sqrt(5)"]
+        }
+      ],
+      "edges": [
+        ["V0", "V1"],
+        ["V0", "V2"],
+        ["V0", "V3"],
+        ["V0", "V4"],
+        ["V1", "V2"],
+        ["V1", "V3"],
+        ["V1", "V4"],
+        ["V2", "V3"],
+        ["V2", "V4"],
+        ["V3", "V4"]
+      ]
+    },
+    "metatron_tesseract_0001": {
+      "name": "teseracto",
+      "family": "hypercube",
+      "dimension": 4,
+      "vertices_expected": 16,
+      "edges_expected": 32,
+      "status": "NEXT_POLYTOPE",
+      "activation_rule": "Activate only when a 16-node corpus has justified binary facets and no forced edges.",
+      "vertex_label_rule": "T + 4-bit coordinate, where each bit maps to one R4 axis.",
+      "vertices": [
+        { "id": "T0000", "coordinates_r4": [-1, -1, -1, -1] },
+        { "id": "T0001", "coordinates_r4": [-1, -1, -1, 1] },
+        { "id": "T0010", "coordinates_r4": [-1, -1, 1, -1] },
+        { "id": "T0011", "coordinates_r4": [-1, -1, 1, 1] },
+        { "id": "T0100", "coordinates_r4": [-1, 1, -1, -1] },
+        { "id": "T0101", "coordinates_r4": [-1, 1, -1, 1] },
+        { "id": "T0110", "coordinates_r4": [-1, 1, 1, -1] },
+        { "id": "T0111", "coordinates_r4": [-1, 1, 1, 1] },
+        { "id": "T1000", "coordinates_r4": [1, -1, -1, -1] },
+        { "id": "T1001", "coordinates_r4": [1, -1, -1, 1] },
+        { "id": "T1010", "coordinates_r4": [1, -1, 1, -1] },
+        { "id": "T1011", "coordinates_r4": [1, -1, 1, 1] },
+        { "id": "T1100", "coordinates_r4": [1, 1, -1, -1] },
+        { "id": "T1101", "coordinates_r4": [1, 1, -1, 1] },
+        { "id": "T1110", "coordinates_r4": [1, 1, 1, -1] },
+        { "id": "T1111", "coordinates_r4": [1, 1, 1, 1] }
+      ],
+      "edges": [
+        ["T0000", "T1000"],
+        ["T0000", "T0100"],
+        ["T0000", "T0010"],
+        ["T0000", "T0001"],
+        ["T1000", "T1100"],
+        ["T1000", "T1010"],
+        ["T1000", "T1001"],
+        ["T0100", "T1100"],
+        ["T0100", "T0110"],
+        ["T0100", "T0101"],
+        ["T0010", "T1010"],
+        ["T0010", "T0110"],
+        ["T0010", "T0011"],
+        ["T0001", "T1001"],
+        ["T0001", "T0101"],
+        ["T0001", "T0011"],
+        ["T1100", "T1110"],
+        ["T1100", "T1101"],
+        ["T1010", "T1110"],
+        ["T1010", "T1011"],
+        ["T1001", "T1101"],
+        ["T1001", "T1011"],
+        ["T0110", "T1110"],
+        ["T0110", "T0111"],
+        ["T0101", "T1101"],
+        ["T0101", "T0111"],
+        ["T0011", "T1011"],
+        ["T0011", "T0111"],
+        ["T1110", "T1111"],
+        ["T1101", "T1111"],
+        ["T1011", "T1111"],
+        ["T0111", "T1111"]
+      ]
+    }
+  },
+  "roadmap": [
+    {
+      "phase": "pentacoro",
+      "polytope": "metatron_pentachoron_0001",
+      "dimension": 4,
+      "vertices": 5,
+      "edges": 10,
+      "status": "SEALED"
+    },
+    {
+      "phase": "teseracto",
+      "polytope": "metatron_tesseract_0001",
+      "dimension": 4,
+      "vertices": 16,
+      "edges": 32,
+      "status": "NEXT_POLYTOPE"
+    },
+    {
+      "phase": "penteracto",
+      "family": "hypercube",
+      "dimension": 5,
+      "vertices": 32,
+      "edges": 80,
+      "status": "ROADMAP"
+    },
+    {
+      "phase": "hexeracto",
+      "family": "hypercube",
+      "dimension": 6,
+      "vertices": 64,
+      "edges": 192,
+      "status": "ROADMAP"
+    },
+    {
+      "phase": "hepteracto",
+      "family": "hypercube",
+      "dimension": 7,
+      "vertices": 128,
+      "edges": 448,
+      "status": "ROADMAP"
+    }
+  ]
+}

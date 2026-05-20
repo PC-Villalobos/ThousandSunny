@@ -52,6 +52,32 @@
       "notes": 20,
       "source_mutations": 0,
       "verification": "mirror_pass"
+    },
+    "OBS-BATCH-0003-METATRON-PENTACORO-20260520": {
+      "status": "SEALED",
+      "notes": 6,
+      "vertices": 5,
+      "edges": 10,
+      "source_mutations": 0,
+      "verification": "sealed"
     }
+  },
+  "metatron": {
+    "phase": "pentacoro",
+    "active_batch": "OBS-BATCH-0003-METATRON-PENTACORO-20260520",
+    "active_status": "SEALED",
+    "active_polytope": "metatron_pentachoron_0001",
+    "active_geometry_family": "simplex",
+    "active_dashboard": "02_PROYECTOS/NEXUS/METATRON/N4-ACT-NEX - V33 Dashboard Pentacoro Metatron 0001 - 20260520.md",
+    "source_of_truth": "_meta/manifiestos/OBS-BATCH-0003-METATRON-PENTACORO-20260520-SELLADO-VERIFICACION.md",
+    "dataview_aliases": [
+      "geometria",
+      "vertice",
+      "celda_primaria",
+      "dimension",
+      "fase_metatron"
+    ],
+    "next_polytope": "metatron_tesseract_0001",
+    "next_polytope_status": "prepared_not_active"
   }
 }

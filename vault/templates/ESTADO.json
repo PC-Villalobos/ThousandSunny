@@ -7,6 +7,23 @@
   "requires_vivi": true,
   "requires_chopper": true,
   "hold_reason": "Clinical or personal material starts sealed until explicitly reviewed.",
+  "metatron": {
+    "geometria": "",
+    "vertice": "",
+    "celda_primaria": "",
+    "dimension": null,
+    "fase_metatron": "",
+    "geometry_family": "",
+    "polytope": "",
+    "vertex_id": "",
+    "cell_primary": "",
+    "phase": "",
+    "coordinates_r4": [],
+    "neighbors": [],
+    "dashboard": "",
+    "role": "",
+    "rationale": ""
+  },
   "updated_at": "",
   "notes": []
 }
