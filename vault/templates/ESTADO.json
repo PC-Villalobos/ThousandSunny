@@ -1,0 +1,12 @@
+{
+  "id": "",
+  "status": "HOLD",
+  "domain": "CLI",
+  "clinical_sensitive": true,
+  "source_mutations": false,
+  "requires_vivi": true,
+  "requires_chopper": true,
+  "hold_reason": "Clinical or personal material starts sealed until explicitly reviewed.",
+  "updated_at": "",
+  "notes": []
+}
