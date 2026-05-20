@@ -1,0 +1,57 @@
+{
+  "vault_name": "00_BOVEDA_NEXUS",
+  "vault_path_windows": "G:\\Mi unidad\\00_BOVEDA_NEXUS",
+  "protocol": "OBSIDIAN_MIGRATION_PROTOCOL_v0.1",
+  "canonical_tree": {
+    "inbox": "00_BANDEJA_ENTRADA",
+    "system": "01_SISTEMA",
+    "system_canon": "01_SISTEMA/CANON",
+    "nexus_project": "02_PROYECTOS/NEXUS",
+    "bitacora": "03_BITACORA",
+    "registro_n0": "03_BITACORA/00_REGISTRO_N0",
+    "registro_n0_personal": "03_BITACORA/00_REGISTRO_N0/EVENTOS_PERSONALES",
+    "registro_n0_current_events": "03_BITACORA/00_REGISTRO_N0/ACTUALIDAD_INTERES",
+    "registro_n0_clinical_scaffold": "03_BITACORA/00_REGISTRO_N0/CASOS_CLINICOS",
+    "technical_artifacts": "04_ARTEFACTOS_TECNICOS",
+    "held": "90_RETENIDOS",
+    "clinical_hold": "90_RETENIDOS/CLINICA_HOLD",
+    "archive": "99_ARCHIVO",
+    "archive_root": "99_ARCHIVO/RAIZ",
+    "archive_trunk": "99_ARCHIVO/TRONCO",
+    "archive_fruit": "99_ARCHIVO/FRUTO",
+    "meta": "_meta",
+    "meta_config": "_meta/config",
+    "meta_nakamas": "_meta/nakamas",
+    "meta_indices": "_meta/indices",
+    "manifests": "_meta/manifiestos",
+    "templates": "_plantillas"
+  },
+  "forbidden_parallel_roots": [
+    "00_META",
+    "01_CANON",
+    "02_REGISTRO",
+    "03_ARCHIVO"
+  ],
+  "source_policy": {
+    "mutate_sources": false,
+    "move_sources": false,
+    "rename_sources": false,
+    "delete_sources": false,
+    "gdoc_local_import": false,
+    "clinical_default": "HOLD"
+  },
+  "states": ["PEN", "ACT", "OBS", "HOLD", "MIRROR", "SEALED"],
+  "current_batches": {
+    "OBS-PILOT-0001-20260520": {
+      "status": "SEALED",
+      "notes": 5,
+      "source_mutations": 0
+    },
+    "OBS-BATCH-0002-20260520": {
+      "status": "MIRROR",
+      "notes": 20,
+      "source_mutations": 0,
+      "verification": "mirror_pass"
+    }
+  }
+}
