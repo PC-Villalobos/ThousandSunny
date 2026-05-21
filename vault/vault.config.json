@@ -40,6 +40,7 @@
     "gdoc_local_import": false,
     "clinical_default": "HOLD"
   },
+  "formal_statuses": ["ACT_VERIFIED"],
   "states": ["PEN", "ACT", "OBS", "HOLD", "MIRROR", "SEALED", "SUPERSEDED_PENDING_GASTRULATION"],
   "current_batches": {
     "OBS-PILOT-0001-20260520": {
@@ -80,6 +81,7 @@
     "OBS-BATCH-0015-TESERACTO-RESCOPE": {
       "id": "OBS-BATCH-0015",
       "status": "ACT",
+      "formal_status": "ACT_VERIFIED",
       "previous_status": "SUPERSEDED_PENDING_GASTRULATION",
       "source_mutations": 0,
       "decision": "GO_A",
@@ -91,7 +93,19 @@
       "sellable_as_standard_tesseract": false,
       "obs_batch_0005_status": "OBS",
       "supersedes": "vault/manifests/OBS-BATCH-0015-TESERACTO-RESCOPE.md",
-      "manifest": "vault/manifests/OBS-BATCH-0015-METATRON-SUBGRAPH-14-2-ACT-20260522.md"
+      "manifest": "vault/manifests/OBS-BATCH-0015-METATRON-SUBGRAPH-14-2-ACT-20260522.md",
+      "verification": "vault/manifests/OBS-BATCH-0015-METATRON-SUBGRAPH-14-2-ACT-VERIFICATION-20260522.md",
+      "nami_audit": {
+        "verdict": "PASS",
+        "commit": "b42e693",
+        "audit_date": "2026-05-22",
+        "criteria_checked": 13,
+        "criteria_failed": 0,
+        "hamming_spot_check": "6/6",
+        "fragile_edges": "6/6 verified active",
+        "dormant_isolation": "confirmed",
+        "cross_file_consistency": "confirmed"
+      }
     },
     "OBS-BATCH-0016-GASTRULATION-FATE-MAP-20260521": {
       "status": "ACT",
@@ -118,6 +132,7 @@
     "phase": "rescope_option_a",
     "active_batch": "OBS-BATCH-0015",
     "active_status": "ACT",
+    "active_formal_status": "ACT_VERIFIED",
     "active_polytope": "metatron_tesseract_14_active_2_dormant_subgraph_0001",
     "active_geometry_family": "induced_subgraph_with_dormant_vertices",
     "active_dashboard": "02_PROYECTOS/NEXUS/METATRON/N4-ACT-NEX - V33 Dashboard Pentacoro Metatron 0001 - 20260520.md",

@@ -5,6 +5,7 @@
     "phase": "rescope_option_a",
     "batch": "OBS-BATCH-0015",
     "status": "ACT",
+    "formal_status": "ACT_VERIFIED",
     "figure": "metatron_tesseract_14_active_2_dormant_subgraph_0001",
     "sellable_as_standard_tesseract": false
   },
@@ -63,6 +64,7 @@
       "dimension_reference": 4,
       "source_hypercube": "metatron_tesseract_0001",
       "status": "ACT",
+      "formal_status": "ACT_VERIFIED",
       "active_vertices": 14,
       "active_edges": 25,
       "dormant_vertices": 2,
@@ -125,7 +127,18 @@
         "fragile_edges_verified_active": true,
         "source_mutations": 0,
         "files_moved": 0,
-        "clinical_content_opened": false
+        "clinical_content_opened": false,
+        "nami_audit": {
+          "verdict": "PASS",
+          "commit": "b42e693",
+          "audit_date": "2026-05-22",
+          "criteria_checked": 13,
+          "criteria_failed": 0,
+          "hamming_spot_check": "6/6",
+          "fragile_edges": "6/6 verified active",
+          "dormant_isolation": "confirmed",
+          "cross_file_consistency": "confirmed"
+        }
       }
     },
     "metatron_tesseract_0001": {
@@ -206,7 +219,8 @@
       "dimension": 4,
       "vertices": 14,
       "edges": 25,
-      "status": "ACT"
+      "status": "ACT",
+      "formal_status": "ACT_VERIFIED"
     },
     {
       "phase": "teseracto",
