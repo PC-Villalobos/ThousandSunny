@@ -91,6 +91,19 @@
       "fate_layers": ["RAIZ", "RAIZ_ARCHIVO", "TRONCO", "CRESTA_NEURAL", "FRUTO"]
     }
   },
+  "external_services": {
+    "active_subscriptions": ["Claude", "ChatGPT"],
+    "inactive_services": ["ATLAS.ti", "n8n"],
+    "decisions": {
+      "E11": {
+        "status": "resolved_no_live_atlas_subscription",
+        "vertex": "T1011",
+        "fate": "CRESTA_NEURAL",
+        "not_trunk_reason": "No active ATLAS.ti or n8n subscription; no live GAS/MCP conduct for ATLAS.ti sync.",
+        "source": "Captain decision 2026-05-21"
+      }
+    }
+  },
   "metatron": {
     "phase": "gastrulation",
     "active_batch": "OBS-BATCH-0003-METATRON-PENTACORO-20260520",
