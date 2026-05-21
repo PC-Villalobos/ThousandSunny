@@ -2,10 +2,11 @@
   "schema_version": "metatron.geometry.v0.1",
   "updated_at": "2026-05-21",
   "current": {
-    "phase": "pentacoro",
-    "batch": "OBS-BATCH-0003-METATRON-PENTACORO-20260520",
-    "status": "SEALED",
-    "polytope": "metatron_pentachoron_0001"
+    "phase": "rescope_option_a",
+    "batch": "OBS-BATCH-0015",
+    "status": "ACT",
+    "figure": "metatron_tesseract_14_active_2_dormant_subgraph_0001",
+    "sellable_as_standard_tesseract": false
   },
   "polytopes": {
     "metatron_pentachoron_0001": {
@@ -56,13 +57,84 @@
         ["V3", "V4"]
       ]
     },
+    "metatron_tesseract_14_active_2_dormant_subgraph_0001": {
+      "name": "14_active_2_dormant_subgraph",
+      "family": "induced_subgraph_with_dormant_vertices",
+      "dimension_reference": 4,
+      "source_hypercube": "metatron_tesseract_0001",
+      "status": "ACT",
+      "active_vertices": 14,
+      "active_edges": 25,
+      "dormant_vertices": 2,
+      "sellable_as_standard_tesseract": false,
+      "vertices": [
+        { "id": "T0000", "fate": "RAIZ", "dormant": false },
+        { "id": "T0001", "fate": "RAIZ", "dormant": false },
+        { "id": "T0010", "fate": "TRONCO", "dormant": false },
+        { "id": "T0011", "fate": "TRONCO", "dormant": false },
+        { "id": "T0100", "fate": "CRESTA_NEURAL", "dormant": false },
+        { "id": "T0101", "fate": "CRESTA_NEURAL", "dormant": false },
+        { "id": "T0110", "fate": "TRONCO", "dormant": false },
+        { "id": "T0111", "fate": "RAIZ", "dormant": false },
+        { "id": "T1000", "fate": "RAIZ", "dormant": false },
+        { "id": "T1001", "fate": "TRONCO", "dormant": false },
+        { "id": "T1010", "fate": "TRONCO", "dormant": false },
+        { "id": "T1011", "fate": "CRESTA_NEURAL", "dormant": false, "flag": "fragil_atlas_inactivo" },
+        { "id": "T1100", "fate": "CRESTA_NEURAL", "dormant": false, "flag": "fragil_atlas_inactivo" },
+        { "id": "T1101", "fate": "TRONCO", "dormant": false },
+        { "id": "T1110", "fate": "RAIZ_ARCHIVO", "dormant": true },
+        { "id": "T1111", "fate": "FRUTO", "dormant": true }
+      ],
+      "edges": [
+        ["T0000", "T1000"],
+        ["T0000", "T0100"],
+        ["T0000", "T0010"],
+        ["T0000", "T0001"],
+        ["T0001", "T1001"],
+        ["T0001", "T0101"],
+        ["T0001", "T0011"],
+        ["T0010", "T1010"],
+        ["T0010", "T0110"],
+        ["T0010", "T0011"],
+        ["T0011", "T1011"],
+        ["T0011", "T0111"],
+        ["T0100", "T1100"],
+        ["T0100", "T0110"],
+        ["T0100", "T0101"],
+        ["T0101", "T1101"],
+        ["T0101", "T0111"],
+        ["T0110", "T0111"],
+        ["T1000", "T1100"],
+        ["T1000", "T1010"],
+        ["T1000", "T1001"],
+        ["T1001", "T1101"],
+        ["T1001", "T1011"],
+        ["T1010", "T1011"],
+        ["T1100", "T1101"]
+      ],
+      "fragile_edges": [
+        ["T0011", "T1011"],
+        ["T1001", "T1011"],
+        ["T1010", "T1011"],
+        ["T0100", "T1100"],
+        ["T1000", "T1100"],
+        ["T1100", "T1101"]
+      ],
+      "verification": {
+        "active_edges_hamming_1_verified": true,
+        "fragile_edges_verified_active": true,
+        "source_mutations": 0,
+        "files_moved": 0,
+        "clinical_content_opened": false
+      }
+    },
     "metatron_tesseract_0001": {
       "name": "teseracto",
       "family": "hypercube",
       "dimension": 4,
       "vertices_expected": 16,
       "edges_expected": 32,
-      "status": "NEXT_POLYTOPE",
+      "status": "BLOCKED_PENDING_FULL_16_CONDITIONS",
       "activation_rule": "Activate only when a 16-node corpus has justified binary facets and no forced edges.",
       "vertex_label_rule": "T + 4-bit coordinate, where each bit maps to one R4 axis.",
       "vertices": [
@@ -129,12 +201,20 @@
       "status": "SEALED"
     },
     {
+      "phase": "rescope_option_a",
+      "polytope": "metatron_tesseract_14_active_2_dormant_subgraph_0001",
+      "dimension": 4,
+      "vertices": 14,
+      "edges": 25,
+      "status": "ACT"
+    },
+    {
       "phase": "teseracto",
       "polytope": "metatron_tesseract_0001",
       "dimension": 4,
       "vertices": 16,
       "edges": 32,
-      "status": "NEXT_POLYTOPE"
+      "status": "BLOCKED_PENDING_FULL_16_CONDITIONS"
     },
     {
       "phase": "penteracto",
