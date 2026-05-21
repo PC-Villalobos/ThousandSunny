@@ -40,7 +40,7 @@
     "gdoc_local_import": false,
     "clinical_default": "HOLD"
   },
-  "states": ["PEN", "ACT", "OBS", "HOLD", "MIRROR", "SEALED"],
+  "states": ["PEN", "ACT", "OBS", "HOLD", "MIRROR", "SEALED", "SUPERSEDED_PENDING_GASTRULATION"],
   "current_batches": {
     "OBS-PILOT-0001-20260520": {
       "status": "SEALED",
@@ -60,10 +60,39 @@
       "edges": 10,
       "source_mutations": 0,
       "verification": "sealed"
+    },
+    "OBS-BATCH-0004-METATRON-TESSERACT-STAGING-20260521": {
+      "status": "OBS",
+      "vertices": 16,
+      "edges": 32,
+      "source_mutations": 0,
+      "edge_status": "combinatorial_pending_semantic_review",
+      "verification": "staging_pass"
+    },
+    "OBS-BATCH-0005-BICAMERAL-TALAMO-CALLOSO-20260521": {
+      "status": "OBS",
+      "vertices": 16,
+      "callosal_pairs": 8,
+      "source_mutations": 0,
+      "edge_status": "callosal_pairs_pending_semantic_review",
+      "verification": "staging_pass"
+    },
+    "OBS-BATCH-0015-TESERACTO-RESCOPE": {
+      "status": "SUPERSEDED_PENDING_GASTRULATION",
+      "source_mutations": 0,
+      "blocked_by": "OBS-BATCH-0016-GASTRULATION-FATE-MAP-20260521",
+      "manifest": "vault/manifests/OBS-BATCH-0015-TESERACTO-RESCOPE.md"
+    },
+    "OBS-BATCH-0016-GASTRULATION-FATE-MAP-20260521": {
+      "status": "ACT",
+      "source_mutations": 0,
+      "verdict": "nami_audit_complete",
+      "manifest": "vault/manifests/gastrulation_fate_map.md",
+      "fate_layers": ["RAIZ", "RAIZ_ARCHIVO", "TRONCO", "CRESTA_NEURAL", "FRUTO"]
     }
   },
   "metatron": {
-    "phase": "pentacoro",
+    "phase": "gastrulation",
     "active_batch": "OBS-BATCH-0003-METATRON-PENTACORO-20260520",
     "active_status": "SEALED",
     "active_polytope": "metatron_pentachoron_0001",
@@ -78,6 +107,7 @@
       "fase_metatron"
     ],
     "next_polytope": "metatron_tesseract_0001",
-    "next_polytope_status": "prepared_not_active"
+    "next_polytope_status": "blocked_pending_rescope_decision",
+    "latest_fate_map": "OBS-BATCH-0016-GASTRULATION-FATE-MAP-20260521"
   }
 }
