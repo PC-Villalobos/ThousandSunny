@@ -1,0 +1,52 @@
+{
+  "batch_id": "NLM-20260523-01",
+  "objective": "Extraer candidatos operativos para mejorar la membrana Sunny Core sin canonizar.",
+  "candidates": [
+    {
+      "source_id": "PIECE-0001",
+      "title": "Schema de pieza Deckard",
+      "type": "Protocolo",
+      "pillar": "sistema",
+      "summary": "Estructura técnica (JSON) para clasificar cada pieza del sistema según su dominio y nivel.",
+      "certainty_level": "N3",
+      "status": "ACTIVO",
+      "source_url": "05_WORK_PACKETS.md",
+      "allowed_actions": [
+        "resumir",
+        "comparar",
+        "proponer"
+      ],
+      "forbidden_actions": [
+        "canonizar",
+        "mezclar_dominios"
+      ],
+      "next_action": "Integrar al Core cuando haya endpoint de piezas disponible."
+    },
+    {
+      "source_id": "PIECE-0002",
+      "title": "Protocolo n8n dry-run",
+      "type": "Procedimiento",
+      "pillar": "sistema",
+      "summary": "Reglas para asegurar que las automatizaciones no realicen escrituras reales sin validación previa.",
+      "certainty_level": "N2",
+      "status": "ACTIVO",
+      "source_url": "05_WORK_PACKETS.md",
+      "allowed_actions": [
+        "resumir",
+        "proponer"
+      ],
+      "forbidden_actions": [
+        "borrar",
+        "sobreescribir"
+      ],
+      "next_action": "Cerrar el WP-006 definiendo los logs de salida."
+    }
+  ],
+  "open_questions": [
+    "¿Cuál es el estado del endpoint técnico para la integración del Schema Deckard mencionado en el WP-005?",
+    "¿Cómo se resuelve la redundancia de la Regla Deckard entre el Bootstrap y el Canon para mantener una sola fuente de verdad?"
+  ],
+  "quarantine_flags": [
+    "El dominio 'clinica' y 'trading' se mencionan en las fuentes pero deben permanecer aislados de este flujo operativo según el protocolo de seguridad."
+  ]
+}
