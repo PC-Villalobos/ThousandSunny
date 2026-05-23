@@ -1,6 +1,6 @@
 # 05_WORK_PACKETS
 
-Version: 0.1
+Version: 0.2
 Estado: activo
 Ultima actualizacion: 2026-05-23
 
@@ -75,9 +75,17 @@ Prohibido: pedir "que es todo mi sistema".
 Handoff: `WP-007_NOTEBOOKLM_PROMPT_CONTRACT.md` y `WP-007_NOTEBOOKLM_BATCH_TEMPLATE.md`.
 
 ### WP-008 - Inventario 50 piezas
-Estado: open
+Estado: done
 Voz: Gemini / Zoro con supervision Nami
 Entrada: solo documentos estructurales.
 Salida: ampliar `02_INVENTARIO.csv` a 50 filas.
 Prohibido: material clinico, trading y sesiones sin permiso.
-Handoff: pendiente.
+Handoff: PR #5 mergeado; inventario estructural ampliado a 50 piezas.
+
+### WP-009 - Gastrulacion Metatron
+Estado: plan_ready
+Voz: Codex / Usopp con supervision Nami
+Entrada: auditoria Wave5, mapa de gastrulacion, estado local de oleadas.
+Salida: `state/metatron/METATRON_GESTATION_STATE.md`.
+Prohibido: publicar contenido clinico, mover fuentes, ejecutar Mirror sin GO C0.
+Handoff: Wave6 queda en Plan con 32 candidatos y `source_mutations=0`; Mirror pendiente de aprobacion del Capitan.
