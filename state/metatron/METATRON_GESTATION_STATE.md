@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 0.1
+Version: 1.1
 Estado: ACT
-Ultima actualizacion: 2026-05-23
+Ultima actualizacion: 2026-05-24
 
 ## Proposito
 
@@ -31,34 +31,37 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 |---|---|---|---|---:|---:|---|
 | 4 | OBS-BATCH-0016-GESTATION-WAVE4-20260523 | Mirror | repaired | 32 | 0 | W4B purgada con GO C0; manifiesto reconstruido desde lote legitimo. |
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
-| 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Plan | ready_for_review | 32 candidates | 0 | Mirror pendiente de revision y GO C0. |
+| 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 
 ## Estado Actual
 
 ```json
 {
   "last_batch_id": "OBS-BATCH-0018-GESTATION-WAVE6-20260523",
-  "last_mode": "Plan",
+  "last_mode": "Mirror",
   "current_wave": 6,
-  "next_wave": 6,
+  "next_wave": 7,
   "max_files": 32,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": null,
-  "verification": null
+  "manifest": "OBS-BATCH-0018-GESTATION-WAVE6-20260523.md",
+  "verification": "OBS-BATCH-0018-GESTATION-WAVE6-20260523-VERIFICACION.md",
+  "bitacora_id": 1149
 }
 ```
 
 ## Handoff
 
-1. Revisar manualmente la tabla de candidatos de Wave6 en la boveda local.
-2. Si el Capitan da GO C0, ejecutar Wave6 en Mirror una sola vez.
-3. Verificar manifest y verification tras Mirror.
-4. Registrar el cierre en Bitacora externa.
+1. Wave6 queda cerrada como Mirror no sellado.
+2. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+3. Wave7 requiere Plan antes de cualquier Mirror.
+4. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
 
 ## Referencias Locales No Versionadas
 
 - `OBS-BATCH-0018-GESTATION-WAVE6-20260523-PLAN.md`
-- `OBS-WAVE6-PLAN-20260523.md`
+- `OBS-BATCH-0018-GESTATION-WAVE6-20260523.md`
+- `OBS-BATCH-0018-GESTATION-WAVE6-20260523-VERIFICACION.md`
+- `OBS-WAVE6-MIRROR-20260523.md`
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
