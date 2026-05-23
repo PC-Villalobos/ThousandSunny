@@ -1,0 +1,187 @@
+{
+  "batch_id": "NLM-20260523-02",
+  "objective": "Extraer piezas estructurales del plan de migracion Deckard: decisiones locked-in, invariantes del Sunny Core, protocolo de sincronizacion, escala Deckard y reglas de trazabilidad, sin canonizar.",
+  "prior_batch": "NLM-20260523-01",
+  "notebooklm_url": "https://notebooklm.google.com/notebook/25c72690-ac09-41c4-bd75-1e8b35169782",
+  "source_batch": [
+    {
+      "source_id": "SRC-0001",
+      "title": "N2-PEN-SIS - 05 PLAN MIGRACION DECKARD 20260507T125533Z",
+      "drive_id": "1UCTDAIjhkLfjSuCgrGzySbXl9JjXbSTk",
+      "role": "Plan de migracion principal con decisiones locked-in."
+    },
+    {
+      "source_id": "SRC-0002",
+      "title": "N2-PEN-NEX - 004 escala deckard certeza epistemica",
+      "drive_id": "19t6K5K2pUwRIpATkqN1g7ln42qhMlwuQ",
+      "role": "Definicion formal de la escala N0-N5."
+    },
+    {
+      "source_id": "SRC-0003",
+      "title": "N2-PEN-NEX - 003 deckard segundo cerebro operativo",
+      "drive_id": "18OAcXO2F8S8aN8vbKbeT5Pm_iEVOdt4n",
+      "role": "Deckard como sistema operativo de segundo cerebro."
+    },
+    {
+      "source_id": "SRC-0004",
+      "title": "N4-ACT-SIS - Sunny Core Architecture SUN-0002",
+      "drive_id": "19VC0NDhIDDpc2a17SNt8dmvcOaNVOvwB",
+      "role": "Decisiones arquitectonicas locked-in del Sunny Core."
+    }
+  ],
+  "candidates": [
+    {
+      "source_id": "PIECE-0003",
+      "title": "Decisiones Locked-in v3",
+      "type": "Protocolo",
+      "pillar": "sistema",
+      "summary": "Conjunto de reglas de persistencia, renombres, jerarquia de cuadernos y limites de ejecucion para la migracion Deckard.",
+      "certainty_level": "N3",
+      "status": "ACTIVO",
+      "source_refs": [
+        "SRC-0001",
+        "SRC-0002"
+      ],
+      "allowed_actions": [
+        "resumir",
+        "comparar",
+        "proponer"
+      ],
+      "forbidden_actions": [
+        "canonizar",
+        "borrar_cuadernos",
+        "mover_fuentes"
+      ],
+      "next_action": "Persistir como pieza estructural de SISTEMA y contrastar contra el inventario antes de elevar nivel."
+    },
+    {
+      "source_id": "PIECE-0004",
+      "title": "Invariantes del Sunny Core",
+      "type": "Arquitectura",
+      "pillar": "operativo",
+      "summary": "Define que la identidad, el estado y la verdad logica pertenecen al Core, mientras Drive, GAS y otros adaptadores solo espejan o ejecutan.",
+      "certainty_level": "N3",
+      "status": "ACTIVO",
+      "source_refs": [
+        "SRC-0004"
+      ],
+      "allowed_actions": [
+        "resumir",
+        "comparar",
+        "proponer"
+      ],
+      "forbidden_actions": [
+        "canonizar",
+        "mezclar_dominios",
+        "sobreescribir_adaptadores"
+      ],
+      "next_action": "Integrar en manual operativo tras revision de consistencia con Sunny Core Architecture."
+    },
+    {
+      "source_id": "PIECE-0005",
+      "title": "Protocolo de Sincronizacion",
+      "type": "Flujo",
+      "pillar": "operativo",
+      "summary": "Secuencia tecnica Normalizar -> Validar en modo strict -> Escribir en stream de eventos -> Espejar hacia adaptadores sin alterar la fuente de verdad.",
+      "certainty_level": "N3",
+      "status": "ACTIVO",
+      "source_refs": [
+        "SRC-0004"
+      ],
+      "allowed_actions": [
+        "resumir",
+        "comparar",
+        "proponer",
+        "dry_run"
+      ],
+      "forbidden_actions": [
+        "escritura_real_sin_validacion",
+        "borrar",
+        "sobreescribir"
+      ],
+      "next_action": "Validar con dry-run antes de conectarlo a cualquier adaptador GAS, Drive o n8n."
+    },
+    {
+      "source_id": "PIECE-0006",
+      "title": "Escala Deckard de Certeza",
+      "type": "Epistemologia",
+      "pillar": "sistema",
+      "summary": "Graduacion N0-N5 usada para evaluar fiabilidad, procedencia y madurez de piezas antes de integrarlas en flujos operativos.",
+      "certainty_level": "N2",
+      "status": "ACTIVO",
+      "source_refs": [
+        "SRC-0002",
+        "SRC-0003"
+      ],
+      "allowed_actions": [
+        "resumir",
+        "comparar",
+        "formalizar_N0_N3"
+      ],
+      "forbidden_actions": [
+        "usar_N4",
+        "usar_N5",
+        "canonizar"
+      ],
+      "next_action": "Formalizar definiciones operativas N0-N3 y dejar N4/N5 fuera de este lote."
+    },
+    {
+      "source_id": "PIECE-0001",
+      "title": "Schema Deckard",
+      "type": "Estructura",
+      "pillar": "sistema",
+      "summary": "Distribucion de dominios, mapa de cuadernos y reglas de reparto por agencia; el lote 02 amplia su alcance con instrucciones personalizadas y dominios destino.",
+      "certainty_level": "N3",
+      "status": "AMPLIAR",
+      "source_refs": [
+        "NLM-20260523-01",
+        "SRC-0001",
+        "SRC-0003"
+      ],
+      "allowed_actions": [
+        "comparar",
+        "ampliar",
+        "proponer"
+      ],
+      "forbidden_actions": [
+        "duplicar",
+        "canonizar"
+      ],
+      "next_action": "Vincular la ampliacion con instrucciones personalizadas por cuaderno y resolver criterio CO."
+    },
+    {
+      "source_id": "PIECE-0002",
+      "title": "Protocolo n8n/adaptadores",
+      "type": "Herramienta",
+      "pillar": "operativo",
+      "summary": "Gestion de agentes, adaptadores y automatizaciones mediante el Core; el lote 02 confirma el enfoque operativo previo sin duplicarlo.",
+      "certainty_level": "N2",
+      "status": "CONFIRMADO",
+      "source_refs": [
+        "NLM-20260523-01",
+        "SRC-0004"
+      ],
+      "allowed_actions": [
+        "resumir",
+        "confirmar",
+        "mapear_skills"
+      ],
+      "forbidden_actions": [
+        "duplicar",
+        "escritura_real_sin_dry_run"
+      ],
+      "next_action": "Mapear skills y adaptadores concretos contra el protocolo dry-run."
+    }
+  ],
+  "confirmed_from_prior": [
+    "PIECE-0002"
+  ],
+  "expanded_from_prior": [
+    "PIECE-0001"
+  ],
+  "open_questions": [
+    "Cual es el criterio final para mover fuentes de CO Coordinacion a SISTEMA u OPERATIVO?",
+    "Como se resolveran los duplicados de exosomas en NEMESIS sin intervencion manual masiva?"
+  ],
+  "quarantine_flags": []
+}
