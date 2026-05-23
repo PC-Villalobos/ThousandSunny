@@ -1,0 +1,51 @@
+id,titulo,tipo,pilar,estado,nivel_certeza,url,accion
+SRC-0001,DRIVE CANONICAL INDEX 20260509,inventario,sistema,ACTIVO,N4,https://drive.google.com/file/d/1jNSwtvMcqyQETDMgSs9fzGlkjcVfHkSf,mantener como indice estructural Drive
+SRC-0002,DRIVE CANONICAL ANOMALIES 20260509,auditoria,sistema,ACTIVO,N4,https://drive.google.com/file/d/1Hjl-GgZVDi3dc9ep4a2nbbaUCT1kI5J-,revisar anomalias antes de sincronizar
+SRC-0003,DRIVE CANONICAL SUMMARY 20260509,sintesis,sistema,ACTIVO,N4,https://drive.google.com/file/d/1BuyqG3ngAG2pzZ-DQsKzWPaAM726R9ne,usar como resumen de estado Drive
+SRC-0004,DRIVE ROOT TAGGING MANIFEST 20260520 1851,manifest,sistema,ACTIVO,N4,https://drive.google.com/file/d/11gNUsQZ8cpK7WlPxKflGHG5ujZX19j2t,usar como base de etiquetado read only
+SRC-0005,SUN-0005 01 CANON,canon,sistema,ACTIVO,N4,https://drive.google.com/file/d/1nL8HJWxzOhkyAA-k-AlRXzCGm5T09pqX,comparar contra state deckard 01_CANON
+SRC-0006,SUN-0004 Drive Sync Index 2026-05-01,indice,sistema,ACTIVO,N4,https://drive.google.com/file/d/1Y39d4IhyaR6-DaGoXEzB0TaAp3HncX3n,usar para trazabilidad Drive Sunny Core
+SRC-0007,SUN-0004 NotebookLM Drive Ingesta 2026-05-01,protocolo,sistema,ACTIVO,N4,https://drive.google.com/file/d/1854ZwyVw1LUsUvqqnWHTxWCXpMN8CAz4,usar como referencia de ingestion NotebookLM
+SRC-0008,SUN-0004 Addendum Integracion Herramientas PDF 2026-05-01,addendum,sistema,ACTIVO,N4,https://drive.google.com/file/d/1oddpAJ6M_g4PJ8gfLL3VNZ5W2fsxVXb3,usar como anexo de integracion
+SRC-0009,Sunny Core Architecture SUN-0002 2026-05-01,arquitectura,sistema,ACTIVO,N4,https://drive.google.com/file/d/19VC0NDhIDDpc2a17SNt8dmvcOaNVOvwB,confirmar decisiones locked in
+SRC-0010,Sunny Core Spec SUN-0002 2026-05-01,spec,sistema,ACTIVO,N4,https://drive.google.com/file/d/1wciOiNJ8DpH5FZg6I4xm1-8NbVx0iFH2,consolidar con arquitectura Sunny Core
+SRC-0011,Sunny Core Client Guide SUN-0003 2026-05-01,guia,sistema,ACTIVO,N4,https://drive.google.com/file/d/1JtWGUYPfQJjvMOx-niz1mIgMawfyJ0Zc,usar como guia cliente del Core
+SRC-0012,Sunny Core GAS Adapter Decision 2026-04-30,decision,sistema,ACTIVO,N4,https://drive.google.com/file/d/1Pd5dazr3Af2a6Y3mBaWHGwifVJQBC8VB,extraer contrato GAS adapter
+SRC-0013,diagnostico mcp final,diagnostico,sistema,ACTIVO,N4,https://drive.google.com/file/d/13vXo-yDm_Vu9jU19fXPAOd9zpae7_i_S,usar para frontera MCP y conectores
+SRC-0014,brief codex antigravity una pagina,brief,sistema,ACTIVO,N4,https://drive.google.com/file/d/1ki6oZBfJJqHfxpmQVeFbSiunZjkZtr9V,usar como handoff tecnico Codex
+SRC-0015,PUNTO PRESENTE v5 2 20260509,estado,sistema,ACTIVO,N4,https://drive.google.com/file/d/1uWsajazJaf1anzcMoi43E47elgY251Xa,usar como foto operativa de sistema
+SRC-0016,Digestion Cuaderno Bitacora NotebookLM,digestion,sistema,ACTIVO,N4,https://drive.google.com/file/d/1t5vpraTQ-a4yPiQY9ZlRgdz172gGetps,usar para lote NotebookLM bitacora
+SRC-0017,NEXUS CORE SPEC v0 3,spec,nexus,ACTIVO,N4,https://drive.google.com/file/d/1KM_ffampO8xVPyvcIRtIjBIXXEokyIxg,comparar con version v0 4
+SRC-0018,NEXUS CORE SPEC v0 4,spec,nexus,ACTIVO,N4,https://drive.google.com/file/d/1DdIkzbbdDZkb1uOUYUXdDUjTqwnN2YD5,priorizar sobre v0 3 si confirma diferencias
+SRC-0019,OBSIDIAN BATCH 0002 MANIFEST 20260520,manifest,nexus,ACTIVO,N4,https://drive.google.com/file/d/1VShcZggbwa8rF00ruFs7KfLo20veFBdt,usar como manifest Obsidian batch 0002
+SRC-0020,OBSIDIAN BATCH 0003 METATRON PENTACORO MANIFEST 20260520,manifest,nexus,ACTIVO,N4,https://drive.google.com/file/d/16jvQr4vy0THlPgFQU-VgWS-9ovSK47gO,usar como manifest Obsidian batch 0003
+SRC-0021,OBSIDIAN BATCH 0003 METATRON PENTACORO SELLADO 20260520,sellado,nexus,ACTIVO,N4,https://drive.google.com/file/d/1IZVC-yH6IZKwB2VLQcCfiAeS1MFYM0yE,usar para verificar cierre batch 0003
+SRC-0022,OBSIDIAN BATCH 0004 METATRON TESSERACT STAGING 20260521,staging,nexus,ACTIVO,N4,https://drive.google.com/file/d/1gedptcli9AaoHw6UCnLhXKtmDwLm-4QL,usar como staging batch 0004
+SRC-0023,OBSIDIAN MIGRATION PROTOCOL v0 1,protocolo,nexus,ACTIVO,N4,https://drive.google.com/file/d/17KtPqn_98hfIQcBSyGTIYQwGTqMkbegH,extraer reglas de migracion Obsidian
+SRC-0024,OBSIDIAN PILOT 0001 MANIFEST DRY RUN,manifest,nexus,ACTIVO,N4,https://drive.google.com/file/d/1UPvmy6J2ZQ1a8Z6gRZrhjymnNL9IUzWf,usar como referencia dry run Obsidian
+SRC-0025,STRESS TEST GEOMETRICO PENTACORO 20260520,test,nexus,ACTIVO,N4,https://drive.google.com/file/d/1ddOLeSUEjDjHzXviPQUcHZRlOYXfYqwc,usar para validacion geometrica Pentacoro
+SRC-0026,MUDRA MARCO RADAR DELTA READ ONLY 20260520,protocolo,nexus,ACTIVO,N4,https://drive.google.com/file/d/16_m--yh8zrDtrZE7vy5W8GN8DVR2AT9Q,conservar como marco read only
+SRC-0027,V33 Dashboard Pentacoro Metatron 0001,dashboard,nexus,ACTIVO,N4,https://drive.google.com/file/d/1FmiY8XAwf4Xr4m0Drbfwax_EC7L4sXeu,registrar como superficie de dashboard
+SRC-0028,T44 Dashboard Teseracto Staging 0001,dashboard,nexus,ACTIVO,N4,https://drive.google.com/file/d/1Qw0wHVAJvYFQjZuCD8gg9RU8unpp7mNd,registrar como dashboard staging Teseracto
+SRC-0029,B55 Dashboard Cerebro Bicameral Staging 0001,dashboard,nexus,ACTIVO,N4,https://drive.google.com/file/d/1puarpYdLdLvilm1cU1m5HF40FhHAsJ9-,registrar como dashboard bicameral
+SRC-0030,E66 Dashboard Tronco Encefalico Automatizaciones Staging 0001,dashboard,nexus,ACTIVO,N4,https://drive.google.com/file/d/1XPW1FH_sHiv2KEXsN5pj5eeQlrltKzTC,registrar como dashboard automatizaciones
+SRC-0031,O11 Gestacion Por Oleadas Trigger 0001,trigger,nexus,ACTIVO,N4,https://drive.google.com/file/d/1lNy5zuM941vjLSWNYqkvnBEL6NhUAcud,usar como regla de gestacion por oleadas
+SRC-0032,T55 Talamo Nexus Staging 0001,staging,nexus,ACTIVO,N4,https://drive.google.com/file/d/1rBqgCpQtoASySqRqDtgL5xSRM0fVgXIX,registrar como staging Talamo Nexus
+SRC-0033,N3-ACT-SIS output W5-26,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/1VzQvE_ETP0m2jZAcKiRT3Y8NIn70EPHU,renombrar o descartar tras inspeccion manual
+SRC-0034,N3-ACT-SIS output W5-24,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/1p_PjREKaJXq-TFRx0LCtNzx19T62UBiC,renombrar o descartar tras inspeccion manual
+SRC-0035,N3-ACT-SIS output W5-22,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/1bsccLkTtr-5FDZ1XuwHMm0nTKkOl_sLC,renombrar o descartar tras inspeccion manual
+SRC-0036,N3-ACT-SIS output W5-31,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/1u1NEStsNEYnBE3Ko9QPeSQ-LnnruY-nz,renombrar o descartar tras inspeccion manual
+SRC-0037,N3-ACT-SIS output W5-30,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/1cEe7nkdwGVACCT-bHgfXMLhl28wXpM-B,renombrar o descartar tras inspeccion manual
+SRC-0038,OUROBOROS MAPA EXPRESION 2026-04-19 0103,mapa,sistema,ACTIVO,N3,https://drive.google.com/file/d/1g2_jJG6xPxT_urY4_Lbhs2T5ylQFm8L2,conservar como mapa expresivo estructural
+SRC-0039,SUN-0005 DRIVE SYNC INDEX 2026-05-01,indice,sistema,ACTIVO,N3,https://drive.google.com/file/d/14PHIjKErVQZ3qs3FAqTZtxpS9ZLRV2BO,comparar contra version N4
+SRC-0040,Brief Claude Cartografia Navegacion,brief,sistema,ACTIVO,N3,https://drive.google.com/file/d/1tP4ZJ8SZX6OKCfH5ugToFGOYC92tYLdG,usar como referencia de navegacion Claude
+SRC-0041,ATLAS TI SYNC GUIDE,guia,sistema,ACTIVO,N3,https://drive.google.com/file/d/10duprfQ99GYn8xWNFFaV0f7ONXK5z172,usar como guia de sincronizacion ATLAS TI
+SRC-0042,README ATLAS TI PILOTO,readme,sistema,ACTIVO,N3,https://drive.google.com/file/d/15ca-v4PeKs88EcOuE80XsnkZNUxjHFsQ,usar como entrada piloto ATLAS TI
+SRC-0043,07 LEGACY,legacy,sistema,LEGACY,N3,https://drive.google.com/file/d/1tdOYSQ5YV27y9itRjKgC9XsBXWtY6IdO,conservar solo como referencia historica
+SRC-0044,ananda bitacora 20260522,bitacora,sistema,ACTIVO,N3,https://drive.google.com/file/d/1wuBg8q6Eb_pPQaRGGDV30e5M5s6toWAF,revisar si contiene solo eventos estructurales
+SRC-0045,ananda_bitacora_20260520_nocturna,bitacora,sistema,ACTIVO,N3,https://docs.google.com/document/d/1fRX40kiq3btvrHRbgsOYEy0O6npRnSN-AznS7EQR9oM,revisar si contiene solo eventos estructurales
+SRC-0046,ananda_bitacora_20260511,bitacora,sistema,ACTIVO,N3,https://docs.google.com/document/d/10TDvaBbR1311vLzDGrlM-TXe82ibLfMAfASrwyaNCl0,revisar si contiene solo eventos estructurales
+SRC-0047,digestion_local_20260518,digestion,sistema,ACTIVO,N3,https://docs.google.com/document/d/1sGm6maeFLEEckII7aPqZs5YylABhFflKqFCAibF_9WE,revisar flags antes de canonizar
+SRC-0048,digestion_local_20260516,digestion,sistema,ACTIVO,N3,https://docs.google.com/document/d/1Lwlxi4SZ53HwtKZG9UbEQNz9warBWpcXUsI2fTq5j5A,revisar flags antes de canonizar
+SRC-0049,Google AI Studio plan,plan,sistema,ACTIVO,N3,https://docs.google.com/document/d/1aT5mSLZGSBYGLXsOWGv_hws-Kn8CZDDi0-QX-QJHvb0,usar como plan tecnico Google AI Studio
+SRC-0050,N3-ACT-SIS output W5-32,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/15LrwBVE-xQgS3LtDbNUVYtv5EJt31e9y,renombrar o descartar tras inspeccion manual
