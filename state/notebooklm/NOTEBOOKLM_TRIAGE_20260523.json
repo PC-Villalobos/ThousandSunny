@@ -1,0 +1,157 @@
+{
+  "date": "2026-05-23",
+  "status": "phase_2_reviewed_pending_apply",
+  "total_detected": 14,
+  "execution": {
+    "applied_at": "2026-05-23",
+    "renamed": 13,
+    "kept_with_icon": 1,
+    "quarantined": 2,
+    "deleted": 0,
+    "notes": "Fase 1 aplicada dentro de NotebookLM: particion por prefijos, cuarentenas visibles y candidatos de fusion marcados sin purga."
+  },
+  "merge_review": {
+    "reviewed_at": "2026-05-23",
+    "report": "NOTEBOOKLM_MERGE_REVIEW_20260523.md",
+    "status": "reviewed_pending_apply",
+    "renames_recommended": 3,
+    "renames_applied": 0,
+    "deleted": 0
+  },
+  "rules": {
+    "delete_without_confirmation": false,
+    "notebooklm_role": "digestor de fuentes, no canon",
+    "first_action": "rename_and_partition"
+  },
+  "prefixes": {
+    "NLM-SYS": "sistema, arquitectura, protocolos, Sunny Core",
+    "NLM-OPS": "operaciones, migraciones, handoffs, integraciones",
+    "NLM-ACA": "academico/transdisciplinar",
+    "NLM-NAR": "narrativa, mitologia, capa simbolica",
+    "NLM-TRD": "trading/finanzas",
+    "NLM-LEG": "legado, duplicado o material ya absorbido"
+  },
+  "notebooks": [
+    {
+      "title": "NLM-20260523-01_membrana_sunny_core",
+      "domain": "sistema",
+      "status": "ACTIVO",
+      "action": "KEEP",
+      "proposed_title": "NLM-20260523-01_membrana_sunny_core"
+    },
+    {
+      "title": "Connecting Claude and NotebookLM for Infinite Context Storage",
+      "domain": "sistema/operativo",
+      "status": "ACTIVO",
+      "action": "RENAME",
+      "proposed_title": "NLM-OPS-CLAUDE_NOTEBOOKLM_CONTEXT_BRIDGE"
+    },
+    {
+      "title": "Arquitectura Sunny: Auditoria Sistemica y Evolucion Agentica v5.2",
+      "domain": "sistema",
+      "status": "ACTIVO",
+      "action": "KEEP_AS_CORE",
+      "proposed_title": "NLM-SYS-SUNNY_ARCH_AUDIT_v5_2"
+    },
+    {
+      "title": "Cybernetics of Agency and the Altar of Optimization",
+      "domain": "narrativa/academico",
+      "status": "ACTIVO",
+      "action": "MOVE_TO_NAR_ACA",
+      "proposed_title": "NLM-NAR-AGENCY_OPTIMIZATION_ALTAR"
+    },
+    {
+      "title": "Bitacora del Thousand Sunny: Sistema de Gestion y Registro IA",
+      "domain": "sistema/operativo",
+      "status": "ACTIVO",
+      "action": "KEEP_AS_LEDGER",
+      "proposed_title": "NLM-OPS-SUNNY_BITACORA_LEDGER"
+    },
+    {
+      "title": "Deckard Migration Plan: NotebookLM v3 Reconciled System Architecture",
+      "domain": "sistema/operativo",
+      "status": "ACTIVO",
+      "action": "KEEP_AS_DECKARD",
+      "proposed_title": "NLM-SYS-DECKARD_MIGRATION_PLAN_v3"
+    },
+    {
+      "title": "Hacia un Paradigma Sistemico y la Reforma Transdisciplinaria",
+      "domain": "academico",
+      "status": "ACTIVO",
+      "action": "MOVE_TO_ACA",
+      "proposed_title": "NLM-ACA-TRANSDISCIPLINARY_REFORM"
+    },
+    {
+      "title": "Metatron: Arquitectura Cuatridimensional del Segundo Cerebro",
+      "domain": "sistema/academico",
+      "status": "ACTIVO",
+      "action": "REVIEW_FOR_DUPLICATES",
+      "proposed_title": "NLM-SYS-METATRON_SECOND_BRAIN"
+    },
+    {
+      "title": "Civilization as a Narrative Operating System",
+      "domain": "narrativa/academico",
+      "status": "ACTIVO",
+      "action": "MOVE_TO_NAR_ACA",
+      "proposed_title": "NLM-NAR-CIVILIZATION_NARRATIVE_OS"
+    },
+    {
+      "title": "Espana: The Secret History of the Orca Empire",
+      "domain": "narrativa/personal",
+      "status": "CUARENTENA",
+      "action": "QUARANTINE",
+      "proposed_title": "NLM-NAR-ESPANA_ORCA_EMPIRE__QUARANTINE"
+    },
+    {
+      "title": "Ancient Giants, Emergent Personas, and Divine Scribes",
+      "domain": "narrativa/IA",
+      "status": "ACTIVO",
+      "action": "MOVE_TO_NAR",
+      "proposed_title": "NLM-NAR-EMERGENT_PERSONAS_DIVINE_SCRIBES"
+    },
+    {
+      "title": "The Copper Reserve: Strategic Tokenization for the New Energy Era",
+      "domain": "trading/finanzas",
+      "status": "CUARENTENA",
+      "action": "QUARANTINE_TRADING",
+      "proposed_title": "NLM-TRD-COPPER_RESERVE__QUARANTINE"
+    },
+    {
+      "title": "Beyond Disciplines: The Conceptualization of Transdisciplinarity",
+      "domain": "academico",
+      "status": "ACTIVO",
+      "action": "MOVE_TO_ACA",
+      "proposed_title": "NLM-ACA-BEYOND_DISCIPLINES"
+    },
+    {
+      "title": "Thousand Sunny Architecture: System Migration and Domain Dissociation",
+      "domain": "sistema",
+      "status": "ACTIVO",
+      "action": "MERGE_REVIEW",
+      "proposed_title": "NLM-SYS-SUNNY_MIGRATION_DOMAIN_DISSOCIATION__MERGE_REVIEW"
+    }
+  ],
+  "purge_candidates": [],
+  "merge_review_candidates": [
+    "Thousand Sunny Architecture: System Migration and Domain Dissociation",
+    "Metatron: Arquitectura Cuatridimensional del Segundo Cerebro",
+    "Connecting Claude and NotebookLM for Infinite Context Storage"
+  ],
+  "verified_titles": [
+    "☀️ NLM-20260523-01_membrana_sunny_core",
+    "🔗 NLM-OPS-CLAUDE_NOTEBOOKLM_CONTEXT_BRIDGE",
+    "🚢 NLM-SYS-SUNNY_ARCH_AUDIT_v5_2",
+    "🏴‍☠️ NLM-NAR-AGENCY_OPTIMIZATION_ALTAR",
+    "🏴‍☠️ NLM-OPS-SUNNY_BITACORA_LEDGER",
+    "🗺️ NLM-SYS-DECKARD_MIGRATION_PLAN_v3",
+    "🕸️ NLM-ACA-TRANSDISCIPLINARY_REFORM",
+    "🕸️ NLM-SYS-METATRON_SECOND_BRAIN",
+    "🏛️ NLM-NAR-CIVILIZATION_NARRATIVE_OS",
+    "🧬 NLM-NAR-ESPANA_ORCA_EMPIRE__QUARANTINE",
+    "🤖 NLM-NAR-EMERGENT_PERSONAS_DIVINE_SCRIBES",
+    "🪙 NLM-TRD-COPPER_RESERVE__QUARANTINE",
+    "🌐 NLM-ACA-BEYOND_DISCIPLINES",
+    "🚢 NLM-SYS-SUNNY_MIGRATION_DOMAIN_DISSOCIATION__MERGE_REVIEW"
+  ],
+  "next_step": "Aplicar los 3 renombrados no destructivos recomendados en NOTEBOOKLM_MERGE_REVIEW_20260523.md, luego extraer piezas canonicas a un nuevo lote WP-007."
+}

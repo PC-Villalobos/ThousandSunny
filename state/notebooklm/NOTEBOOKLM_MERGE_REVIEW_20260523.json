@@ -1,0 +1,56 @@
+{
+  "date": "2026-05-23",
+  "status": "reviewed_pending_apply",
+  "delete_without_confirmation": false,
+  "phase": "merge_review",
+  "candidates": [
+    {
+      "title": "🚢 NLM-SYS-SUNNY_MIGRATION_DOMAIN_DISSOCIATION__MERGE_REVIEW",
+      "source_count": 50,
+      "finding": "Sunny Core candidate with migration plan, Deckard N0-N5, locked-in decisions and smoke-cleaning protocol. High overlap with Deckard, Sunny Arch/Audit and Metatron.",
+      "decision": "MERGE_INTO_CORE",
+      "recommended_title": "🚢 NLM-SYS-SUNNY_CORE_MIGRATION_PLAN__CORE_CANDIDATE"
+    },
+    {
+      "title": "🕸️ NLM-SYS-METATRON_SECOND_BRAIN",
+      "source_count": 22,
+      "finding": "Mixed symbolic/theoretical notebook with design, impact, videos, IRIS+, astrology and Metatron conversation sources. Contains unique material but is not clean system canon.",
+      "decision": "MOVE_TO_NAR_MIXED_REVIEW",
+      "recommended_title": "🕸️ NLM-NAR-METATRON_SECOND_BRAIN__MIXED_REVIEW"
+    },
+    {
+      "title": "🔗 NLM-OPS-CLAUDE_NOTEBOOKLM_CONTEXT_BRIDGE",
+      "source_count": 1,
+      "finding": "Single-source reference notebook for the Claude-NotebookLM context bridge. Protocol already formalized in WP-007 and the pilot notebook.",
+      "decision": "MERGE_INTO_WP007",
+      "recommended_title": "🔗 NLM-LEG-CLAUDE_NOTEBOOKLM_CONTEXT_BRIDGE__ABSORB_WP007"
+    }
+  ],
+  "canonical_comparison": [
+    {
+      "title": "🚢 NLM-SYS-SUNNY_ARCH_AUDIT_v5_2",
+      "source_count": 37,
+      "finding": "Useful technical material for GAS, Obsidian, MCP, N5 sutras and agent architecture, mixed with startup, market and media sources."
+    },
+    {
+      "title": "🗺️ NLM-SYS-DECKARD_MIGRATION_PLAN_v3",
+      "source_count": 19,
+      "finding": "Migration/domain reference with mixed thematic groups; keep as migration reference while stable pieces are extracted."
+    },
+    {
+      "title": "☀️ NLM-20260523-01_membrana_sunny_core",
+      "source_count": 4,
+      "finding": "Clean WP-007 pilot. Best model for controlled NotebookLM packets."
+    }
+  ],
+  "purge_candidates": [],
+  "archive_later_candidates": [
+    "🔗 NLM-LEG-CLAUDE_NOTEBOOKLM_CONTEXT_BRIDGE__ABSORB_WP007"
+  ],
+  "browser_apply_status": {
+    "attempted": true,
+    "applied": false,
+    "reason": "The in-app browser rejected writing to title/chat fields during the second pass; no notebooks were modified in this phase."
+  },
+  "next_step": "Apply the 3 recommended non-destructive renames, then extract canonical pieces from the Sunny Core migration notebook into a new WP-007 packet."
+}
