@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.4
+Version: 1.5
 Estado: ACT
-Ultima actualizacion: 2026-05-24
+Ultima actualizacion: 2026-05-25
 
 ## Proposito
 
@@ -34,7 +34,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
-| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | pendiente | 0 | 0 | Fase de recoleccion WP-010 iniciada; Mirror bloqueado hasta nuevo corpus y GO C0. |
+| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | auditada | 0 | 0 | WP-010 auditado: corpus textual elegible agotado; Mirror bloqueado hasta nuevo corpus y GO C0. |
 
 ## Estado Actual
 
@@ -50,17 +50,29 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "plan": "OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md",
   "manifest": null,
   "verification": null,
-  "bitacora_id": null
+  "bitacora_id": null,
+  "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md"
 }
 ```
 
 ## Handoff
 
-1. Wave8 esta en Plan/WP-010 con 0 candidatos; se requiere recolectar corpus elegible antes de reintentar Plan.
+1. Wave8 esta en Plan/WP-010 con 0 candidatos; auditoria 2026-05-25 confirma que se requiere recolectar o exportar corpus textual seguro antes de reintentar Plan.
 2. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos y GO C0 explicito.
 3. El sellado sigue separado por protocolo y requiere GO C0 explicito.
 4. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
 5. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+
+## WP-010 Corpus Collection
+
+Resultado saneado de auditoria:
+
+- candidatos elegibles actuales: 0
+- fuentes ya reflejadas detectadas: 227
+- bloqueo dominante: material Drive en formatos no ingeribles por el runner (`.gdoc`, imagenes, hojas, `.docx`)
+- accion requerida: exportar o crear 16-32 archivos seguros en `.md`, `.txt`, `.json` o formato textual permitido
+- no usar: clinica, personal, NEM, CAR, ISM, CLI, `NEMESIS_SISTEMA`, `Archivo_casos`
+- runner local endurecido para bloquear rutas sensibles, no solo nombres sensibles
 
 ## Protocolo De Cierre
 
@@ -80,5 +92,6 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 - `OBS-BATCH-0019-GESTATION-WAVE7-20260524-VERIFICACION.md`
 - `OBS-WAVE7-MIRROR-20260524.md`
 - `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
+- `OBS-WP010-CORPUS-AUDIT-20260525.md`
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`

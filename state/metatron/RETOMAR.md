@@ -26,7 +26,8 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "sealed": false,
   "manifest": null,
   "verification": null,
-  "pending": "WP-010 collection. Wave8 no tiene candidatos; recolectar corpus elegible antes de reintentar Plan. Mirror bloqueado sin GO C0."
+  "pending": "WP-010 collection. Wave8 no tiene candidatos; recolectar o exportar corpus textual seguro antes de reintentar Plan. Mirror bloqueado sin GO C0.",
+  "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md"
 }
 ```
 
@@ -46,6 +47,10 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 - No versionar artefactos completos de `G:\...` ni `.gemini\...`.
 - No predecir IDs de Bitacora: registrar en GAS, releer `bitacora_desde` y anotar el ID real. Si no se puede confirmar, usar `bitacora_id: null`.
 
+## WP-010
+
+La auditoria local del 2026-05-25 confirma 0 candidatos elegibles actuales. El material restante vive sobre todo como `.gdoc`, imagenes, hojas o documentos no ingeribles por el runner. Para reactivar Wave8 hay que exportar o crear 16-32 archivos seguros `.md`, `.txt`, `.json` o equivalentes permitidos, sin clinica/persona/NEM/CAR/ISM/CLI.
+
 ## Cierre De Wave
 
 1. Verificar state, plan/manifest/verification, notas fisicas y lock.
@@ -57,4 +62,4 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-24 por Usopp/Codex.
+Ultima actualizacion: 2026-05-25 por Usopp/Codex.
