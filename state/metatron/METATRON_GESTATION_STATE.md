@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.6
+Version: 1.7
 Estado: ACT
-Ultima actualizacion: 2026-05-25 (WP-010 corpus completo)
+Ultima actualizacion: 2026-05-25 (Wave8 Plan ready)
 
 ## Proposito
 
@@ -34,36 +34,37 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
-| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | wp010-completo | 0→16 | 0 | WP-010 corpus recolectado: 16 .md en NEXUS (2026-05-25). Ingest Reflex 0001 listo. Plan re-run pendiente con DateStamp 20260525. Mirror bloqueado hasta GO C0. |
+| 8 | OBS-BATCH-0021-GESTATION-WAVE8-20260525 | Plan | plan-ready | 16 | 0 | Plan re-run cerrado con 16 candidatos, manifest=null, verification=null. Mirror bloqueado hasta GO C0. |
 
 ## Estado Actual
 
 ```json
 {
-  "last_batch_id": "OBS-BATCH-0020-GESTATION-WAVE8-20260524",
+  "last_batch_id": "OBS-BATCH-0021-GESTATION-WAVE8-20260525",
   "last_mode": "Plan",
   "current_wave": 8,
   "next_wave": 8,
-  "max_files": 0,
+  "max_files": 32,
   "source_mutations": 0,
   "sealed": false,
-  "plan": "OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md",
+  "plan": "OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md",
   "manifest": null,
   "verification": null,
-  "bitacora_id": 1160,
+  "bitacora_id": 1161,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
+  "wp010_plan_candidates": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
-  "pending": "Wave8 Plan re-run con DateStamp 20260525 — Antigravity ejecuta runner para verificar max_files > 0"
+  "pending": "Revisar Wave8 Plan 20260525 y solicitar GO C0 explicito antes de Mirror"
 }
 ```
 
 ## Handoff
 
-1. **WP-010 corpus COMPLETO** (2026-05-25): 16 archivos `.md` en `G:\Mi unidad\03_PROYECTOS\NEXUS\`. Ingest Reflex 0001 listo en `_meta/scripts/new_wp010_reflex_packet.ps1`. WP010_CORPUS_INBOX creado.
-2. **Siguiente accion para Antigravity**: ejecutar runner (Plan mode) con `DateStamp 20260525`. Si `max_files > 0`, solicitar GO C0 al Capitan para Mirror.
+1. **Wave8 Plan READY** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md` tiene 16 candidatos, `source_mutations=0`, `manifest=null`, `verification=null`.
+2. **Siguiente accion para Antigravity**: revisar candidatos y solicitar GO C0 explicito al Capitan antes de Mirror.
 3. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos Y GO C0 explicito.
 4. El sellado sigue separado por protocolo y requiere GO C0 explicito.
 5. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
@@ -72,7 +73,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 
 ## WP-010 Corpus Collection
 
-**Estado: COMPLETO** (2026-05-25, Nami/Claude Cowork, bitacora_id=1160)
+**Estado: PLAN READY** (2026-05-25, bitacora_id=1161)
 
 Auditoria original:
 - candidatos elegibles: 0 (material Drive en .gdoc, imagenes, hojas no ingeribles)
@@ -84,6 +85,12 @@ Corpus recolectado (16 archivos en `G:\Mi unidad\03_PROYECTOS\NEXUS\`):
 - Todos con YAML frontmatter: `source_mutations: 0`, `wp010_batch: true`
 - Ningun archivo toca NEM/CAR/ISM/CLI
 - runner enduredido para bloquear rutas sensibles (Contains(), no solo nombres)
+
+Plan re-run:
+- `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md`
+- 16 candidatos planificados: 15 archivos WP-010 detectados por runner + 1 paquete saneado en `WP010_CORPUS_INBOX`
+- `source_mutations=0`, `created_notes=0`, `manifest=null`, `verification=null`
+- un archivo recolectado quedo fuera por guardia fija de nombre/ruta; filtros sin cambios
 
 Ingest Reflex 0001 listo:
 - Script: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
@@ -128,6 +135,8 @@ Artefacto local no versionado:
 - `OBS-BATCH-0019-GESTATION-WAVE7-20260524-VERIFICACION.md`
 - `OBS-WAVE7-MIRROR-20260524.md`
 - `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
+- `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md`
+- `OBS-WAVE8-PLAN-20260525.md`
 - `OBS-WP010-CORPUS-AUDIT-20260525.md`
 - `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` (en `_meta/manifiestos`, ID Drive: `1CiLX25s-9gfLzM2JO_gWrinr4UGcR5Ct`)
 - `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)

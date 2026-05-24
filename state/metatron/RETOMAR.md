@@ -19,14 +19,16 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "current_wave": 8,
   "next_wave": 8,
   "last_mode": "Plan",
-  "last_batch_id": "OBS-BATCH-0020-GESTATION-WAVE8-20260524",
-  "max_files": 0,
+  "last_batch_id": "OBS-BATCH-0021-GESTATION-WAVE8-20260525",
+  "max_files": 32,
+  "candidate_notes": 16,
   "total_notes_materialized": 197,
   "source_mutations": 0,
   "sealed": false,
   "manifest": null,
   "verification": null,
-  "pending": "Wave8 Plan re-run. WP-010 corpus recolectado: 16 archivos .md en 03_PROYECTOS/NEXUS (14 exportados de Gdocs + 2 sutras). Ingest Reflex 0001 listo. Siguiente paso: Antigravity ejecuta Plan con DateStamp 20260525 y verifica max_files > 0. Mirror bloqueado sin GO C0.",
+  "pending": "Wave8 Plan re-run cerrado con DateStamp 20260525: 16 candidatos, source_mutations=0, manifest=null, verification=null. Revisar plan y pedir GO C0 antes de Mirror.",
+  "bitacora_id": 1161,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
@@ -53,7 +55,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ## WP-010
 
-**Estado: CORPUS RECOLECTADO** (2026-05-25)
+**Estado: PLAN READY** (2026-05-25, bitacora_id=1161)
 
 La auditoria local del 2026-05-25 confirmo 0 candidatos elegibles. El corpus ha sido repuesto con 16 archivos `.md` en `G:\Mi unidad\03_PROYECTOS\NEXUS\`:
 - 14 exportaciones de Google Docs del proyecto NEXUS/Micelio Sunny (sutras, OKRs, arquitectura, protocolo Deckard, etc.)
@@ -64,7 +66,9 @@ La auditoria local del 2026-05-25 confirmo 0 candidatos elegibles. El corpus ha 
 Ingest Reflex 0001 listo en `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`.
 Staging inbox listo en `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\`.
 
-**Proximo paso**: Antigravity ejecuta Plan con DateStamp `20260525` para verificar candidatos detectados. Si max_files > 0, solicitar GO C0 al Capitan para Mirror.
+Plan re-run ejecutado con DateStamp `20260525`: `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md`, 16 candidatos, `source_mutations=0`, `manifest=null`, `verification=null`. Un paquete adicional saneado fue creado por el arco reflejo en `WP010_CORPUS_INBOX` para cubrir el minimo operativo sin relajar filtros.
+
+**Proximo paso**: revisar los 16 candidatos del Plan. Si el Capitan aprueba, solicitar GO C0 explicito para Mirror.
 
 ## Cierre De Wave
 
@@ -77,4 +81,4 @@ Staging inbox listo en `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\`.
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-25 por Nami/Claude (Cowork).
+Ultima actualizacion: 2026-05-25 por Usopp/Codex.
