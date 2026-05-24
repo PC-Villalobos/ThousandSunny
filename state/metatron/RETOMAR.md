@@ -26,9 +26,12 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "sealed": false,
   "manifest": null,
   "verification": null,
-  "pending": "WP-010 collection. Wave8 no tiene candidatos; recolectar o exportar corpus textual seguro antes de reintentar Plan. Mirror bloqueado sin GO C0.",
+  "pending": "Wave8 Plan re-run. WP-010 corpus recolectado: 16 archivos .md en 03_PROYECTOS/NEXUS (14 exportados de Gdocs + 2 sutras). Ingest Reflex 0001 listo. Siguiente paso: Antigravity ejecuta Plan con DateStamp 20260525 y verifica max_files > 0. Mirror bloqueado sin GO C0.",
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
-  "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md"
+  "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
+  "wp010_corpus_collected": "2026-05-25",
+  "wp010_corpus_count": 16,
+  "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX"
 }
 ```
 
@@ -50,9 +53,18 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ## WP-010
 
-La auditoria local del 2026-05-25 confirma 0 candidatos elegibles actuales. El material restante vive sobre todo como `.gdoc`, imagenes, hojas o documentos no ingeribles por el runner. Para reactivar Wave8 hay que exportar o crear 16-32 archivos seguros `.md`, `.txt`, `.json` o equivalentes permitidos, sin clinica/persona/NEM/CAR/ISM/CLI.
+**Estado: CORPUS RECOLECTADO** (2026-05-25)
 
-Primer arco reflejo: Antigravity puede usar `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1` para convertir outputs saneados en paquetes `.md` dentro de `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX`. El script no autoriza Mirror y no escribe nada sin `-Apply`.
+La auditoria local del 2026-05-25 confirmo 0 candidatos elegibles. El corpus ha sido repuesto con 16 archivos `.md` en `G:\Mi unidad\03_PROYECTOS\NEXUS\`:
+- 14 exportaciones de Google Docs del proyecto NEXUS/Micelio Sunny (sutras, OKRs, arquitectura, protocolo Deckard, etc.)
+- 2 archivos de principios de diseno (Sutra Autonomia Kognitiva, Arquitectura Metatron)
+- Todos con YAML frontmatter: `source_mutations: 0`, `wp010_batch: true`
+- Ningun archivo toca NEM/CAR/ISM/CLI
+
+Ingest Reflex 0001 listo en `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`.
+Staging inbox listo en `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\`.
+
+**Proximo paso**: Antigravity ejecuta Plan con DateStamp `20260525` para verificar candidatos detectados. Si max_files > 0, solicitar GO C0 al Capitan para Mirror.
 
 ## Cierre De Wave
 
@@ -65,4 +77,4 @@ Primer arco reflejo: Antigravity puede usar `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-25 por Usopp/Codex.
+Ultima actualizacion: 2026-05-25 por Nami/Claude (Cowork).

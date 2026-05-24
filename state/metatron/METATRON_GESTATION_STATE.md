@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.5
+Version: 1.6
 Estado: ACT
-Ultima actualizacion: 2026-05-25
+Ultima actualizacion: 2026-05-25 (WP-010 corpus completo)
 
 ## Proposito
 
@@ -34,7 +34,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
-| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | auditada | 0 | 0 | WP-010 auditado: corpus textual elegible agotado; Mirror bloqueado hasta nuevo corpus y GO C0. |
+| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | wp010-completo | 0→16 | 0 | WP-010 corpus recolectado: 16 .md en NEXUS (2026-05-25). Ingest Reflex 0001 listo. Plan re-run pendiente con DateStamp 20260525. Mirror bloqueado hasta GO C0. |
 
 ## Estado Actual
 
@@ -50,31 +50,45 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "plan": "OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md",
   "manifest": null,
   "verification": null,
-  "bitacora_id": null,
-  "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md"
+  "bitacora_id": 1160,
+  "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
+  "wp010_corpus_collected": "2026-05-25",
+  "wp010_corpus_count": 16,
+  "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
+  "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
+  "pending": "Wave8 Plan re-run con DateStamp 20260525 — Antigravity ejecuta runner para verificar max_files > 0"
 }
 ```
 
 ## Handoff
 
-1. Wave8 esta en Plan/WP-010 con 0 candidatos; auditoria 2026-05-25 confirma que se requiere recolectar o exportar corpus textual seguro antes de reintentar Plan.
-2. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos y GO C0 explicito.
-3. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-4. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
-5. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+1. **WP-010 corpus COMPLETO** (2026-05-25): 16 archivos `.md` en `G:\Mi unidad\03_PROYECTOS\NEXUS\`. Ingest Reflex 0001 listo en `_meta/scripts/new_wp010_reflex_packet.ps1`. WP010_CORPUS_INBOX creado.
+2. **Siguiente accion para Antigravity**: ejecutar runner (Plan mode) con `DateStamp 20260525`. Si `max_files > 0`, solicitar GO C0 al Capitan para Mirror.
+3. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos Y GO C0 explicito.
+4. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+5. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
+6. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — pendiente actualizacion manual o via script; ThousandSunny RETOMAR.md ya actualizado (v2026-05-25).
+7. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
-Resultado saneado de auditoria:
+**Estado: COMPLETO** (2026-05-25, Nami/Claude Cowork, bitacora_id=1160)
 
-- candidatos elegibles actuales: 0
-- fuentes ya reflejadas detectadas: 227
-- bloqueo dominante: material Drive en formatos no ingeribles por el runner (`.gdoc`, imagenes, hojas, `.docx`)
-- accion requerida: exportar o crear 16-32 archivos seguros en `.md`, `.txt`, `.json` o formato textual permitido
-- no usar: clinica, personal, NEM, CAR, ISM, CLI, `NEMESIS_SISTEMA`, `Archivo_casos`
-- runner local endurecido para bloquear rutas sensibles, no solo nombres sensibles
-- primer arco reflejo definido: Antigravity produce output saneado -> `new_wp010_reflex_packet.ps1` -> `WP010_CORPUS_INBOX` -> Wave8 Plan
-- el reflejo no autoriza Mirror y no escribe paquetes sin `-Apply`
+Auditoria original:
+- candidatos elegibles: 0 (material Drive en .gdoc, imagenes, hojas no ingeribles)
+- fuentes ya reflejadas: 227
+
+Corpus recolectado (16 archivos en `G:\Mi unidad\03_PROYECTOS\NEXUS\`):
+- 14 exportaciones .md de Google Docs del proyecto NEXUS/Micelio Sunny (sutras, OKRs, arquitectura, Protocolo Deckard, Simbiosis, Agent Bridge, Blindaje Sofia, etc.)
+- 2 archivos nuevos: Sutra_Autonomia_Kognitiva, Arquitectura_Metatron_Principios
+- Todos con YAML frontmatter: `source_mutations: 0`, `wp010_batch: true`
+- Ningun archivo toca NEM/CAR/ISM/CLI
+- runner enduredido para bloquear rutas sensibles (Contains(), no solo nombres)
+
+Ingest Reflex 0001 listo:
+- Script: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
+- Staging inbox: `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\` (ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
+- Diseno: `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` en `_meta/manifiestos`
 
 ## Primer Arco Reflejo
 
@@ -115,7 +129,9 @@ Artefacto local no versionado:
 - `OBS-WAVE7-MIRROR-20260524.md`
 - `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
 - `OBS-WP010-CORPUS-AUDIT-20260525.md`
-- `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md`
-- `new_wp010_reflex_packet.ps1`
+- `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` (en `_meta/manifiestos`, ID Drive: `1CiLX25s-9gfLzM2JO_gWrinr4UGcR5Ct`)
+- `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)
+- `WP010_CORPUS_INBOX/` (carpeta, ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
+- 16 corpus .md en `03_PROYECTOS/NEXUS/` (prefijo `WP010_N2-ACT-NEX_`, todos text/plain)
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
