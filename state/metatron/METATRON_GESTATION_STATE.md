@@ -73,6 +73,28 @@ Resultado saneado de auditoria:
 - accion requerida: exportar o crear 16-32 archivos seguros en `.md`, `.txt`, `.json` o formato textual permitido
 - no usar: clinica, personal, NEM, CAR, ISM, CLI, `NEMESIS_SISTEMA`, `Archivo_casos`
 - runner local endurecido para bloquear rutas sensibles, no solo nombres sensibles
+- primer arco reflejo definido: Antigravity produce output saneado -> `new_wp010_reflex_packet.ps1` -> `WP010_CORPUS_INBOX` -> Wave8 Plan
+- el reflejo no autoriza Mirror y no escribe paquetes sin `-Apply`
+
+## Primer Arco Reflejo
+
+Estado: disenado y validado en dry-run.
+
+Funcion:
+
+1. Antigravity genera un aprendizaje, handoff, decision o output operativo saneado.
+2. El script local crea un paquete `.md` en `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX`.
+3. El runner normal puede ver ese paquete al reintentar Wave8 Plan.
+4. El Capitan revisa candidatos.
+5. Mirror sigue bloqueado hasta GO C0 explicito.
+
+Script local no versionado:
+
+- `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
+
+Artefacto local no versionado:
+
+- `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md`
 
 ## Protocolo De Cierre
 
@@ -93,5 +115,7 @@ Resultado saneado de auditoria:
 - `OBS-WAVE7-MIRROR-20260524.md`
 - `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
 - `OBS-WP010-CORPUS-AUDIT-20260525.md`
+- `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md`
+- `new_wp010_reflex_packet.ps1`
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
