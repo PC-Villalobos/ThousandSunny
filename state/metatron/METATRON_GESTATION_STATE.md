@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.3
+Version: 1.4
 Estado: ACT
-Ultima actualizacion: 2026-05-25
+Ultima actualizacion: 2026-05-24
 
 ## Proposito
 
@@ -15,6 +15,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 - P6, borrado, purga o sellado requieren GO C0 explicito.
 - Contenido clinico, personal, NEM, CAR, ISM y CLI queda fuera de automatizaciones.
 - Los artefactos completos de boveda permanecen locales; este repo conserva solo el resumen de coordinacion.
+- Los IDs de Bitacora se toman del historial GAS tras relectura; no se predicen ni se sustituyen por contador local.
 
 ## Capas De Gastrulacion
 
@@ -33,31 +34,44 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
-| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260525 | Plan | pendiente | 0 | 0 | Fase de recoleccion WP-010 iniciada. |
+| 8 | OBS-BATCH-0020-GESTATION-WAVE8-20260524 | Plan | pendiente | 0 | 0 | Fase de recoleccion WP-010 iniciada; Mirror bloqueado hasta nuevo corpus y GO C0. |
 
 ## Estado Actual
 
 ```json
 {
-  "last_batch_id": "OBS-BATCH-0020-GESTATION-WAVE8-20260525",
+  "last_batch_id": "OBS-BATCH-0020-GESTATION-WAVE8-20260524",
   "last_mode": "Plan",
   "current_wave": 8,
-  "next_wave": 9,
+  "next_wave": 8,
   "max_files": 0,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": "OBS-BATCH-0020-GESTATION-WAVE8-20260525.md",
-  "verification": "OBS-BATCH-0020-GESTATION-WAVE8-20260525-VERIFICACION.md",
-  "bitacora_id": 1154
+  "plan": "OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md",
+  "manifest": null,
+  "verification": null,
+  "bitacora_id": null
 }
 ```
 
 ## Handoff
 
-1. Wave8 en fase de planificacion y recoleccion (WP-010).
-2. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-3. Se requiere definir el alcance de la nueva oleada antes de ejecutar Mirror.
+1. Wave8 esta en Plan/WP-010 con 0 candidatos; se requiere recolectar corpus elegible antes de reintentar Plan.
+2. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos y GO C0 explicito.
+3. El sellado sigue separado por protocolo y requiere GO C0 explicito.
 4. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
+5. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+
+## Protocolo De Cierre
+
+1. Verificar estado real en `metatron_gestation_waves.state.json`.
+2. Verificar disco: plan/manifest/verification segun modo, notas fisicas y lock ausente.
+3. Confirmar `source_mutations=0`.
+4. Si hubo Mirror, actualizar `gastrulation_fate_map.md` y ejecutar el validador.
+5. Registrar evento en GAS con `log_cowork`.
+6. Releer Bitacora con `bitacora_desde` y copiar el ID real de la entrada confirmada.
+7. Actualizar `RETOMAR.md` y este resumen saneado.
+8. Commit/push solo de archivos del repo; no versionar artefactos locales de boveda.
 
 ## Referencias Locales No Versionadas
 
@@ -65,7 +79,6 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 - `OBS-BATCH-0019-GESTATION-WAVE7-20260524.md`
 - `OBS-BATCH-0019-GESTATION-WAVE7-20260524-VERIFICACION.md`
 - `OBS-WAVE7-MIRROR-20260524.md`
-- `OBS-BATCH-0020-GESTATION-WAVE8-20260525-PLAN.md`
-- `OBS-BATCH-0020-GESTATION-WAVE8-20260525.md`
+- `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
