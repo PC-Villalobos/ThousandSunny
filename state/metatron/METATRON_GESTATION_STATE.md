@@ -2,7 +2,7 @@
 
 Version: 2.1
 Estado: ACT
-Ultima actualizacion: 2026-05-25 (Wave8 Mirror / R80 membrane 01)
+Ultima actualizacion: 2026-05-25 (Wave8 Mirror / R80 N5 fascicle)
 
 ## Proposito
 
@@ -34,7 +34,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 5 | OBS-BATCH-0017-GESTATION-WAVE5-20260523 | Mirror | audited | 32 | 0 | Mapa de gastrulacion actualizado con 32 filas W5 y validador OK. |
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
-| 8 | OBS-BATCH-0021-GESTATION-WAVE8-20260525 | Mirror | cerrada | 16 | 0 | Mirror ejecutado con GO C0; mapa W8 validado 16/16; R80 activa primera membrana W8-14/F-CD++. |
+| 8 | OBS-BATCH-0021-GESTATION-WAVE8-20260525 | Mirror | cerrada | 16 | 0 | Mirror ejecutado con GO C0; mapa W8 validado 16/16; R80 activa primera membrana W8-14/F-CD++ y queda reclasificado semanticamente como N5-ACT-SYS. |
 
 ## Estado Actual
 
@@ -69,11 +69,16 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave8_membrane_face": "F-CD++",
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
+  "n5_fascicle_bitacora_id": 1179,
   "r80_faces_active": 1,
   "r80_faces_dormant": 23,
   "r80_receptivity_index": 0.0417,
+  "r80_semantic_level": "N5-ACT-SYS",
+  "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
+  "wave_close_requires_n5": true,
+  "n5_min_distinct_domains": 2,
   "activation_log": "WP010_activation_log.json",
-  "pending": "Preparar Wave9 Plan cuando haya corpus elegible; no sellar Wave8 sin GO C0 propio"
+  "pending": "Preparar Wave9 Plan cuando haya corpus elegible; cada cierre de wave debe incluir N5 interdominio; no sellar Wave8 sin GO C0 propio"
 }
 ```
 
@@ -83,10 +88,11 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 2. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
 3. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417` y `learned_resonance={}`.
 4. **Primera nota-membrana real**: W8-14 `Simbiosis Tripulacion Micelio` adherida a `F-CD++`; activacion registrada en `WP010_activation_log.json` (bitacora_id 1172).
-5. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-6. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
-7. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — pendiente actualizacion manual o via script; ThousandSunny RETOMAR.md ya actualizado (v2026-05-25).
-8. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+5. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
+6. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+7. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
+8. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-25).
+9. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
@@ -122,6 +128,9 @@ Primer chasis reticular:
 - teseracto: `vertices_total=16`, `edges_total=32`, `faces_total=24`, `cells_total=8`
 - estado actual: `faces_active=1`, `faces_dormant=23`, `receptivity_index=0.0417`, `learned_resonance={}`
 - primera membrana real: W8-14 en `F-CD++`
+- reclasificacion semantica: `N5-ACT-SYS`
+- primer fasciculo: `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` (bitacora_id 1179)
+- regla desde Wave9: cierre requiere al menos 1 nodo N5 con enlaces a 2 dominios distintos
 
 Reconciliacion Antigravity:
 - `_meta/blocks/tesseract_wave8.md` queda como propuesta no canonica; su `faces_active=4` original era prematuro sin notas-membrana
@@ -185,11 +194,13 @@ Artefacto local no versionado:
 - `OBS-WAVE8-PLAN-20260525.md`
 - `OBS-WAVE8-MEMBRANE-SELECTION-20260525.md`
 - `OBS-WAVE8-MIRROR-20260525.md`
+- `OBS-WAVE8-N5-FASCICLE-20260525.md`
 - `OBS-WP010-CORPUS-AUDIT-20260525.md`
 - `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` (en `_meta/manifiestos`, ID Drive: `1CiLX25s-9gfLzM2JO_gWrinr4UGcR5Ct`)
 - `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)
 - `WP010_CORPUS_INBOX/` (carpeta, ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
 - `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
+- `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md`
 - `N2-PEN-NEX - WP010 N2-ACT-NEX Simbiosis Tripulacion Micelio v1 - W8-14 - 20260525.md` (primera membrana R80)
 - `WP010_activation_log.json`
 - `_plantillas/membrane_note_template.md`

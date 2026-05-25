@@ -28,13 +28,14 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "sealed": false,
   "manifest": "OBS-BATCH-0021-GESTATION-WAVE8-20260525.md",
   "verification": "OBS-BATCH-0021-GESTATION-WAVE8-20260525-VERIFICACION.md",
-  "pending": "Wave8 Mirror cerrado con 16 notas y primera membrana real R80. Proximo paso: preparar Wave9 Plan sin sellar Wave8.",
+  "pending": "Wave8 Mirror cerrado con 16 notas, primera membrana real R80 y primer fasciculo N5. Proximo paso: preparar Wave9 Plan con requisito N5 sin sellar Wave8.",
   "bitacora_id": 1172,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
+  "n5_fascicle_bitacora_id": 1179,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
   "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
@@ -45,6 +46,10 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave8_mirror_closure": "OBS-WAVE8-MIRROR-20260525.md",
   "r80_faces_active": 1,
   "r80_receptivity_index": 0.0417,
+  "r80_semantic_level": "N5-ACT-SYS",
+  "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
+  "wave_close_requires_n5": true,
+  "n5_min_distinct_domains": 2,
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX"
@@ -64,6 +69,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 - P6, purga, borrado y sellado requieren GO C0 explicito.
 - `source_mutations` debe permanecer en 0.
 - NEM, CAR, ISM y CLI quedan fuera de automatizaciones.
+- Desde Wave9, cada cierre de wave debe verificar al menos 1 nodo `N5` con enlaces a 2 dominios distintos.
 - No versionar artefactos completos de `G:\...` ni `.gemini\...`.
 - No predecir IDs de Bitacora: registrar en GAS, releer `bitacora_desde` y anotar el ID real. Si no se puede confirmar, usar `bitacora_id: null`.
 
@@ -86,11 +92,13 @@ Mirror ejecutado con GO C0: `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md`, 16 not
 
 Primer chasis reticular creado en Obsidian: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163). Es un teseracto con `faces_total=24`, `faces_active=1`, `faces_dormant=23`, `receptivity_index=0.0417` y `learned_resonance={}`. Primera membrana real: W8-14 `Simbiosis Tripulacion Micelio` adherida a `F-CD++` y registrada en `WP010_activation_log.json`.
 
+R80 queda reclasificado semanticamente como `N5-ACT-SYS` sin renombrar archivo tras el incidente de sync. Primer fasciculo de asociacion: `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` (bitacora_id 1179). Integra NEX/SIS, no activa caras nuevas y mantiene `faces_active=1`.
+
 Antigravity creo una propuesta rapida en `_meta/blocks/tesseract_wave8.md` con `faces_active=4`; queda como propuesta no canonica y supersedida por R80. El valor `4` se conserva como `resonance_hypothesis.predicted_faces_active` (bitacora_id 1167), sin efecto sobre `receptivity_index` hasta estimulo verificable. Plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165). No crear activation log ni notas-membrana hasta Mirror/estimulo real.
 
 Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio`, cara `F-CD++` (`memoria_micelio + accion_refleja`), bitacora_id 1169. Ejecutado tras GO C0 y Mirror: activation log creado, R80 actualizado a `faces_active=1`.
 
-**Proximo paso**: preparar Wave9 Plan cuando exista corpus elegible. No sellar Wave8 sin GO C0 propio.
+**Proximo paso**: preparar Wave9 Plan cuando exista corpus elegible. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
 
 ## Cierre De Wave
 
