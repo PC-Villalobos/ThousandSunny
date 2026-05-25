@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.8
+Version: 1.9
 Estado: ACT
-Ultima actualizacion: 2026-05-25 (Wave8 reef chassis)
+Ultima actualizacion: 2026-05-25 (Wave8 membrane template)
 
 ## Proposito
 
@@ -59,6 +59,8 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
   "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
   "reef_chassis_bitacora_id": 1163,
+  "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
+  "membrane_template_bitacora_id": 1165,
   "pending": "Revisar Wave8 Plan 20260525 y solicitar GO C0 explicito antes de Mirror"
 }
 ```
@@ -101,6 +103,11 @@ Primer chasis reticular:
 - teseracto: `vertices_total=16`, `edges_total=32`, `faces_total=24`, `cells_total=8`
 - estado inicial: `faces_active=0`, `faces_dormant=24`, `receptivity_index=0.00`, `learned_resonance={}`
 - notas-membrana pendientes de Mirror autorizado
+
+Reconciliacion Antigravity:
+- `_meta/blocks/tesseract_wave8.md` queda como propuesta no canonica; su `faces_active=4` original era prematuro sin notas-membrana
+- plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165)
+- no crear activation log ni notas-membrana hasta Mirror/estimulo real
 
 Ingest Reflex 0001 listo:
 - Script: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
@@ -152,6 +159,8 @@ Artefacto local no versionado:
 - `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)
 - `WP010_CORPUS_INBOX/` (carpeta, ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
 - `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
+- `_plantillas/membrane_note_template.md`
+- `_meta/blocks/tesseract_wave8.md` (propuesta no canonica)
 - 16 corpus .md en `03_PROYECTOS/NEXUS/` (prefijo `WP010_N2-ACT-NEX_`, todos text/plain)
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
