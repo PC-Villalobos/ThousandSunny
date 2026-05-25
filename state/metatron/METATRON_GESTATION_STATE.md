@@ -61,6 +61,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "reef_chassis_bitacora_id": 1163,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "membrane_template_bitacora_id": 1165,
+  "resonance_hypothesis_bitacora_id": 1167,
   "pending": "Revisar Wave8 Plan 20260525 y solicitar GO C0 explicito antes de Mirror"
 }
 ```
@@ -106,6 +107,7 @@ Primer chasis reticular:
 
 Reconciliacion Antigravity:
 - `_meta/blocks/tesseract_wave8.md` queda como propuesta no canonica; su `faces_active=4` original era prematuro sin notas-membrana
+- el valor `4` queda preservado como `resonance_hypothesis.predicted_faces_active` (bitacora_id 1167), sin efecto metrico hasta estimulo verificable
 - plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165)
 - no crear activation log ni notas-membrana hasta Mirror/estimulo real
 

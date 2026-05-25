@@ -31,6 +31,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "bitacora_id": 1161,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
+  "resonance_hypothesis_bitacora_id": 1167,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
   "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
@@ -74,7 +75,7 @@ Plan re-run ejecutado con DateStamp `20260525`: `OBS-BATCH-0021-GESTATION-WAVE8-
 
 Primer chasis reticular creado en Obsidian: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163). Es un teseracto con `faces_total=24`, `faces_active=0`, `receptivity_index=0.00` y `learned_resonance={}`. Las notas-membrana se adhieren solo despues de Mirror autorizado.
 
-Antigravity creo una propuesta rapida en `_meta/blocks/tesseract_wave8.md` con `faces_active=4`; queda como propuesta no canonica y supersedida por R80. Plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165). No crear activation log ni notas-membrana hasta Mirror/estimulo real.
+Antigravity creo una propuesta rapida en `_meta/blocks/tesseract_wave8.md` con `faces_active=4`; queda como propuesta no canonica y supersedida por R80. El valor `4` se conserva como `resonance_hypothesis.predicted_faces_active` (bitacora_id 1167), sin efecto sobre `receptivity_index` hasta estimulo verificable. Plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165). No crear activation log ni notas-membrana hasta Mirror/estimulo real.
 
 **Proximo paso**: revisar los 16 candidatos del Plan. Si el Capitan aprueba, solicitar GO C0 explicito para Mirror.
 
