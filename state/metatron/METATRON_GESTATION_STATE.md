@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.7
+Version: 1.8
 Estado: ACT
-Ultima actualizacion: 2026-05-25 (Wave8 Plan ready)
+Ultima actualizacion: 2026-05-25 (Wave8 reef chassis)
 
 ## Proposito
 
@@ -57,6 +57,8 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wp010_plan_candidates": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
+  "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
+  "reef_chassis_bitacora_id": 1163,
   "pending": "Revisar Wave8 Plan 20260525 y solicitar GO C0 explicito antes de Mirror"
 }
 ```
@@ -64,12 +66,13 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 ## Handoff
 
 1. **Wave8 Plan READY** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md` tiene 16 candidatos, `source_mutations=0`, `manifest=null`, `verification=null`.
-2. **Siguiente accion para Antigravity**: revisar candidatos y solicitar GO C0 explicito al Capitan antes de Mirror.
-3. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos Y GO C0 explicito.
-4. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-5. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
-6. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — pendiente actualizacion manual o via script; ThousandSunny RETOMAR.md ya actualizado (v2026-05-25).
-7. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+2. **Primer chasis reticular**: creado `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) como teseracto de soporte con `faces_total=24`, `faces_active=0`, `receptivity_index=0.00` y `learned_resonance={}`.
+3. **Siguiente accion para Antigravity**: revisar candidatos y solicitar GO C0 explicito al Capitan antes de Mirror.
+4. Mirror de Wave8 queda bloqueado hasta nuevo Plan con candidatos Y GO C0 explicito.
+5. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+6. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
+7. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — pendiente actualizacion manual o via script; ThousandSunny RETOMAR.md ya actualizado (v2026-05-25).
+8. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
@@ -91,6 +94,13 @@ Plan re-run:
 - 16 candidatos planificados: 15 archivos WP-010 detectados por runner + 1 paquete saneado en `WP010_CORPUS_INBOX`
 - `source_mutations=0`, `created_notes=0`, `manifest=null`, `verification=null`
 - un archivo recolectado quedo fuera por guardia fija de nombre/ruta; filtros sin cambios
+
+Primer chasis reticular:
+- `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
+- bitacora_id: 1163
+- teseracto: `vertices_total=16`, `edges_total=32`, `faces_total=24`, `cells_total=8`
+- estado inicial: `faces_active=0`, `faces_dormant=24`, `receptivity_index=0.00`, `learned_resonance={}`
+- notas-membrana pendientes de Mirror autorizado
 
 Ingest Reflex 0001 listo:
 - Script: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
@@ -141,6 +151,7 @@ Artefacto local no versionado:
 - `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` (en `_meta/manifiestos`, ID Drive: `1CiLX25s-9gfLzM2JO_gWrinr4UGcR5Ct`)
 - `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)
 - `WP010_CORPUS_INBOX/` (carpeta, ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
+- `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
 - 16 corpus .md en `03_PROYECTOS/NEXUS/` (prefijo `WP010_N2-ACT-NEX_`, todos text/plain)
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`

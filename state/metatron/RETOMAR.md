@@ -29,8 +29,10 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "verification": null,
   "pending": "Wave8 Plan re-run cerrado con DateStamp 20260525: 16 candidatos, source_mutations=0, manifest=null, verification=null. Revisar plan y pedir GO C0 antes de Mirror.",
   "bitacora_id": 1161,
+  "reef_chassis_bitacora_id": 1163,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
+  "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX"
@@ -67,6 +69,8 @@ Ingest Reflex 0001 listo en `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp01
 Staging inbox listo en `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\`.
 
 Plan re-run ejecutado con DateStamp `20260525`: `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md`, 16 candidatos, `source_mutations=0`, `manifest=null`, `verification=null`. Un paquete adicional saneado fue creado por el arco reflejo en `WP010_CORPUS_INBOX` para cubrir el minimo operativo sin relajar filtros.
+
+Primer chasis reticular creado en Obsidian: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163). Es un teseracto con `faces_total=24`, `faces_active=0`, `receptivity_index=0.00` y `learned_resonance={}`. Las notas-membrana se adhieren solo despues de Mirror autorizado.
 
 **Proximo paso**: revisar los 16 candidatos del Plan. Si el Capitan aprueba, solicitar GO C0 explicito para Mirror.
 
