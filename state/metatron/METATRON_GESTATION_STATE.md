@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 1.9
+Version: 2.0
 Estado: ACT
-Ultima actualizacion: 2026-05-25 (Wave8 membrane template)
+Ultima actualizacion: 2026-05-25 (Wave8 membrane selection)
 
 ## Proposito
 
@@ -62,6 +62,10 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
+  "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
+  "wave8_membrane_candidate": "W8-14",
+  "wave8_membrane_face": "F-CD++",
+  "wave8_membrane_selection_bitacora_id": 1169,
   "pending": "Revisar Wave8 Plan 20260525 y solicitar GO C0 explicito antes de Mirror"
 }
 ```
@@ -111,6 +115,13 @@ Reconciliacion Antigravity:
 - plantilla segura creada: `G:\Mi unidad\00_BOVEDA_NEXUS\_plantillas\membrane_note_template.md` (bitacora_id 1165)
 - no crear activation log ni notas-membrana hasta Mirror/estimulo real
 
+Seleccion propuesta de primera membrana:
+- `W8-14 Simbiosis Tripulacion Micelio`
+- cara candidata: `F-CD++` (`memoria_micelio + accion_refleja`)
+- bitacora_id: 1169
+- manifiesto local: `OBS-WAVE8-MEMBRANE-SELECTION-20260525.md`
+- sin GO C0, sin Mirror, sin activation log, sin cambio de `faces_active`
+
 Ingest Reflex 0001 listo:
 - Script: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\scripts\new_wp010_reflex_packet.ps1`
 - Staging inbox: `G:\Mi unidad\03_PROYECTOS\NEXUS\WP010_CORPUS_INBOX\` (ID Drive: `1m5nxtZoK9b1eym_VHHwoZndspDT5glyn`)
@@ -156,6 +167,7 @@ Artefacto local no versionado:
 - `OBS-BATCH-0020-GESTATION-WAVE8-20260524-PLAN.md`
 - `OBS-BATCH-0021-GESTATION-WAVE8-20260525-PLAN.md`
 - `OBS-WAVE8-PLAN-20260525.md`
+- `OBS-WAVE8-MEMBRANE-SELECTION-20260525.md`
 - `OBS-WP010-CORPUS-AUDIT-20260525.md`
 - `OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md` (en `_meta/manifiestos`, ID Drive: `1CiLX25s-9gfLzM2JO_gWrinr4UGcR5Ct`)
 - `new_wp010_reflex_packet.ps1` (en `_meta/scripts`, ID Drive: `1hEJY_5zNRZej8CDyd-DZx1Vmx3uVS5_I`)
