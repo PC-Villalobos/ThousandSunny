@@ -16,25 +16,26 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ```json
 {
-  "current_wave": 8,
+  "current_wave": 9,
   "next_wave": 9,
-  "last_mode": "Mirror",
-  "last_batch_id": "OBS-BATCH-0021-GESTATION-WAVE8-20260525",
+  "last_mode": "Plan",
+  "last_batch_id": "OBS-BATCH-0022-GESTATION-WAVE9-20260527",
   "max_files": 32,
-  "candidate_notes": 16,
+  "candidate_notes": 0,
   "mirrored_notes": 16,
   "total_notes_materialized": 213,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": "OBS-BATCH-0021-GESTATION-WAVE8-20260525.md",
-  "verification": "OBS-BATCH-0021-GESTATION-WAVE8-20260525-VERIFICACION.md",
-  "pending": "Wave8 Mirror cerrado con 16 notas, primera membrana real R80 y primer fasciculo N5. Proximo paso: preparar Wave9 Plan con requisito N5 sin sellar Wave8.",
-  "bitacora_id": 1172,
+  "manifest": null,
+  "verification": null,
+  "pending": "Wave9 Plan ejecutado con 0 candidatos elegibles. No Mirror. Proximo paso: alimentar WP010/Antigravity exports con corpus no sensible y reejecutar Wave9 Plan.",
+  "bitacora_id": 1284,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
+  "wave9_plan_blocked_bitacora_id": 1284,
   "n5_fascicle_bitacora_id": 1179,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
@@ -98,7 +99,9 @@ Antigravity creo una propuesta rapida en `_meta/blocks/tesseract_wave8.md` con `
 
 Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio`, cara `F-CD++` (`memoria_micelio + accion_refleja`), bitacora_id 1169. Ejecutado tras GO C0 y Mirror: activation log creado, R80 actualizado a `faces_active=1`.
 
-**Proximo paso**: preparar Wave9 Plan cuando exista corpus elegible. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
+**Wave9 Plan**: ejecutado el 2026-05-27 como `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` con `candidate_notes=0`, `source_mutations=0`, sin Mirror, sin manifest/verification y sin nuevas activaciones R80 (bitacora_id 1284).
+
+**Proximo paso**: alimentar WP010/Antigravity exports con corpus no sensible y reejecutar Wave9 Plan. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
 
 ## Cierre De Wave
 
