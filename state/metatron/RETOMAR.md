@@ -28,8 +28,8 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "sealed": false,
   "manifest": null,
   "verification": null,
-  "pending": "Wave9 Plan reejecutado con 8 candidatos desde corpus de conversacion. No Mirror. Proximo paso: revisar Plan y pedir GO C0 si se autoriza materializacion.",
-  "bitacora_id": 1285,
+  "pending": "Wave9 candidatos revisados. No GO C0 directo. Proximo paso: GO C0 condicionado si el Capitan autoriza Mirror normal de 8 notas y adhesion posterior de W9-06 a R80/F-CD++ tras manifest+verification.",
+  "bitacora_id": 1287,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
@@ -37,6 +37,10 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave8_mirror_bitacora_id": 1172,
   "wave9_plan_blocked_bitacora_id": 1284,
   "wave9_plan_ready_bitacora_id": 1285,
+  "wave9_candidate_review": "OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md",
+  "wave9_candidate_review_bitacora_id": 1287,
+  "wave9_recommended_membrane_candidate": "W9-06",
+  "wave9_recommended_membrane_face": "F-CD++",
   "n5_fascicle_bitacora_id": 1179,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
@@ -102,7 +106,9 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave9 Plan**: reejecutado el 2026-05-27 como `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` con `candidate_notes=8`, `source_mutations=0`, sin Mirror, sin manifest/verification y sin nuevas activaciones R80 (bitacora_id 1285). El bloqueo previo con 0 candidatos queda supersedado por `OBS-WAVE9-PLAN-READY-20260527.md`.
 
-**Proximo paso**: revisar los 8 candidatos y pedir GO C0 si se autoriza materializacion. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
+**Revision membrana Wave9**: `OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md` (bitacora_id 1287) recomienda no dar GO C0 directo. Si el Capitan autoriza, el GO C0 correcto es condicionado: Mirror normal de los 8 candidatos y adhesion posterior de `W9-06 REEF_GROWTH_ARCHITECTURE` a R80/F-CD++ solo despues de manifest+verification. `W9-02 GLOMERULATION_THRESHOLD_MODEL` queda como nota estandar/reserva para evitar glomerulacion circular.
+
+**Proximo paso**: pedir GO C0 condicionado si se autoriza materializacion y adhesion selectiva. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
 
 ## Cierre De Wave
 

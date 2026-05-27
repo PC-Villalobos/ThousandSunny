@@ -2,7 +2,7 @@
 
 Version: 2.1
 Estado: ACT
-Ultima actualizacion: 2026-05-27 (Wave9 Plan ready / conversation corpus)
+Ultima actualizacion: 2026-05-27 (Wave9 membrane review / conditional GO C0)
 
 ## Proposito
 
@@ -51,7 +51,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "plan": "OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md",
   "manifest": null,
   "verification": null,
-  "bitacora_id": 1285,
+  "bitacora_id": 1287,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
@@ -61,6 +61,10 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave9_plan_blocked_bitacora_id": 1284,
   "wave9_plan_ready": "OBS-WAVE9-PLAN-READY-20260527.md",
   "wave9_plan_ready_bitacora_id": 1285,
+  "wave9_candidate_review": "OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md",
+  "wave9_candidate_review_bitacora_id": 1287,
+  "wave9_recommended_membrane_candidate": "W9-06",
+  "wave9_recommended_membrane_face": "F-CD++",
   "wp010_mirrored_notes": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
@@ -84,22 +88,23 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave_close_requires_n5": true,
   "n5_min_distinct_domains": 2,
   "activation_log": "WP010_activation_log.json",
-  "pending": "Revisar los 8 candidatos Wave9; no Mirror hasta GO C0"
+  "pending": "No GO C0 directo; pedir GO C0 condicionado para Mirror de 8 notas y adhesion posterior de W9-06 a R80/F-CD++ tras manifest+verification"
 }
 ```
 
 ## Handoff
 
-1. **Wave9 Plan listo** (2026-05-27, bitacora_id=1285): la placenta fue alimentada con 8 paquetes limpios desde conversacion arquitectural; `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` contiene 8 candidatos. No hay Mirror, manifest, verification ni nuevas activaciones.
-2. **Wave8 Mirror cerrado** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md` materializo 16 notas con `source_mutations=0`, verification `mirror_pass`, lock ausente y `next_wave=9`.
-3. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
-4. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417` y `learned_resonance={}`.
-5. **Primera nota-membrana real**: W8-14 `Simbiosis Tripulacion Micelio` adherida a `F-CD++`; activacion registrada en `WP010_activation_log.json` (bitacora_id 1172).
-6. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
-7. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-8. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
-9. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-27).
-10. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+1. **Wave9 review listo** (2026-05-27, bitacora_id=1287): `OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md` recomienda no dar GO C0 directo. Si el Capitan autoriza, el GO C0 correcto es condicionado: Mirror normal de 8 candidatos y adhesion posterior de `W9-06 REEF_GROWTH_ARCHITECTURE` a R80/F-CD++ tras manifest+verification.
+2. **Wave9 Plan listo** (2026-05-27, bitacora_id=1285): la placenta fue alimentada con 8 paquetes limpios desde conversacion arquitectural; `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` contiene 8 candidatos. No hay Mirror, manifest, verification ni nuevas activaciones.
+3. **Wave8 Mirror cerrado** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md` materializo 16 notas con `source_mutations=0`, verification `mirror_pass`, lock ausente y `next_wave=9`.
+4. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
+5. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417` y `learned_resonance={}`.
+6. **Primera nota-membrana real**: W8-14 `Simbiosis Tripulacion Micelio` adherida a `F-CD++`; activacion registrada en `WP010_activation_log.json` (bitacora_id 1172).
+7. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
+8. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+9. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
+10. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-27).
+11. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
