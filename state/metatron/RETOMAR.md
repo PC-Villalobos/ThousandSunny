@@ -21,21 +21,22 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "last_mode": "Plan",
   "last_batch_id": "OBS-BATCH-0022-GESTATION-WAVE9-20260527",
   "max_files": 32,
-  "candidate_notes": 0,
+  "candidate_notes": 8,
   "mirrored_notes": 16,
   "total_notes_materialized": 213,
   "source_mutations": 0,
   "sealed": false,
   "manifest": null,
   "verification": null,
-  "pending": "Wave9 Plan ejecutado con 0 candidatos elegibles. No Mirror. Proximo paso: alimentar WP010/Antigravity exports con corpus no sensible y reejecutar Wave9 Plan.",
-  "bitacora_id": 1284,
+  "pending": "Wave9 Plan reejecutado con 8 candidatos desde corpus de conversacion. No Mirror. Proximo paso: revisar Plan y pedir GO C0 si se autoriza materializacion.",
+  "bitacora_id": 1285,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
   "wave9_plan_blocked_bitacora_id": 1284,
+  "wave9_plan_ready_bitacora_id": 1285,
   "n5_fascicle_bitacora_id": 1179,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
@@ -99,9 +100,9 @@ Antigravity creo una propuesta rapida en `_meta/blocks/tesseract_wave8.md` con `
 
 Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio`, cara `F-CD++` (`memoria_micelio + accion_refleja`), bitacora_id 1169. Ejecutado tras GO C0 y Mirror: activation log creado, R80 actualizado a `faces_active=1`.
 
-**Wave9 Plan**: ejecutado el 2026-05-27 como `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` con `candidate_notes=0`, `source_mutations=0`, sin Mirror, sin manifest/verification y sin nuevas activaciones R80 (bitacora_id 1284).
+**Wave9 Plan**: reejecutado el 2026-05-27 como `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` con `candidate_notes=8`, `source_mutations=0`, sin Mirror, sin manifest/verification y sin nuevas activaciones R80 (bitacora_id 1285). El bloqueo previo con 0 candidatos queda supersedado por `OBS-WAVE9-PLAN-READY-20260527.md`.
 
-**Proximo paso**: alimentar WP010/Antigravity exports con corpus no sensible y reejecutar Wave9 Plan. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
+**Proximo paso**: revisar los 8 candidatos y pedir GO C0 si se autoriza materializacion. No sellar Wave8 sin GO C0 propio. El cierre Wave9 debe incluir al menos un nodo N5 con enlaces a dos dominios distintos.
 
 ## Cierre De Wave
 

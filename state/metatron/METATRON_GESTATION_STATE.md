@@ -2,7 +2,7 @@
 
 Version: 2.1
 Estado: ACT
-Ultima actualizacion: 2026-05-27 (Wave9 Plan blocked / R80 first beat preserved)
+Ultima actualizacion: 2026-05-27 (Wave9 Plan ready / conversation corpus)
 
 ## Proposito
 
@@ -35,7 +35,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 6 | OBS-BATCH-0018-GESTATION-WAVE6-20260523 | Mirror | cerrada | 32 | 0 | Mirror ejecutado con GO C0; mapa de gastrulacion W6 validado 32/32. |
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
 | 8 | OBS-BATCH-0021-GESTATION-WAVE8-20260525 | Mirror | cerrada | 16 | 0 | Mirror ejecutado con GO C0; mapa W8 validado 16/16; R80 activa primera membrana W8-14/F-CD++ y queda reclasificado semanticamente como N5-ACT-SYS. |
-| 9 | OBS-BATCH-0022-GESTATION-WAVE9-20260527 | Plan | blocked | 0 | 0 | Plan ejecutado; no hay corpus elegible nuevo. Sin Mirror, sin manifest/verification y sin nuevas activaciones R80. |
+| 9 | OBS-BATCH-0022-GESTATION-WAVE9-20260527 | Plan | ready | 8 | 0 | Placenta alimentada con 8 paquetes de conversacion; Plan listo. Sin Mirror, sin manifest/verification y sin nuevas activaciones R80. |
 
 ## Estado Actual
 
@@ -51,14 +51,16 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "plan": "OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md",
   "manifest": null,
   "verification": null,
-  "bitacora_id": 1284,
+  "bitacora_id": 1285,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
   "wp010_plan_candidates": 16,
-  "wave9_plan_candidates": 0,
+  "wave9_plan_candidates": 8,
   "wave9_plan_blocked": "OBS-WAVE9-PLAN-BLOCKED-20260527.md",
   "wave9_plan_blocked_bitacora_id": 1284,
+  "wave9_plan_ready": "OBS-WAVE9-PLAN-READY-20260527.md",
+  "wave9_plan_ready_bitacora_id": 1285,
   "wp010_mirrored_notes": 16,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
@@ -82,13 +84,13 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave_close_requires_n5": true,
   "n5_min_distinct_domains": 2,
   "activation_log": "WP010_activation_log.json",
-  "pending": "Alimentar WP010/Antigravity exports con corpus no sensible y reejecutar Wave9 Plan; no Mirror hasta candidatos >0 y GO C0"
+  "pending": "Revisar los 8 candidatos Wave9; no Mirror hasta GO C0"
 }
 ```
 
 ## Handoff
 
-1. **Wave9 Plan bloqueado** (2026-05-27, bitacora_id=1284): `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` devolvio 0 candidatos elegibles. No hay Mirror, manifest, verification ni nuevas activaciones.
+1. **Wave9 Plan listo** (2026-05-27, bitacora_id=1285): la placenta fue alimentada con 8 paquetes limpios desde conversacion arquitectural; `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` contiene 8 candidatos. No hay Mirror, manifest, verification ni nuevas activaciones.
 2. **Wave8 Mirror cerrado** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md` materializo 16 notas con `source_mutations=0`, verification `mirror_pass`, lock ausente y `next_wave=9`.
 3. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
 4. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417` y `learned_resonance={}`.
