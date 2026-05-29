@@ -50,6 +50,8 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
   "first_membrane_note": "N2-PEN-NEX - WP010 N2-ACT-NEX Simbiosis Tripulacion Micelio v1 - W8-14 - 20260525.md",
   "activation_log": "[N1-PEN-NEX] WP010_activation_log.json",
+  "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
+  "reef_growth_architecture_bitacora_id": null,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
   "wave8_mirror_closure": "OBS-WAVE8-MIRROR-20260525.md",
@@ -73,6 +75,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 1. Estado vivo local: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\config\[N1-PEN-NEX] metatron_gestation_waves.state.json`
 2. Resumen saneado versionado: `state/metatron/METATRON_GESTATION_STATE.md`
 3. Mapa de tejidos local: `G:\Mi unidad\00_BOVEDA_NEXUS\_meta\manifiestos\gastrulation_fate_map.md`
+4. Arquitectura reticular versionada: `state/metatron/REEF_GROWTH_ARCHITECTURE.md`
 
 ## Reglas
 
@@ -129,4 +132,4 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-25 por Usopp/Codex.
+Ultima actualizacion: 2026-05-29 por Nami (Claude Code) -- enlace a arquitectura reticular versionada sobre estado Wave9 de Usopp/Codex.
