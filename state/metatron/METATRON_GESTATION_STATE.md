@@ -94,6 +94,8 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave_close_requires_n5": true,
   "n5_min_distinct_domains": 2,
   "activation_log": "[N1-PEN-NEX] WP010_activation_log.json",
+  "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
+  "reef_growth_architecture_bitacora_id": null,
   "pending": "Wave10 Plan; objetivo natural: tercera nota coherente con F-CD++ para primer glomerulo. No sellar ni ejecutar plasticidad sin GO C0 propio."
 }
 ```
