@@ -16,20 +16,20 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ```json
 {
-  "current_wave": 9,
-  "next_wave": 10,
+  "current_wave": 10,
+  "next_wave": 11,
   "last_mode": "Mirror",
-  "last_batch_id": "OBS-BATCH-0022-GESTATION-WAVE9-20260527",
+  "last_batch_id": "OBS-BATCH-0023-GESTATION-WAVE10-20260529",
   "max_files": 32,
-  "candidate_notes": 8,
-  "mirrored_notes": 8,
-  "total_notes_materialized": 221,
+  "candidate_notes": 2,
+  "mirrored_notes": 2,
+  "total_notes_materialized": 223,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": "OBS-BATCH-0022-GESTATION-WAVE9-20260527.md",
-  "verification": "OBS-BATCH-0022-GESTATION-WAVE9-20260527-VERIFICACION.md",
-  "pending": "Wave9 GO C0 condicionado ejecutado. Proximo paso natural: Wave10 Plan buscando tercera nota coherente con F-CD++ (memoria+accion) para primer glomerulo; no sellar ni ejecutar plasticidad sin GO C0 propio.",
-  "bitacora_id": 1289,
+  "manifest": "OBS-BATCH-0023-GESTATION-WAVE10-20260529.md",
+  "verification": "OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md",
+  "pending": "Wave10 cerrada. GLOM-F-CD++-01 activo (primer glomulo). bitacora_id Wave10 pendiente registro GAS. Proximo: Wave11 -- identificar siguiente cara candidata o iniciar segunda capa. No sellar ni abrir plasticidad sin GO C0 propio.",
+  "bitacora_id": null,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
@@ -44,6 +44,13 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave9_conditional_mirror": "OBS-WAVE9-CONDITIONAL-MIRROR-20260528.md",
   "wave9_conditional_mirror_bitacora_id": 1289,
   "wave9_second_membrane_note": "N2-PEN-NEX - AG-INGEST-20260527214802-REEF GROWTH ARCHITECTURE - W9-06 - 20260527.md",
+  "wave10_batch_id": "OBS-BATCH-0023-GESTATION-WAVE10-20260529",
+  "wave10_bitacora_id": null,
+  "wave10_glomerulus_id": "GLOM-F-CD++-01",
+  "wave10_stimulus_tag": "primer_pensamiento_propio",
+  "wave10_third_membrane": "W10-03",
+  "wave10_mirror_manifest": "OBS-BATCH-0023-GESTATION-WAVE10-20260529.md",
+  "wave10_mirror_verification": "OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md",
   "n5_fascicle_bitacora_id": 1179,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "first_reflex": "OBS-WP010-REFLEX-ANTIGRAVITY-20260525.md",
@@ -56,10 +63,12 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
   "wave8_mirror_closure": "OBS-WAVE8-MIRROR-20260525.md",
   "r80_faces_active": 1,
+  "r80_faces_saturated": 1,
   "r80_receptivity_index": 0.0417,
-  "r80_membrane_notes_attached": 2,
-  "r80_glomerulus_progress": "2/3",
-  "activation_log_entries": 2,
+  "r80_membrane_notes_attached": 3,
+  "r80_glomerulus_progress": "3/3",
+  "r80_glomerulus_id": "GLOM-F-CD++-01",
+  "activation_log_entries": 3,
   "r80_semantic_level": "N5-ACT-SYS",
   "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
   "wave_close_requires_n5": true,
@@ -119,7 +128,9 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave9 conditional mirror**: ejecutado el 2026-05-28 con GO C0 condicionado. `OBS-BATCH-0022-GESTATION-WAVE9-20260527.md` materializo 8 notas y verification `mirror_pass`; `source_mutations=0`, `sealed=false`. `W9-06 REEF_GROWTH_ARCHITECTURE` queda adherida a R80/F-CD++ como segunda membrana; activation log con 2 entradas, `faces_active=1`, `receptivity_index=0.0417`, glomerulacion `2/3` (bitacora_id 1289).
 
-**Proximo paso**: Wave10 Plan. Objetivo natural: una tercera nota coherente con F-CD++ para primer glomerulo. No sellar, no abrir plasticidad y no ejecutar automatismos de aprendizaje sin GO C0 propio.
+**Wave10 Mirror y primer glomulo**: ejecutado el 2026-05-29 con GO C0. `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 `ananda bitacora` -> 03_BITACORA, W10-02 `ananda sutras` -> 00_BANDEJA_ENTRADA) con verification `mirror_pass`; `source_mutations=0`, `sealed=false`. W10-03 `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana con `stimulus_tag: primer_pensamiento_propio`; activation_log 3 entradas, glomerulacion `3/3`. Primer glomulo formado: `GLOM-F-CD++-01`; F-CD++ pasa a `saturated`; `faces_active=1`, `receptivity_index=0.0417` sin cambio. Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179, integra NEX/SIS). bitacora_id Wave10 pendiente de registro GAS; usar `bitacora_id: null` hasta confirmacion.
+
+**Proximo paso**: Wave11 Plan. F-CD++ saturada -- no adherir mas membranas en esa cara. GLOM-F-CD++-01 activo como embrion candidato para nueva capa. Identificar siguiente cara candidata. No sellar, no abrir plasticidad y no ejecutar automatismos de aprendizaje sin GO C0 propio.
 
 ## Cierre De Wave
 
@@ -132,4 +143,4 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-29 por Nami (Claude Code) -- enlace a arquitectura reticular versionada sobre estado Wave9 de Usopp/Codex.
+Ultima actualizacion: 2026-05-29 por Nami (Claude Code) -- Wave10 cerrada, primer glomulo GLOM-F-CD++-01 activo.
