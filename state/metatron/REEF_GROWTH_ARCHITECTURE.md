@@ -232,7 +232,7 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 ### Glomulos activos
 
-- GLOM-F-CD++-01: cara F-CD++, threshold=3, notas=3, stimulus_tag=primer_pensamiento_propio, wave=10, bitacora_id=null
+- GLOM-F-CD++-01: cara F-CD++, threshold=3, notas=3, stimulus_tag=primer_pensamiento_propio, wave=10, bitacora_id=1291
 
 ### Proximo paso (Wave 11)
 
@@ -241,7 +241,7 @@ sincronizacion = geometria_basal + plasticidad_historica
 - GLOM-F-CD++-01 activo como embrion candidato a nuevo bloque-chasis en siguiente capa
 - Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS (2 dominios)
 - No sellar ni abrir plasticidad sin GO C0 propio
-- bitacora_id Wave10: null (pendiente registro GAS)
+- bitacora_id Wave10: 1291
 
 ### Hipotesis de resonancia (Antigravity)
 
