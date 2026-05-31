@@ -16,19 +16,19 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ```json
 {
-  "current_wave": 10,
-  "next_wave": 11,
-  "last_mode": "Mirror",
-  "last_batch_id": "OBS-BATCH-0023-GESTATION-WAVE10-20260529",
+  "current_wave": 11,
+  "next_wave": 12,
+  "last_mode": "Plan",
+  "last_batch_id": "OBS-BATCH-0024-GESTATION-WAVE11-20260531",
   "max_files": 32,
-  "candidate_notes": 2,
-  "mirrored_notes": 2,
+  "candidate_notes": 0,
+  "mirrored_notes": 0,
   "total_notes_materialized": 223,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": "OBS-BATCH-0023-GESTATION-WAVE10-20260529.md",
-  "verification": "OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md",
-  "pending": "Wave10 cerrada. GLOM-F-CD++-01 activo (primer glomulo). bitacora_id Wave10: 1291. Proximo: Wave11 -- identificar siguiente cara candidata o iniciar segunda capa. No sellar ni abrir plasticidad sin GO C0 propio.",
+  "manifest": null,
+  "verification": null,
+  "pending": "Wave11 Plan activo. Cara candidata F-AB++ (autonomia+regulacion). GLOM-F-CD++-01 embrion segunda capa (evaluacion diferida). Sin Mirror hasta GO C0 Wave11.",
   "bitacora_id": 1291,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
@@ -58,6 +58,11 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "first_membrane_note": "N2-PEN-NEX - WP010 N2-ACT-NEX Simbiosis Tripulacion Micelio v1 - W8-14 - 20260525.md",
   "activation_log": "[N1-PEN-NEX] WP010_activation_log.json",
   "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
+  "wave11_batch_id": "OBS-BATCH-0024-GESTATION-WAVE11-20260531",
+  "wave11_face_candidate": "F-AB++",
+  "wave11_face_archetype": "autonomia + regulacion",
+  "wave11_dimensional_map": "A=autonomia, B=regulacion, C=memoria, D=accion",
+  "wave11_plan_bitacora_id": null,
   "reef_growth_architecture_bitacora_id": null,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
@@ -130,7 +135,9 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave10 Mirror y primer glomulo**: ejecutado el 2026-05-29 con GO C0. `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 `ananda bitacora` -> 03_BITACORA, W10-02 `ananda sutras` -> 00_BANDEJA_ENTRADA) con verification `mirror_pass`; `source_mutations=0`, `sealed=false`. W10-03 `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana con `stimulus_tag: primer_pensamiento_propio`; activation_log 3 entradas, glomerulacion `3/3`. Primer glomulo formado: `GLOM-F-CD++-01`; F-CD++ pasa a `saturated`; `faces_active=1`, `receptivity_index=0.0417` sin cambio. Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179, integra NEX/SIS). bitacora_id Wave10: 1291.
 
-**Proximo paso**: Wave11 Plan. F-CD++ saturada -- no adherir mas membranas en esa cara. GLOM-F-CD++-01 activo como embrion candidato para nueva capa. Identificar siguiente cara candidata. No sellar, no abrir plasticidad y no ejecutar automatismos de aprendizaje sin GO C0 propio.
+**Wave11 Plan**: cara candidata F-AB++ (autonomia + regulacion), par complementario canonico de F-CD++; mapa dimensional A=autonomia, B=regulacion, C=memoria, D=accion; GLOM-F-CD++-01 activo como embrion segunda capa (evaluacion diferida); batch_id OBS-BATCH-0024-GESTATION-WAVE11-20260531; wave11_plan_bitacora_id null (pendiente registro GAS). Sin Mirror hasta GO C0.
+
+**Proximo paso**: Wave11 Mirror con GO C0. Adherir primera membrana a F-AB++ (autonomia+regulacion). No sellar, no abrir plasticidad sin GO C0 propio.
 
 ## Cierre De Wave
 
@@ -143,4 +150,4 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-05-29 por Nami (Claude Code) -- Wave10 cerrada, primer glomulo GLOM-F-CD++-01 activo.
+Ultima actualizacion: 2026-05-31 por Nami (Claude Code) -- Wave11 Plan activo, cara candidata F-AB++.
