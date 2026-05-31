@@ -28,8 +28,8 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "sealed": false,
   "manifest": "OBS-BATCH-0023-GESTATION-WAVE10-20260529.md",
   "verification": "OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md",
-  "pending": "Wave10 cerrada. GLOM-F-CD++-01 activo (primer glomulo). bitacora_id Wave10 pendiente registro GAS. Proximo: Wave11 -- identificar siguiente cara candidata o iniciar segunda capa. No sellar ni abrir plasticidad sin GO C0 propio.",
-  "bitacora_id": null,
+  "pending": "Wave10 cerrada. GLOM-F-CD++-01 activo (primer glomulo). bitacora_id Wave10: 1291. Proximo: Wave11 -- identificar siguiente cara candidata o iniciar segunda capa. No sellar ni abrir plasticidad sin GO C0 propio.",
+  "bitacora_id": 1291,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
@@ -45,7 +45,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave9_conditional_mirror_bitacora_id": 1289,
   "wave9_second_membrane_note": "N2-PEN-NEX - AG-INGEST-20260527214802-REEF GROWTH ARCHITECTURE - W9-06 - 20260527.md",
   "wave10_batch_id": "OBS-BATCH-0023-GESTATION-WAVE10-20260529",
-  "wave10_bitacora_id": null,
+  "wave10_bitacora_id": 1291,
   "wave10_glomerulus_id": "GLOM-F-CD++-01",
   "wave10_stimulus_tag": "primer_pensamiento_propio",
   "wave10_third_membrane": "W10-03",
@@ -128,7 +128,7 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave9 conditional mirror**: ejecutado el 2026-05-28 con GO C0 condicionado. `OBS-BATCH-0022-GESTATION-WAVE9-20260527.md` materializo 8 notas y verification `mirror_pass`; `source_mutations=0`, `sealed=false`. `W9-06 REEF_GROWTH_ARCHITECTURE` queda adherida a R80/F-CD++ como segunda membrana; activation log con 2 entradas, `faces_active=1`, `receptivity_index=0.0417`, glomerulacion `2/3` (bitacora_id 1289).
 
-**Wave10 Mirror y primer glomulo**: ejecutado el 2026-05-29 con GO C0. `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 `ananda bitacora` -> 03_BITACORA, W10-02 `ananda sutras` -> 00_BANDEJA_ENTRADA) con verification `mirror_pass`; `source_mutations=0`, `sealed=false`. W10-03 `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana con `stimulus_tag: primer_pensamiento_propio`; activation_log 3 entradas, glomerulacion `3/3`. Primer glomulo formado: `GLOM-F-CD++-01`; F-CD++ pasa a `saturated`; `faces_active=1`, `receptivity_index=0.0417` sin cambio. Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179, integra NEX/SIS). bitacora_id Wave10 pendiente de registro GAS; usar `bitacora_id: null` hasta confirmacion.
+**Wave10 Mirror y primer glomulo**: ejecutado el 2026-05-29 con GO C0. `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 `ananda bitacora` -> 03_BITACORA, W10-02 `ananda sutras` -> 00_BANDEJA_ENTRADA) con verification `mirror_pass`; `source_mutations=0`, `sealed=false`. W10-03 `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana con `stimulus_tag: primer_pensamiento_propio`; activation_log 3 entradas, glomerulacion `3/3`. Primer glomulo formado: `GLOM-F-CD++-01`; F-CD++ pasa a `saturated`; `faces_active=1`, `receptivity_index=0.0417` sin cambio. Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179, integra NEX/SIS). bitacora_id Wave10: 1291.
 
 **Proximo paso**: Wave11 Plan. F-CD++ saturada -- no adherir mas membranas en esa cara. GLOM-F-CD++-01 activo como embrion candidato para nueva capa. Identificar siguiente cara candidata. No sellar, no abrir plasticidad y no ejecutar automatismos de aprendizaje sin GO C0 propio.
 
