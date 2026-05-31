@@ -204,7 +204,7 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 ---
 
-## Estado de Implementacion (Wave 10)
+## Estado de Implementacion (Wave 11)
 
 ### Primer bloque canonico
 
@@ -234,14 +234,17 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 - GLOM-F-CD++-01: cara F-CD++, threshold=3, notas=3, stimulus_tag=primer_pensamiento_propio, wave=10, bitacora_id=1291
 
-### Proximo paso (Wave 11)
+### Wave 11 Plan
 
+- batch_id: OBS-BATCH-0024-GESTATION-WAVE11-20260531
+- cara_candidata: F-AB++ (autonomia + regulacion)
+- mapa_dimensional: A=autonomia, B=regulacion, C=memoria (F-CD++), D=accion (F-CD++)
+- F-AB++ es el par complementario canonico de F-CD++ -- cubre las 2 dimensiones restantes del arquetipo
 - F-CD++ saturada -- no adherir mas membranas en esa cara
-- Objetivo: identificar siguiente cara candidata o iniciar segunda capa
-- GLOM-F-CD++-01 activo como embrion candidato a nuevo bloque-chasis en siguiente capa
-- Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS (2 dominios)
+- segunda_capa: GLOM-F-CD++-01 activo como embrion candidato -- evaluacion diferida sin GO C0
+- No adherir membranas en F-AB++ hasta GO C0 Mirror Wave11
 - No sellar ni abrir plasticidad sin GO C0 propio
-- bitacora_id Wave10: 1291
+- wave11_plan_bitacora_id: null (pendiente registro GAS)
 
 ### Hipotesis de resonancia (Antigravity)
 
@@ -252,5 +255,5 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 ---
 
-Ultima actualizacion: 2026-05-29
+Ultima actualizacion: 2026-05-31
 Autor: Nami (Claude Code)
