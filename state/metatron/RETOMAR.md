@@ -62,7 +62,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave11_face_candidate": "F-AB++",
   "wave11_face_archetype": "autonomia + regulacion",
   "wave11_dimensional_map": "A=autonomia, B=regulacion, C=memoria, D=accion",
-  "wave11_plan_bitacora_id": null,
+  "wave11_plan_bitacora_id": 1292,
   "reef_growth_architecture_bitacora_id": null,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
@@ -135,7 +135,7 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave10 Mirror y primer glomulo**: ejecutado el 2026-05-29 con GO C0. `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 `ananda bitacora` -> 03_BITACORA, W10-02 `ananda sutras` -> 00_BANDEJA_ENTRADA) con verification `mirror_pass`; `source_mutations=0`, `sealed=false`. W10-03 `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana con `stimulus_tag: primer_pensamiento_propio`; activation_log 3 entradas, glomerulacion `3/3`. Primer glomulo formado: `GLOM-F-CD++-01`; F-CD++ pasa a `saturated`; `faces_active=1`, `receptivity_index=0.0417` sin cambio. Requisito N5 Wave10 satisfecho: R80 Fasciculo (bitacora_id 1179, integra NEX/SIS). bitacora_id Wave10: 1291.
 
-**Wave11 Plan**: cara candidata F-AB++ (autonomia + regulacion), par complementario canonico de F-CD++; mapa dimensional A=autonomia, B=regulacion, C=memoria, D=accion; GLOM-F-CD++-01 activo como embrion segunda capa (evaluacion diferida); batch_id OBS-BATCH-0024-GESTATION-WAVE11-20260531; wave11_plan_bitacora_id null (pendiente registro GAS). Sin Mirror hasta GO C0.
+**Wave11 Plan**: cara candidata F-AB++ (autonomia + regulacion), par complementario canonico de F-CD++; mapa dimensional A=autonomia, B=regulacion, C=memoria, D=accion; GLOM-F-CD++-01 activo como embrion segunda capa (evaluacion diferida); batch_id OBS-BATCH-0024-GESTATION-WAVE11-20260531; wave11_plan_bitacora_id 1292. Sin Mirror hasta GO C0.
 
 **Proximo paso**: Wave11 Mirror con GO C0. Adherir primera membrana a F-AB++ (autonomia+regulacion). No sellar, no abrir plasticidad sin GO C0 propio.
 
