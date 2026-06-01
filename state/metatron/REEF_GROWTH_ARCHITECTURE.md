@@ -211,7 +211,7 @@ sincronizacion = geometria_basal + plasticidad_historica
 - ID: R80
 - Politopo: teseracto
 - Archivo local: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
-- Estado: `faces_active=1`, `faces_dormant=23`, `faces_saturated=1`, `receptivity_index=0.0417`, `learned_resonance={}`
+- Estado: `faces_active=2`, `faces_dormant=22`, `faces_saturated=1`, `receptivity_index=0.0833`, `learned_resonance={}`
 - Reclasificacion semantica: `N5-ACT-SYS` (primer fasciculo de asociacion, bitacora_id 1179)
 - bitacora_id: 1163
 
@@ -234,17 +234,29 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 - GLOM-F-CD++-01: cara F-CD++, threshold=3, notas=3, stimulus_tag=primer_pensamiento_propio, wave=10, bitacora_id=1291
 
-### Wave 11 Plan
+### Membranas adheridas en F-AB++
+
+- W8-16 Sutra_Autonomia_Kognitiva (Wave 11 Mirror, membrane_only, axis A=autonomia, bitacora_id 1301)
+- Glomerulacion: 1/3 -- cara activa
+- activation_log: 1 entrada (total activation_log: 4 entradas reales)
+
+### Wave 11 Mirror
 
 - batch_id: OBS-BATCH-0024-GESTATION-WAVE11-20260531
+- mode: membrane_only (0 notas nuevas materializadas; 1 mirror existente reutilizado)
 - cara_candidata: F-AB++ (autonomia + regulacion)
 - mapa_dimensional: A=autonomia, B=regulacion, C=memoria (F-CD++), D=accion (F-CD++)
 - F-AB++ es el par complementario canonico de F-CD++ -- cubre las 2 dimensiones restantes del arquetipo
 - F-CD++ saturada -- no adherir mas membranas en esa cara
 - segunda_capa: GLOM-F-CD++-01 activo como embrion candidato -- evaluacion diferida sin GO C0
-- No adherir membranas en F-AB++ hasta GO C0 Mirror Wave11
-- No sellar ni abrir plasticidad sin GO C0 propio
+- source_mutations: 0
+- faces_active_after: 2
+- receptivity_index_after: 0.0833
+- membrane_attached: W8-16 Sutra_Autonomia_Kognitiva
+- glomerulacion_F-AB++: 1/3
+- n5_check: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho
 - wave11_plan_bitacora_id: 1292
+- wave11_mirror_bitacora_id: 1301
 
 ### Hipotesis de resonancia (Antigravity)
 
@@ -255,5 +267,5 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 ---
 
-Ultima actualizacion: 2026-05-31
+Ultima actualizacion: 2026-06-02
 Autor: Nami (Claude Code)
