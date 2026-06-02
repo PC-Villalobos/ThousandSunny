@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 2.4
+Version: 2.5
 Estado: ACT
-Ultima actualizacion: 2026-06-02 (Wave11 Mirror cerrada, F-AB++ activa, faces_active=2)
+Ultima actualizacion: 2026-06-02 (Wave12 Mirror cerrada, faces_active=4, receptivity_index=0.1667, 3 glomulos confirmados)
 
 ## Proposito
 
@@ -38,22 +38,23 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 9 | OBS-BATCH-0022-GESTATION-WAVE9-20260527 | Mirror | conditional_mirror | 8 | 0 | GO C0 condicionado ejecutado; 8 notas materializadas; W9-06 adherida a R80/F-CD++; glomerulacion 2/3; sin sellado ni plasticidad. |
 | 10 | OBS-BATCH-0023-GESTATION-WAVE10-20260529 | Mirror | cerrada | 2 | 0 | GO C0 ejecutado; W10-01 ananda_bitacora y W10-02 ananda_sutras materializados; W10-03 adherida a R80/F-CD++ como tercera membrana; GLOM-F-CD++-01 formado (3/3); F-CD++ saturada. |
 | 11 | OBS-BATCH-0024-GESTATION-WAVE11-20260531 | Mirror | cerrada | 0 | 0 | Wave11 Mirror membrane_only: W8-16 Sutra_Autonomia_Kognitiva adherida a R80/F-AB++; faces_active=2; receptivity_index=0.0833; glomerulacion F-AB++ 1/3; source_mutations=0. |
+| 12 | OBS-BATCH-0025-GESTATION-WAVE12-20260602 | Mirror | cerrada | 13 | 0 | Wave12 Mirror corpus: 13 notas NotebookLM (sources 2-14) materializadas; rechazadas 1 y 15; F-AB++ saturada (3/3), F-AC++ y F-BC++ activadas; faces_active=4; receptivity_index=0.1667; GLOM-F-AB++-01 y GLOM-F-AC++-01 confirmados, GLOM-F-BC++-01 embrionario; source_mutations=0; bitacora_id=1327. |
 
 ## Estado Actual
 
 ```json
 {
-  "last_batch_id": "OBS-BATCH-0024-GESTATION-WAVE11-20260531",
+  "last_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
   "last_mode": "Mirror",
-  "current_wave": 11,
-  "next_wave": 12,
+  "current_wave": 12,
+  "next_wave": 13,
   "max_files": 32,
   "source_mutations": 0,
   "sealed": false,
-  "plan": "OBS-BATCH-0024-GESTATION-WAVE11-20260531-PLAN.md",
-  "manifest": "OBS-BATCH-0024-GESTATION-WAVE11-20260531.md",
-  "verification": "OBS-BATCH-0024-GESTATION-WAVE11-20260531-VERIFICACION.md",
-  "bitacora_id": 1301,
+  "plan": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-PLAN.md",
+  "manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
+  "verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
+  "bitacora_id": 1327,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
@@ -90,6 +91,23 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave11_first_membrane": "W8-16",
   "wave11_first_membrane_face": "F-AB++",
   "wave11_n5_check": "R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho",
+  "wave12_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
+  "wave12_mirror_manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
+  "wave12_mirror_verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
+  "wave12_mode": "corpus",
+  "wave12_corpus_source": "lote NotebookLM GDOC (F13_F21_TRANSITION)",
+  "wave12_candidates": 15,
+  "wave12_materialized": 13,
+  "wave12_rejected": "nota1 (0.3084 auto-reject <0.40), nota15 (0.3522 rechazo Capitan)",
+  "wave12_coherence_threshold": 0.45,
+  "wave12_classifier": "Robin Classifier v1.0",
+  "wave12_distribution": "F-AB++=2, F-AC++=4, F-BC++=7",
+  "wave12_faces_activated": "F-AC++ (nueva), F-BC++ (nueva); F-AB++ saturada",
+  "wave12_glomeruli_confirmed": "GLOM-F-AB++-01, GLOM-F-AC++-01",
+  "wave12_glomeruli_embryonic": "GLOM-F-BC++-01 (nota14=0.4418<0.45 criterio estricto)",
+  "wave12_n5_check": "R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho",
+  "wave12_mirror_bitacora_id": 1327,
+  "wave12_score_supplement_bitacora_id": 1328,
   "wp010_mirrored_notes": 26,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
@@ -105,17 +123,27 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
   "n5_fascicle_bitacora_id": 1179,
-  "r80_faces_active": 2,
-  "r80_faces_dormant": 22,
-  "r80_faces_saturated": 1,
-  "r80_receptivity_index": 0.0833,
+  "r80_faces_active": 4,
+  "r80_faces_dormant": 20,
+  "r80_faces_saturated": 3,
+  "r80_receptivity_index": 0.1667,
   "r80_face_cd_state": "saturated",
-  "r80_face_ab_state": "active",
-  "r80_membrane_notes_attached": 4,
+  "r80_face_ab_state": "saturated",
+  "r80_face_ac_state": "saturated",
+  "r80_face_bc_state": "active",
+  "r80_face_ad_state": "dormant",
+  "r80_membrane_notes_attached": 17,
   "r80_glomerulus_progress": "3/3",
   "r80_glomerulus_id": "GLOM-F-CD++-01",
-  "r80_face_ab_glomerulus_progress": "1/3",
-  "activation_log_entries": 4,
+  "r80_face_ab_glomerulus_progress": "3/3",
+  "r80_face_ab_glomerulus_id": "GLOM-F-AB++-01",
+  "r80_face_ac_glomerulus_progress": "4/4",
+  "r80_face_ac_glomerulus_id": "GLOM-F-AC++-01",
+  "r80_face_bc_glomerulus_progress": "6/7",
+  "r80_face_bc_glomerulus_id": "GLOM-F-BC++-01 (embrionario, no confirmado)",
+  "glomeruli_confirmed": ["GLOM-F-CD++-01", "GLOM-F-AB++-01", "GLOM-F-AC++-01"],
+  "glomeruli_embryonic": ["GLOM-F-BC++-01"],
+  "activation_log_entries": 17,
   "r80_semantic_level": "N5-ACT-SYS",
   "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
   "wave_close_requires_n5": true,
@@ -125,11 +153,13 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
   "reef_growth_architecture_bitacora_id": null,
   "drive_sync_bitacora_id": 1302,
-  "pending": "Wave12. F-AB++ activa con 1/3 membranas (W8-16 Sutra_Autonomia_Kognitiva). GLOM-F-CD++-01 embrion segunda capa (evaluacion diferida). Wave11 Mirror cerrada (bitacora_id 1301)."
+  "pending": "Wave13. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) planificado para Wave13. Wave12 Mirror cerrada (bitacora_id 1327)."
 }
 ```
 
 ## Handoff
+
+**Wave12 Mirror cerrada** (2026-06-02, wave12_mirror_bitacora_id=1327): `OBS-BATCH-0025-GESTATION-WAVE12-20260602.md` modo corpus; 13 notas NotebookLM (sources 2-14) materializadas; rechazadas nota1 (score 0.3084, auto-reject <0.40) y nota15 (score 0.3522, rechazo Capitan); classifier Robin v1.0 con `coherence_threshold=0.45`; F-AB++ saturada (1/3 -> 3/3, `GLOM-F-AB++-01` confirmado), F-AC++ activada y saturada (4 notas, `GLOM-F-AC++-01` confirmado), F-BC++ activada (7 notas, `GLOM-F-BC++-01` embrionario porque nota14=0.4418<0.45 bajo criterio estricto all-members); `faces_active=4`, `faces_saturated=3`, `receptivity_index=0.1667`; membranas=17, activation_log=17; `source_mutations=0` verificado por hash de fuentes; `sealed=false`. Requisito N5: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- satisfecho. Score supplement bitacora_id=1328. Ejecutor: Usopp (Codex) cubriendo rol Franky; auditoria: Nami (Claude).
 
 **Wave11 Mirror cerrada** (2026-06-02, wave11_mirror_bitacora_id=1301): `OBS-BATCH-0024-GESTATION-WAVE11-20260531.md` modo membrane_only; 0 notas nuevas materializadas; W8-16 `Sutra_Autonomia_Kognitiva` (mirror existente Wave8, axis A=autonomia) adherida a R80/F-AB++ como primera membrana; activation_log 4 entradas; `faces_active=2`, `receptivity_index=0.0833`; F-AB++ activa, glomerulacion `1/3`; `source_mutations=0`; `sealed=false`. Requisito N5 Wave11: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- satisfecho.
 
@@ -269,3 +299,8 @@ Artefacto local no versionado:
 - `OBS-BATCH-0024-GESTATION-WAVE11-20260531-PLAN.md`
 - `OBS-BATCH-0024-GESTATION-WAVE11-20260531.md`
 - `OBS-BATCH-0024-GESTATION-WAVE11-20260531-VERIFICACION.md`
+- `OBS-BATCH-0025-GESTATION-WAVE12-20260602.md` (Wave12 Plan + Mirror)
+- `OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md`
+- 13 notas NotebookLM materializadas en el vault (Wave12, sources 2-14; rutas en el manifiesto OBS-BATCH-0025)
+- `robin_ontology_v1_0.json`, `robin_classifier.py`, `ROBIN_CLASSIFICATION_REPORT_20260602.md` (Robin Classifier, no versionados)
+- `WAVE12_MIRROR_RESULT_20260603.md`, `WAVE12_NAMI_SCORE_SUPPLEMENT_20260603.md` (informes Usopp, no versionados)
