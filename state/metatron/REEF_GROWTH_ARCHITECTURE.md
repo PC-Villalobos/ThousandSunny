@@ -204,14 +204,14 @@ sincronizacion = geometria_basal + plasticidad_historica
 
 ---
 
-## Estado de Implementacion (Wave 11)
+## Estado de Implementacion (Wave 12)
 
 ### Primer bloque canonico
 
 - ID: R80
 - Politopo: teseracto
 - Archivo local: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
-- Estado: `faces_active=2`, `faces_dormant=22`, `faces_saturated=1`, `receptivity_index=0.0833`, `learned_resonance={}`
+- Estado: `faces_active=4`, `faces_dormant=20`, `faces_saturated=3`, `receptivity_index=0.1667`, `learned_resonance={}`
 - Reclasificacion semantica: `N5-ACT-SYS` (primer fasciculo de asociacion, bitacora_id 1179)
 - bitacora_id: 1163
 
@@ -233,12 +233,32 @@ sincronizacion = geometria_basal + plasticidad_historica
 ### Glomulos activos
 
 - GLOM-F-CD++-01: cara F-CD++, threshold=3, notas=3, stimulus_tag=primer_pensamiento_propio, wave=10, bitacora_id=1291
+- GLOM-F-AB++-01: cara F-AB++, threshold=3, notas=3, wave=12, scores=[W8-16 cert., 0.5745, 0.5697], CONFIRMADO, bitacora_id=1327
+- GLOM-F-AC++-01: cara F-AC++, threshold=3, notas=4, wave=12, scores=[0.5787, 0.5213, 0.5946, 0.4686], CONFIRMADO, bitacora_id=1327
+- GLOM-F-BC++-01: cara F-BC++, threshold=3, notas=7, wave=12, EMBRIONARIO -- no confirmado (nota14=0.4418 < 0.45 criterio estricto all-members), bitacora_id=1327
 
 ### Membranas adheridas en F-AB++
 
 - W8-16 Sutra_Autonomia_Kognitiva (Wave 11 Mirror, membrane_only, axis A=autonomia, bitacora_id 1301)
-- Glomerulacion: 1/3 -- cara activa
-- activation_log: 1 entrada (total activation_log: 4 entradas reales)
+- 2 membranas Wave 12 (NotebookLM, scores 0.5745 / 0.5697, axis A+B)
+- Glomerulacion: 3/3 -- glomulo GLOM-F-AB++-01 formado -- F-AB++ saturada
+- activation_log: 3 entradas (W8-16 + 2 W12)
+
+### Membranas adheridas en F-AC++ (Wave 12)
+
+- 4 membranas NotebookLM (sources 3,4,5,6 / W12-02..05), axis A=autonomia + C=memoria
+- scores: 0.5787, 0.5213, 0.5946, 0.4686 -- todos >= 0.45
+- Glomerulacion: 4/4 coherentes -- glomulo GLOM-F-AC++-01 formado -- F-AC++ saturada
+- activation_log: 4 entradas
+
+### Membranas adheridas en F-BC++ (Wave 12)
+
+- 7 membranas NotebookLM (sources 2,7,8,10,11,13,14), axis B=regulacion + C=memoria
+- scores: 0.5090, 0.5159, 0.5359, 0.5204, 0.5599, 0.5408, 0.4418
+- nota 14 (0.4418) = opener aprobado por Chopper (banda [0.40,0.45)), fuera del core semantico
+- Glomerulacion: 6/7 coherentes -- GLOM-F-BC++-01 EMBRIONARIO, no confirmado bajo criterio estricto all-members
+- cara activa (7 >= activation_threshold); promocion de glomulo diferida a criterio Capitan
+- activation_log: 7 entradas
 
 ### Wave 11 Mirror
 
@@ -258,14 +278,38 @@ sincronizacion = geometria_basal + plasticidad_historica
 - wave11_plan_bitacora_id: 1292
 - wave11_mirror_bitacora_id: 1301
 
+### Wave 12 Mirror
+
+- batch_id: OBS-BATCH-0025-GESTATION-WAVE12-20260602
+- mode: corpus (13 notas NotebookLM materializadas; sources 2-14)
+- corpus_source: lote NotebookLM GDOC (F13_F21_TRANSITION, 15 candidatas)
+- rechazadas: nota 1 (score 0.3084, auto-reject < 0.40), nota 15 (score 0.3522, rechazo Capitan)
+- coherence_threshold: 0.45 (>= 0.45 coherente; [0.40,0.45) Chopper review; < 0.40 auto-reject)
+- classifier: Robin Classifier v1.0 (ontologia robin_ontology_v1_0.json)
+- caras_activadas: F-AC++ (nueva, 4 notas), F-BC++ (nueva, 7 notas); F-AB++ saturada (1/3 -> 3/3)
+- distribucion: F-AB++=2, F-AC++=4, F-BC++=7 (total 13)
+- glomulos: GLOM-F-AB++-01 confirmado, GLOM-F-AC++-01 confirmado, GLOM-F-BC++-01 embrionario
+- source_mutations: 0 (verificado por hash de fuentes)
+- faces_active_after: 4
+- faces_saturated_after: 3 (F-CD++, F-AB++, F-AC++)
+- receptivity_index_after: 0.1667
+- membrane_notes_attached_total: 17
+- activation_log_entries_total: 17
+- F-AD++ (autonomia + accion): dormant -- sin membranas
+- n5_check: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho
+- wave12_mirror_bitacora_id: 1327
+- wave12_score_supplement_bitacora_id: 1328
+- verificacion: OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md
+
 ### Hipotesis de resonancia (Antigravity)
 
 - `predicted_faces_active: 4` -- hipotesis conservada
 - Sin efecto sobre `receptivity_index` hasta estimulo verificable
 - Valor: comparar con activacion real tras primeras 3 Waves
+- VALIDACION Wave12: faces_active alcanzo 4 -- coincide con la hipotesis (correlacion, no causalidad; activacion guiada por classifier + GO C0, no por la hipotesis)
 - bitacora_id: 1167
 
 ---
 
-Ultima actualizacion: 2026-06-02
+Ultima actualizacion: 2026-06-02 (Wave12 Mirror cerrada: faces_active=4, receptivity_index=0.1667, 3 glomulos confirmados + GLOM-F-BC++-01 embrionario)
 Autor: Nami (Claude Code)
