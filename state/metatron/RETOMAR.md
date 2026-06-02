@@ -16,20 +16,20 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
 
 ```json
 {
-  "current_wave": 11,
-  "next_wave": 12,
+  "current_wave": 12,
+  "next_wave": 13,
   "last_mode": "Mirror",
-  "last_batch_id": "OBS-BATCH-0024-GESTATION-WAVE11-20260531",
+  "last_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
   "max_files": 32,
   "candidate_notes": 0,
-  "mirrored_notes": 0,
-  "total_notes_materialized": 223,
+  "mirrored_notes": 13,
+  "total_notes_materialized": 236,
   "source_mutations": 0,
   "sealed": false,
-  "manifest": "OBS-BATCH-0024-GESTATION-WAVE11-20260531.md",
-  "verification": "OBS-BATCH-0024-GESTATION-WAVE11-20260531-VERIFICACION.md",
-  "pending": "Wave12. F-AB++ activa con 1/3 membranas (W8-16 Sutra_Autonomia_Kognitiva). GLOM-F-CD++-01 embrion segunda capa (evaluacion diferida). Wave11 Mirror cerrada (bitacora_id 1301).",
-  "bitacora_id": 1301,
+  "manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
+  "verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
+  "pending": "Wave13. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) planificado para Wave13. Wave12 Mirror cerrada (bitacora_id 1327).",
+  "bitacora_id": 1327,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
   "resonance_hypothesis_bitacora_id": 1167,
@@ -66,19 +66,35 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave11_mirror_bitacora_id": 1301,
   "wave11_first_membrane": "W8-16",
   "wave11_first_membrane_face": "F-AB++",
+  "wave12_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
+  "wave12_mode": "corpus",
+  "wave12_materialized": 13,
+  "wave12_rejected": "nota1 (0.3084), nota15 (0.3522)",
+  "wave12_coherence_threshold": 0.45,
+  "wave12_distribution": "F-AB++=2, F-AC++=4, F-BC++=7",
+  "wave12_glomeruli_confirmed": "GLOM-F-AB++-01, GLOM-F-AC++-01",
+  "wave12_glomeruli_embryonic": "GLOM-F-BC++-01",
+  "wave12_mirror_bitacora_id": 1327,
+  "wave12_score_supplement_bitacora_id": 1328,
   "reef_growth_architecture_bitacora_id": null,
   "drive_sync_bitacora_id": 1302,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
   "wave8_mirror_closure": "OBS-WAVE8-MIRROR-20260525.md",
-  "r80_faces_active": 2,
-  "r80_faces_saturated": 1,
-  "r80_receptivity_index": 0.0833,
-  "r80_membrane_notes_attached": 4,
+  "r80_faces_active": 4,
+  "r80_faces_saturated": 3,
+  "r80_receptivity_index": 0.1667,
+  "r80_membrane_notes_attached": 17,
   "r80_glomerulus_progress": "3/3",
   "r80_glomerulus_id": "GLOM-F-CD++-01",
-  "r80_face_ab_glomerulus_progress": "1/3",
-  "activation_log_entries": 4,
+  "r80_face_ab_glomerulus_progress": "3/3",
+  "r80_face_ab_glomerulus_id": "GLOM-F-AB++-01",
+  "r80_face_ac_glomerulus_progress": "4/4",
+  "r80_face_ac_glomerulus_id": "GLOM-F-AC++-01",
+  "r80_face_bc_glomerulus_progress": "6/7",
+  "r80_face_bc_glomerulus_id": "GLOM-F-BC++-01 (embrionario)",
+  "glomeruli_confirmed": ["GLOM-F-CD++-01", "GLOM-F-AB++-01", "GLOM-F-AC++-01"],
+  "activation_log_entries": 17,
   "r80_semantic_level": "N5-ACT-SYS",
   "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
   "wave_close_requires_n5": true,
@@ -142,7 +158,9 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave11 Mirror** (2026-06-02, bitacora_id 1301): modo membrane_only; 0 notas nuevas materializadas; W8-16 `Sutra_Autonomia_Kognitiva` adherida a R80/F-AB++ como primera membrana; activation_log 4 entradas; `faces_active=2`, `receptivity_index=0.0833`; F-AB++ activa, glomerulacion `1/3`; `source_mutations=0`. wave11_plan_bitacora_id 1292; batch_id OBS-BATCH-0024-GESTATION-WAVE11-20260531.
 
-**Proximo paso**: Wave12. F-AB++ activa con 1/3 membranas (W8-16 Sutra_Autonomia_Kognitiva en axis A=autonomia). GLOM-F-CD++-01 activo como embrion segunda capa (evaluacion diferida).
+**Wave12 Mirror** (2026-06-02, bitacora_id 1327): modo corpus; 13 notas NotebookLM (sources 2-14) materializadas desde el lote GDOC (F13_F21_TRANSITION, 15 candidatas); rechazadas nota1 (0.3084, auto-reject <0.40) y nota15 (0.3522, rechazo Capitan). Classifier Robin v1.0, `coherence_threshold=0.45`. Distribucion: F-AB++=2 (satura 3/3, `GLOM-F-AB++-01` confirmado), F-AC++=4 (nueva, satura, `GLOM-F-AC++-01` confirmado), F-BC++=7 (nueva, activa, `GLOM-F-BC++-01` embrionario porque nota14=0.4418<0.45 bajo criterio estricto all-members). `faces_active=4`, `faces_saturated=3`, `receptivity_index=0.1667`; membranas=17, activation_log=17; `source_mutations=0` verificado por hash de fuentes. Requisito N5 satisfecho (R80 Fasciculo 1179). Score supplement bitacora_id 1328. Ejecutor Usopp (Codex) cubriendo rol Franky; auditoria Nami (Claude).
+
+**Proximo paso**: Wave13. F-AB++ y F-AC++ saturadas con glomulos confirmados. F-BC++ activa; GLOM-F-BC++-01 embrionario, su promocion depende del criterio Capitan sobre la nota 14 (opener Chopper-approved sub-threshold). Candidata Wave13: W8-03 `Arquitectura_Metatron_Principios` -> F-BC++ (axis B=regulacion). GLOM-F-CD++-01 sigue como embrion de segunda capa (evaluacion diferida).
 
 ## Cierre De Wave
 
@@ -155,4 +173,4 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-06-02 por Nami (Claude Code) -- Wave11 Mirror cerrada, F-AB++ activa, faces_active=2.
+Ultima actualizacion: 2026-06-02 por Nami (Claude Code) -- Wave12 Mirror cerrada, faces_active=4, receptivity_index=0.1667, 3 glomulos confirmados (GLOM-F-CD++-01, GLOM-F-AB++-01, GLOM-F-AC++-01) + GLOM-F-BC++-01 embrionario.
