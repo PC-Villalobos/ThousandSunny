@@ -67,6 +67,7 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "wave11_first_membrane": "W8-16",
   "wave11_first_membrane_face": "F-AB++",
   "reef_growth_architecture_bitacora_id": null,
+  "drive_sync_bitacora_id": 1302,
   "membrane_note_template": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_plantillas\\membrane_note_template.md",
   "wave8_membrane_selection": "OBS-WAVE8-MEMBRANE-SELECTION-20260525.md",
   "wave8_mirror_closure": "OBS-WAVE8-MIRROR-20260525.md",
