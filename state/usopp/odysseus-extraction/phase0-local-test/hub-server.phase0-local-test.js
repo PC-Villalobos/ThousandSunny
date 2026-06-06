@@ -1,15 +1,15 @@
 /**
  * ============================================================
- * ðŸ´â€â˜ ï¸ THOUSAND SUNNY HUB â€” v2.0
+ * 🏴‍☠️ THOUSAND SUNNY HUB – v2.0
  * Orquestador real de agentes IA + GAS + Desktop
  *
  * Agentes reales conectados:
- *   Nami      â†’ Claude API (Anthropic)          /api/claude
- *   Usopp     â†’ Codex SDK real (OpenAI)         /api/codex
- *   Sanji     â†’ Antigravity REST (Google)       /api/antigravity
- *   GAS       â†’ Google Apps Script backend      /api/gas
- *   Desktop   â†’ Python bridge local             /api/desktop
- *   Puente    â†’ Todos los agentes en paralelo   /api/puente
+ *   Nami      → Claude API (Anthropic)          /api/claude
+ *   Usopp     → Codex SDK real (OpenAI)         /api/codex
+ *   Sanji     → Antigravity REST (Google)       /api/antigravity
+ *   GAS       → Google Apps Script backend      /api/gas
+ *   Desktop   → Python bridge local             /api/desktop
+ *   Puente    → Todos los agentes en paralelo   /api/puente
  *
  * Instalar:
  *   npm install express ws dotenv cors @openai/codex-sdk
@@ -20,6 +20,7 @@
  */
 
 const path = require("path");
+const crypto = require("crypto");
 const explicitEnv = { ...process.env };
 require("dotenv").config({ path: path.join(__dirname, "hub.env") });
 require("dotenv").config({ path: path.join(__dirname, "hub.local.env"), override: true });
@@ -78,7 +79,7 @@ registry.on('run_updated', (data) => {
     }
 });
 
-// â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Config ──────────────────────────────────────────────────────
 const PORT        = process.env.HUB_PORT        || 3333;
 const BRIDGE_URL  = `http://localhost:${process.env.BRIDGE_PORT || 3334}`;
 const GAS_URL     = process.env.GAS_URL         || "";
@@ -94,7 +95,7 @@ const KEYS = {
   antigravityProject: process.env.ANTIGRAVITY_PROJECT || "",     // project ID Google Cloud
 };
 
-// â”€â”€ App â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── App ──────────────────────────────────────────────────────────────────
 const app    = express();
 const server = http.createServer(app);
 const wss    = new WebSocketServer({ server });
@@ -102,7 +103,7 @@ const wss    = new WebSocketServer({ server });
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
-// â”€â”€ AutenticaciÃ³n por token (defensa remota) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Autenticación por token (defensa remota) ────────────────────
 const HUB_TOKEN = process.env.HUB_TOKEN || "";
 const AUTH_ENABLED = !!HUB_TOKEN;
 const LOCALHOST_IPS = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1"]);
@@ -117,8 +118,20 @@ const SUNNY_ALLOWED_ROOTS = [
 const DESKTOP_PATH_FIELDS = ["path", "filePath", "workingDir", "cwd", "targetPath"];
 
 function isLocalRequest(req) {
-  const ip = req.ip || req.connection?.remoteAddress || "";
-  return LOCALHOST_IPS.has(ip);
+  // Use socket-level address to avoid trust proxy spoofing via X-Forwarded-For
+  const socketAddr = req.socket?.remoteAddress || req.connection?.remoteAddress || "";
+  return LOCALHOST_IPS.has(socketAddr);
+}
+
+function timingSafeTokenCompare(a, b) {
+  if (!a || !b) return false;
+  try {
+    const ba = Buffer.from(String(a));
+    const bb = Buffer.from(String(b));
+    return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
+  } catch {
+    return false;
+  }
 }
 
 function getRequestToken(req) {
@@ -202,20 +215,20 @@ function authMiddleware(req, res, next) {
     attachSecurityContext(req, "public_webhook");
     return next();
   }
-  if (getRequestToken(req) === HUB_TOKEN) {
+  if (timingSafeTokenCompare(getRequestToken(req), HUB_TOKEN)) {
     attachSecurityContext(req, resolveActorRole(req, { authenticated: true }));
     return next();
   }
   return res.status(401).json({ error: "Token invalido. Anade Authorization: Bearer <HUB_TOKEN>" });
 
   // Sin token configurado = modo local abierto (sin auth)
-  // Localhost siempre pasa (navegador local del CapitÃ¡n)
-  // Rutas pÃºblicas: UI y manifest (necesitan cargar para luego autenticarse vÃ­a JS)
+  // Localhost siempre pasa (navegador local del Capitán)
+  // Rutas públicas: UI y manifest (necesitan cargar para luego autenticarse vía JS)
   // Verificar token Bearer o query param
 }
 app.use(authMiddleware);
 
-// â”€â”€ WebSocket auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── WebSocket auth ──────────────────────────────────────────────────────
 // El token se pasa como query param: ws://host:3333/?token=xxx
 function broadcast(data) {
   const payload = JSON.stringify(data);
@@ -223,7 +236,7 @@ function broadcast(data) {
 }
 
 wss.on("connection", (ws, req) => {
-  // Verificar token en WebSocket si auth estÃ¡ habilitado (localhost exempt)
+  // Verificar token en WebSocket si auth está habilitado (localhost exempt)
   if (AUTH_ENABLED) {
     const wsIp = req.socket?.remoteAddress || "";
     const isLocal = wsIp === "127.0.0.1" || wsIp === "::1" || wsIp === "::ffff:127.0.0.1";
@@ -238,10 +251,10 @@ wss.on("connection", (ws, req) => {
     }
   }
   console.log("[WS] Cliente conectado" + (AUTH_ENABLED ? " (autenticado)" : ""));
-  ws.send(JSON.stringify({ type: "connected", msg: "Thousand Sunny Hub v2.0 â€” Agentes reales activos" }));
+  ws.send(JSON.stringify({ type: "connected", msg: "Thousand Sunny Hub v2.0 – Agentes reales activos" }));
 });
 
-// â”€â”€ Fetch helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Fetch helper ─────────────────────────────────────────────────────────
 async function fetchJSON(url, options) {
   const guard = await checkOutboundUrl(url, { blockPrivate: false });
   if (!guard.ok) {
@@ -254,12 +267,12 @@ async function fetchJSON(url, options) {
   catch { return { ok: res.ok, status: res.status, data: text }; }
 }
 
-// â”€â”€ BitÃ¡cora GAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Bitácora GAS ─────────────────────────────────────────────────────────
 async function logBitacora(nakama, mensaje, motor = "hub") {
   if (!GAS_URL) return;
   const params = new URLSearchParams({ action: "log_cowork", nakama, mensaje: mensaje.substring(0, 500), motor });
   try { await fetchJSON(`${GAS_URL}?${params}`); }
-  catch (e) { console.warn("[BitÃ¡cora]", e.message); }
+  catch (e) { console.warn("[Bitácora]", e.message); }
 }
 
 async function logBitacoraRoute(route, nakama, mensaje, motor = "hub") {
@@ -272,7 +285,7 @@ async function logBitacoraRoute(route, nakama, mensaje, motor = "hub") {
     motor,
   });
   try { await fetchJSON(`${GAS_URL}?${params}`); }
-  catch (e) { console.warn("[BitÃ¡cora]", e.message); }
+  catch (e) { console.warn("[Bitácora]", e.message); }
 }
 
 async function getRecentBitacora({ since, hours = 12 } = {}) {
@@ -465,11 +478,11 @@ function rememberAgentReply(actor, reply, route, source, projectIds = [], tags =
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════
 // AGENTES REALES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════
 
-// â”€â”€ 1. NAMI â€” Claude API (Anthropic) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── 1. NAMI – Claude API (Anthropic) ────────────────────────────
 async function callClaude(messages, { model = "claude-sonnet-4-6", system = "" } = {}) {
   if (!KEYS.anthropic) throw new Error("ANTHROPIC_KEY no configurada");
   const start = Date.now();
@@ -483,7 +496,7 @@ async function callClaude(messages, { model = "claude-sonnet-4-6", system = "" }
     },
     body: JSON.stringify({
       model, max_tokens: 4096,
-      system: system || "Eres Nami, navegante del Thousand Sunny. Responde en espaÃ±ol.",
+      system: system || "Eres Nami, navegante del Thousand Sunny. Responde en español.",
       messages: safeMessages,
     }),
   });
@@ -496,16 +509,16 @@ async function callClaude(messages, { model = "claude-sonnet-4-6", system = "" }
   };
 }
 
-// â”€â”€ 2. USOPP â€” Codex SDK real (OpenAI) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Codex es un agente de ejecuciÃ³n real, no chat.
-// Recibe una tarea, la razona, ejecuta cÃ³digo, devuelve resultado.
+// ── 2. USOPP – Codex SDK real (OpenAI) ────────────────────────────────
+// Codex es un agente de ejecución real, no chat.
+// Recibe una tarea, la razona, ejecuta código, devuelve resultado.
 async function callCodex(task, { workingDir = "" } = {}) {
   if (!KEYS.openai) throw new Error("OPENAI_KEY no configurada para Codex");
 
   const start = Date.now();
   const guardedTask = asUntrustedContent("api/codex", task);
 
-  // Intentar usar el SDK de Codex si estÃ¡ instalado
+  // Intentar usar el SDK de Codex si está instalado
   try {
     const { Codex } = require("@openai/codex-sdk");
     const codex  = new Codex({ apiKey: KEYS.openai });
@@ -532,7 +545,7 @@ async function callCodex(task, { workingDir = "" } = {}) {
         messages: [
           {
             role: "system",
-            content: "Eres Usopp, agente de cÃ³digo y anÃ¡lisis del Thousand Sunny. Razonas con precisiÃ³n, ejecutas lÃ³gica paso a paso y respondes en espaÃ±ol. Eres conciso pero completo."
+            content: "Eres Usopp, agente de código y análisis del Thousand Sunny. Razonas con precisión, ejecutas lógica paso a paso y respondes en español. Eres conciso pero completo."
           },
           { role: "user", content: guardedTask }
         ],
@@ -549,8 +562,8 @@ async function callCodex(task, { workingDir = "" } = {}) {
   }
 }
 
-// â”€â”€ 3. SANJI â€” Antigravity REST (Google) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Antigravity es el IDE agÃ©ntico de Google (lanzado nov 2025 con Gemini 3).
+// ── 3. SANJI – Antigravity REST (Google) ────────────────────────────────
+// Antigravity es el IDE agéntico de Google (lanzado nov 2025 con Gemini 3).
 // Usa OAuth2 con cuenta Google. Soporta Gemini 3.1 Pro, Claude Opus, GPT-OSS.
 async function callAntigravity(text, { model = "gemini-3-pro", system = "" } = {}) {
   if (!KEYS.antigravity) throw new Error("ANTIGRAVITY_TOKEN no configurado");
@@ -586,7 +599,7 @@ async function callAntigravity(text, { model = "gemini-3-pro", system = "" } = {
   return { reply, tokens, elapsed: Date.now() - start, model };
 }
 
-// â”€â”€ Fallback Gemini directo (sin Antigravity) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Fallback Gemini directo (sin Antigravity) ────────────────────
 async function callGemini(text, { model = "gemini-2.5-flash", system = "" } = {}) {
   const geminiKey = process.env.GEMINI_KEY || "";
   if (!geminiKey) throw new Error("GEMINI_KEY no configurada");
@@ -614,9 +627,9 @@ async function callGemini(text, { model = "gemini-2.5-flash", system = "" } = {}
   };
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════
 // ENDPOINTS HTTP
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════
 
 app.get("/api/status", (req, res) => {
   Klabautermann.ping(); // Activa biorritmo
@@ -735,7 +748,7 @@ app.get("/api/ananda/resolve", (req, res) => {
   }
 });
 
-// â”€â”€ /api/claude â€” Nami â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/claude – Nami ──────────────────────────────────────────────────
 app.get("/api/shared/state", (req, res) => {
   try {
     res.json(loadSharedState());
@@ -1029,13 +1042,13 @@ app.post("/api/claude", async (req, res) => {
           broadcastFn: broadcast,
         })
       : null;
-    broadcast({ type: "respuesta", nakama: "ðŸŠ Nami (Claude)", ...r });
+    broadcast({ type: "respuesta", nakama: "🌊 Nami (Claude)", ...r });
     logBitacora("Nami", r.reply, r.model);
     res.json({ nakama: "Nami", ananda, checkpoint: checkpointResult, ...r });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// â”€â”€ /api/codex â€” Usopp (agente real) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/codex – Usopp (agente real) ────────────────────────────────────
 app.post("/api/codex", async (req, res) => {
   const { text, task, workingDir } = req.body;
   const tarea = task || text;
@@ -1076,13 +1089,13 @@ app.post("/api/codex", async (req, res) => {
           broadcastFn: broadcast,
         })
       : null;
-    broadcast({ type: "respuesta", nakama: "ðŸŽ¯ Usopp (Codex)", ...r });
+    broadcast({ type: "respuesta", nakama: "🎯 Usopp (Codex)", ...r });
     logBitacora("Usopp", r.reply, r.model);
     res.json({ nakama: "Usopp", ananda, checkpoint: checkpointResult, ...r });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// â”€â”€ /api/antigravity â€” Sanji â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/antigravity – Sanji ────────────────────────────────────────────
 app.post("/api/antigravity", async (req, res) => {
   const { text, model, system } = req.body;
   if (!text) return res.status(400).json({ error: "Falta texto" });
@@ -1106,7 +1119,7 @@ app.post("/api/antigravity", async (req, res) => {
       console.warn("[Sanji] ANTIGRAVITY_TOKEN no configurado, usando Gemini directo");
       r = await callGemini(text, { system });
     }
-    broadcast({ type: "respuesta", nakama: "ðŸ³ Sanji (Antigravity)", ...r });
+    broadcast({ type: "respuesta", nakama: "🍳 Sanji (Antigravity)", ...r });
     rememberAgentReply("Sanji", r.reply, req.path, r.model || "api/antigravity", projectIds, ["hub", "agent-reply", "sanji"]);
     const checkpoint = buildAutomaticCheckpoint({
       body: req.body,
@@ -1132,7 +1145,7 @@ app.post("/api/antigravity", async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// â”€â”€ /api/gas â€” Proxy GAS backend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/gas – Proxy GAS backend ────────────────────────────────────────
 app.all("/api/gas", async (req, res) => {
   if (!GAS_URL) return res.status(500).json({ error: "GAS_URL no configurada" });
   const params  = new URLSearchParams({ ...req.query, ...req.body });
@@ -1142,7 +1155,7 @@ app.all("/api/gas", async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// â”€â”€ /api/desktop â€” Desktop Bridge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/desktop – Desktop Bridge ────────────────────────────────────────
 app.post("/api/desktop", async (req, res) => {
   try {
     const requestedTool = String(req.body?.tool || req.body?.action || "desktop").toLowerCase();
@@ -1219,7 +1232,7 @@ app.post("/api/telegram/incoming", async (req, res) => {
   })();
 });
 
-// â”€â”€ /api/puente â€” Puente de Mando (agentes reales en paralelo)
+// ── /api/puente – Puente de Mando (agentes reales en paralelo)
 app.post("/api/puente", async (req, res) => {
   const {
     text,
@@ -1285,7 +1298,7 @@ app.post("/api/puente", async (req, res) => {
 
   const responses = await Promise.all(llamadas);
 
-  // Loguear cada respuesta en BitÃ¡cora
+  // Loguear cada respuesta en Bitácora
   responses.forEach(r => {
     if (!r.error) {
       rememberAgentReply(r.nakama, r.reply ?? "", req.path, r.model || "api/puente", projectIds, ["hub", "agent-reply", "puente"]);
@@ -1327,8 +1340,8 @@ app.post("/api/puente", async (req, res) => {
   res.json({ input, responses, ananda, runId, checkpoint: checkpointResult });
 });
 
-// â”€â”€ /api/tarea â€” Despacha tarea al agente mÃ¡s adecuado â”€â”€â”€â”€â”€â”€â”€â”€
-// El CapitÃ¡n describe quÃ© quiere hacer; el Hub elige quiÃ©n lo ejecuta mejor.
+// ── /api/tarea – Despacha tarea al agente más adecuado ────────────────
+// El Capitán describe qué quiere hacer; el Hub elige quién lo ejecuta mejor.
 app.post("/api/tarea", async (req, res) => {
   const { tarea, contexto = "" } = req.body;
   if (!tarea) return res.status(400).json({ error: "Falta 'tarea'" });
@@ -1351,8 +1364,8 @@ app.post("/api/tarea", async (req, res) => {
   const t = tarea.toLowerCase();
   let agente, fn;
 
-  // Routing semÃ¡ntico: cÃ³digo/ejecuciÃ³n â†’ Codex, anÃ¡lisis/datos â†’ Sanji, clÃ­nica/escritura â†’ Nami
-  if (/cÃ³digo|script|funciÃ³n|ejecuta|bug|github|archivo|crea el|desarrolla|implementa|refactoriza/.test(t)) {
+  // Routing semántico: código/ejecución → Codex, análisis/datos → Sanji, clínica/escritura → Nami
+  if (/código|script|función|ejecuta|bug|github|archivo|crea el|desarrolla|implementa|refactoriza/.test(t)) {
     agente = "Usopp (Codex)";
     fn     = callCodex(`${tarea}\n\nContexto adicional:\n${contexto}`);
   } else if (/analiza|datos|drive|sheet|busca|sintetiza|resume|compara|gemini/.test(t)) {
@@ -1400,23 +1413,23 @@ app.post("/api/tarea", async (req, res) => {
   }
 });
 
-// â”€â”€ /api/ml/log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── /api/ml/log ────────────────────────────────────────────────────────────
 app.post("/api/ml/log", async (req, res) => {
   const { input, output, nakama, rating, tags = [] } = req.body;
-  const msg = `[ML] rating=${rating ?? "?"} tags=${tags.join(",")} | ${input?.substring(0, 100)} â†’ ${output?.substring(0, 100)}`;
+  const msg = `[ML] rating=${rating ?? "?"} tags=${tags.join(",")} | ${input?.substring(0, 100)} → ${output?.substring(0, 100)}`;
   await logBitacora(nakama || "ML", msg, "hub-ml");
   res.json({ ok: true });
 });
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// WEB UI â€” interfaz embebida (accesible desde mÃ³vil)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ══════════════════════════════════════════════════════════════
+// WEB UI – interfaz embebida (accesible desde móvil)
+// ══════════════════════════════════════════════════════════════
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(UI_HTML);
 });
 
-// â”€â”€ Puente de Mando v2 â€” frontend de ejecuciÃ³n orquestada â”€â”€
+// ── Puente de Mando v2 – frontend de ejecución orquestada ──
 app.get("/puente", (req, res) => {
   const fs = require("fs");
   const puentePath = path.join(__dirname, "puente-v2.html");
@@ -1447,7 +1460,7 @@ app.get("/manifest.json", (req, res) => {
   });
 });
 
-// Service worker bÃ¡sico para PWA offline
+// Service worker básico para PWA offline
 app.get("/sw.js", (req, res) => {
   res.setHeader("Content-Type", "application/javascript");
   res.send(`
@@ -1467,7 +1480,7 @@ const UI_HTML = /* html */ `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f5c518">
 <link rel="manifest" href="/manifest.json">
-<title>ðŸ´â€â˜ ï¸ Thousand Sunny Hub</title>
+<title>🏴‍☠️ Thousand Sunny Hub</title>
 <style>
   :root{--bg:#0f1117;--sur:#1a1d27;--brd:#2d3147;--gold:#f5c518;--blue:#4a9eff;--grn:#3fcf8e;--red:#ff6b6b;--txt:#e8eaf6;--mut:#6b7280}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -1504,56 +1517,56 @@ const UI_HTML = /* html */ `<!DOCTYPE html>
 </head>
 <body>
 <header>
-  <span style="font-size:1.3rem">ðŸ´â€â˜ ï¸</span>
+  <span style="font-size:1.3rem">🏴‍☠️</span>
   <h1>Thousand Sunny Hub v2.0</h1>
-  <span id="ws-lbl" style="font-size:.72rem;color:var(--mut)">Conectandoâ€¦</span>
+  <span id="ws-lbl" style="font-size:.72rem;color:var(--mut)">Conectando…</span>
   <div id="dot"></div>
 </header>
 <div class="layout">
   <div class="side">
     <h3>Agentes</h3>
-    <button class="btn on"  onclick="sel('claude','Nami (Claude)')">ðŸŠ Nami â€” Claude</button>
-    <button class="btn"     onclick="sel('codex','Usopp (Codex)')">ðŸŽ¯ Usopp â€” Codex</button>
-    <button class="btn"     onclick="sel('antigravity','Sanji (Antigravity)')">ðŸ³ Sanji â€” Antigravity</button>
-    <button class="btn"     onclick="sel('puente','Puente de Mando')">âš“ Puente de Mando</button>
-    <button class="btn"     onclick="sel('tarea','Auto-despacho')">ðŸ”€ Auto-despacho</button>
+    <button class="btn on"  onclick="sel('claude','Nami (Claude)')">🌊 Nami – Claude</button>
+    <button class="btn"     onclick="sel('codex','Usopp (Codex)')">🎯 Usopp – Codex</button>
+    <button class="btn"     onclick="sel('antigravity','Sanji (Antigravity)')">🍳 Sanji – Antigravity</button>
+    <button class="btn"     onclick="sel('puente','Puente de Mando')">⚓ Puente de Mando</button>
+    <button class="btn"     onclick="sel('tarea','Auto-despacho')">📤 Auto-despacho</button>
     <button class="btn"     onclick="sel('fleet','Argos / Flota')">Argos / Flota</button>
     <h3>Drive / GAS</h3>
-    <button class="btn" onclick="gas('get_estado_full')">ðŸ“Š Estado GAS</button>
-    <button class="btn" onclick="gas('bitacora')">ðŸ“– BitÃ¡cora</button>
+    <button class="btn" onclick="gas('get_estado_full')">📊 Estado GAS</button>
+    <button class="btn" onclick="gas('bitacora')">📖 Bitácora</button>
     <h3>Memoria</h3>
-    <button class="btn" onclick="anandaState()">ðŸª· Ananda</button>
+    <button class="btn" onclick="anandaState()">🪷 Ananda</button>
     <h3>Desktop</h3>
-    <button class="btn" onclick="desktop({action:'status'})">ðŸ–¥ï¸ Estado Bridge</button>
-    <button class="btn" onclick="desktop({action:'screenshot'})">ðŸ“· Screenshot</button>
-    <button class="btn" onclick="focusApp('Claude')">â†’ Foco Claude</button>
-    <button class="btn" onclick="focusApp('ChatGPT')">â†’ Foco Codex</button>
-    <button class="btn" onclick="focusApp('Gemini')">â†’ Foco Gemini</button>
+    <button class="btn" onclick="desktop({action:'status'})">🖥️ Estado Bridge</button>
+    <button class="btn" onclick="desktop({action:'screenshot'})">📷 Screenshot</button>
+    <button class="btn" onclick="focusApp('Claude')">→ Foco Claude</button>
+    <button class="btn" onclick="focusApp('ChatGPT')">→ Foco Codex</button>
+    <button class="btn" onclick="focusApp('Gemini')">→ Foco Gemini</button>
     <h3>PWA</h3>
-    <button class="btn" id="instBtn" style="display:none" onclick="installPWA()">ðŸ“² Instalar en mÃ³vil</button>
+    <button class="btn" id="instBtn" style="display:none" onclick="installPWA()">📲 Instalar en móvil</button>
   </div>
   <div class="chat">
     <div id="msgs">
       <div class="msg a">
         <div class="tag">Sistema</div>
         Hub v2.0 activo. Agentes reales conectados:<br>
-        <span class="chip">ðŸŠ Nami â€” Claude API</span>
-        <span class="chip">ðŸŽ¯ Usopp â€” Codex SDK</span>
-        <span class="chip">ðŸ³ Sanji â€” Antigravity</span>
-        <span class="chip">âš“ Puente</span>
-        <span class="chip">ðŸª· Ananda â€” memoria compartida</span>
+        <span class="chip">🌊 Nami – Claude API</span>
+        <span class="chip">🎯 Usopp – Codex SDK</span>
+        <span class="chip">🍳 Sanji – Antigravity</span>
+        <span class="chip">⚓ Puente</span>
+        <span class="chip">🪷 Ananda – memoria compartida</span>
       </div>
     </div>
     <div class="bar">
       <select id="agSel" onchange="agente=this.value">
-        <option value="claude">ðŸŠ Nami (Claude)</option>
-        <option value="codex">ðŸŽ¯ Usopp (Codex)</option>
-        <option value="antigravity">ðŸ³ Sanji (Antigravity)</option>
-        <option value="puente">âš“ Puente de Mando</option>
-        <option value="tarea">ðŸ”€ Auto-despacho</option>
+        <option value="claude">🌊 Nami (Claude)</option>
+        <option value="codex">🎯 Usopp (Codex)</option>
+        <option value="antigravity">🍳 Sanji (Antigravity)</option>
+        <option value="puente">⚓ Puente de Mando</option>
+        <option value="tarea">📤 Auto-despacho</option>
         <option value="fleet">Argos / Flota</option>
       </select>
-      <textarea id="inp" rows="2" placeholder="Escribe la tareaâ€¦ (Enter envÃ­a, Shift+Enter nueva lÃ­nea)"></textarea>
+      <textarea id="inp" rows="2" placeholder="Escribe la tarea… (Enter envía, Shift+Enter nueva línea)"></textarea>
       <button id="go" onclick="send()">Enviar</button>
     </div>
     <div class="st" id="st">Listo</div>
