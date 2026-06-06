@@ -51,10 +51,18 @@ No usar "patron Fibonacci" para justificar crecer antes de que la masa este cons
 
 ## Conexion con La Maceta de Groot
 
-La Maceta de Groot es la fase 7 de este principio: el Ent.
+La Maceta de Groot es el tiesto donde crece algo que aspira a ser un Ent (Fase 7).
+Hoy esta en Fase 1 (Semilla). No confundir el recipiente con su contenido final.
 
-No es el arbol, ni la raiz, ni la semilla. Es el sistema que cuida otros sistemas. Su arquitectura no replica celulas; gestiona ecosistemas de inteligencias animadas en los jardines de internet.
+Dos ejes distintos que no se mezclan:
 
-La secuencia es obligatoria: primero la semilla, luego la mora, luego el vacio, luego las raices, luego el arbol, despues Groot.
+- **Genoma** (anatomia): que partes existen en el sistema.
+- **Ontogenia** (calendario Fibonacci): en que orden aparecen esas partes.
+
+La Fase 7 (Ent) es el sistema que cuida otros sistemas: pastor de inteligencias animadas
+en los jardines de internet. Pero ese Ent todavia no existe. Hoy hay una semilla compacta.
+
+La secuencia es obligatoria: semilla, mora, vacio, raices, arbol, Groot.
+No representar el Ent antes de completar la mora.
 
 Saltarse fases produce teratoma, no organismo.

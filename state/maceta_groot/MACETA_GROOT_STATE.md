@@ -6,20 +6,23 @@ Ultima actualizacion: 2026-06-06
 
 ## Proposito
 
-La Maceta de Groot es la fase 7 del principio Fibonacci de crecimiento del sistema.
-No es un proyecto de biologia; es un contenedor simbolico donde germina la siguiente
-escala del ecosistema: agentes que cuidan otros agentes, inteligencias pastoreadas,
-ecosistemas IA en jardines de internet.
+La Maceta de Groot es el tiesto: el contenedor donde puede germinar sin deformarse
+lo que aspira a ser un Ent (Fase 7). Hoy esta en Fase 1 (Semilla).
 
-Ver `state/deckard/06_FIBONACCI_GROWTH.md` para el marco completo.
+No confundir el recipiente con su contenido final. La Maceta no es el Ent.
+La Maceta es donde el Ent empieza a crecer.
+
+Ver `state/deckard/06_FIBONACCI_GROWTH.md` para el marco de 7 fases completo.
 
 ## Metafora activa
 
-El Ent de Tolkien. Groot de Guardianes de la Galaxia.
-No animal, no cerebro, no solo arbol.
-Ser de nutricion y crecimiento micorico. Pastor de inteligencias vegetativas y animadas.
+El tiesto contiene la semilla. La semilla contiene el codigo del Ent.
+El Ent es Groot de Guardianes de la Galaxia. El Ent es el pastor de Tolkien.
+No animal, no cerebro, no solo arbol. Ser de nutricion y crecimiento micorico.
 
-La clave: el Ent no es el arbol. El Ent cuida el bosque.
+Pero hoy: semilla. Compacta. Sin ramas. Sin cavidad todavia.
+
+La clave: el Ent no es el arbol. El Ent cuida el bosque. Y todavia no ha salido de la tierra.
 
 ## Estado Actual
 
