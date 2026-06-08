@@ -39,7 +39,7 @@ Pega esta linea al iniciar:
 - No GO C0 Wave8 todavia.
 - No EPIGRAFE.md ni poblado completo N1-N5 todavia.
 - No renombrar carpetas historicas del vault sin GO explicito del Capitan.
-- No crear GERMINACION_01 hasta que la radicula este anclada (pregunta respondida).
+- No crear GERMINACION_02 hasta que GERMINACION_01 quede mergeado como radicula anclada y haya GO explicito del Capitan para el hipocotilo.
 - Saltarse fases produce teratoma, no organismo.
 
 ## Proposito (radicula anclada en GERMINACION_01)
