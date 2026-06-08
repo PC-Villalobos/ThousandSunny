@@ -17,7 +17,7 @@ Pega esta linea al iniciar:
   "vault_local": "C:\\La maceta de Groot",
   "sealed": false,
   "pending": "Avanzar a Fase 2 (Doble): definir fuentes y corpus inicial del vault.",
-  "wp": "WP-010",
+  "wp": "WP-011",
   "canon_fibonacci": "state/deckard/06_FIBONACCI_GROWTH.md",
   "ultima_actualizacion": "2026-06-06"
 }

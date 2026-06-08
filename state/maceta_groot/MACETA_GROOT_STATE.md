@@ -36,7 +36,7 @@ La clave: el Ent no es el arbol. El Ent cuida el bosque. Y todavia no ha salido 
   "source_insight": "Fibonacci como principio de crecimiento organico",
   "sealed": false,
   "next_action": "Consolidar vault local y avanzar a Fase 2 (Doble/Segmentacion)",
-  "wp": "WP-010"
+  "wp": "WP-011"
 }
 ```
 

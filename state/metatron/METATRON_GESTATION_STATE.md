@@ -80,7 +80,8 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 6. Mantener validacion de mapa contra manifiesto antes de cerrar futuras oleadas.
 7. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) — pendiente actualizacion manual o via script; ThousandSunny RETOMAR.md ya actualizado (v2026-05-25).
 8. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
-9. **Conexion Fibonacci** (2026-06-06): El principio de crecimiento organico formalizado en `state/deckard/06_FIBONACCI_GROWTH.md`. Cada wave = F(n-1) + F(n-2). Wave8 es Fase 3 (Mora): masa coherente antes del primer vacio. La Maceta de Groot (WP-010) es Fase 7 (Ent): posterior a Wave8.
+9. **Conexion Fibonacci** (2026-06-06): El principio de crecimiento organico formalizado en `state/deckard/06_FIBONACCI_GROWTH.md`. Cada wave = F(n-1) + F(n-2). Wave8 es Fase 3 (Mora): masa coherente antes del primer vacio. La Maceta de Groot (WP-011) es el tiesto que aspira a Fase 7 (Ent): posterior a Wave8. Genoma N0-N5 plantado en `state/metatron/genoma/`.
+10. **Genoma plantado** (2026-06-06): N0-SEMILLA-METATRON.md + N1-N5 stubs + PLACENTA_ROOT + PLACENTA_INTEGRATION_PLAN + WAVE8-CANDIDATOS en `state/metatron/`. Stubs N1-N5 pendientes de poblado desde boveda local.
 
 ## WP-010 Corpus Collection
 
