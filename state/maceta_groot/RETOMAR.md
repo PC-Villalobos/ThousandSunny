@@ -12,14 +12,17 @@ Pega esta linea al iniciar:
 
 ```json
 {
+  "estado": "SEMILLA_VIABLE_DORMANTE",
   "fase_actual": "Semilla",
   "fase_numero": 1,
-  "vault_local": "C:\\La maceta de Groot",
+  "fecundacion_completada": "2026-06-08",
+  "pr_fecundacion": 12,
   "sealed": false,
-  "pending": "Avanzar a Fase 2 (Doble): definir fuentes y corpus inicial del vault.",
+  "pending": "Germinacion pendiente. Trigger: GO del Capitan (agua + luz + contexto boveda local).",
   "wp": "WP-011",
   "canon_fibonacci": "state/deckard/06_FIBONACCI_GROWTH.md",
-  "ultima_actualizacion": "2026-06-06"
+  "canon_fecundacion": "state/deckard/07_FECUNDACION_VEGETAL.md",
+  "ultima_actualizacion": "2026-06-08"
 }
 ```
 
