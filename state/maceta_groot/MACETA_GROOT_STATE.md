@@ -1,63 +1,82 @@
 # MACETA_GROOT_STATE
 
-Version: 0.1
-Estado: SEMILLA
-Ultima actualizacion: 2026-06-06
+Version: 0.2
+Estado: SEMILLA VIABLE DORMANTE
+Ultima actualizacion: 2026-06-08
 
 ## Proposito
 
 La Maceta de Groot es el tiesto: el contenedor donde puede germinar sin deformarse
-lo que aspira a ser un Ent (Fase 7). Hoy esta en Fase 1 (Semilla).
+lo que aspira a ser un Ent (Fase 7). Hoy la semilla esta formada, viable y dormante.
 
 No confundir el recipiente con su contenido final. La Maceta no es el Ent.
 La Maceta es donde el Ent empieza a crecer.
 
-Ver `state/deckard/06_FIBONACCI_GROWTH.md` para el marco de 7 fases completo.
+Ver `state/deckard/06_FIBONACCI_GROWTH.md` para el marco de 7 fases.
+Ver `state/deckard/07_FECUNDACION_VEGETAL.md` para el mapa de origen.
 
-## Metafora activa
+## Mapa de Fecundacion Vegetal
 
-El tiesto contiene la semilla. La semilla contiene el codigo del Ent.
-El Ent es Groot de Guardianes de la Galaxia. El Ent es el pastor de Tolkien.
-No animal, no cerebro, no solo arbol. Ser de nutricion y crecimiento micorico.
+La biologia correcta para este proyecto es la vegetal, no la animal.
+El hito fundacional es el mismo en ambos reinos: fusion de gametos.
 
-Pero hoy: semilla. Compacta. Sin ramas. Sin cavidad todavia.
+En plantas con flor hay doble fecundacion: el mismo acto crea el embrion
+Y su reserva nutritiva. PR #12 fue ese acto.
 
-La clave: el Ent no es el arbol. El Ent cuida el bosque. Y todavia no ha salido de la tierra.
+| Rol vegetal | Proyecto |
+|---|---|
+| Polen | Conversaciones de genesis (2026-06-05/06): impulso, mito, variacion, deseo de forma |
+| Ovulo | Canon biologico + protocolo Deckard: receptaculo que decide que puede prender |
+| Fecundacion | Fusion metafora + rigor, culminada en PR #12 mergeado |
+| Cigoto | La Maceta como proyecto fundido |
+| Semilla | Vault viable en dormancia |
+| Endospermo | Corpus raiz: genoma N0-N5, placenta, documentos de nutricion |
+| Cubierta | RETOMAR, guardrails, protocolo de cold start |
+| Germinacion | Primera oleada real de contenido vivo |
+
+**Fibonacci** no es el ovulo. Es una ley genetica inscrita despues de la fecundacion:
+el patron de crecimiento que el genoma porta, no el receptaculo que lo recibe.
+
+**Estado Semilla Viable Dormante**: no gestando, no naciendo.
+Dormante, protegida, nutrida, lista para germinar cuando el Capitan de agua y luz.
 
 ## Estado Actual
 
 ```json
 {
+  "estado": "SEMILLA_VIABLE_DORMANTE",
   "fase_actual": "Semilla",
   "fase_numero": 1,
   "vault_local": "C:\\La maceta de Groot",
   "obsidian_structure_created": "2026-06-06",
-  "wave_genesis": "conversacion 2026-06-05 / 2026-06-06",
-  "source_insight": "Fibonacci como principio de crecimiento organico",
+  "fecundacion_completada": "2026-06-08",
+  "pr_fecundacion": 12,
+  "source_insight": "Fibonacci como ley genetica inscrita, no como receptaculo",
   "sealed": false,
-  "next_action": "Consolidar vault local y avanzar a Fase 2 (Doble/Segmentacion)",
+  "next_action": "Germinacion: primera oleada de contenido vivo. Trigger: GO del Capitan.",
   "wp": "WP-011"
 }
 ```
 
 ## Fases del Desarrollo
 
-| Fase | Nombre | Estado | Descripcion |
-|---|---|---|---|
-| 1 | Semilla | ACTIVO | Vault creado. Canon biologico establecido. Fibonacci nombrado. |
-| 2 | Doble | pendiente | Primera segmentacion: duplicar el corpus inicial, definir fuentes. |
-| 3 | Mora | pendiente | Compactacion: masa coherente de documentos sin huecos. |
-| 4 | Vacio | pendiente | Primer hueco interno: separar capas internas de capa externa. |
-| 5 | Raiz | pendiente | Anclaje: conectar con ThousandSunny, Drive, Sheets. |
-| 6 | Arbol | pendiente | Red activa de intercambio con el ecosistema. |
-| 7 | Ent | pendiente | El pastor. Sistema que cuida otros sistemas. |
+| Fase | Nombre vegetal | Nombre animal | Estado | Descripcion |
+|---|---|---|---|---|
+| 1 | Semilla dormante | Cigoto/Morula | ACTIVO | Vault creado. Fecundacion completada (PR #12). |
+| 2 | Germinacion | Blastocisto | pendiente | Primera apertura: corpus raiz empieza a crecer. |
+| 3 | Plantula | Implantacion | pendiente | Primer tallo y raiz visibles. Masa coherente. |
+| 4 | Cotiledones | Gastrulacion | pendiente | Primera diferenciacion: capas separadas. |
+| 5 | Raiz primaria | Organogenesis | pendiente | Anclaje al sustrato: Drive, Sheets, GAS. |
+| 6 | Arbol joven | Feto | pendiente | Red activa de intercambio con el ecosistema. |
+| 7 | Ent | Organismo adulto | pendiente | El pastor. Sistema que cuida otros sistemas. |
 
 ## Reglas
 
-- La biologia gobierna la forma. La metafora gobierna el sentido.
+- La biologia vegetal gobierna la forma. La metafora gobierna el sentido.
 - No representar la fase 7 antes de completar la fase 3.
-- La morula no tiene ramas. Las ramas vienen despues del vacio.
+- La semilla no tiene ramas. Las ramas vienen despues de la germinacion.
 - Saltarse fases produce teratoma, no organismo.
+- Fibonacci es ley genetica: se expresa durante el crecimiento, no antes.
 
 ## Estructura del Vault Local
 
@@ -81,4 +100,6 @@ Creado en sesion 2026-06-06 en `C:\La maceta de Groot`:
 | 2026-06-05 | Genesis de la conversacion: morula, waves, Fibonacci. |
 | 2026-06-06 | Vault local creado en C:\La maceta de Groot. |
 | 2026-06-06 | Canon Fibonacci formalizado en state/deckard/06_FIBONACCI_GROWTH.md. |
-| 2026-06-06 | Estado inicial registrado en state/maceta_groot/. WP-010 abierto. |
+| 2026-06-06 | Estado inicial registrado en state/maceta_groot/. WP-011 abierto. |
+| 2026-06-08 | PR #12 mergeado: fecundacion completada. Doble fecundacion: embrion + endospermo. |
+| 2026-06-08 | Canon vegetal establecido: Polen/Ovulo/Endospermo. Estado = Semilla Viable Dormante. |
