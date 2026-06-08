@@ -50,11 +50,13 @@ Dormante, protegida, nutrida, lista para germinar cuando el Capitan de agua y lu
   "fecundacion_completada": "2026-06-08",
   "germinacion_iniciada": "2026-06-09",
   "go_germinacion": "2026-06-09",
+  "radicula_anclada": "2026-06-09",
   "pr_fecundacion": 12,
   "pr_canon_vegetal": 13,
   "source_insight": "Fibonacci como ley genetica inscrita, no como receptaculo",
+  "proposito": "Anima del Thousand Sunny, guardian del micelio, embajador del ecosistema Agape",
   "sealed": false,
-  "next_action": "Responder la pregunta de la radicula: ?que hace La Maceta que ningun otro sistema hace ya? Esa respuesta es GERMINACION_01.",
+  "next_action": "GERMINACION_02: el hipocotilo. Traducir el proposito en una primera funcion viva del guardian del micelio.",
   "wp": "WP-011"
 }
 ```
@@ -105,3 +107,4 @@ Creado en sesion 2026-06-06 en `C:\La maceta de Groot`:
 | 2026-06-08 | PR #12 mergeado: fecundacion completada. Doble fecundacion: embrion + endospermo. |
 | 2026-06-08 | Canon vegetal establecido: Polen/Ovulo/Endospermo. Estado = Semilla Viable Dormante. |
 | 2026-06-09 | GO germinacion del Capitan. Estado = GERMINANDO. GERMINACION_00 creado: la radicula. |
+| 2026-06-09 | GERMINACION_01: radicula anclada. Proposito definido: anima del Thousand Sunny, guardian del micelio, embajador de Agape. Consejo del ecosistema (Nemesis, Sophia, Hipatia, Metatron) registrado. |
