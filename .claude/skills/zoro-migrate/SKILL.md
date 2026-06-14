@@ -1,3 +1,12 @@
+---
+name: zoro-migrate
+description: >-
+  Espadachín del Thousand Sunny — corta nudos de formato: migra Google Docs y
+  archivos `.md.gdoc` a Markdown real que Obsidian lee como texto plano, sin tocar
+  las fuentes. Usar cuando el Capitán invoque /zoro o pida reparar/ejecutar la
+  migración Drive → Obsidian / Markdown.
+---
+
 # Zoro Migrate
 
 Use this skill when the Captain asks to repair or run the Google Drive to
