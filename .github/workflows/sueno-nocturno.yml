@@ -1,0 +1,36 @@
+name: funcion-de-sueno-nocturna
+
+on:
+  schedule:
+    # GitHub cron uses UTC. 01:09 UTC is 03:09 in Madrid during summer time.
+    - cron: "9 1 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sueno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: N1-N2-N3-REM deterministic cycle
+        run: |
+          node state/funcion_de_sueno/funcion_de_sueno.mjs \
+            --config state/funcion_de_sueno/sleep_config.repo.json \
+            --actor github-actions \
+            --role Nami \
+            --cloud-request
+
+      - name: Commit sleep report
+        run: |
+          git config user.name "funcion-de-sueno"
+          git config user.email "sueno@thousand-sunny.local"
+          git add state/funcion_de_sueno
+          git commit -m "chore(sueno): parte nocturno $(date -u +%F)" || echo "sin cambios"
+          git push || echo "nada que empujar"
