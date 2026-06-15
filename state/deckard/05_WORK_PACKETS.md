@@ -88,4 +88,13 @@ Voz: Codex / Usopp con supervision Nami
 Entrada: auditoria Wave5, mapa de gastrulacion, estado local de oleadas.
 Salida: `state/metatron/METATRON_GESTATION_STATE.md`.
 Prohibido: publicar contenido clinico, mover fuentes, ejecutar Mirror sin GO C0.
-Handoff: Wave6 queda en Plan con 32 candidatos y `source_mutations=0`; Mirror pendiente de aprobacion del Capitan.
+Handoff: Wave8 en Plan con 16 candidatos y `source_mutations=0`; Mirror bloqueado hasta GO C0 explicito del Capitan.
+
+### WP-011 - La Maceta de Groot
+Estado: open
+Voz: Claude Code / Franky
+Entrada: conversacion de genesis (2026-06-05/06), principio Fibonacci, fases embriologicas, vault local C:\La maceta de Groot.
+Salida: `state/maceta_groot/MACETA_GROOT_STATE.md`, `state/maceta_groot/RETOMAR.md`, canon Fibonacci en `state/deckard/06_FIBONACCI_GROWTH.md`.
+Prohibido: mezclar material clinico; representar fase Ent antes de completar fase Morula; saltarse fases de desarrollo; confundir el tiesto con su contenido final.
+Nota: WP-010 ya esta ocupado por Corpus Collection interno de Metatron (Wave8 candidatos).
+Handoff: Fase 1 (Semilla) completada 2026-06-06. Vault local creado. Canon Fibonacci formalizado. Proxima accion: Fase 2 (Doble) — definir corpus raiz del vault.

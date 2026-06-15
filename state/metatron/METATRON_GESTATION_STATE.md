@@ -2,7 +2,7 @@
 
 Version: 2.1
 Estado: ACT
-Ultima actualizacion: 2026-05-28 (Wave9 conditional mirror executed)
+Ultima actualizacion: 2026-06-06 (Wave9 conditional mirror + Fibonacci/genoma integrado)
 
 ## Proposito
 
@@ -109,8 +109,10 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 7. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
 8. El sellado sigue separado por protocolo y requiere GO C0 explicito.
 9. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
-10. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-28).
-11. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+10. **Conexion Fibonacci** (2026-06-06): el principio de crecimiento organico queda formalizado en `state/deckard/06_FIBONACCI_GROWTH.md`. Cada wave = F(n-1) + F(n-2). Wave8 es Fase 3 (Mora): masa coherente antes del primer vacio. La Maceta de Groot (WP-011) es el tiesto que aspira a Fase 7 (Ent): posterior a Wave8. Genoma N0-N5 plantado en `state/metatron/genoma/`.
+11. **Genoma plantado** (2026-06-06): N0-SEMILLA-METATRON.md + N1-N5 stubs + PLACENTA_ROOT + PLACENTA_INTEGRATION_PLAN + WAVE8-CANDIDATOS en `state/metatron/`. Stubs N1-N5 pendientes de poblado desde boveda local.
+12. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-28).
+13. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
