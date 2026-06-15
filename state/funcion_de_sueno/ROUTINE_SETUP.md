@@ -4,7 +4,7 @@
 
 Name: Funcion de sueno nocturna
 
-Repository: pc-villalobos/thousandsunny
+Repository: PC-Villalobos/ThousandSunny
 
 Schedule: daily 03:09 Europe/Madrid
 

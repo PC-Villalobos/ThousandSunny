@@ -16,5 +16,5 @@ Objetivo:
 - Dejar reporte y eventos en `state/funcion_de_sueno/reports`.
 - Si el entorno no permite ejecutar Node, leer `state/funcion_de_sueno/FUNCION_DE_SUENO_FASES.md` y producir manualmente un reporte siguiendo las mismas fases.
 
-Root esperado en cloud: raiz del repo `pc-villalobos/thousandsunny`.
+Root esperado en cloud: raiz del repo `PC-Villalobos/ThousandSunny`.
 Actor/Rol recomendado: cloud / Nami.
