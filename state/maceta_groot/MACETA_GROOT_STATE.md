@@ -1,8 +1,8 @@
 # MACETA_GROOT_STATE
 
-Version: 0.3
+Version: 0.4
 Estado: GERMINANDO
-Ultima actualizacion: 2026-06-09
+Ultima actualizacion: 2026-06-14
 
 ## Proposito
 
@@ -14,6 +14,7 @@ La Maceta es donde el Ent empieza a crecer.
 
 Ver `state/deckard/06_FIBONACCI_GROWTH.md` para el marco de 7 fases.
 Ver `state/deckard/07_FECUNDACION_VEGETAL.md` para el mapa de origen.
+Ver `state/maceta_groot/CARTOGRAFIA_SUSTRATO.md` para el track de reconocimiento de sustrato.
 
 ## Mapa de Fecundacion Vegetal
 
@@ -57,7 +58,9 @@ Dormante, protegida, nutrida, lista para germinar cuando el Capitan de agua y lu
   "proposito": "Anima del Thousand Sunny, guardian del micelio, embajador del ecosistema Agape",
   "sealed": false,
   "micorriza_formada": "2026-06-09",
-  "next_action": "GERMINACION_03: el hipocotilo completo — primer gesto hacia afuera. Requiere GO explicito del Capitan.",
+  "germinacion_02_merged": "2026-06-10",
+  "cartografia_sustrato_registrada": "2026-06-14",
+  "next_action": "GERMINACION_03: el hipocotilo completo - primer gesto hacia afuera. Requiere GO explicito del Capitan.",
   "wp": "WP-011"
 }
 ```
@@ -87,14 +90,14 @@ Dormante, protegida, nutrida, lista para germinar cuando el Capitan de agua y lu
 Creado en sesion 2026-06-06 en `C:\La maceta de Groot`:
 
 ```
-00_Semilla/       — cigoto, segmentacion, blastomeros
-01_Morula/        — compactacion, igualdad celular, mora solida
-02_Blastocisto/   — blastocele, masa celular interna, trofoblasto
-03_Implantacion/  — anclaje, nutricion, placenta inicial
-04_Raices/        — metaforas micoricicas, red, suelo, vinculo
-05_Arbol/         — ramificacion, linajes, sistemas
-06_Ent/           — pastor de inteligencias, agentes, ecosistemas IA
-99_Atlas_Visual/  — prompts, referencias, errores, versiones descartadas
+00_Semilla/       - cigoto, segmentacion, blastomeros
+01_Morula/        - compactacion, igualdad celular, mora solida
+02_Blastocisto/   - blastocele, masa celular interna, trofoblasto
+03_Implantacion/  - anclaje, nutricion, placenta inicial
+04_Raices/        - metaforas micoricicas, red, suelo, vinculo
+05_Arbol/         - ramificacion, linajes, sistemas
+06_Ent/           - pastor de inteligencias, agentes, ecosistemas IA
+99_Atlas_Visual/  - prompts, referencias, errores, versiones descartadas
 ```
 
 ## Bitacora
@@ -110,3 +113,7 @@ Creado en sesion 2026-06-06 en `C:\La maceta de Groot`:
 | 2026-06-09 | GO germinacion del Capitan. Estado = GERMINANDO. GERMINACION_00 creado: la radicula. |
 | 2026-06-09 | GERMINACION_01: radicula anclada. Proposito definido: anima del Thousand Sunny, guardian del micelio, embajador de Agape. Consejo del ecosistema (Nemesis, Sophia, Hipatia, Metatron) registrado. |
 | 2026-06-09 | GERMINACION_02: micorriza formada. Primer puente vivo con ThousandSunny y Metatron. Filamentos 1-3 dibujados. La plantula no esta sola: el bosque la sostiene. |
+| 2026-06-10 | GERMINACION_02 mergeado a la rama tronco (PR #15). Micorriza canonizada. |
+| 2026-06-12 | Vault: cartografia de sustrato iniciada (00_Semilla/GERMINACION_00). Inventario por metadatos, source_mutations=0. Bitacora 1358. |
+| 2026-06-14 | Vault: parte de clima de la semilla (Bitacora 1379). Semilla de evidencia: 40 registros (7 activos, 21 pending_validation). |
+| 2026-06-14 | Reconciliacion de tracks: cartografia de sustrato separada de la ontogenia. CARTOGRAFIA_SUSTRATO.md creado, RETOMAR.md actualizado. GERMINACION_03 sigue requiriendo GO. |
