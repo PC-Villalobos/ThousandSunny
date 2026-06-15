@@ -1,0 +1,73 @@
+{
+  "created_at": "2026-06-02",
+  "source_repo": "C:\\Users\\usuario\\OneDrive\\Documentos\\GitHub\\odysseus",
+  "target": "Thousand Sunny ecosystem",
+  "phases": [
+    {
+      "id": "phase-0-security-kernel",
+      "priority": "P0",
+      "goal": "Adopt portable safety contracts before deeper integration.",
+      "tasks": [
+        "Add untrusted-context wrapper to local hub and future webapp prompt builders.",
+        "Add URL guard before user-supplied web/model/webhook fetches.",
+        "Add role/tool policy for captain/nakama/automation/public_webhook.",
+        "Add path confinement for local file reads/writes in any agent adapter."
+      ]
+    },
+    {
+      "id": "phase-1-regression-harness",
+      "priority": "P0",
+      "goal": "Prevent known Puente regressions from returning.",
+      "tasks": [
+        "Test sendMessage direct responses do not double-render after polling.",
+        "Test Telegram echo includes the captain's original webapp message.",
+        "Test Bitacora dedupe by id and timestamp advance.",
+        "Test log_cowork rejects empty messages.",
+        "Test URL guard blocks metadata/link-local targets.",
+        "Test path guard blocks .env and .ssh."
+      ]
+    },
+    {
+      "id": "phase-2-bitacora-index-sidecar",
+      "priority": "P1",
+      "goal": "Keep Bitacora canonical while adding fast local retrieval.",
+      "tasks": [
+        "Ingest Bitacora rows into local SQLite sidecar.",
+        "Keep source_mutations=0 for indexing passes.",
+        "Use lexical + semantic fusion from Sunny Memory PoC.",
+        "Never expose clinical corpus without explicit gate."
+      ]
+    },
+    {
+      "id": "phase-3-skill-normalization",
+      "priority": "P1",
+      "goal": "Unify skills/personas/missions without rewriting source docs.",
+      "tasks": [
+        "Build manifest over .skill, SOUL, mission, and briefing docs.",
+        "Add usage/audit/redundancy sidecar.",
+        "Tag redundant skills instead of deleting.",
+        "Gate clinical skills separately."
+      ]
+    },
+    {
+      "id": "phase-4-new-webapp",
+      "priority": "P2",
+      "goal": "Rebuild cockpit as Sunny-native app, not Odysseus fork.",
+      "tasks": [
+        "Design dense cockpit first screen.",
+        "Expose Bitacora stream and actor router.",
+        "Use capability-gated controls.",
+        "Add mobile/PWA layer after security and tests."
+      ]
+    }
+  ],
+  "do_not_import_yet": [
+    "Odysseus email subsystem",
+    "Odysseus calendar subsystem",
+    "Odysseus vault subsystem",
+    "Odysseus shell routes",
+    "Odysseus Cookbook model-serving stack",
+    "Full Odysseus static UI bundle"
+  ]
+}
+

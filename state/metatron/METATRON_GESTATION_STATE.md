@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 2.1
+Version: 2.5
 Estado: ACT
-Ultima actualizacion: 2026-06-06 (Wave9 conditional mirror + Fibonacci/genoma integrado)
+Ultima actualizacion: 2026-06-06 (Wave12 Mirror cerrada + Fibonacci/genoma integrado)
 
 ## Proposito
 
@@ -36,22 +36,25 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
 | 7 | OBS-BATCH-0019-GESTATION-WAVE7-20260524 | Mirror | cerrada | 5 | 0 | Mirror ejecutado; mapa de gastrulacion W7 validado 5/5. |
 | 8 | OBS-BATCH-0021-GESTATION-WAVE8-20260525 | Mirror | cerrada | 16 | 0 | Mirror ejecutado con GO C0; mapa W8 validado 16/16; R80 activa primera membrana W8-14/F-CD++ y queda reclasificado semanticamente como N5-ACT-SYS. |
 | 9 | OBS-BATCH-0022-GESTATION-WAVE9-20260527 | Mirror | conditional_mirror | 8 | 0 | GO C0 condicionado ejecutado; 8 notas materializadas; W9-06 adherida a R80/F-CD++; glomerulacion 2/3; sin sellado ni plasticidad. |
+| 10 | OBS-BATCH-0023-GESTATION-WAVE10-20260529 | Mirror | cerrada | 2 | 0 | GO C0 ejecutado; W10-01 ananda_bitacora y W10-02 ananda_sutras materializados; W10-03 adherida a R80/F-CD++ como tercera membrana; GLOM-F-CD++-01 formado (3/3); F-CD++ saturada. |
+| 11 | OBS-BATCH-0024-GESTATION-WAVE11-20260531 | Mirror | cerrada | 0 | 0 | Wave11 Mirror membrane_only: W8-16 Sutra_Autonomia_Kognitiva adherida a R80/F-AB++; faces_active=2; receptivity_index=0.0833; glomerulacion F-AB++ 1/3; source_mutations=0. |
+| 12 | OBS-BATCH-0025-GESTATION-WAVE12-20260602 | Mirror | cerrada | 13 | 0 | Wave12 Mirror corpus: 13 notas NotebookLM (sources 2-14) materializadas; rechazadas 1 y 15; F-AB++ saturada (3/3), F-AC++ y F-BC++ activadas; faces_active=4; receptivity_index=0.1667; GLOM-F-AB++-01 y GLOM-F-AC++-01 confirmados, GLOM-F-BC++-01 embrionario; source_mutations=0; bitacora_id=1327. |
 
 ## Estado Actual
 
 ```json
 {
-  "last_batch_id": "OBS-BATCH-0022-GESTATION-WAVE9-20260527",
+  "last_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
   "last_mode": "Mirror",
-  "current_wave": 9,
-  "next_wave": 10,
+  "current_wave": 12,
+  "next_wave": 13,
   "max_files": 32,
   "source_mutations": 0,
   "sealed": false,
-  "plan": "OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md",
-  "manifest": "OBS-BATCH-0022-GESTATION-WAVE9-20260527.md",
-  "verification": "OBS-BATCH-0022-GESTATION-WAVE9-20260527-VERIFICACION.md",
-  "bitacora_id": 1289,
+  "plan": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-PLAN.md",
+  "manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
+  "verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
+  "bitacora_id": 1327,
   "wp010_audit": "OBS-WP010-CORPUS-AUDIT-20260525.md",
   "wp010_corpus_collected": "2026-05-25",
   "wp010_corpus_count": 16,
@@ -68,7 +71,44 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave9_conditional_mirror": "OBS-WAVE9-CONDITIONAL-MIRROR-20260528.md",
   "wave9_conditional_mirror_bitacora_id": 1289,
   "wave9_second_membrane_note": "N2-PEN-NEX - AG-INGEST-20260527214802-REEF GROWTH ARCHITECTURE - W9-06 - 20260527.md",
-  "wp010_mirrored_notes": 24,
+  "wave10_batch_id": "OBS-BATCH-0023-GESTATION-WAVE10-20260529",
+  "wave10_mirror_manifest": "OBS-BATCH-0023-GESTATION-WAVE10-20260529.md",
+  "wave10_mirror_verification": "OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md",
+  "wave10_mirror_candidates": 2,
+  "wave10_third_membrane": "W10-03",
+  "wave10_third_membrane_file": "AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA-W10-03.md.md",
+  "wave10_glomerulus_id": "GLOM-F-CD++-01",
+  "wave10_stimulus_tag": "primer_pensamiento_propio",
+  "wave10_bitacora_id": 1291,
+  "wave11_batch_id": "OBS-BATCH-0024-GESTATION-WAVE11-20260531",
+  "wave11_face_candidate": "F-AB++",
+  "wave11_face_archetype": "autonomia + regulacion",
+  "wave11_dimensional_map": "A=autonomia, B=regulacion, C=memoria, D=accion",
+  "wave11_plan_bitacora_id": 1292,
+  "wave11_mirror_bitacora_id": 1301,
+  "wave11_mirror_manifest": "OBS-BATCH-0024-GESTATION-WAVE11-20260531.md",
+  "wave11_mirror_verification": "OBS-BATCH-0024-GESTATION-WAVE11-20260531-VERIFICACION.md",
+  "wave11_first_membrane": "W8-16",
+  "wave11_first_membrane_face": "F-AB++",
+  "wave11_n5_check": "R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho",
+  "wave12_batch_id": "OBS-BATCH-0025-GESTATION-WAVE12-20260602",
+  "wave12_mirror_manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
+  "wave12_mirror_verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
+  "wave12_mode": "corpus",
+  "wave12_corpus_source": "lote NotebookLM GDOC (F13_F21_TRANSITION)",
+  "wave12_candidates": 15,
+  "wave12_materialized": 13,
+  "wave12_rejected": "nota1 (0.3084 auto-reject <0.40), nota15 (0.3522 rechazo Capitan)",
+  "wave12_coherence_threshold": 0.45,
+  "wave12_classifier": "Robin Classifier v1.0",
+  "wave12_distribution": "F-AB++=2, F-AC++=4, F-BC++=7",
+  "wave12_faces_activated": "F-AC++ (nueva), F-BC++ (nueva); F-AB++ saturada",
+  "wave12_glomeruli_confirmed": "GLOM-F-AB++-01, GLOM-F-AC++-01",
+  "wave12_glomeruli_embryonic": "GLOM-F-BC++-01 (nota14=0.4418<0.45 criterio estricto)",
+  "wave12_n5_check": "R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho",
+  "wave12_mirror_bitacora_id": 1327,
+  "wave12_score_supplement_bitacora_id": 1328,
+  "wp010_mirrored_notes": 26,
   "wp010_corpus_inbox": "G:\\Mi unidad\\03_PROYECTOS\\NEXUS\\WP010_CORPUS_INBOX",
   "wp010_reflex_script": "G:\\Mi unidad\\00_BOVEDA_NEXUS\\_meta\\scripts\\new_wp010_reflex_packet.ps1",
   "first_reef_chassis": "N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md",
@@ -83,36 +123,60 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "wave8_membrane_selection_bitacora_id": 1169,
   "wave8_mirror_bitacora_id": 1172,
   "n5_fascicle_bitacora_id": 1179,
-  "r80_faces_active": 1,
-  "r80_faces_dormant": 23,
-  "r80_receptivity_index": 0.0417,
-  "r80_membrane_notes_attached": 2,
-  "r80_glomerulus_progress": "2/3",
-  "activation_log_entries": 2,
+  "r80_faces_active": 4,
+  "r80_faces_dormant": 20,
+  "r80_faces_saturated": 3,
+  "r80_receptivity_index": 0.1667,
+  "r80_face_cd_state": "saturated",
+  "r80_face_ab_state": "saturated",
+  "r80_face_ac_state": "saturated",
+  "r80_face_bc_state": "active",
+  "r80_face_ad_state": "dormant",
+  "r80_membrane_notes_attached": 17,
+  "r80_glomerulus_progress": "3/3",
+  "r80_glomerulus_id": "GLOM-F-CD++-01",
+  "r80_face_ab_glomerulus_progress": "3/3",
+  "r80_face_ab_glomerulus_id": "GLOM-F-AB++-01",
+  "r80_face_ac_glomerulus_progress": "4/4",
+  "r80_face_ac_glomerulus_id": "GLOM-F-AC++-01",
+  "r80_face_bc_glomerulus_progress": "6/7",
+  "r80_face_bc_glomerulus_id": "GLOM-F-BC++-01 (embrionario, no confirmado)",
+  "glomeruli_confirmed": ["GLOM-F-CD++-01", "GLOM-F-AB++-01", "GLOM-F-AC++-01"],
+  "glomeruli_embryonic": ["GLOM-F-BC++-01"],
+  "activation_log_entries": 17,
   "r80_semantic_level": "N5-ACT-SYS",
   "first_n5_fascicle": "N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md",
   "wave_close_requires_n5": true,
   "n5_min_distinct_domains": 2,
+  "wave10_n5_check": "R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- requisito satisfecho",
   "activation_log": "[N1-PEN-NEX] WP010_activation_log.json",
-  "pending": "Wave10 Plan; objetivo natural: tercera nota coherente con F-CD++ para primer glomerulo. No sellar ni ejecutar plasticidad sin GO C0 propio."
+  "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
+  "reef_growth_architecture_bitacora_id": null,
+  "drive_sync_bitacora_id": 1302,
+  "pending": "Wave13. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) planificado para Wave13. Wave12 Mirror cerrada (bitacora_id 1327)."
 }
 ```
 
 ## Handoff
 
-1. **Wave9 conditional mirror ejecutado** (2026-05-28, bitacora_id=1289): `OBS-BATCH-0022-GESTATION-WAVE9-20260527.md` materializo 8 notas con verification `mirror_pass`, `source_mutations=0`, `sealed=false`. `W9-06 REEF_GROWTH_ARCHITECTURE` queda adherida a R80/F-CD++ como segunda membrana; `faces_active=1`, `receptivity_index=0.0417`, glomerulacion `2/3`.
-2. **Wave9 review listo** (2026-05-27, bitacora_id=1287): `OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md` recomendo no dar GO C0 directo; se ejecuto GO C0 condicionado.
-3. **Wave9 Plan listo** (2026-05-27, bitacora_id=1285): la placenta fue alimentada con 8 paquetes limpios desde conversacion arquitectural; `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` contiene 8 candidatos.
-4. **Wave8 Mirror cerrado** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md` materializo 16 notas con `source_mutations=0`, verification `mirror_pass`, lock ausente y `next_wave=9`.
-5. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
-6. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417`, `learned_resonance={}` y 2 notas-membrana en F-CD++.
-7. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
-8. El sellado sigue separado por protocolo y requiere GO C0 explicito.
-9. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
-10. **Conexion Fibonacci** (2026-06-06): el principio de crecimiento organico queda formalizado en `state/deckard/06_FIBONACCI_GROWTH.md`. Cada wave = F(n-1) + F(n-2). Wave8 es Fase 3 (Mora): masa coherente antes del primer vacio. La Maceta de Groot (WP-011) es el tiesto que aspira a Fase 7 (Ent): posterior a Wave8. Genoma N0-N5 plantado en `state/metatron/genoma/`.
-11. **Genoma plantado** (2026-06-06): N0-SEMILLA-METATRON.md + N1-N5 stubs + PLACENTA_ROOT + PLACENTA_INTEGRATION_PLAN + WAVE8-CANDIDATOS en `state/metatron/`. Stubs N1-N5 pendientes de poblado desde boveda local.
-12. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) actualizado en local; ThousandSunny RETOMAR.md actualizado (v2026-05-28).
-13. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
+**Wave12 Mirror cerrada** (2026-06-02, wave12_mirror_bitacora_id=1327): `OBS-BATCH-0025-GESTATION-WAVE12-20260602.md` modo corpus; 13 notas NotebookLM (sources 2-14) materializadas; rechazadas nota1 (score 0.3084, auto-reject <0.40) y nota15 (score 0.3522, rechazo Capitan); classifier Robin v1.0 con `coherence_threshold=0.45`; F-AB++ saturada (1/3 -> 3/3, `GLOM-F-AB++-01` confirmado), F-AC++ activada y saturada (4 notas, `GLOM-F-AC++-01` confirmado), F-BC++ activada (7 notas, `GLOM-F-BC++-01` embrionario porque nota14=0.4418<0.45 bajo criterio estricto all-members); `faces_active=4`, `faces_saturated=3`, `receptivity_index=0.1667`; membranas=17, activation_log=17; `source_mutations=0` verificado por hash de fuentes; `sealed=false`. Requisito N5: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- satisfecho. Score supplement bitacora_id=1328. Ejecutor: Usopp (Codex) cubriendo rol Franky; auditoria: Nami (Claude).
+
+**Wave11 Mirror cerrada** (2026-06-02, wave11_mirror_bitacora_id=1301): `OBS-BATCH-0024-GESTATION-WAVE11-20260531.md` modo membrane_only; 0 notas nuevas materializadas; W8-16 `Sutra_Autonomia_Kognitiva` (mirror existente Wave8, axis A=autonomia) adherida a R80/F-AB++ como primera membrana; activation_log 4 entradas; `faces_active=2`, `receptivity_index=0.0833`; F-AB++ activa, glomerulacion `1/3`; `source_mutations=0`; `sealed=false`. Requisito N5 Wave11: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS -- satisfecho.
+
+1. **Wave10 Mirror y primer glomulo** (2026-05-29, bitacora_id=1291): `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md` materializo 2 notas (W10-01 ananda_bitacora, W10-02 ananda_sutras) con verification `mirror_pass`, `source_mutations=0`. W10-03 `AG-INGEST Primer Espacio Seguro IA` (vault native, Antigravity) adherida a R80/F-CD++ como tercera membrana; activation_log 3 entradas, glomerulacion `3/3`; primer glomulo `GLOM-F-CD++-01`; F-CD++ saturada. Requisito N5 satisfecho: R80 Fasciculo (bitacora_id 1179) integra NEX/SIS.
+2. **Wave9 conditional mirror ejecutado** (2026-05-28, bitacora_id=1289): `OBS-BATCH-0022-GESTATION-WAVE9-20260527.md` materializo 8 notas con verification `mirror_pass`, `source_mutations=0`, `sealed=false`. `W9-06 REEF_GROWTH_ARCHITECTURE` queda adherida a R80/F-CD++ como segunda membrana; `faces_active=1`, `receptivity_index=0.0417`, glomerulacion `2/3`.
+3. **Wave9 review listo** (2026-05-27, bitacora_id=1287): `OBS-WAVE9-CANDIDATE-MEMBRANE-REVIEW-20260527.md` recomendo no dar GO C0 directo; se ejecuto GO C0 condicionado.
+4. **Wave9 Plan listo** (2026-05-27, bitacora_id=1285): la placenta fue alimentada con 8 paquetes limpios desde conversacion arquitectural; `OBS-BATCH-0022-GESTATION-WAVE9-20260527-PLAN.md` contiene 8 candidatos.
+5. **Wave8 Mirror cerrado** (2026-05-25): `OBS-BATCH-0021-GESTATION-WAVE8-20260525.md` materializo 16 notas con `source_mutations=0`, verification `mirror_pass`, lock ausente y `next_wave=9`.
+6. **Mapa validado**: `gastrulation_fate_map.md` actualizado con 16 filas W8; `validate_gastrulation_map.ps1 -Wave W8` devuelve `ok=true`.
+7. **Primer chasis reticular**: `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md` (bitacora_id 1163) queda con `faces_total=24`, `faces_active=1`, `receptivity_index=0.0417`, `learned_resonance={}` y 3 notas-membrana en F-CD++.
+8. **Primer fasciculo N5**: R80 queda reclasificado semanticamente como `N5-ACT-SYS`; `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` integra NEX/SIS sin activar caras nuevas (bitacora_id 1179).
+9. El sellado sigue separado por protocolo y requiere GO C0 explicito.
+10. Mantener validacion de mapa contra manifiesto y requisito N5 antes de cerrar futuras oleadas.
+11. **Conexion Fibonacci** (2026-06-06): el principio de crecimiento organico queda formalizado en `state/deckard/06_FIBONACCI_GROWTH.md`. Cada wave = F(n-1) + F(n-2). Wave8 es Fase 3 (Mora): masa coherente antes del primer vacio. La Maceta de Groot (WP-011) es el tiesto que aspira a Fase 7 (Ent): posterior a Wave8. Genoma N0-N5 plantado en `state/metatron/genoma/`.
+12. **Genoma plantado** (2026-06-06): N0-SEMILLA-METATRON.md + N1-N5 stubs + PLACENTA_ROOT + PLACENTA_INTEGRATION_PLAN + WAVE8-CANDIDATOS en `state/metatron/`. Stubs N1-N5 pendientes de poblado desde boveda local.
+13. **Drive RETOMAR.md** (ID: `1U6K2DfakOk-2FF_PAkjpO32kZ9_tlLL5`) sincronizado con Wave11 Mirror state (2026-06-02, bitacora_id 1302).
+14. Cold start: leer `state/metatron/RETOMAR.md` o el `RETOMAR.md` local de la boveda antes de actuar.
 
 ## WP-010 Corpus Collection
 
@@ -146,7 +210,7 @@ Primer chasis reticular:
 - `N4-ACT-NEX - R80 Bloque Arrecife Teseracto Wave8 0001 - 20260525.md`
 - bitacora_id: 1163
 - teseracto: `vertices_total=16`, `edges_total=32`, `faces_total=24`, `cells_total=8`
-- estado actual: `faces_active=1`, `faces_dormant=23`, `receptivity_index=0.0417`, `learned_resonance={}`
+- estado actual: `faces_active=1`, `faces_dormant=23`, `faces_saturated=1`, `receptivity_index=0.0417`, `learned_resonance={}`
 - primera membrana real: W8-14 en `F-CD++`
 - reclasificacion semantica: `N5-ACT-SYS`
 - primer fasciculo: `N5-ACT-SYS - R80 Fasciculo Asociacion Teseracto Placenta Wave8 0001 - 20260525.md` (bitacora_id 1179)
@@ -228,3 +292,17 @@ Artefacto local no versionado:
 - 16 corpus .md en `03_PROYECTOS/NEXUS/` (prefijo `WP010_N2-ACT-NEX_`, todos text/plain)
 - `metatron_gestation_waves.state.json`
 - `gastrulation_fate_map.md`
+- `OBS-BATCH-0023-GESTATION-WAVE10-20260529-PLAN.md`
+- `OBS-BATCH-0023-GESTATION-WAVE10-20260529.md`
+- `OBS-BATCH-0023-GESTATION-WAVE10-20260529-VERIFICACION.md`
+- `N2-PEN-SIS - ananda bitacora 20260528 - W10-01 - 20260529.md`
+- `N2-PEN-SIS - ananda sutras 20260528 - W10-02 - 20260529.md`
+- `AG-INGEST-20260528-PRIMER-ESPACIO-SEGURO-IA-W10-03.md.md` (tercera membrana R80, vault native)
+- `OBS-BATCH-0024-GESTATION-WAVE11-20260531-PLAN.md`
+- `OBS-BATCH-0024-GESTATION-WAVE11-20260531.md`
+- `OBS-BATCH-0024-GESTATION-WAVE11-20260531-VERIFICACION.md`
+- `OBS-BATCH-0025-GESTATION-WAVE12-20260602.md` (Wave12 Plan + Mirror)
+- `OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md`
+- 13 notas NotebookLM materializadas en el vault (Wave12, sources 2-14; rutas en el manifiesto OBS-BATCH-0025)
+- `robin_ontology_v1_0.json`, `robin_classifier.py`, `ROBIN_CLASSIFICATION_REPORT_20260602.md` (Robin Classifier, no versionados)
+- `WAVE12_MIRROR_RESULT_20260603.md`, `WAVE12_NAMI_SCORE_SUPPLEMENT_20260603.md` (informes Usopp, no versionados)
