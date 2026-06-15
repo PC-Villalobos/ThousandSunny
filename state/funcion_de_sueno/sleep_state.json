@@ -1,0 +1,254 @@
+{
+  "version": "0.1.0",
+  "updatedAt": "2026-06-15T22:38:40.221Z",
+  "files": {
+    ".claude/skills/franky/SKILL.md": {
+      "hash": "dc6ae020d70f2ed1394e84df5e3ff4720521b93f5a5e71f2426d207fd0d35bd2",
+      "bytes": 3202,
+      "mtime": "2026-04-21T00:24:46.859Z",
+      "contentAccess": "readable"
+    },
+    ".claude/skills/sueno/SKILL.md": {
+      "hash": "9b4273c1ba241d8eff860500e58c4a0bfdfc8346a1fa6dc57d527edb992a05a0",
+      "bytes": 1212,
+      "mtime": "2026-06-15T16:48:41.703Z",
+      "contentAccess": "readable"
+    },
+    ".claude/skills/zoro-migrate/skill.md": {
+      "hash": "8eb908a94eb31f37b09f4f53a12a137e958eaae93b6d2161e38489a0504c15e9",
+      "bytes": 2025,
+      "mtime": "2026-05-22T17:35:06.050Z",
+      "contentAccess": "readable"
+    },
+    "README.md": {
+      "hash": "6a1c688150784bb03c8eddc5b52bade1c17b04e3d44d54dc71c8644fe7dcdf0e",
+      "bytes": 1082,
+      "mtime": "2026-04-21T00:24:46.860Z",
+      "contentAccess": "readable"
+    },
+    "state/deckard/00_BOOTSTRAP_SUNNY_CORE.md": {
+      "hash": "68985dfcc512f818b59521f0afab29c8673219e7dee58be8e45b39382840ff39",
+      "bytes": 2492,
+      "mtime": "2026-05-23T20:31:23.398Z",
+      "contentAccess": "readable"
+    },
+    "state/deckard/01_CANON.md": {
+      "hash": "22d2c93f86f200dd90b3cddbb41d103c39616c29c794babee2d7b84451d868a1",
+      "bytes": 1804,
+      "mtime": "2026-05-23T20:31:23.400Z",
+      "contentAccess": "readable"
+    },
+    "state/deckard/05_WORK_PACKETS.md": {
+      "hash": "c785f019903be59cb17f80d5bbc93d25a783d7820564b8079b18bdcfb7572ad7",
+      "bytes": 2845,
+      "mtime": "2026-05-23T21:49:02.395Z",
+      "contentAccess": "readable"
+    },
+    "state/deckard/WP-007_NOTEBOOKLM_BATCH_TEMPLATE.md": {
+      "hash": "7979d440cde3869c2892b7c0c749dd1cf0cd05c6fd4ad5f875a40281d17fef32",
+      "bytes": 1682,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/deckard/WP-007_NOTEBOOKLM_PROMPT_CONTRACT.md": {
+      "hash": "364e92d25c02df810c1dbcbf88e7a0da32cb5302d2572fabcd6b382f4198e0d2",
+      "bytes": 6502,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/cloud_request_latest.md": {
+      "hash": "d665ca0f615f0b3023b7b7dedc2aee1e613ee7f254461e4b3357a0ad468f659b",
+      "bytes": 840,
+      "mtime": "2026-06-15T22:36:48.733Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/FUNCION_DE_SUENO_FASES.md": {
+      "hash": "f4b77843f92f5a71d926bdf5a2b57bc4c1faef6e41b3ba9fa8014fea96bc1d77",
+      "bytes": 2267,
+      "mtime": "2026-06-15T22:38:15.205Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/FUNCION_DE_SUENO_spec.md": {
+      "hash": "85b0f266b02899d7af8cb234ce766d9ac6e5a315084d48ef1b632054404edf13",
+      "bytes": 4593,
+      "mtime": "2026-06-15T16:27:52.511Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/ROUTINE_SETUP.md": {
+      "hash": "776b6551b6eaa0571f324806d2b5510fa0b171e47db764d481ee658565a8ae47",
+      "bytes": 2538,
+      "mtime": "2026-06-15T22:35:21.447Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/sleep_config.repo.json": {
+      "hash": "5a7597f7eddce25ef82e4def7f09e373bf2f3fe82541b3bf8c8d38c3c434ed1d",
+      "bytes": 478,
+      "mtime": "2026-06-15T22:35:21.445Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/sleep_ledger.jsonl": {
+      "hash": "9f8b0e339ca7413f521359b8be1c3e528c5f935bd95e4ccc0dc441ac3186eb83",
+      "bytes": 195,
+      "mtime": "2026-06-15T22:35:21.446Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/sleep_state.json": {
+      "hash": "2970e77e1a25bccdc08e4052ce31d03ce86c77ba9b349066f55c66c2b8ef7305",
+      "bytes": 9651,
+      "mtime": "2026-06-15T22:38:20.259Z",
+      "contentAccess": "readable"
+    },
+    "state/metatron/METATRON_GESTATION_STATE.md": {
+      "hash": "62ab0c88506107b2f208ba2a457a97856ae5de3ed0040b72957580490241bf3c",
+      "bytes": 13076,
+      "mtime": "2026-05-28T08:19:23.852Z",
+      "contentAccess": "readable"
+    },
+    "state/metatron/RETOMAR.md": {
+      "hash": "680cc0b5ae8dfdb268413764190b78b8b9e33cf025911fb18204e027eb93b98e",
+      "bytes": 8433,
+      "mtime": "2026-05-28T08:19:16.613Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-01_candidates.json": {
+      "hash": "5b765d1835dae97e0ac280c412412fb121d4d8dcbe4ac075343364aff3791d2b",
+      "bytes": 1873,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-01_manifest.md": {
+      "hash": "8c3b67a8a9e59776fd370b936a6cdc940e25887716781e9e61406093d788a5c0",
+      "bytes": 1631,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-01_output.md": {
+      "hash": "dbf692c1ec3821ec32161697654dc02c24b697d2e3e7145fb7dad0736977d72f",
+      "bytes": 5149,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-01_prompt.md": {
+      "hash": "80f002b0d687ea38cd9ec0d2c45f3a3a2d24fe17c60a0e08684293b61f0abb13",
+      "bytes": 1872,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-02_candidates.json": {
+      "hash": "3c0ba0c14abd739d8bbfcb7b7adbb70a947211253a9ce6c5739ed5acf2dad0d7",
+      "bytes": 6143,
+      "mtime": "2026-05-23T20:54:32.719Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-02_manifest.md": {
+      "hash": "8741b26b81213277064b0ac13268838683bb8d1d5205ad4ac718ae7eeaa7ca17",
+      "bytes": 1487,
+      "mtime": "2026-05-23T20:31:23.443Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-02_output.md": {
+      "hash": "3ad2148d74f7aa1d0cdd552af8aca34ef53761ee14ccd1e0ad267cb4a51abc3d",
+      "bytes": 4124,
+      "mtime": "2026-05-23T20:46:27.427Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NLM-20260523-02_prompt.md": {
+      "hash": "a94c828afaee89ff32c1fed29081a6100b556ba83593d09fcc74b2eb87f0a4d5",
+      "bytes": 1721,
+      "mtime": "2026-05-23T20:31:23.443Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NOTEBOOKLM_MERGE_REVIEW_20260523.json": {
+      "hash": "dddced9ae9785e5f543255c394f6d0ee1f48fc24a25ec4a3b3864bc3289e603d",
+      "bytes": 2637,
+      "mtime": "2026-05-23T20:31:23.401Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NOTEBOOKLM_MERGE_REVIEW_20260523.md": {
+      "hash": "0117c4354cbed7381c50e594458fdefb2f6f12fcca6a3e80693650d58c427f8c",
+      "bytes": 3680,
+      "mtime": "2026-05-23T20:31:23.403Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NOTEBOOKLM_TRIAGE_20260523.json": {
+      "hash": "e9c0e9bd8befd05217f5e4d99157dd0ca4f7e60b926f7f42fda5261b425cb8da",
+      "bytes": 5869,
+      "mtime": "2026-05-23T20:31:23.404Z",
+      "contentAccess": "readable"
+    },
+    "state/notebooklm/NOTEBOOKLM_TRIAGE_20260523.md": {
+      "hash": "f9117de61d02b3b7507b6cf3e94f370eb24e74b6582439c131d76fe40900abda",
+      "bytes": 6716,
+      "mtime": "2026-05-23T20:31:23.404Z",
+      "contentAccess": "readable"
+    }
+  },
+  "roleLedger": [
+    {
+      "timestamp": "2026-06-15T22:35:29.931Z",
+      "actor": "Codex",
+      "role": "Usopp"
+    },
+    {
+      "timestamp": "2026-06-15T22:37:05.710Z",
+      "actor": "Codex",
+      "role": "Usopp"
+    },
+    {
+      "timestamp": "2026-06-15T22:38:20.256Z",
+      "actor": "Codex",
+      "role": "Usopp"
+    },
+    {
+      "timestamp": "2026-06-15T22:38:40.219Z",
+      "actor": "Codex",
+      "role": "Zoro"
+    }
+  ],
+  "runs": [
+    {
+      "timestamp": "2026-06-15T22:35:29.933Z",
+      "actor": "Codex",
+      "role": "Usopp",
+      "files": 29,
+      "deltas": 29,
+      "issues": 1,
+      "coherenceScore": 0.9655172413793104,
+      "reportPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\sleep_report_2026-06-15T22-35-29-889Z.md",
+      "cloudRequestPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\cloud_request_2026-06-15T22-35-29-889Z.md"
+    },
+    {
+      "timestamp": "2026-06-15T22:37:05.711Z",
+      "actor": "Codex",
+      "role": "Usopp",
+      "files": 30,
+      "deltas": 2,
+      "issues": 1,
+      "coherenceScore": 0.9666666666666667,
+      "reportPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\sleep_report_2026-06-15T22-37-05-685Z.md",
+      "cloudRequestPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\cloud_request_2026-06-15T22-37-05-685Z.md"
+    },
+    {
+      "timestamp": "2026-06-15T22:38:20.258Z",
+      "actor": "Codex",
+      "role": "Usopp",
+      "files": 30,
+      "deltas": 2,
+      "issues": 1,
+      "coherenceScore": 0.9666666666666667,
+      "reportPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\sleep_report_2026-06-15T22-38-20-231Z.md",
+      "cloudRequestPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\cloud_request_2026-06-15T22-38-20-231Z.md"
+    },
+    {
+      "timestamp": "2026-06-15T22:38:40.220Z",
+      "actor": "Codex",
+      "role": "Zoro",
+      "files": 30,
+      "deltas": 1,
+      "issues": 1,
+      "coherenceScore": 0.9666666666666667,
+      "reportPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\sleep_report_2026-06-15T22-38-40-195Z.md",
+      "cloudRequestPath": "C:\\Users\\usuario\\OneDrive\\Documentos\\Claude\\Projects\\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\\thousandsunny\\state\\funcion_de_sueno\\reports\\cloud_request_2026-06-15T22-38-40-195Z.md"
+    }
+  ]
+}

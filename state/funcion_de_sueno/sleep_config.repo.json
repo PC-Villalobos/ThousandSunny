@@ -1,0 +1,11 @@
+{
+  "root": ".",
+  "outDir": "state/funcion_de_sueno/reports",
+  "stateFile": "state/funcion_de_sueno/sleep_state.json",
+  "includeExtensions": [".md", ".txt", ".json", ".jsonl"],
+  "maxFileBytes": 250000,
+  "fusionThreshold": 3,
+  "requireFrontmatter": false,
+  "skipDirs": [".git", ".obsidian", "node_modules", "reports", "FUNCION_SUENO_OUT", "sleep_runs"],
+  "protectedPathMarkers": ["HOLD_CLINICO", "clinical_guarded", "[N2-HOLD-CLI]", "[N2-HOLD-NEM]", "00_BOVEDA_NEXUS"]
+}
