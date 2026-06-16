@@ -112,15 +112,28 @@ rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
 3. **Estado.** Reescribe `state/funcion_de_sueno/sleep_state.json` con la ultima
    corrida (fecha, evento, fases, ultimo parte, streak actual).
 4. **Parte breve en chat** (espanol), resumiendo los 6 puntos del parte.
-5. Si hay **deriva significativa**, incluye al final del parte el bloque de
-   Bitacora GAS para PuenteDeMando:
-   ```
-   nakama=Usopp
-   tema=caso0
-   mensaje=<resumen breve del sueno y deriva detectada>
-   ```
-   Si el entorno tiene red al web app de GAS, puedes POSTearlo; si no, el bloque
-   queda en el parte como respaldo (no se pierde nada).
+5. Si hay **deriva significativa**, registra la **Bitacora GAS** de PuenteDeMando
+   (nakama=Usopp, tema=caso0). El endpoint y el token se leen del entorno;
+   **nunca se escriben en el repo**:
+   - Si `BITACORA_GAS_URL` esta definido, POSTea (GET con query urlencoded):
+     ```bash
+     curl -sSL -G "$BITACORA_GAS_URL" \
+       --data-urlencode "action=log_cowork" \
+       --data-urlencode "nakama=Usopp" \
+       --data-urlencode "tema=caso0" \
+       --data-urlencode "token=$BITACORA_GAS_TOKEN" \
+       --data-urlencode "mensaje=Funcion de Sueno: <resumen breve + deriva>"
+     ```
+   - Si `BITACORA_GAS_URL` NO esta definido (o la red lo bloquea), deja el bloque
+     en el parte como respaldo y no se pierde nada:
+     ```
+     nakama=Usopp
+     tema=caso0
+     mensaje=<resumen breve del sueno y deriva detectada>
+     ```
+   Requiere que el environment permita `script.google.com` y
+   `script.googleusercontent.com` en Network access. Detalle y endurecimiento del
+   GAS (token) en `state/funcion_de_sueno/ROUTINE_SETUP.md`.
 
 ## Correr como rutina (autonomo, sin aprobaciones)
 
