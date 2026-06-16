@@ -1,0 +1,13 @@
+{
+  "last_run": "2026-06-16T00:00:00Z",
+  "event": "daily_tick",
+  "phases": ["N1", "N2", "N3", "REM"],
+  "actor": "claude-code",
+  "role": "Nami",
+  "streak": 1,
+  "rotate": false,
+  "last_report": "reports/SLEEP_2026-06-16.md",
+  "drift": false,
+  "n3_findings": ["N3-01-genoma-stubs", "N3-02-bitacora-id-null", "N3-03-usopp-sin-retomar", "N3-04-canon-sin-actualizar", "N3-05-wp006-sin-actividad"],
+  "next_action": "Capitan: revisar usopp/RETOMAR.md faltante y 01_CANON.md sin actualizar desde 2026-05-01. GO para GERMINACION_03 y Wave13 cuando corresponda."
+}
