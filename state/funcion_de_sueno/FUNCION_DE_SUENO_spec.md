@@ -14,6 +14,12 @@ actor/rol y dejar un parte legible al despertar.
 El **organo** es el skill `/sueno` (`.claude/skills/sueno/SKILL.md`).
 El **sistema nervioso** es la Routine que lo dispara (ver `ROUTINE_SETUP.md`).
 
+> **Fuente de verdad.** Este directorio (`state/funcion_de_sueno/`) es el canon
+> operativo de la funcion: es lo que la Routine clona y ejecuta, y la unica copia
+> que la nube puede leer. Cualquier doc del vault local
+> (`...\CLAUDE_CODE_ROUTINES_NATIVE.md`) debe **apuntar** aqui, no mantener una
+> version paralela.
+
 ## Diferencia clave con el kit original
 
 El kit de Codex apuntaba a `C:\La maceta de Groot` y proponia montar a mano
@@ -67,6 +73,16 @@ Mapa evento -> fases en el skill (`SKILL.md`).
 - `sleep_ledger.jsonl` - una linea por corrida (deriva + streak actor/rol).
 - `sleep_state.json` - estado de la ultima corrida (lo escribe el skill).
 - `reports/SLEEP_<fecha>.md` - partes generados.
+
+## Variables de entorno (secretos, nunca commiteadas)
+
+| Variable | Uso |
+|---|---|
+| `BITACORA_GAS_URL` | Web app `/exec` de la Bitacora GAS de PuenteDeMando |
+| `BITACORA_GAS_TOKEN` | Token compartido que el GAS valida antes de registrar |
+
+Se configuran en el environment de la Routine, no en el repo. Si `BITACORA_GAS_URL`
+no esta definido, el skill deja el bloque de bitacora en el parte como respaldo.
 
 ## Guardrails
 
