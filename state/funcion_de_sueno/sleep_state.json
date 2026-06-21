@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-06-20T05:41:48.565Z",
+  "updatedAt": "2026-06-21T00:00:00.000Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -80,6 +80,12 @@
       "mtime": "2026-06-20T05:41:47.493Z",
       "contentAccess": "readable"
     },
+    "state/deckard/02_INVENTARIO.csv": {
+      "hash": "ed1921b6a1723fb1409d41412b3046567fad666d5938fbfed0b67f4efa4e6cc3",
+      "bytes": 8862,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
     "state/deckard/05_WORK_PACKETS.md": {
       "hash": "005304fc2eec94c1eeeb7f72636a70c659c0885a77ff0048972cf2058b8a6360",
       "bytes": 3534,
@@ -134,6 +140,18 @@
       "mtime": "2026-06-20T05:41:47.494Z",
       "contentAccess": "readable"
     },
+    "state/funcion_de_sueno/funcion_de_sueno.mjs": {
+      "hash": "8cf5bcd4c9e835c82100a5eca2f50236c8889757fee21d0d426ff9ce0732cc65",
+      "bytes": 17657,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/funcion_de_sueno.py": {
+      "hash": "0609dfbdf1e7b1960e03d5a4d93007eacef39aca5cfad91a50f13aebda6e8fa0",
+      "bytes": 10082,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
     "state/funcion_de_sueno/sleep_config.repo.json": {
       "hash": "5a7597f7eddce25ef82e4def7f09e373bf2f3fe82541b3bf8c8d38c3c434ed1d",
       "bytes": 478,
@@ -141,15 +159,15 @@
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_ledger.jsonl": {
-      "hash": "67b3022422bc9fc82ac1035ffb2e4e311d86f617a9d6ab5ad9804cba9a323f16",
-      "bytes": 375,
-      "mtime": "2026-06-20T05:41:47.494Z",
+      "hash": "updated-by-this-cycle",
+      "bytes": null,
+      "mtime": "2026-06-21T00:00:00.000Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_state.json": {
-      "hash": "b9a75cd3e27d41ecf6dde5033db790baddb36da154f36ebe4fcaddb9fc9326c7",
-      "bytes": 18977,
-      "mtime": "2026-06-20T05:41:47.494Z",
+      "hash": "this-file",
+      "bytes": null,
+      "mtime": "2026-06-21T00:00:00.000Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/CARTOGRAFIA_SUSTRATO.md": {
@@ -338,6 +356,18 @@
       "mtime": "2026-06-20T05:41:47.496Z",
       "contentAccess": "readable"
     },
+    "state/usopp/odysseus-extraction/hub-server.local-context.js": {
+      "hash": "ba0031152aa9d18a811ea163759df85d384da6668637415473422f3cbe43cac6",
+      "bytes": 65330,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/odysseus-extraction/sunny_security_kernel.js": {
+      "hash": "ffaa4623e4512cfaf6b1a2dfb90da926f2255e407a8f63092e70b9b922e89d9e",
+      "bytes": 5757,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
     "state/usopp/odysseus-extraction/phase0-local-test/PHASE0_AUDIT_POST_W12_REQUIREMENTS_20260602.md": {
       "hash": "a4be2e22370523f016dc3d89c52b654629a2e8882bc6545e4940a80eefa25817",
       "bytes": 2120,
@@ -354,6 +384,24 @@
       "hash": "94454e5c1c771bd53c391543d5a861e6bd992d441ddc375f68438afbf6991916",
       "bytes": 6357,
       "mtime": "2026-06-20T05:41:47.497Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/odysseus-extraction/phase0-local-test/hub-server.phase0-local-test.js": {
+      "hash": "b86ec6ed384778628030fa42a5256c906318cab04ae32607d37566202d57ab48",
+      "bytes": 65612,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/odysseus-extraction/phase0-local-test/sunny_security_kernel.js": {
+      "hash": "ffaa4623e4512cfaf6b1a2dfb90da926f2255e407a8f63092e70b9b922e89d9e",
+      "bytes": 5757,
+      "mtime": "2026-06-19T01:08:00.000Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/odysseus-extraction/phase0-local-test/test_phase0_security_kernel.js": {
+      "hash": "17bcb5d8b597f88452bbcf70c377a05c105b53f19ddfeab8b316d1217f564e17",
+      "bytes": 2766,
+      "mtime": "2026-06-19T01:08:00.000Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/sunny_refinement_backlog_20260602.json": {
@@ -442,6 +490,11 @@
       "timestamp": "2026-06-20T05:41:48.563Z",
       "actor": "github-actions",
       "role": "Nami"
+    },
+    {
+      "timestamp": "2026-06-21T00:00:00.000Z",
+      "actor": "claude-code",
+      "role": "Nami"
     }
   ],
   "runs": [
@@ -499,6 +552,18 @@
       "coherenceScore": 0.9710144927536232,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-06-20T05-41-48-539Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-06-20T05-41-48-539Z.md"
+    },
+    {
+      "timestamp": "2026-06-21T00:00:00.000Z",
+      "actor": "claude-code",
+      "role": "Nami",
+      "files": 77,
+      "deltas": 8,
+      "issues": 8,
+      "coherenceScore": 0.961,
+      "drift": true,
+      "driftNote": "N3-06: sleep_ledger.jsonl lleva 5 ciclos sin entradas de github-actions. Desincronizacion estructural entre ledger y sleep_state.json.",
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-06-21.md"
     }
   ]
 }
