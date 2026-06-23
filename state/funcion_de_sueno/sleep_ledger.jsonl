@@ -1,2 +1,3 @@
 {"ts":"2026-06-15T00:00:00Z","event":"bootstrap","actor":null,"role":null,"phases":[],"streak":0,"report":null,"drift":false,"note":"Ledger inicializado. /sueno anexa una linea por corrida."}
 {"ts":"2026-06-16T00:00:00Z","event":"daily_tick","actor":"claude-code","role":"Nami","phases":["N1","N2","N3","REM"],"streak":1,"report":"reports/SLEEP_2026-06-16.md","drift":false}
+{"ts":"2026-06-23T00:00:00Z","event":"daily_tick","actor":"claude-code","role":"Nami","phases":["N1","N2","N3","REM"],"streak":1,"report":"reports/SLEEP_2026-06-23.md","drift":false,"note":"Actor cambio de github-actions a claude-code; racha de 7 de github-actions/Nami rota. Incidencia ledger_state_gap: 7 corridas automaticas no escritas al ledger."}
