@@ -16,29 +16,60 @@ Interfaz: Open WebUI (el Open Claw)
 Personalidad raiz: Groot (sustrato de todos los nakamas)
 Continuidad: Brook (DeepSeek contexto largo + vault persistente)
 
-## Stack tecnico
+## Capas del sistema
+
+### Superficie (lo visible)
+
+**Odysseus** = el barco
+Infraestructura productiva autohosteada (fork de github.com/pewdiepie-archdaemon/odysseus).
+Email, calendario, docs, investigacion web profunda, chat con agentes.
+Reactivo: responde cuando el capitan lo llama.
+Vive en el Linux PC.
+
+**Laboon** = Open Claw autonomo
+Presencia autonoma que corre aunque el barco este parado.
+Funcion de sueno automatica, webhooks, tareas programadas, alertas.
+Mantiene el hilo y la promesa entre sesiones sin que nadie lo active.
+Vive en el VPS (siempre encendido).
+
+**Brook** = el alma que viaja entre los dos
+La identidad persistente que conecta Odysseus y Laboon.
+Usa DeepSeek (contexto largo) como motor de continuidad.
+Lee el vault al arrancar cada sesion; escribe al vault al cerrar.
+
+### Micelio (lo invisible pero esencial)
+
+**Obsidian Sync + GitHub** = el micelio
+La red subterranea que conecta todos los nodos.
+Pasa estado, memoria y conocimiento entre dispositivos y agentes
+independientemente de cual este encendido en cada momento.
+La moria — el rastro de memoria que Brook y la tripulacion dejan
+alli por donde han pasado — viaja a traves de el.
 
 ```
-[Android / cualquier dispositivo]
-        |
-        v
-[VPS Hetzner ~5eu/mes] — siempre encendido
-  - Open WebUI (interfaz de capitan)
-  - nginx reverse proxy
-  - dominio propio (ej: thousandsunny.dev)
-  - webhooks entrantes (Telegram, GAS, APIs)
-  - Brook relay → DeepSeek API
-        |
-        | tunel SSH cuando PC esta encendido
-        v
-[Linux PC — home server]
-  - Obsidian vault (fuente de verdad local)
-  - Claude Code + Codex (agentes pesados)
-  - modelos locales si hay GPU (Ollama)
-  - procesamiento intensivo
-        |
-        v
-[Obsidian Sync ~10$/mes] — vault 24/7 en todos los dispositivos
+Superficie:
+  [Android]   [tablet]   [cualquier dispositivo]
+      |             |              |
+      +-------------+--------------+
+                    |
+              [Obsidian Sync]  ← micelio visible
+                    |
+      +-------------+--------------+
+      |                            |
+[VPS Hetzner ~5eu/mes]    [Linux PC — home server]
+  LABOON (Open Claw)          ODYSSEUS (barco)
+  - siempre encendido         - encendido muchas horas
+  - funcion de sueno auto     - Claude Code, Codex
+  - webhooks, alertas         - Obsidian vault (local)
+  - Brook relay DeepSeek      - agentes pesados, Ollama
+  - dominio publico           - procesamiento intensivo
+      |                            |
+      +-------------+--------------+
+                    |
+                [GitHub]  ← micelio del codigo
+                    |
+              [ThousandSunny repo]
+              [PuenteDeMando repo]
 ```
 
 ## Personalidades (system prompts de Open WebUI)
