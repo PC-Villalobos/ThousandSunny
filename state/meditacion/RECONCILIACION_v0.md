@@ -9,19 +9,19 @@ Vara de medir: `bridge-linux/ARQUITECTURA.md` (2026-06-24).
 
 ---
 
-## D1 · Qué significa "Nakama"
+## D1 · Qué significa "Nakama" — RESUELTO vía Teatro (GO del Capitán)
 
-**Problema:** el término designa dos cosas que chocan — *agente de la tripulación*
-(Informe Integral, CREW.md, canon) y *cliente/audiencia* (docs de mayo/junio).
+**Problema:** el término designaba dos **papeles teatrales** distintos — *Personaje*
+(agente de la tripulación) y *Público* (cliente/audiencia). Por eso chocaban.
 
-**Recomendación (alta confianza):**
-- **Nakama = agente-tripulación.** Es el uso del canon entero (CREW.md, la tabla de
-  personalidades de bridge-linux, las skills `<nakama>-*`). Se queda.
-- El sentido *cliente/audiencia* se renombra a **"Avatar de audiencia"** para
-  deconflictar. (Si prefieres otro término — "perfil de cliente", "persona" — dilo.)
+**Resolución (canon, vía `TEATRO.md`):**
+- **Nakama = Personaje.** Un rol que un actor (modelo) interpreta. Es el uso del canon
+  entero (CREW.md, personalidades de bridge-linux, skills `<nakama>-*`).
+- **Audiencia/cliente = Público**, no Personaje. El **"Avatar de audiencia"** es una
+  faceta del Público (quien recibe la obra), nunca un miembro de la tripulación.
 
-**Alternativa:** mantener ambos con calificador explícito ("Nakama-tripulante" vs
-"Nakama-audiencia"). Menos limpio; no recomendado.
+Ya no hay colisión: son dos papeles del teatro, definidos en `TEATRO.md`.
+(El estatus de D2 y D3 sigue pendiente de tu ratificación.)
 
 ## D2 · Mapeo de nomenclatura (viejo → canon)
 

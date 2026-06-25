@@ -32,8 +32,9 @@ More crew members will board as the system grows.
 The crew and its capabilities are defined in portable, model-agnostic Markdown,
 so any model (Claude, Gemini, ChatGPT) reads the same armory:
 
-- `CREW.md` — the roster: each Nakama (role) and the set of skills it carries.
-- `OPERACIONES.md` — super-skills: compositions of several Nakamas' skills toward an objective.
+- `TEATRO.md` — the grammar beneath the metaphor: the six roles (character, actor, script, director, scene, audience) that every action instantiates. The registries below are those roles made concrete.
+- `CREW.md` — the roster: each Nakama (a **character**) and the set of skills it carries.
+- `OPERACIONES.md` — super-skills: compositions of several Nakamas' skills toward an objective (the **director's** choreography).
 - `RUTINAS.md` — the scheduling layer: when each skill runs, on which substrate, and its health.
 - `.claude/skills/README.md` — the armory convention (naming, the three tiers, the SKILL.md template).
 

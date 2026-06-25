@@ -5,6 +5,9 @@
 > archivo es la fuente de verdad de **quién existe** y **qué sabe hacer cada uno**.
 >
 > Convención de nombres y formato: ver `.claude/skills/README.md`.
+> Gramática de fondo (personaje · actor · guión · director · escena · público): ver
+> `TEATRO.md`. Un **Nakama** es un **Personaje**; el **Actor** que lo encarna (Claude,
+> DeepSeek, Codex) es aparte — por eso el sueño vigila la fusión actor/personaje.
 
 ## El modelo en tres capas
 
