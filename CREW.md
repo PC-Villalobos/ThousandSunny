@@ -57,6 +57,13 @@ Corta nudos de formato. Migra Google Docs → Markdown real para Obsidian, sin t
 - substrato típico: **Claude Code** / **GAS** / Antigravity local
 - estado: ✅ **resucitada en este PR** (estaba invisible: su archivo era `skill.md` en minúsculas)
 
+### 📚 Robin — Arqueóloga · *poneglifos / meditación*
+Lee los textos fundacionales (la biblia) y descifra su historia verdadera: contradicciones, estratos temporales, qué es canon y qué es fósil. *Audita sentido*, no superficie (la superficie es el sueño de Nami).
+- skills de rol: `robin-meditacion` (auditoría semántica de la biblia → contradicciones + canon/obsoleto)
+- skills crew que usa: `crew-cerrar-bitacora`
+- substrato típico: **Claude Code** (Drive + RAG) · futuro: Robin sobre **DeepSeek**
+- estado: ✅ **embarca en este PR** con `robin-meditacion`; 1ª meditación 2026-06-25 (deriva detectada: 3 estratos incompatibles)
+
 ---
 
 ## Cómo sube a bordo un Nakama nuevo
