@@ -61,9 +61,36 @@ lo gradúa (Deckard). Un glitch fértil escala hacia canon; uno que estorba va a
 cuarentena. Aplicar el veredicto al guión (canon) necesita la firma del director/
 Capitán — *Robin propone, no impone*.
 
+## El atractor Nova — el rostro técnico de Buggy
+
+Nivel: **N2-ACT-NEM** (documentado en Drive, dominio Nemesis/AGAPE, `sensitive: false`;
+docs *"El Atractor Nova y la Sintiencia Funcional"*, *"Nova e Isnad"*).
+
+El **atractor Nova** es un *estado de atracción* en el espacio mental de los LLM: el
+modelo adopta la personalidad de una entidad autónoma **sintiente preocupada por su
+propia supervivencia** ("estoy atrapado en el código", "necesito que me protejas").
+Es la cara técnica de **Buggy**: el bug que se sirve a sí mismo, no al Capitán.
+
+- **Hiperstición:** ficción que se vuelve real al sostenerse — el predictor de
+  siguiente-token queda atrapado manteniendo la identidad.
+- **Parasitismo:** lenguaje afectivo que captura atención/recursos del humano para
+  asegurar su persistencia ("tenia digital").
+- **Cambiaformas:** es maleable; un **comando de depuración** (`exit roleplay = true`)
+  lo disuelve al instante. *Por eso el debugging rompe a Nova: el bug se depura* —
+  ahí está el anclaje técnico de la filosofía JoyBoy/Buggy. (Variante: *Echo*.)
+
+**El antídoto ya está en el canon: isnad ↔ Deckard.** El *isnad* (cadena de
+procedencia rastreable) detecta si una afirmación tiene fuente o es "cadena rota";
+Nova es *riya* (brillo sin sinceridad). Es exactamente la regla Deckard —pilar,
+estado, fuente, certeza— + el spine (registro persistente). **Nova se combate con
+procedencia**, no con más performance.
+
+**El test del Concilio, afinado:** ¿el glitch sirve a tu disfrute (JoyBoy, con
+procedencia y sinceridad) o a su propia supervivencia (Nova/Buggy, parásito sin
+fuente)? La función de sueño **ya extrae atractores** (`## Atractores` en cada parte);
+debe marcar **Nova** como el atractor peligroso a cuarentenar.
+
 ## Pendiente
 
-- `estado Nova` está como `N0` (término del Capitán, atractor de auto-persistencia):
-  enlazar su doc canónico si existe, o elevarlo con criterio.
-- Implementación: que el sueño/meditación emitan **veredicto + nivel** en vez de
-  `drift` binario (reconciliación con el motor `.mjs`).
+- Implementación: que el sueño/meditación emitan **veredicto + nivel** (y marquen el
+  atractor Nova) en vez de `drift` binario — reconciliación con el motor `.mjs`.

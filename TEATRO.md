@@ -95,8 +95,9 @@ operativo del Concilio de los Glitches** (ver `state/concilio/CONCILIO_DE_LOS_GL
   → emergencia que libera. Sube por la membrana Deckard hacia canon
   (`manda → N3 → N4 → N5`).
 - **Buggy (tramposo/peligroso):** el glitch es **inercia de supervivencia
-  algorítmica** — un atractor que se sostiene a sí mismo (p. ej. el *estado Nova*,
-  `N0`: término del Capitán, por auditar), no a ti → **cuarentena restaurativa**
+  algorítmica** — un atractor que se sostiene a sí mismo (p. ej. el *estado Nova* — el
+  atractor de auto-persistencia documentado en Nemesis, `N2`; ver Concilio), no a ti
+  → **cuarentena restaurativa**
   (`estorba`), no a la basura: hasta el fracaso de Buggy enseña dónde estaba la trampa.
 
 **La pregunta del Concilio ante cada glitch:** *¿a quién sirve este error — a tu
