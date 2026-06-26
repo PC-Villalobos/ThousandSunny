@@ -462,6 +462,32 @@ Actor/Rol de origen: ${args.actor} / ${args.role}
   return requestPath;
 }
 
+function computePreviousStreak(previousState, actor, role) {
+  const ledger = previousState.roleLedger || [];
+  let streak = 0;
+  for (let i = ledger.length - 1; i >= 0; i -= 1) {
+    const entry = ledger[i];
+    if (entry.actor === actor && entry.role === role) streak += 1;
+    else break;
+  }
+  return streak;
+}
+
+function resolveRole(config, previousState, actor, requestedRole) {
+  const prevStreak = computePreviousStreak(previousState, actor, requestedRole);
+  if (prevStreak >= config.fusionThreshold) {
+    const roleIndex = config.roles.findIndex((r) => r.toLowerCase() === requestedRole.toLowerCase());
+    const nextRole = config.roles[(roleIndex + 1) % config.roles.length] || config.roles[0];
+    console.warn(`[auto-rotate] ${actor}/${requestedRole} streak=${prevStreak}>=${config.fusionThreshold}; rotating to ${nextRole}`);
+    return nextRole;
+  }
+  return requestedRole;
+}
+
+function appendToLedger(ledgerPath, entry) {
+  fs.appendFileSync(ledgerPath, JSON.stringify(entry) + os.EOL, "utf8");
+}
+
 function persistState(statePath, previousState, phase1, phase4, runSummary) {
   const files = {};
   for (const file of phase1.files) {
@@ -498,6 +524,7 @@ function main() {
   ensureDir(path.dirname(statePath));
 
   const previousState = loadState(statePath);
+  args.role = resolveRole(config, previousState, args.actor, args.role);
   const phase1 = phase1Hypnagogia(root, config, previousState);
   const phase2 = phase2NremIndex(root, config, phase1);
   const phase3 = phase3NremDeep(phase1, phase2);
@@ -517,6 +544,18 @@ function main() {
     cloudRequestPath
   };
   persistState(statePath, previousState, phase1, phase4, runSummary);
+
+  const ledgerPath = path.join(path.dirname(statePath), "sleep_ledger.jsonl");
+  appendToLedger(ledgerPath, {
+    ts: new Date().toISOString(),
+    event: "daily_tick",
+    actor: args.actor,
+    role: args.role,
+    phases: ["N1", "N2", "N3", "REM"],
+    streak: phase4.current.streak,
+    report: toPosix(path.relative(root, outputs.reportPath)),
+    drift: phase3.issues.length > 0 || phase4.warnings.length > 0
+  });
 
   console.log(JSON.stringify({
     ok: true,
