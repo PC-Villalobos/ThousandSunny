@@ -342,10 +342,6 @@ function phase3NremDeep(phase1, phase2) {
 function phase4RemRoleRotation(config, previousState, actor, role) {
   const ledger = [...(previousState.roleLedger || [])];
   ledger.push({ timestamp: new Date().toISOString(), actor, role });
-  const recentSame = ledger
-    .slice()
-    .reverse()
-    .takeWhile?.(() => false);
 
   let streak = 0;
   for (let i = ledger.length - 1; i >= 0; i -= 1) {
