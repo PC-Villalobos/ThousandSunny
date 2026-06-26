@@ -39,6 +39,7 @@ Mira hacia **fuera**. Pesca demandas nuevas antes de que entren al sistema. *Ent
 - skills de rol: `nami-intake-proa` (Gmail 36h + Calendar 7d → cabos nuevos)
 - skills crew que usa: `crew-cerrar-bitacora` (para entregar, no para cerrar)
 - substrato típico: **Claude** (conectores Gmail/Calendar)
+- amplía (bridge-linux): cartografía del estado + acceso a sistemas — **capacidad sensible** (ver §Capacidades sensibles)
 - estado: `intake-proa` probado 14-jun · bloqueo: **CABO-011** (aprobar conectores)
 
 ### 🎯 Usopp — Francotirador · *bodega / spine*
@@ -66,6 +67,24 @@ Lee los textos fundacionales (la biblia) y descifra su historia verdadera: contr
 - skills crew que usa: `crew-cerrar-bitacora`
 - substrato típico: **Claude Code** (Drive + RAG) · futuro: Robin sobre **DeepSeek**
 - estado: ✅ **embarca en este PR** con `robin-meditacion`; 1ª meditación 2026-06-25 (deriva detectada: 3 estratos incompatibles)
+
+### 🐟 Jimbe — Timonel · *navegación web / clima*
+Navega la www de forma autónoma y lee el clima operativo. Cartografía accesos: entradas, salidas, puntos débiles, cerraduras. La capacidad más potente de la flota — y la más atada.
+- skills de rol: (por materializar) navegación web autónoma; estación de clima operativo
+- substrato típico: **Claude Code** / **DeepSeek** (browser automation)
+- guardraíl: **capacidades sensibles** (ver abajo) — alcance defensivo/autorizado; terceros solo bajo *debugging ético*
+- estado: nakama canónico (bridge-linux); skills por materializar
+
+---
+
+## Capacidades sensibles — debugging ético
+
+Jimbe y Nami portan navegación autónoma + cartografía de accesos (**dual-use**). Atadas por canon:
+- **Alcance:** sistemas propios/autorizados; soberanía y **seguridad de pacientes**. *Poder como protección, no ganzúa.*
+- **Terceros:** solo bajo **debugging ético** — autorizado, con intención de arreglar/divulgar (restaurativo, Nemesis). El *bug* no se arma (Buggy); se **depura** (JoyBoy).
+- **Juez:** el Concilio — *¿a quién sirve el acceso?* No autorizado a sistemas ajenos = Buggy → cuarentena, no canon.
+
+Detalle canónico: `state/meditacion/RECONCILIACION_v0.md` (D4).
 
 ---
 
