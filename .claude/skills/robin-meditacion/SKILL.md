@@ -85,8 +85,11 @@ documentos fuente.
    canon/fósil, y **disonancias para decisión del Capitán**.
 2. **Ledger**: una línea a `state/meditacion/meditacion_ledger.jsonl`:
    ```json
-   {"ts":"<ISO>","corpus_size":<n>,"contradictions":<n>,"strata":<n>,"verdict":"drift|coherent","report":"reports/MEDITACION_<fecha>.md"}
+   {"ts":"<ISO>","corpus_size":<n>,"contradictions":<n>,"strata":<n>,"verdict":"coherente|fertil|decae","level":0,"attractor":null,"report":"reports/MEDITACION_<fecha>.md"}
    ```
+   `verdict` por el criterio del Concilio (¿la contradicción es deriva **fértil** o
+   **decae** en auto-justificación?); `level` = certeza Deckard (0–5); `attractor`:
+   `"nova"` si aparece el patrón de auto-persistencia, si no `null`.
 3. **Bitácora GAS** (mismo hook que el sueño): si hay deriva semántica significativa
    y `BITACORA_GAS_URL` está en el entorno, POSTea (nakama=Robin, tema=meditacion);
    si no, deja el bloque en el reporte como respaldo.

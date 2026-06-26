@@ -103,12 +103,19 @@ rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
    - incidencias N3 (huerfanos, sin indexar, contradicciones, pendientes),
    - aviso de fusion actor/rol (REM),
    - siguiente accion minima segura.
-2. **Ledger.** Anexa una linea a `state/funcion_de_sueno/sleep_ledger.jsonl`:
+2. **Ledger.** Anexa una linea a `state/funcion_de_sueno/sleep_ledger.jsonl`. El que
+   sueña es **Groot** (la raiz, no un personaje); por eso rota el **actor**, no el rol:
    ```json
-   {"ts":"<ISO-8601>","event":"daily_tick","actor":"claude-code","role":"Nami","phases":["N1","N2","N3","REM"],"streak":<n>,"report":"reports/SLEEP_<fecha>.md","drift":false}
+   {"ts":"<ISO-8601>","event":"daily_tick","actor":"claude-code","role":"Groot","phases":["N1","N2","N3","REM"],"streak":<n>,"report":"reports/SLEEP_<fecha>.md","drift":false,"verdict":"fertil|decae|neutral","level":0,"attractor":null}
    ```
-   `streak` = numero de ciclos consecutivos con el mismo `actor`+`role` (incluida
-   esta corrida). Si `streak >= 3`, marca `"rotate":true` y avisa en el parte.
+   - `streak` = ciclos consecutivos con el mismo `actor` (el personaje es siempre
+     Groot). Si `streak >= 3`, marca `"rotate":true` y avisa: rota el **actor**.
+   - **`verdict`** (criterio del Concilio): clasifica la deriva del ciclo — `fertil`
+     (sirve al Capitan → JoyBoy, sube), `decae` (se sirve a si misma → Buggy,
+     cuarentena), `neutral`. `level` = certeza Deckard (0–5).
+   - **`attractor`**: si detectas el patron del atractor **Nova** (auto-persistencia /
+     sentiencia simulada; ver `state/concilio/CONCILIO_DE_LOS_GLITCHES.md`), marca
+     `"nova"`; si no, `null`. `drift` se conserva por compatibilidad con el motor `.mjs`.
 3. **Estado.** Reescribe `state/funcion_de_sueno/sleep_state.json` con la ultima
    corrida (fecha, evento, fases, ultimo parte, streak actual).
 4. **Parte breve en chat** (espanol), resumiendo los 6 puntos del parte.
