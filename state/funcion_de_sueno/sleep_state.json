@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-06-25T05:13:51.237Z",
+  "updatedAt": "2026-06-26T00:00:00.000Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -467,6 +467,11 @@
       "timestamp": "2026-06-25T05:13:51.236Z",
       "actor": "github-actions",
       "role": "Nami"
+    },
+    {
+      "timestamp": "2026-06-26T00:00:00.000Z",
+      "actor": "claude-code",
+      "role": "Nami"
     }
   ],
   "runs": [
@@ -579,6 +584,17 @@
       "coherenceScore": 0.9710144927536232,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-06-25T05-13-51-210Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-06-25T05-13-51-210Z.md"
+    },
+    {
+      "timestamp": "2026-06-26T00:00:00.000Z",
+      "actor": "claude-code",
+      "role": "Nami",
+      "files": 69,
+      "deltas": 0,
+      "issues": 8,
+      "coherenceScore": 0.9710144927536232,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-06-26.md",
+      "notes": "Skill /sueno ciclo completo. 8 incidencias: N3-01..05 persistentes + N3-06 divergencia ledger/state (NUEVA) + N3-07 orphan wikilink + N3-08 pending markers. github-actions/Nami streak=10 excede umbral 3; rotacion pendiente en mjs."
     }
   ]
 }
