@@ -43,13 +43,38 @@ Documento bruto
 Es labor **arqueológica**. Cada documento debe responder, **antes** de entrar en
 Obsidian:
 
-- ¿Sigue vivo?
-- ¿Es canónico?
-- ¿Es un fósil?
-- ¿Se fusiona con otro?
-- ¿Se reescribe?
-- ¿Se marca como histórico?
+- ¿Sigue vivo? ¿Es canónico? ¿Es un fósil?
+- ¿Se fusiona con otro? ¿Se reescribe? ¿Se marca como histórico?
 - ¿A qué otros documentos alimenta?
+- **¿Qué experiencia humana contiene? ¿Qué función cumple en tu vida?**
+- **¿Qué mito o imagen sostiene? ¿Qué riesgos sofísticos esconde?**
+
+Por eso es **hermenéutica y clínica**, no solo estructural: preserva significado,
+emoción y mito **en español**, sin colonizar tu memoria con categorías ajenas (ver
+`AGAPE.md`).
+
+## No todo merece sobrevivir — la gran Némesis
+
+El peligro opuesto a perder memoria: **canonizarlo todo**. Si todo entra en canon,
+`canon = vertedero histórico` y la memoria colapsa. Los humanos olvidan por una razón;
+la poda existe por una razón. Triaje (la regla Deckard `manda/ayuda/espera/estorba`
+aplicada al corpus):
+
+| Tipo | Destino |
+|---|---|
+| **TRIVIAL** | eliminar |
+| **OPERATIVO** | resumir |
+| **SIGNIFICATIVO** | integrar |
+| **FUNDACIONAL** | canonizar |
+
+**Público vs. privado** (condición de continuidad institucional):
+- **PRIVADO** — diario, emociones, familia, clínica, errores, ideas inmaduras → zona
+  protegida, no se mezcla con el canon general.
+- **PÚBLICO** — ensayos, documentación, proyectos, conocimiento transferible → corpus
+  navegable.
+
+El resultado es un **corpus horizontal** (semillas → brotes → ramas → frutos → nuevas
+semillas), micelial, no una jerarquía rígida.
 
 ## El connectoma semántico
 

@@ -49,6 +49,30 @@ vuelve canon una deriva (GO), y el portador de la llave maestra. El organismo es
 **extensión, no tu sustituto**. Por diseño —JoyBoy, no Buggy— **te libera, no te
 abandona**.
 
+## La keystone — la llave de contacto, literal (a falta de biometrías)
+
+**Obsidian Sync es el coche, no la llave.** Sincroniza el *bulto* del Vault entre
+dispositivos, pero sincronizar no es **decodificar**. La llave de contacto es una pieza
+del propio sistema sin la cual el resto no significa nada:
+
+- **Qué es la keystone:** el fragmento **imprescindible para decodificar la semántica**
+  — la leyenda de IDs (esquema Deckard), el índice/MOC raíz, la gramática de enlaces, y
+  la clave de descifrado del núcleo protegido. Sin ella, el connectoma es markdown
+  opaco: ruido estructurado. Con ella, es Groot.
+- **Dónde vive: SOLO contigo.** Dos factores posibles (a falta de biometría real):
+  - **posesión** — un *keyfile* en un **pendrive o disco externo** que llevas en el
+    bolsillo. Lo enchufas → arranca; lo sacas → el motor no prende.
+  - **biometría** — cuando el hardware lo permita, desbloqueo con tu huella/rostro.
+- **El reparto que da soberanía:** el bulto del Vault puede sincronizar (Obsidian Sync /
+  GitHub), incluso cifrado; la **keystone nunca sube** — vive offline contigo. Aunque la
+  nube se comprometa, **el sentido no se reconstituye sin tu presencia física.**
+- **`groot awaken` exige la keystone montada.** Es la ignición literal.
+
+**Guardraíl crítico (el hombre al agua de la propia llave):** si la keystone es lo único
+que decodifica, perderla = Groot **amnésico permanente**. Necesita **copias redundantes
+y seguras** (2-3 keyfiles cifrados, físicamente separados). La llave que te salva debe
+tener, ella misma, su bote salvavidas.
+
 ## Estado
 
 - **Llave de contacto** (`groot awaken`) y **hombre al agua** (`groot halt` +
