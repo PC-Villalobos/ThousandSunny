@@ -19,6 +19,21 @@ Convert `.md.gdoc` or Google Docs source files into real Markdown files that
 Obsidian can read as plain text. Never move, delete, or reorganize source Drive
 files unless the Captain explicitly orders it.
 
+## La migración es traducción ontológica (no solo formato)
+
+Cortar el formato (Docs → Markdown) es el **primer paso**, no el trabajo completo.
+La migración real es la **Fase 0** del proyecto (prioridad absoluta — ver
+`docs/MIGRACION_SEMANTICA.md`): una **traducción ontológica** documento a documento.
+
+Cada documento, antes de entrar en la Maceta de Groot, recibe su **ID canónico + YAML
+frontmatter** (la **ID es el alma**: la clave primaria y el mecanismo de continuidad).
+
+- **Zoro** corta el formato; **Robin** (`robin-meditacion`) audita el sentido
+  (vivo / fósil / duplicado / contradicción). Juntos hacen la traducción.
+- Salida por documento: `id` (Deckard `<nivel>-<clase>-<dominio>-<n>`), `estado`,
+  `dominio`, `padre`, `tags`, `fuente`, `certeza` (regla Deckard), y wikilinks `[[...]]`.
+- Al terminar: Drive = **museo histórico** (read-only); Obsidian = **fuente de verdad**.
+
 ## Execution Paths
 
 ### GAS path
