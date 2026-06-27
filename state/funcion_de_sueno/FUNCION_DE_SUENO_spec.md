@@ -66,6 +66,25 @@ cron/systemd, un servidor de webhook y workflows de GitHub Actions. En este repo
 
 Mapa evento -> fases en el skill (`SKILL.md`).
 
+## La funcion del sueno: recordar mejor, no mas
+
+El sueno no es recordar mas, es **recordar mejor**. Su metabolismo (no solo auditar):
+
+```
+SUENO = OLVIDAR + INTEGRAR + REENSAYAR + JERARQUIZAR + CANONIZAR + PODAR
+```
+
+El peligro no es solo perder memoria; es **conservarlo todo**: si nada se poda,
+`canon = vertedero` y la memoria viva colapsa (la gran Nemesis, ver
+`docs/MIGRACION_SEMANTICA.md`). El sueno **propone** el triaje
+(TRIVIAL->eliminar / OPERATIVO->resumir / SIGNIFICATIVO->integrar / FUNDACIONAL->canonizar),
+pero **la poda y la canonizacion requieren GO del Capitan**: borrar memoria es
+consecuente, y el Capitan es la Nemesis que decide que sobrevive. El sueno marca; el
+Capitan firma. (Coherente con el guardrail: sin mutar fuentes sin firma.)
+
+> La memoria no consiste en conservarlo todo, sino en saber que merece seguir
+> sonandose manana.
+
 ## Archivos de la funcion
 
 - `FUNCION_DE_SUENO_spec.md` - este documento.
