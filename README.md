@@ -16,7 +16,9 @@ clicking.
 Built for clinical practice, doctoral research, and personal knowledge management,
 under a One Piece crew metaphor. The grammar beneath it (character · actor · script ·
 director · scene · audience) lives in `TEATRO.md`; the architecture in
-`bridge-linux/ARQUITECTURA.md`.
+`bridge-linux/ARQUITECTURA.md`; and the thesis — why a small model wrapped in dense
+*glia* (continuous memory, tools, autonomy) outgrows an isolated frontier model — in
+`TESIS.md`.
 
 This repo is the ship itself. Everything that makes the system run â€” skills,
 configs, prompts, templates, CI â€” lives here.
