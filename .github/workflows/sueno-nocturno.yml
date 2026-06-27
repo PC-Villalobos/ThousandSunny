@@ -24,7 +24,7 @@ jobs:
           node state/funcion_de_sueno/funcion_de_sueno.mjs \
             --config state/funcion_de_sueno/sleep_config.repo.json \
             --actor github-actions \
-            --role Nami \
+            --role Groot \
             --cloud-request
 
       - name: Commit sleep report

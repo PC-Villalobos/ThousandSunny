@@ -2,11 +2,21 @@
 
 The operating-system repo for the Thousand Sunny cognitive ecosystem.
 
-ThousandSunny is a multi-AI infrastructure built around clinical practice,
-doctoral research, and personal knowledge management. It connects Claude,
-Gemini, and ChatGPT through shared memory, Google Apps Script, and portable
-skills â€” all orchestrated under a One Piece crew metaphor where each AI
-agent has a role (navigator, cook, shipwright, sniper, etc.).
+ThousandSunny is the operating system for a **sovereign cognitive exoskeleton** —
+the captain's mind, extended. Not a connector for someone else's models: an OS
+meant to be run **in natural language**, typed or spoken, where a crew of AI
+agents executes everything so the captain commands without writing commands or
+clicking.
+
+- **Brain:** an Obsidian vault (the *maceta de Groot*) read as RAG — the source of memory.
+- **Engine:** DeepSeek, and increasingly local models, for sovereignty and the confidentiality owed to the captain's patients.
+- **Nervous system (the *micelio*):** Obsidian Sync + GitHub, carrying state between devices and agents.
+- **Crew:** the nakamas (Groot, Nami, Robin, Jimbe, Zoro, Chopper…) are *characters* that a model *actor* plays; the scripts are portable Markdown skills, so the actor is interchangeable (Claude, Codex, DeepSeek, local) while the play stays the same.
+
+Built for clinical practice, doctoral research, and personal knowledge management,
+under a One Piece crew metaphor. The grammar beneath it (character · actor · script ·
+director · scene · audience) lives in `TEATRO.md`; the architecture in
+`bridge-linux/ARQUITECTURA.md`.
 
 This repo is the ship itself. Everything that makes the system run â€” skills,
 configs, prompts, templates, CI â€” lives here.
@@ -30,7 +40,7 @@ More crew members will board as the system grows.
 ## Crew registry
 
 The crew and its capabilities are defined in portable, model-agnostic Markdown,
-so any model (Claude, Gemini, ChatGPT) reads the same armory:
+so any model (Claude, Codex, DeepSeek, local…) reads the same armory:
 
 - `TEATRO.md` — the grammar beneath the metaphor: the six roles (character, actor, script, director, scene, audience) that every action instantiates. The registries below are those roles made concrete.
 - `CREW.md` — the roster: each Nakama (a **character**) and the set of skills it carries.
