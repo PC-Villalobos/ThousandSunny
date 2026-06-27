@@ -56,7 +56,7 @@ function parseArgs(argv) {
     root: process.cwd(),
     config: null,
     actor: "codex",
-    role: "Usopp",
+    role: "Groot",
     cloudRequest: false
   };
 
@@ -482,6 +482,10 @@ function persistState(statePath, previousState, phase1, phase4, runSummary) {
   fs.writeFileSync(statePath, JSON.stringify(nextState, null, 2) + os.EOL, "utf8");
 }
 
+function appendToLedger(ledgerPath, entry) {
+  fs.appendFileSync(ledgerPath, JSON.stringify(entry) + os.EOL, "utf8");
+}
+
 function main() {
   const args = parseArgs(process.argv);
   const config = readConfig(args);
@@ -513,6 +517,25 @@ function main() {
     cloudRequestPath
   };
   persistState(statePath, previousState, phase1, phase4, runSummary);
+
+  // Reconciliacion canon (TEATRO/Concilio): el motor escribe el ledger por ciclo
+  // (fix N3-06: antes solo escribia sleep_state.json -> ledger desincronizado).
+  // El que suena es Groot (la raiz); la fusion se vigila por actor. El veredicto
+  // semantico (fertil/decae) y el atractor Nova los fija el skill agentico /sueno.
+  const ledgerPath = path.join(path.dirname(statePath), "sleep_ledger.jsonl");
+  appendToLedger(ledgerPath, {
+    ts: new Date().toISOString(),
+    event: "daily_tick",
+    actor: args.actor,
+    role: args.role,
+    phases: ["N1", "N2", "N3", "REM"],
+    streak: phase4.current.streak,
+    report: path.relative(path.dirname(statePath), outputs.reportPath).split(path.sep).join("/"),
+    drift: phase3.issues.length > 0 || phase4.warnings.length > 0,
+    verdict: "neutral",
+    level: 0,
+    attractor: null
+  });
 
   console.log(JSON.stringify({
     ok: true,

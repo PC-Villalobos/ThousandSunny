@@ -174,3 +174,31 @@ Corpus de entrada (la biblia):
 - Funcion de sueno sigue como auditoria nocturna de coherencia
 - Migracion Zoro (Drive -> Obsidian) alimenta el vault que Brook y RAG usan
 - Este proyecto es la capa de ejecucion que une todo
+
+## Nomenclatura y estratos (reconciliacion ratificada 2026-06-26)
+
+Glosario viejo -> canon (de la meditacion de Robin; fuente
+`state/meditacion/RECONCILIACION_v0.md`). Los **nakamas** (Jimbe, Nami, Robin...)
+persisten; las **capas** (Odysseus/Laboon/Brook) son infraestructura nueva.
+
+| Viejo (biblia) | -> Canon |
+|---|---|
+| "Local Hub" / "Sunny Core" | Odysseus (Linux PC) |
+| "Open Claws" / Moltbook / presencia autonoma | Laboon (VPS) |
+| continuidad / memoria larga | Brook (DeepSeek) |
+| GAS / "Den Den Mushi" | apps HTML en escritorio Linux (VPS + Obsidian Sync) |
+| Drive (repositorio) | deprecado tras la migracion Zoro al Vault |
+| Gemini / GPT-4 / Claude | DeepSeek (los modelos son actores intercambiables) |
+
+**Identidad:** Vault de Obsidian = **la maceta de Groot** = el cerebro (RAG).
+
+**Estratos de la biblia:** A (mayo, GAS+Gemini) = historico; B (junio, doctrina
+Obsidian-Groot) = parcialmente vigente; C (este doc, 24-jun) = fuente de verdad.
+
+**Regla de Oro:** "El micelio (Obsidian Sync + GitHub) transporta; Obsidian recuerda."
+
+**Capacidades sensibles (Jimbe/Nami):** navegacion web autonoma + cartografia de
+accesos, atadas a alcance defensivo/autorizado y soberania de pacientes; frente a
+terceros solo bajo **debugging etico**. Ver `CREW.md` y `state/concilio/`.
+
+**Gramatica:** personaje/actor/guion/director/escena/publico en `TEATRO.md`.
