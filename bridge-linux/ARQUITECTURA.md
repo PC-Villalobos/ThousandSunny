@@ -1,3 +1,7 @@
+---
+aliases: [bridge-linux-ARQUITECTURA]
+---
+
 # Bridge Linux — Arquitectura del Puente de Mando
 
 Estado: planificado
