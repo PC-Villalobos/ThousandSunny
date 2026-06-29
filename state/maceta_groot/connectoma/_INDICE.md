@@ -20,6 +20,7 @@ documento a documento, no copia: traducción ontológica.
 - [[SIS-cerebro-semantico]] — histórico (concepto vivo: cerebro = vault)
 - [[SIS-nakama-ontologia]] — resuelto vía TEATRO (Nakama = Personaje)
 - [[SIS-informe-integral-v5]] — histórico (Estrato A: GAS + Gemini/GPT)
+- [[SIS-capa-semantica]] — activo (método vivo de la Fase 0; Nemesis/Fénix/GAS fósiles)
 
 ## Estratos (meditación 2026-06-25)
 - **A** (mayo, GAS+Gemini) → histórico
