@@ -1,6 +1,21 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-06-29T06:03:28.956Z",
+  "updatedAt": "2026-06-30T03:09:00Z",
+  "lastRun": {
+    "date": "2026-06-30",
+    "event": "daily_tick",
+    "actor": "claude-code",
+    "role": "Nami",
+    "phases": ["N1","N2","N3","REM"],
+    "streak": 1,
+    "drift": true,
+    "verdict": "neutral",
+    "attractor": null,
+    "report": "reports/SLEEP_2026-06-30.md",
+    "coherenceScore": 0.935,
+    "issues": 8,
+    "files": 82
+  },
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -565,6 +580,11 @@
       "timestamp": "2026-06-29T06:03:28.955Z",
       "actor": "github-actions",
       "role": "Groot"
+    },
+    {
+      "timestamp": "2026-06-30T03:09:00Z",
+      "actor": "claude-code",
+      "role": "Nami"
     }
   ],
   "runs": [
@@ -721,6 +741,17 @@
       "coherenceScore": 0.9390243902439024,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-06-29T06-03-28-925Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-06-29T06-03-28-925Z.md"
+    },
+    {
+      "timestamp": "2026-06-30T03:09:00Z",
+      "actor": "claude-code",
+      "role": "Nami",
+      "files": 82,
+      "deltas": 0,
+      "issues": 8,
+      "coherenceScore": 0.935,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-06-30.md",
+      "cloudRequestPath": null
     }
   ]
 }
