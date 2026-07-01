@@ -66,6 +66,32 @@ cron/systemd, un servidor de webhook y workflows de GitHub Actions. En este repo
 
 Mapa evento -> fases en el skill (`SKILL.md`).
 
+## Trillar el millo (el nombre canario del ciclo)
+
+*Trillar el millo* es como el Capitan nombra este ciclo N1->REM: de noche se separa el
+grano de la paja para que **por la manana el desayuno este hecho**. Es la misma funcion,
+dicha en su lengua.
+
+**El millo es el transcript.** El grano mas rico no son solo los ficheros de `state/`
+(el granero), sino la **huella de cada sesion**: el transcript con las herramientas
+llamadas, las decisiones y su *por que*. Ahi vive la memoria episodica real. Hoy el sueno
+trilla `state/`; el transcript es el grano fresco que aun falta meter en la era.
+
+**Quien trilla que:**
+- **Grano publico** (arquitectura, trabajo no sensible): se puede destilar en la nube a
+  un digest **filtrado** y commitearlo para que una Routine lo trille. Es el `checkpoint`
+  con mas cuerpo.
+- **Grano pesado y privado** (transcripts con cualquier dato clinico/de paciente): se
+  trilla **solo en el cuerpo soberano** (Laboon/Odysseus), en local, bajo keystone.
+  **Jamas** se sube un transcript crudo con datos de paciente al repo ni a una API de
+  nube. El millo privado se trilla en casa.
+
+**Limite honesto (nube).** En la nube cada Routine arranca en un contenedor nuevo, sin
+disco compartido: **no ve los transcripts de ayer**. Trillar el millo de los transcripts
+es, para el grano pesado, tarea del cuerpo soberano persistente
+(`bridge-linux/ARQUITECTURA.md`, Laboon/Odysseus). Coherente con la casa: una tarea que
+no puede observar su objetivo se marca `pending-rearchitect`, no finge.
+
 ## La funcion del sueno: recordar mejor, no mas
 
 El sueno no es recordar mas, es **recordar mejor**. Su metabolismo (no solo auditar):

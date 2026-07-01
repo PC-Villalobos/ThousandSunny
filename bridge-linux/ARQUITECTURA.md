@@ -14,11 +14,26 @@ Un sistema operativo donde el raton y los comandos estan reemplazados por
 lenguaje natural. Los agentes de IA ejecutan todo. El usuario es capitan,
 no tecnico.
 
-Motor: DeepSeek API
+Motor: un director que rutea actores (DeepSeek local soberano + modelo web-limpio para validar)
 Cerebro: Obsidian vault (RAG)
 Interfaz: Open WebUI (el Open Claw)
 Personalidad raiz: Groot (sustrato de todos los nakamas)
 Continuidad: Brook (DeepSeek contexto largo + vault persistente)
+
+### El motor no es un modelo: es un director que rutea
+
+El motor no es "DeepSeek" a secas. Es un **director** que reparte cada tarea al mejor
+actor disponible, con la soberania como default:
+
+- **DeepSeek local** para lo soberano y lo **privado/clinico**: jamas sale de casa.
+- **Modelo con acceso web limpio** (GPT/Claude) para **validar contra internet abierto**.
+  DeepSeek **no** se usa para busqueda web abierta: la censura lo hace poco fiable para
+  ese trabajo.
+
+Principio: **soberania por defecto, ruteo por excepcion justificada.** El director
+(Groot/Brook) decide; el actor es intercambiable (`TESIS.md`: el sistema > el modelo).
+La huella de cada decision — que actor, que herramienta, por que — queda en el transcript,
+que la funcion de sueno trilla (`state/funcion_de_sueno/`).
 
 ## Capas del sistema
 
@@ -192,7 +207,7 @@ persisten; las **capas** (Odysseus/Laboon/Brook) son infraestructura nueva.
 | continuidad / memoria larga | Brook (DeepSeek) |
 | GAS / "Den Den Mushi" | apps HTML en escritorio Linux (VPS + Obsidian Sync) |
 | Drive (repositorio) | deprecado tras la migracion Zoro al Vault |
-| Gemini / GPT-4 / Claude | DeepSeek (los modelos son actores intercambiables) |
+| Gemini / GPT-4 / Claude | actores intercambiables; el director rutea al mejor por tarea (DeepSeek soberano por defecto) |
 
 **Identidad:** Vault de Obsidian = **la maceta de Groot** = el cerebro (RAG).
 
