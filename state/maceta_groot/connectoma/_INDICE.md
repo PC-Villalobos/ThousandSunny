@@ -28,4 +28,14 @@ documento a documento, no copia: traducción ontológica.
 - **B** (junio, doctrina Obsidian-Groot) → parcialmente vigente
 - **C** (24-jun, bridge-linux) → fuente de verdad
 
+## Telar gemelo (convergencia 2026-07-02)
+
+Codex teje en paralelo en el telar local (`D:\La maceta de Groot`): TEJIDO_00
+(sutura: resume TESIS/TEATRO/AGAPE/MIGRACION/RUTINAS de este repo) y TEJIDO_01
+(6 nodos desde Drive nativo). Antes de tejer un doc nuevo, mirar su
+`INDICE_TEJIDO_*` para no duplicar hilos. Nodos futuros de ambos telares: ID
+Deckard completo (`N<nivel>-<EST>-<DOM>-<SLUG>-<AAAAMMDD>-<NNN>`); los SIS-*
+existentes ganan `id_deckard` cuando se editen. Paleta común:
+[[CATALOGO_NUDOS]] (espejo) — reglas: `docs/MIGRACION_SEMANTICA.md` § Convergencia.
+
 Protocolo: `docs/MIGRACION_SEMANTICA.md`. Auditoría fuente: `state/meditacion/`.
