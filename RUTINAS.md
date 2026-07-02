@@ -7,23 +7,42 @@
 
 | Rutina | Invoca | Nakama | Cadencia | Substrato | Salud |
 |--------|--------|--------|----------|-----------|-------|
-| Barrido diario de cabos | `usopp-barrido` (op-amanecer #2) | 🎯 Usopp | 09:00 | Codex (`~/.codex/automations`) | ✅ activa |
-| Sensor de proa | `nami-intake-proa` (op-amanecer #1) | 🧭 Nami | 08:37 | Claude (scheduler) | ⏸ bloqueada — **CABO-011** |
-| Resumen Usopp | `usopp-resumen` | 🎯 Usopp | time-based | GAS (`THOUSAND SUNNY v3.0`) | ❌ caída 12–14 jun — *"Authorization is required"* |
-| Meditación profunda | `robin-meditacion` | 📚 Robin | semanal / a demanda | Claude (Routine + connector Drive) | 🆕 nueva — 1ª corrida 2026-06-25 (deriva detectada) |
+| Sueño nocturno | `/sueno` | 🌙 Groot (el que sueña) | 03:09 Madrid (Routine) + 01:09 UTC (Actions) | Claude Routine + GitHub Actions | ✅ activa |
+| Meditación profunda | `robin-meditacion` | 📚 Robin | semanal / a demanda | Claude (Routine + connector Drive) | ✅ activa — precedente Drive 2026-06-25 |
+| Barrido diario de cabos | `usopp-barrido` (op-amanecer #2) | 🎯 Usopp | 09:00 | Codex (`~/.codex/automations`) | 💤 sustituida 2026-07-02 → sueño/shadowlog (Codex sin máquina) |
+| Sensor de proa | `nami-intake-proa` (op-amanecer #1) | 🧭 Nami | 08:37 | Claude (scheduler) | 💤 sustituida 2026-07-02 → sueño/shadowlog (cierra CABO-011) |
+| Resumen Usopp | `usopp-resumen` | 🎯 Usopp | time-based | GAS (`THOUSAND SUNNY v3.0`) | 💤 sustituida 2026-07-02 — GAS es adaptador, no scheduler (cierra CABO-PROA-02) |
+| Revisión SOFÍA (manual) | — | Capitán | lunes 9:00 | Google Calendar | 🕯 retirada 2026-07-02 → absorbida por sueño + meditación |
 
-Leyenda: 🆕 nueva · ✅ activa · ⏸ pausada/bloqueada · ❌ caída.
+Leyenda: 🆕 nueva · ✅ activa · ⏸ pausada/bloqueada · ❌ caída · 💤 sustituida · 🕯 retirada.
 
 **Invariante:** toda rutina cierra en la Bitácora (spine). Si una rutina no escribe al
 spine, no ha cerrado.
 
-## Cabos abiertos de esta capa
+## Sustitución 2026-07-02 — el barco se audita solo
 
-- **CABO-011** — aprobar conectores Gmail/Calendar del sensor de proa (Run now en Claude).
-- **CABO-PROA-02** — reautorizar el trigger `usoppResumen` en GAS (caído 3 días seguidos).
-  Diagnóstico (2026-06-25): el trigger time-based es `cicloAutonomo` → `cicloAutonomo_v3`
-  (usa Sheets + Drive + UrlFetch externo). *"Authorization is required"* = la
-  autorización guardada del trigger ya no cubre los scopes que el script usa (revocada
-  o scope nuevo sin reconsentir). **Fix:** abrir el proyecto Apps Script, ejecutar una
-  función a mano una vez → aceptar el consentimiento OAuth → el trigger revive. El repo
-  no versiona `appsscript.json`, así que los scopes viven solo en el editor.
+Orden del Capitán: la revisión semanal de SOFÍA y las tareas programadas manuales
+quedan sustituidas por la **función de sueño + shadowlog** corriendo en la nube
+(Routines de Claude Code), conectadas a:
+
+- **GitHub** — el repo es lo que la Routine clona y donde escribe (ledger, informes).
+- **Drive** — vía connector en la Routine (precedente: meditación 2026-06-25); los
+  loops interactivos de migración siguen siendo el canal grueso Drive → repo.
+- **Obsidian** — vía micelio git: obsidian-git (móvil/PC) hace pull; la maceta ve el
+  parte del sueño cuando el Capitán despierta.
+
+La herencia de SOFÍA (sus 5 preguntas → fases N1/N2/N3/REM) y la definición del
+shadowlog: `state/funcion_de_sueno/FUNCION_DE_SUENO_spec.md`.
+
+Regla de la casa intacta: una rutina que no puede observar su objetivo se marca
+`pending-rearchitect` y calla; silencio honesto > ruido falso.
+
+## Cabos de esta capa
+
+- **CABO-011** — cerrado 2026-07-02: el sensor de proa queda sustituido por el
+  sueño/shadowlog; no hay conectores que aprobar.
+- **CABO-PROA-02** — cerrado 2026-07-02 por deprecación: `usoppResumen` (GAS) no se
+  reautoriza; GAS queda como adaptador de espejo, no scheduler. Si algún día se quiere
+  revivir: abrir el proyecto Apps Script, ejecutar una función a mano, aceptar el
+  consentimiento OAuth (los scopes viven solo en el editor; el repo no versiona
+  `appsscript.json`).
