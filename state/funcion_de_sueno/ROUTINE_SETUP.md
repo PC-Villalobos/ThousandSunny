@@ -4,6 +4,12 @@ Objetivo: que el sueno nocturno corra **solo, en la nube, con el equipo apagado*
 y que ademas pueda dispararse por webhook cuando algo cambia o se cierra una
 sesion. Esto NO requiere montar cron/systemd ni un servidor de webhook propio.
 
+> **Verificado contra la doc oficial de Anthropic el 2026-07-02** (sesion Cowork del
+> Capitan). Estado: **research preview** — minimo 1 hora entre corridas; el tope
+> diario de runs se consulta en claude.ai/code/routines. Desde la sustitucion
+> 2026-07-02 (`RUTINAS.md`), esta rutina es la columna vertebral de la auditoria
+> del barco: SOFIA manual y las rutinas zombis quedaron absorbidas aqui.
+
 > **Fuente de verdad.** El canon operativo vive en el repo
 > (`state/funcion_de_sueno/`): es lo que la Routine clona y ejecuta, y la unica
 > copia que la nube puede leer. El doc del vault local
@@ -41,7 +47,10 @@ esta). Crea la rutina desde:
 Requisitos: plan Pro/Max/Team/Enterprise con Claude Code on the web; login de
 claude.ai (no API key); GitHub conectado al repo `ThousandSunny`. Para el
 disparador GitHub hace falta la **Claude GitHub App** instalada en el repo (el
-asistente de la web te lo pide).
+asistente de la web te lo pide). Ojo: `/web-setup` **no** instala la App — solo da
+acceso de clonado. Sintoma tipico: si `/schedule` devuelve *"Unknown command"*,
+estas autenticado con API key en vez de con la cuenta de claude.ai — quita
+`ANTHROPIC_API_KEY` del entorno.
 
 ## Paso a paso (Schedule nocturno)
 
@@ -64,13 +73,14 @@ asistente de la web te lo pide).
    exacto: crea la rutina y luego `/schedule update` desde la terminal local.)
 7. **Create.** Pulsa **Run now** una vez para probar; revisa el PR que deja.
 
-Limite de corridas/dia por cuenta: Pro 5, Max 15, Team/Enterprise 25. Una rutina
-nocturna = 1/dia.
+Limite de corridas/dia por cuenta: Pro 5, Max 15, Team/Enterprise 25 (verificable
+en claude.ai/code/routines). Research preview: minimo 1 hora entre corridas. Una
+rutina nocturna = 1/dia.
 
 ## PROMPT DE LA RUTINA (pegar en Instructions)
 
 ```
-Eres Nami ejecutando la Funcion de Sueno nocturna del Thousand Sunny.
+Eres Groot (el que suena) ejecutando la Funcion de Sueno nocturna del Thousand Sunny.
 
 Repositorio: ThousandSunny (ya clonado). La memoria compartida vive en state/.
 NO uses rutas tipo C:\... (no existen en la nube): usa rutas relativas del repo.
@@ -82,7 +92,7 @@ NO uses rutas tipo C:\... (no existen en la nube): usa rutas relativas del repo.
    - state/funcion_de_sueno/sleep_state.json     (si existe)
 
 2. Ejecuta el skill /sueno con event=daily_tick (ciclo completo N1,N2,N3,REM)
-   sobre root=state, actor=claude-code, role=Nami.
+   sobre root=state, actor=claude-code, role=Groot.
 
 3. Respeta TODOS los guardrails del skill (metadata-only para fuentes sensibles,
    sin mutar fuentes salvo los archivos de la propia funcion, sin canon nuevo,
@@ -123,7 +133,7 @@ curl -X POST https://api.anthropic.com/v1/claude_code/routines/<ROUTINE_TRIGGER_
   -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
   -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
-  -d '{"text": "event_type=session_closed; actor=claude-code; role=Nami; resumen=..."}'
+  -d '{"text": "event_type=session_closed; actor=claude-code; role=Groot; resumen=..."}'
 ```
 
 Devuelve el `claude_code_session_url` para ver la corrida. El `text` llega como

@@ -39,6 +39,11 @@ Regla de la casa intacta: una rutina que no puede observar su objetivo se marca
 
 ## Cabos de esta capa
 
+- **CABO-012** — abierto 2026-07-02 (manos del Capitán): en claude.ai/code/routines,
+  editar la rutina del sueño y añadir el trigger **API** (Generate token → la URL y
+  el token se muestran **una sola vez** → guardarlos en la keystone, jamás en el
+  repo). Opcional: tercer trigger **GitHub event** sobre PRs a `state/` (requiere
+  la Claude GitHub App; `/web-setup` no la instala). Probar con **Run now**.
 - **CABO-011** — cerrado 2026-07-02: el sensor de proa queda sustituido por el
   sueño/shadowlog; no hay conectores que aprobar.
 - **CABO-PROA-02** — cerrado 2026-07-02 por deprecación: `usoppResumen` (GAS) no se
