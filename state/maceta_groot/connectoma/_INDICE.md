@@ -22,6 +22,12 @@ documento a documento, no copia: traducción ontológica.
 - [[SIS-informe-integral-v5]] — histórico (Estrato A: GAS + Gemini/GPT)
 - [[SIS-capa-semantica]] — activo (método vivo de la Fase 0; Nemesis/Fénix/GAS fósiles)
 - [[SIS-simbiosis-nahual]] — activo (mito vivo: Groot-soñador, modelo vs agente; Espejo/Fénix fósiles)
+- [[N3-ACT-SIS-LIDERAZGO-CONTEXTO-20260702-001|SIS-liderazgo-contexto]] — activo (contexto > control; Moltbook/4h fósiles)
+- [[N3-ACT-SIS-DESPERTAR-IA-AGENTICA-20260702-001|SIS-despertar-ia-agentica]] — activo (modelo vs agente, workflows; Open Claw pirata fósil)
+
+**Corpus público de arquitectura (lote 1): COMPLETO** — 4/4 vetados migrados
+(2026-07-02). Los dos últimos estrenan el ID Deckard completo (regla 2 de la
+convergencia).
 
 ## Estratos (meditación 2026-06-25)
 - **A** (mayo, GAS+Gemini) → histórico
