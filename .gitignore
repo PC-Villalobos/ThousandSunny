@@ -28,3 +28,9 @@ npm-debug.log*
 .idea/
 *.swp
 *.swo
+
+# Local raw mirrors - never publish Drive bruto in this public repo
+40_Biblioteca_Hipatia/
+state/maceta_groot/40_Biblioteca_Hipatia/
+state/maceta_groot/biblioteca_hipatia/raw/
+**/40_Biblioteca_Hipatia/_protegido/
