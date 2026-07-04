@@ -139,6 +139,13 @@ Al terminar la migración, la identidad **deja de depender de Google**:
 | **Google Drive** | **Museo histórico** — `READ ONLY`, `ARCHIVE`, sin contenido nuevo |
 | **Obsidian (Maceta de Groot)** | **SOURCE OF TRUTH** — canon, memoria activa |
 
+**El acceso al museo** (refinación 2026-07-04, Codex+Nami): no todo se teje — lo que
+no merece nodo se **apunta**. "El vault no contiene Drive: contiene el mapa de
+Drive." Protocolo de rescate NL (solicitud → índice → puntero → conector Drive →
+entrega, con compuerta para lo protegido): `state/maceta_groot/drive_rescue/`. El
+índice completo con IDs vive **solo** en el telar local; al repo público solo cruza
+el mapa public-safe.
+
 Es probablemente el momento más importante de toda la evolución del proyecto.
 
 ## Prioridad absoluta
