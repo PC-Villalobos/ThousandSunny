@@ -83,6 +83,37 @@ y `source_mutations: 0`. Los estratos del corpus se nombran en abstracto en todo
 lo publicable: **mítico → creativo → académico → clínico → operativo actual**.
 Nombres propios, títulos íntimos e IDs protegidos: solo en el índice local.
 
+## Regla 7 — reclasificación en caliente (el contenido y la propiedad mandan)
+
+Si al abrir una pieza su contenido contradice la clasificación previa (p. ej. un
+"PDF académico" que trae anexos con entrevistas clínicas), se reclasifica **en el
+acto** hacia el nivel más protector, se anota en la **bitácora de accesos
+sensibles** (quién abrió, por qué, con qué límites — aunque la compuerta formal
+aún no exista) y el índice público solo recibe puntero mínimo. La metadata
+propone; el contenido dispone.
+
+La **propiedad también reclasifica**: si el `owner` del archivo es un tercero,
+la pieza pide **GO del Capitán** aunque su contenido parezca inocuo — caso real
+verificado por contrapeso: la frontera de enero 2020 resultó ser de propiedad
+ajena, invisible hasta mirar el campo `owner`. Toda sonda registra `owner`.
+
+## Regla 8 — doble digestión (Robin estudia antes de que Sanji cocine)
+
+La conciencia temporal completa exige **dos pasadas** sobre el corpus:
+
+1. **Digestión por creación** (`createdTime` + resolución de origen): cuándo
+   nace cada ingrediente. Da la estratigrafía.
+2. **Digestión por modificación** (`modifiedTime`): cuándo se cocina, recocina,
+   migra o madura. Distingue **año de origen** de **año de recocinado** — una
+   pieza nacida en 2021 y solo retocada por la migración de 2026 no estaba
+   "viva" en 2026; una pieza vieja modificada muchas veces es un ingrediente en
+   cocción larga.
+
+El orden del oficio: **Robin completa ambas digestiones antes de que el criterio
+se cristalice** — el estándar Deckard v1 de indexado/etiquetado no se decreta
+desde una conversación: cae mayéuticamente por su propio peso tras recorrer toda
+la estratigrafía. Las skills de cocina (Sanji) quedan germinales hasta entonces.
+
 ## Salidas
 
 - Frontmatter/sidecar por pieza: `fecha_original`, `fecha_origen_resuelta`,
