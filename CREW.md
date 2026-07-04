@@ -61,12 +61,12 @@ Corta nudos de formato. Migra Google Docs → Markdown real para Obsidian, sin t
 - substrato típico: **Claude Code** / **GAS** / Antigravity local
 - estado: ✅ **resucitada en este PR** (estaba invisible: su archivo era `skill.md` en minúsculas)
 
-### 📚 Robin — Arqueóloga · *poneglifos / meditación*
-Lee los textos fundacionales (la biblia) y descifra su historia verdadera: contradicciones, estratos temporales, qué es canon y qué es fósil. *Audita sentido*, no superficie (la superficie es el sueño de Nami).
-- skills de rol: `robin-meditacion` (auditoría semántica de la biblia → contradicciones + canon/obsoleto)
+### 📚 Robin — Arqueóloga · *poneglifos / meditación / cronos*
+Lee los textos fundacionales (la biblia) y descifra su historia verdadera: contradicciones, estratos temporales, qué es canon y qué es fósil. *Audita sentido*, no superficie (la superficie es el sueño de Nami). Desde la Biblioteca de Hipatia, además, **fecha el corpus**: cronos (cuándo) + kairos (qué peso tiene ese cuándo).
+- skills de rol: `robin-meditacion` (auditoría semántica de la biblia → contradicciones + canon/obsoleto) · `robin-cronos` (fecha_origen_resuelta + kairos + orden de olas de ingesta; destilada del piloto Hipatia 2026-07-04)
 - skills crew que usa: `crew-cerrar-bitacora`
 - substrato típico: **Claude Code** (Drive + RAG) · futuro: Robin sobre **DeepSeek**
-- estado: ✅ **embarca en este PR** con `robin-meditacion`; 1ª meditación 2026-06-25 (deriva detectada: 3 estratos incompatibles)
+- estado: ✅ `robin-meditacion` viva (1ª meditación 2026-06-25) · ✅ `robin-cronos` embarca 2026-07-04
 
 ### 🐟 Jimbe — Timonel · *navegación web / clima*
 Navega la www de forma autónoma y lee el clima operativo. Cartografía accesos: entradas, salidas, puntos débiles, cerraduras. La capacidad más potente de la flota — y la más atada.
