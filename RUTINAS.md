@@ -39,6 +39,11 @@ Regla de la casa intacta: una rutina que no puede observar su objetivo se marca
 
 ## Cabos de esta capa
 
+- **CABO-013** — abierto 2026-07-05 (manos del Capitán): el prompt vivo de la Routine
+  del sueño sigue pasando `role=Nami` (deriva detectada por el parte del 2026-07-05,
+  PR #50). Fix: en claude.ai/code/routines, editar la rutina y pegar el bloque
+  "PROMPT DE LA RUTINA" actualizado de `state/funcion_de_sueno/ROUTINE_SETUP.md`
+  (ya dice "Eres Groot" / `role=Groot`). Dos minutos, mismo formulario que CABO-012.
 - **CABO-012** — abierto 2026-07-02 (manos del Capitán): en claude.ai/code/routines,
   editar la rutina del sueño y añadir el trigger **API** (Generate token → la URL y
   el token se muestran **una sola vez** → guardarlos en la keystone, jamás en el
