@@ -1,5 +1,11 @@
 # RETOMAR - Cold Start Metatron Gestation
 
+> **ESTADO 2026-07-05: SELLADA + HIBERNADA (GO C0 del Capitan).**
+> W1-W12 selladas (OBS-GESTATION-SEAL-W1-W12-20260705.md, preflight 12/12,
+> source_mutations=0, 236 notas). No hay wave activa. Reactivacion: Plan Wave13
+> con GO C0 explicito; hereda requisito N5 (>=2 dominios), max_files=32 y
+> exclusiones NEM/CAR/ISM/CLI. Hasta entonces, no ejecutar Plan/Mirror/purga.
+
 Este archivo permite retomar Metatron desde una conversacion nueva con Codex, Antigravity o Claude Code sin depender del historial del chat anterior.
 
 ## Uso

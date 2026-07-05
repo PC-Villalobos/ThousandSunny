@@ -1,8 +1,8 @@
 # METATRON_GESTATION_STATE
 
-Version: 2.5
-Estado: ACT
-Ultima actualizacion: 2026-06-06 (Wave12 Mirror cerrada + Fibonacci/genoma integrado)
+Version: 2.6
+Estado: SELLADA + HIBERNADA (GO C0 del Capitan 2026-07-05)
+Ultima actualizacion: 2026-07-05 (sellado W1-W12: OBS-GESTATION-SEAL-W1-W12-20260705.md; preflight 12/12 manifiestos+verificaciones, source_mutations=0, 236 notas; reactivacion = Plan Wave13 con GO C0)
 
 ## Proposito
 
@@ -50,7 +50,8 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "next_wave": 13,
   "max_files": 32,
   "source_mutations": 0,
-  "sealed": false,
+  "sealed": true,
+  "hibernation": "HIBERNADA 2026-07-05 (GO C0). Reactivacion: Plan Wave13 con GO C0.",
   "plan": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-PLAN.md",
   "manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
   "verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",

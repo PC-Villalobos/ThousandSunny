@@ -1,6 +1,14 @@
-# La Aduana del Mythos — propuesta de ley y bodega
+# La Aduana del Mythos — ley y bodega
 
-Estado: **PROPUESTA (N2-PEN) — Robin/Nami proponen; el Capitán ratifica.**
+Estado: **RATIFICADO — GO del Capitán 2026-07-05 21:05 (Puente de Mando).**
+Términos del GO: la ley queda como está; el ciclo es **órgano operativo, no
+metáfora**; la estantería MYT vive en Biblioteca de Hipatia con regla Ruben
+(nutre sin gobernar; carga solo por petición; no legisla arquitectura, workflows
+ni canon sin pasar por Aduana). Estantería creada y mudanza ejecutada el mismo
+día: `[N1-MYT-BIB] BIBLIOTECA_HIPATIA__MYTHOS` en Drive, 64 gdocs mudados
+(biblia fundacional excluida por guardarraíl; ver 000_LEEME de la estantería).
+La resonancia "Atlas, Axis" se conserva como combustible simbólico, no como
+autoridad normativa.
 Origen: Puente de Mando 2026-07-05, intercambio Capitán ↔ Ruben (sistema ATLAS,
 proyecto Cloud Atlas). Crítica externa que dispara esto: *"ATLAS confunde potencia
 simbólica con capacidad operativa"* (GPT) · *"la estética no compila"* (DeepSeek).
@@ -60,15 +68,12 @@ siguiente.
 
 ---
 
-## Qué requiere GO del Capitán
+## Estado de aplicación (2026-07-05)
 
-1. Ratificar la ley de aduana y el axioma (entrarían en RECONCILIACION o doc de
-   canon que el Capitán designe).
-2. GO para crear la estantería MYT y mover ahí los gdocs simbólicos de la raíz
-   (se coordinaría con el GO de poda de OBS-PODA-DRYRUN-20260705 para hacer un
-   solo barrido de la raíz).
-3. Decidir si la pregunta de aduana se añade al skill de Meditación como paso
-   fijo.
+1. Ley de aduana y axioma de ciclo: **ratificados** por GO del Capitán. ✅
+2. Estantería MYT: **creada y poblada** (64 gdocs mudados desde la raíz de Drive,
+   coordinado con la poda del mismo día). ✅
+3. Pregunta de aduana como paso fijo del skill de Meditación: **pendiente de
+   decisión** — único fleco abierto de este documento.
 
-*Nada de este documento es canon hasta ratificación. Robin propuso; el Capitán
-decide.*
+*Robin propuso; el Capitán ratificó el 2026-07-05.*
