@@ -100,7 +100,10 @@ Reglas:
 - No absorber Drive en bloque.
 - No publicar punteros sensibles sin clasificacion.
 - No mover, renombrar o borrar en Drive sin plan reversible y GO.
-- No crear `_compuertas.md` hasta que el Capitan elija frase descansado.
+- Frase de compuerta v0: **elegida por el Capitan el 2026-07-04**. Materializar
+  `_compuertas.md` **solo en el vault local** (hash SHA-256 + receta de
+  normalizacion + registro de accesos). Ni la pregunta, ni la frase, ni el hash
+  entran en GitHub publico — el hash viajo al telar local por canal privado.
 - No crear `GERMINACION_03` por el hecho de cartografiar sustrato.
 
 ## Relacion con GitHub
