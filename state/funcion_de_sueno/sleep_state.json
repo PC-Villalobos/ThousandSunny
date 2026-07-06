@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-05T05:06:31.336Z",
+  "updatedAt": "2026-07-06T01:10:26.000Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -201,9 +201,9 @@
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_ledger.jsonl": {
-      "hash": "f62e307d7a8da346e38cdad3bbf697b5b968f44847ea8de3449bbdaab11b56dd",
-      "bytes": 2439,
-      "mtime": "2026-07-05T05:06:30.634Z",
+      "hash": "717abba1069c7b1fc4966cb2aaed05ae58360445320ad9a952195809a7471705",
+      "bytes": 3036,
+      "mtime": "2026-07-06T01:10:26.000Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_state.json": {
@@ -493,6 +493,12 @@
       "bytes": 5386,
       "mtime": "2026-07-05T05:06:30.639Z",
       "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/reports/SLEEP_2026-07-06.md": {
+      "hash": "0abf17fcd4b62283319604c170416a9bd19b9a976fe2ce23c34414b7e59ad923",
+      "bytes": 6053,
+      "mtime": "2026-07-06T01:10:26.000Z",
+      "contentAccess": "readable"
     }
   },
   "roleLedger": [
@@ -594,6 +600,11 @@
     {
       "timestamp": "2026-07-05T05:06:31.335Z",
       "actor": "github-actions",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-06T01:10:26.000Z",
+      "actor": "claude-code",
       "role": "Groot"
     }
   ],
@@ -817,6 +828,18 @@
       "coherenceScore": 0.9390243902439024,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-05T05-06-31-303Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-05T05-06-31-303Z.md"
+    },
+    {
+      "timestamp": "2026-07-06T01:10:26.000Z",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 83,
+      "deltas": 2,
+      "issues": 2,
+      "coherenceScore": null,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-07-06.md",
+      "cloudRequestPath": null,
+      "note": "Corrida agentica (Routine); ver parte para detalle de auditoria y blind spot del motor .mjs."
     }
   ]
 }
