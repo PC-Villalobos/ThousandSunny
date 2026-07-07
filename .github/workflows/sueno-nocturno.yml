@@ -19,41 +19,12 @@ jobs:
         with:
           node-version: "22"
 
-      # El rol ya no va fijado: se calcula desde el roleLedger para que la
-      # recomendacion de rotacion anti-fusion (fusionThreshold=3) se aplique sola.
-      # Racha medida sobre las corridas del propio actor (github-actions), no sobre
-      # la cola global, porque la alternancia con claude-code rompia la racha y la
-      # fusion github-actions/Groot llego a x8 sin dispararse nunca.
-      - name: Elegir rol por rotacion anti-fusion
-        id: rol
-        run: |
-          ROLE=$(node -e '
-            const fs = require("fs");
-            const state = JSON.parse(fs.readFileSync("state/funcion_de_sueno/sleep_state.json", "utf8"));
-            const roles = ["Nami","Robin","Chopper","Vivi","Usopp","Zoro","Sanji","Jimbe","Franky"];
-            const fusionThreshold = 3;
-            const actor = "github-actions";
-            const mine = (state.roleLedger || []).filter(e => e.actor === actor);
-            let role = mine.length ? mine[mine.length - 1].role : "Groot";
-            let streak = 0;
-            for (let i = mine.length - 1; i >= 0; i--) {
-              if (mine[i].role === role) streak++; else break;
-            }
-            if (streak + 1 >= fusionThreshold) {
-              const idx = roles.findIndex(r => r.toLowerCase() === role.toLowerCase());
-              role = roles[(idx + 1 + roles.length) % roles.length] || roles[0];
-            }
-            console.log(role);
-          ')
-          echo "role=$ROLE" >> "$GITHUB_OUTPUT"
-          echo "Rol elegido para este ciclo: $ROLE"
-
       - name: N1-N2-N3-REM deterministic cycle
         run: |
           node state/funcion_de_sueno/funcion_de_sueno.mjs \
             --config state/funcion_de_sueno/sleep_config.repo.json \
             --actor github-actions \
-            --role "${{ steps.rol.outputs.role }}" \
+            --role Groot \
             --cloud-request
 
       - name: Commit sleep report

@@ -154,7 +154,7 @@ Resumen saneado del estado de gestacion Metatron para ThousandSunny. Este archiv
   "reef_growth_architecture": "state/metatron/REEF_GROWTH_ARCHITECTURE.md",
   "reef_growth_architecture_bitacora_id": null,
   "drive_sync_bitacora_id": 1302,
-  "pending": "Wave13. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) planificado para Wave13. Wave12 Mirror cerrada (bitacora_id 1327)."
+  "pending": "Sin wave activa. Reactivacion solo mediante Plan Wave13 con GO C0 explicito. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) queda como candidata para Wave13."
 }
 ```
 

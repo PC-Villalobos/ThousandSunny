@@ -1,8 +1,9 @@
 # Plan de sellado Metatron y propuesta Wave13 — 2026-07-05
 
-Estado: **PROPUESTA — pendiente de revisión del Capitán (sin ejecutar)**
+Estado: **PROPUESTA APROBADA Y EJECUTADA — sellado W1-W12 con GO C0 del Capitán**
 Origen: Puente de Mando 2026-07-05 (GO de decisión: "preparar plan de sellado Wave8 y
-propuesta Wave9, pero no ejecutar hibernación hasta ver el resumen").
+propuesta Wave9, pero no ejecutar hibernación hasta ver el resumen"). Nota posterior:
+el Capitán dio GO C0 y el sellado/hibernación W1-W12 quedó ejecutado el 2026-07-05.
 Autor: Nami (claude-code) · Rol Metatron: verificar y auditar.
 
 ---
@@ -18,21 +19,22 @@ El briefing del Puente citaba el snapshot obsoleto de `D:\SECOND_BRAIN_PORTABLE`
 | Drive `_meta/config/[N1-PEN-NEX] metatron_gestation_waves.state.json` | 10 | 2026-05-29 | **Desactualizado** — no registra W11 ni W12. |
 | Snapshot D:\ (RETOMAR 25-may) | 8 | 2026-05-25 | **Obsoleto** — candidato a poda (ver inventario dry-run del Puente). |
 
-**Discrepancia reportada (protocolo: reportar antes de corregir):** propongo
+**Discrepancia reportada (protocolo: reportar antes de corregir):** se propuso
 sincronizar el JSON de Drive con el estado real (W12, next 13, batch 0025,
 bitacora_id 1327). Corrección de un solo archivo de estado, sin tocar fuentes ni
-notas. **Espera GO.**
+notas. **Ejecutado tras GO C0.**
 
 Waves 9, 10, 11 y 12 están **cerradas** (no era necesario "preparar Wave9": ya se
 ejecutó como conditional_mirror el 27-28 de mayo y quedó cerrada). Lo único abierto
-de verdad: `sealed=false` (global) y la decisión sobre Wave13.
+de verdad era `sealed=false` (global) y la decisión sobre Wave13; tras el GO C0,
+W1-W12 quedan selladas e hibernadas.
 
 ## 2. Plan de sellado (fase separada, requiere GO C0 propio)
 
 Alcance propuesto: sellar la gestación W1–W12 como bloque (no solo W8), dado que
 todas las waves están cerradas y auditadas con `source_mutations=0`.
 
-Pasos (ninguno ejecutado aún):
+Pasos ejecutados tras GO C0:
 
 1. **Preflight de sellado**: re-verificar por cada wave W1–W12: manifiesto presente,
    VERIFICACION presente, `source_mutations=0`, ausencia de lock.
@@ -62,11 +64,11 @@ Dos rumbos posibles, mutuamente excluyentes a corto plazo:
   sentido si el foco actual es la migración semántica (Hito 0) y el stack
   DeepSeek/Open WebUI, como sugiere el canon de junio.
 
-Recomendación de Nami: **B** (sellar e hibernar) — Metatron lleva un mes quieto
+Decisión ejecutada tras GO C0: **B** (sellar e hibernar) — Metatron lleva un mes quieto
 mientras el canon avanzó hacia la migración semántica; una hibernación sellada es
-un cierre limpio y reversible. Pero la decisión es del Capitán y nada se ejecuta
-hasta su GO sobre este resumen.
+un cierre limpio y reversible. Wave13 queda como reactivación futura, no como wave
+activa.
 
 ---
-*Ningún paso de este documento modifica fuentes, notas ni estado. Solo §1
-(sincronizar JSON) y §2 (sellado) generarán cambios, cada uno con su GO.*
+*Este documento conserva la propuesta y su cierre posterior. No materializa notas ni
+modifica fuentes; solo registra el sellado/hibernación aprobado por GO C0.*

@@ -29,10 +29,10 @@ registro de clases como anexo.
 | Periodo facturado | mes AAAA |
 
 **Emisor**
-- Antonio Villalobos Guillón
+- Nombre completo: [—]
 - NIF: [—]
 - Domicilio fiscal: [—]
-- Email: antonio.vg.surf@gmail.com
+- Email: [—]
 
 **Cliente**
 - Razón social: [Hopupu Surf Cádiz — confirmar razón social y forma jurídica]
