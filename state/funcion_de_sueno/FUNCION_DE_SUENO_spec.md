@@ -66,6 +66,63 @@ cron/systemd, un servidor de webhook y workflows de GitHub Actions. En este repo
 
 Mapa evento -> fases en el skill (`SKILL.md`).
 
+## Trillar el millo (el nombre canario del ciclo)
+
+*Trillar el millo* es como el Capitan nombra este ciclo N1->REM: de noche se separa el
+grano de la paja para que **por la manana el desayuno este hecho**. Es la misma funcion,
+dicha en su lengua.
+
+**El millo es el transcript.** El grano mas rico no son solo los ficheros de `state/`
+(el granero), sino la **huella de cada sesion**: el transcript con las herramientas
+llamadas, las decisiones y su *por que*. Ahi vive la memoria episodica real. Hoy el sueno
+trilla `state/`; el transcript es el grano fresco que aun falta meter en la era.
+
+**Quien trilla que:**
+- **Grano publico** (arquitectura, trabajo no sensible): se puede destilar en la nube a
+  un digest **filtrado** y commitearlo para que una Routine lo trille. Es el `checkpoint`
+  con mas cuerpo.
+- **Grano pesado y privado** (transcripts con cualquier dato clinico/de paciente): se
+  trilla **solo en el cuerpo soberano** (Laboon/Odysseus), en local, bajo keystone.
+  **Jamas** se sube un transcript crudo con datos de paciente al repo ni a una API de
+  nube. El millo privado se trilla en casa.
+
+**Limite honesto (nube).** En la nube cada Routine arranca en un contenedor nuevo, sin
+disco compartido: **no ve los transcripts de ayer**. Trillar el millo de los transcripts
+es, para el grano pesado, tarea del cuerpo soberano persistente
+(`bridge-linux/ARQUITECTURA.md`, Laboon/Odysseus). Coherente con la casa: una tarea que
+no puede observar su objetivo se marca `pending-rearchitect`, no finge.
+
+## El shadowlog y la herencia de SOFIA (2026-07-02)
+
+Orden del Capitan: la revision semanal manual de SOFIA (evento de Calendar, lunes
+9:00) y las tareas programadas manuales quedan **sustituidas** por esta funcion
+corriendo en la nube. El barco se audita solo; el Capitan lee el parte al despertar.
+
+**Herencia SOFIA** — las cinco preguntas del "sistema inmune simbolico" viven ahora
+en las fases:
+
+1. Que hay en ZONA_DE_CAPTURA -> N1 (deltas) + triaje (la gran Nemesis propone).
+2. Que proyectos avanzaron -> N2 (memoria episodica/procedimental).
+3. Que esta bloqueado -> N3 (pendientes acumulados, marcadores RETOMAR).
+4. Coherencia AGAPE / NEMESIS / OPERATIVO -> N3 (coherencia Sophia) + REM.
+5. Que entra la semana siguiente -> REM (aprendizaje del ciclo) + meditacion semanal.
+
+**El shadowlog** — nombre canonico revivido del canon viejo, apuntando ahora a
+artefactos reales (nada de maquinaria nueva): es el registro de sombras del sueno.
+
+- La luz (lo consolidado) -> `reports/SLEEP_<fecha>.md`.
+- La sombra (deriva, contradicciones, huerfanos, glitches, streaks) ->
+  `sleep_ledger.jsonl` + las secciones de auditoria del parte.
+- En el hub, `state/cuarentena/` es su hermana: lo rechazado.
+
+Un glitch anotado en el shadowlog no se exorciza: se juzga en el Concilio
+(`state/concilio/`) — JoyBoy o Buggy, segun a quien sirve.
+
+**Sustrato**: Routines de Claude Code en la nube, conectadas a **GitHub** (el repo
+que la Routine clona y donde escribe), **Drive** (connector; precedente real:
+meditacion 2026-06-25) y **Obsidian** (via micelio git: obsidian-git hace pull en
+movil/PC y la maceta ve el parte). Salud por rutina: `RUTINAS.md`.
+
 ## La funcion del sueno: recordar mejor, no mas
 
 El sueno no es recordar mas, es **recordar mejor**. Su metabolismo (no solo auditar):

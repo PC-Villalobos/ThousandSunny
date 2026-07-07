@@ -1,5 +1,11 @@
 # RETOMAR - Cold Start Metatron Gestation
 
+> **ESTADO 2026-07-05: SELLADA + HIBERNADA (GO C0 del Capitan).**
+> W1-W12 selladas (OBS-GESTATION-SEAL-W1-W12-20260705.md, preflight 12/12,
+> source_mutations=0, 236 notas). No hay wave activa. Reactivacion: Plan Wave13
+> con GO C0 explicito; hereda requisito N5 (>=2 dominios), max_files=32 y
+> exclusiones NEM/CAR/ISM/CLI. Hasta entonces, no ejecutar Plan/Mirror/purga.
+
 Este archivo permite retomar Metatron desde una conversacion nueva con Codex, Antigravity o Claude Code sin depender del historial del chat anterior.
 
 ## Uso
@@ -25,10 +31,11 @@ Si el agente tiene acceso local a la boveda, puede usar tambien:
   "mirrored_notes": 13,
   "total_notes_materialized": 236,
   "source_mutations": 0,
-  "sealed": false,
+  "sealed": true,
+  "hibernation": "HIBERNADA 2026-07-05 (GO C0). Reactivacion: Plan Wave13 con GO C0.",
   "manifest": "OBS-BATCH-0025-GESTATION-WAVE12-20260602.md",
   "verification": "OBS-BATCH-0025-GESTATION-WAVE12-20260602-VERIFICACION.md",
-  "pending": "Wave13. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) planificado para Wave13. Wave12 Mirror cerrada (bitacora_id 1327).",
+  "pending": "Sin wave activa. Reactivacion solo mediante Plan Wave13 con GO C0 explicito. F-AB++ y F-AC++ saturadas (glomulos confirmados). F-BC++ activa, GLOM-F-BC++-01 embrionario (nota14 sub-threshold; promocion segun criterio Capitan). W8-03 Arquitectura_Metatron_Principios -> F-BC++ (axis B) queda como candidata para Wave13.",
   "bitacora_id": 1327,
   "reef_chassis_bitacora_id": 1163,
   "membrane_template_bitacora_id": 1165,
@@ -160,7 +167,7 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 
 **Wave12 Mirror** (2026-06-02, bitacora_id 1327): modo corpus; 13 notas NotebookLM (sources 2-14) materializadas desde el lote GDOC (F13_F21_TRANSITION, 15 candidatas); rechazadas nota1 (0.3084, auto-reject <0.40) y nota15 (0.3522, rechazo Capitan). Classifier Robin v1.0, `coherence_threshold=0.45`. Distribucion: F-AB++=2 (satura 3/3, `GLOM-F-AB++-01` confirmado), F-AC++=4 (nueva, satura, `GLOM-F-AC++-01` confirmado), F-BC++=7 (nueva, activa, `GLOM-F-BC++-01` embrionario porque nota14=0.4418<0.45 bajo criterio estricto all-members). `faces_active=4`, `faces_saturated=3`, `receptivity_index=0.1667`; membranas=17, activation_log=17; `source_mutations=0` verificado por hash de fuentes. Requisito N5 satisfecho (R80 Fasciculo 1179). Score supplement bitacora_id 1328. Ejecutor Usopp (Codex) cubriendo rol Franky; auditoria Nami (Claude).
 
-**Proximo paso**: Wave13. F-AB++ y F-AC++ saturadas con glomulos confirmados. F-BC++ activa; GLOM-F-BC++-01 embrionario, su promocion depende del criterio Capitan sobre la nota 14 (opener Chopper-approved sub-threshold). Candidata Wave13: W8-03 `Arquitectura_Metatron_Principios` -> F-BC++ (axis B=regulacion). GLOM-F-CD++-01 sigue como embrion de segunda capa (evaluacion diferida).
+**Proximo paso**: no hay wave activa. Reactivar requiere Plan Wave13 con GO C0 explicito. Si se reactiva, F-AB++ y F-AC++ parten saturadas con glomulos confirmados; F-BC++ activa; GLOM-F-BC++-01 embrionario, su promocion depende del criterio Capitan sobre la nota 14 (opener Chopper-approved sub-threshold). Candidata Wave13: W8-03 `Arquitectura_Metatron_Principios` -> F-BC++ (axis B=regulacion). GLOM-F-CD++-01 sigue como embrion de segunda capa (evaluacion diferida).
 
 ## Cierre De Wave
 
@@ -173,4 +180,4 @@ Revision del Plan Wave8: candidato-membrana `W8-14 Simbiosis Tripulacion Micelio
 7. Actualizar `state/metatron/METATRON_GESTATION_STATE.md`.
 8. Commit/push solo de resumen saneado.
 
-Ultima actualizacion: 2026-06-02 por Nami (Claude Code) -- Wave12 Mirror cerrada, faces_active=4, receptivity_index=0.1667, 3 glomulos confirmados (GLOM-F-CD++-01, GLOM-F-AB++-01, GLOM-F-AC++-01) + GLOM-F-BC++-01 embrionario.
+Ultima actualizacion: 2026-07-05 por Nami (Claude Code) -- W1-W12 selladas e hibernadas con GO C0; reactivacion solo mediante Plan Wave13 con GO C0 explicito.

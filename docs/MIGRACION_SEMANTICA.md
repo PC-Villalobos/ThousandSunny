@@ -139,6 +139,13 @@ Al terminar la migración, la identidad **deja de depender de Google**:
 | **Google Drive** | **Museo histórico** — `READ ONLY`, `ARCHIVE`, sin contenido nuevo |
 | **Obsidian (Maceta de Groot)** | **SOURCE OF TRUTH** — canon, memoria activa |
 
+**El acceso al museo** (refinación 2026-07-04, Codex+Nami): no todo se teje — lo que
+no merece nodo se **apunta**. "El vault no contiene Drive: contiene el mapa de
+Drive." Protocolo de rescate NL (solicitud → índice → puntero → conector Drive →
+entrega, con compuerta para lo protegido): `state/maceta_groot/drive_rescue/`. El
+índice completo con IDs vive **solo** en el telar local; al repo público solo cruza
+el mapa public-safe.
+
 Es probablemente el momento más importante de toda la evolución del proyecto.
 
 ## Prioridad absoluta
@@ -155,3 +162,35 @@ Es probablemente el momento más importante de toda la evolución del proyecto.
   Obsidian** (la maceta de Groot), espejado al repo en `state/maceta_groot/`.
 - La clasificación usa la **regla Deckard** N0-N5 (`state/deckard/01_CANON.md`):
   solo lo que `manda` se vuelve CANON; el resto va a LEGACY / DUPLICADO / fósil.
+
+## Convergencia de telares (2026-07-02)
+
+La Fase 0 corre ya con **dos lanzaderas sobre un mismo tejido** — fibras → hilos →
+cabos → nudos → tejidos → cubierta (la estética del Capitán):
+
+| Lanzadera | Telar | Lo que teje | Registro |
+|---|---|---|---|
+| **Codex** (manos locales) | `D:\La maceta de Groot` (PC provisional) | TEJIDO_00 (5 nodos desde el canon de este repo) + TEJIDO_01 (6 nodos desde Drive nativo / `.md` local) | `99_Sistema/ENT_OPERATION_LOG.jsonl` + bitácoras de tejido |
+| **Claude** (nube) | `state/maceta_groot/` (este repo, PR #41) | connectoma (nodos SIS-* desde Drive vía connector) + canon | commits + PR |
+
+Reglas de trenzado (para que dos manos no bifurquen el hilo):
+
+1. **Un solo telar lógico.** El vault local es el telar del cuerpo;
+   `state/maceta_groot/` es el espejo que la nube y las Routines pueden leer. El
+   **micelio git los trenza**. Al repo solo cruza la **cubierta pública** (nudo
+   Membrana): el telar local puede contener bodegas protegidas que jamás se
+   commitean.
+2. **El alma convergente.** Nodos nuevos en ambos telares usan el ID Deckard
+   completo `N<nivel>-<EST>-<DOM>-<SLUG>-<AAAAMMDD>-<NNN>` (la estética ya en uso
+   en TEJIDO_00/01). Los `SIS-*` existentes del connectoma conservan su id y ganan
+   `id_deckard` en el YAML cuando se editen — sin renombrado masivo.
+3. **Vocabulario compartido.** El catálogo de nudos (fuente viva:
+   `99_Sistema/CATALOGO_NUDOS_TEJIDOS_SEMANTICOS_20260702.md`, telar local) es la
+   paleta de ambas lanzaderas; espejo nube en `state/maceta_groot/CATALOGO_NUDOS.md`.
+4. **División de aguas.** Codex lee `.gdoc` nativos y `G:\` (manos locales); Claude
+   lee Drive vía connector y el repo. **Misma frontera clínica a ambos lados**
+   (NEM / Caso 0 / BOVEDA: metadata-only).
+5. **Anti-fork.** Antes de tejer, cada lanzadera mira el índice del otro telar
+   (`INDICE_TEJIDO_*` ↔ `connectoma/_INDICE.md`). TEJIDO_00 —que teje TESIS,
+   TEATRO, AGAPE, MIGRACION y RUTINAS *desde este repo*— no duplica el connectoma:
+   es la **sutura**. El resumen local apunta a un canon cuya fuente es el repo.

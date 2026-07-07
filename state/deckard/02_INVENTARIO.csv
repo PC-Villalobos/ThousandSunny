@@ -49,3 +49,6 @@ SRC-0047,digestion_local_20260518,digestion,sistema,ACTIVO,N3,https://docs.googl
 SRC-0048,digestion_local_20260516,digestion,sistema,ACTIVO,N3,https://docs.google.com/document/d/1Lwlxi4SZ53HwtKZG9UbEQNz9warBWpcXUsI2fTq5j5A,revisar flags antes de canonizar
 SRC-0049,Google AI Studio plan,plan,sistema,ACTIVO,N3,https://docs.google.com/document/d/1aT5mSLZGSBYGLXsOWGv_hws-Kn8CZDDi0-QX-QJHvb0,usar como plan tecnico Google AI Studio
 SRC-0050,N3-ACT-SIS output W5-32,pendiente_titulacion,sistema,ACTIVO,N3,https://drive.google.com/file/d/15LrwBVE-xQgS3LtDbNUVYtv5EJt31e9y,renombrar o descartar tras inspeccion manual
+SRC-0051,AGAPE etica del acompanante,doctrina,pilar,ACTIVO,N4,https://github.com/PC-Villalobos/ThousandSunny/blob/main/AGAPE.md,usar como fundamento etico-clinico del Sunny
+SRC-0052,LLAVES DEL CAPITAN soberania y rescate,doctrina,sistema,ACTIVO,N4,https://github.com/PC-Villalobos/ThousandSunny/blob/main/LLAVES_DEL_CAPITAN.md,canon de diseno de soberania; implementar con Disco Groot Fase 2-3
+SRC-0053,MIGRACION SEMANTICA verdadero Hito 0,canon,sistema,ACTIVO,N4,https://github.com/PC-Villalobos/ThousandSunny/blob/main/docs/MIGRACION_SEMANTICA.md,prioridad absoluta; alinear HITO_0_FAST_START con este reencuadre
