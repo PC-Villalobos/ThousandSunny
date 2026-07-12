@@ -23,9 +23,18 @@ peticion NL -> GitHub public-safe -> vault local -> indice maestro -> rama minim
 
 ## Ubicacion local canonica
 
+Reconciliada 2026-07-12 (sustituye la ruta unica declarada el 2026-07-04):
+
 ```text
-D:\La maceta de Groot\40_Biblioteca_Hipatia\
+D:\Biblioteca de Hipatia\                     <- RAIZ REAL de la biblioteca (fuera de la Maceta)
+D:\La maceta de Groot\                         <- Maceta activa (vault de Obsidian)
+D:\La maceta de Groot\40_Biblioteca_Hipatia\   <- PUENTE de Obsidian (no es la biblioteca)
+C:\La maceta de Groot\                          <- archivo historico, NO canon activo
 ```
+
+La raiz de sincronizacion es `D:\Biblioteca de Hipatia\`. El `40_Biblioteca_Hipatia`
+dentro de la Maceta es solo el puente de navegacion en Obsidian. Los sub-arboles
+`_protegido/`, `_INDICE_MAESTRO.md` y el bruto viven bajo esa raiz real.
 
 ## Contenido local esperado
 
