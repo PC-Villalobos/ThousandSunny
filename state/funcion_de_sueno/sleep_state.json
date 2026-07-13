@@ -1,7 +1,13 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-12T04:43:21.000Z",
+  "updatedAt": "2026-07-13T01:10:08.000Z",
   "files": {
+    "bridge-linux/ROADMAP_SECUENCIA_LINUX.md": {
+      "hash": "3d8891a0348f8ee60dc295c91b56780cfa1469d0a0b4205f213a37e084bad823",
+      "bytes": 4320,
+      "mtime": "2026-07-13T01:08:45.000Z",
+      "contentAccess": "readable"
+    },
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
       "bytes": 2089,
@@ -188,6 +194,18 @@
       "mtime": "2026-07-12T04:33:26.276Z",
       "contentAccess": "readable"
     },
+    "state/funcion_de_sueno/CONVERGENCIA_MNEMOSINE_HIPATIA_ROBIN.md": {
+      "hash": "eeeb1f097b06803ecec37a871fa051cbb8d4e761f424f4716d49881cc27b2717",
+      "bytes": 5293,
+      "mtime": "2026-07-13T01:08:45.000Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/MNEMOSINE_v0.md": {
+      "hash": "52f0fde4a2cc16c006afc963f887bc7ff1df2fd9c93ade1904259b62b0e2188d",
+      "bytes": 5623,
+      "mtime": "2026-07-13T01:08:45.000Z",
+      "contentAccess": "readable"
+    },
     "state/funcion_de_sueno/FUNCION_DE_SUENO_FASES.md": {
       "hash": "f4b77843f92f5a71d926bdf5a2b57bc4c1faef6e41b3ba9fa8014fea96bc1d77",
       "bytes": 2267,
@@ -273,15 +291,15 @@
       "contentAccess": "readable"
     },
     "state/maceta_groot/biblioteca_hipatia/BIBLIOTECA_HIPATIA_PUBLIC_SAFE_20260704_034210.md": {
-      "hash": "7d2e26975591c7df1c41fcfd1c6b18ccab2575883c67a2bbc6b92d27c5be101a",
-      "bytes": 1991,
-      "mtime": "2026-07-12T04:33:26.281Z",
+      "hash": "69146abca0bede32873e5adc1457790e49c3613e6d08a941399c784275addf31",
+      "bytes": 2620,
+      "mtime": "2026-07-13T01:08:45.000Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/biblioteca_hipatia/README.md": {
-      "hash": "611d41125655ae06999d12f33672c2211429874c8b88bf88e1b38fed73941e35",
-      "bytes": 998,
-      "mtime": "2026-07-12T04:33:26.281Z",
+      "hash": "011df8544850b44cd7d8bda0638cf7eeff783c0a0da001a48089f74997c18c80",
+      "bytes": 1718,
+      "mtime": "2026-07-13T01:08:45.000Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/chopper/_PROTOCOLO.md": {
@@ -778,6 +796,11 @@
       "timestamp": "2026-07-12T04:43:21.000Z",
       "actor": "claude-code",
       "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-13T01:10:08.000Z",
+      "actor": "claude-code",
+      "role": "Groot"
     }
   ],
   "runs": [
@@ -1098,6 +1121,17 @@
       "issues": 20,
       "coherenceScore": 0.8095238095238095,
       "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-07-12.md",
+      "cloudRequestPath": null
+    },
+    {
+      "timestamp": "2026-07-13T01:10:08.000Z",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 108,
+      "deltas": 5,
+      "issues": 2,
+      "coherenceScore": null,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-07-13.md",
       "cloudRequestPath": null
     }
   ]
