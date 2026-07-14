@@ -165,3 +165,13 @@ no esta definido, el skill deja el bloque de bitacora en el parte como respaldo.
 Ver lista canonica en `.claude/skills/sueno/SKILL.md`. Resumen: metadata-only
 para fuentes sensibles, sin mutar fuentes, sin canon nuevo, sin cerrar deriva sin
 evidencia, rotacion a los 3 ciclos, v1 aspiracional, respetar RETOMAR.
+
+## Documentos relacionados
+
+- `MNEMOSINE_v0.md` - capa pre-sueno: convierte crudo en destilados con ancla al
+  origen, antes de que la funcion de sueno consolide.
+- `CONVERGENCIA_MNEMOSINE_HIPATIA_ROBIN.md` - membrana unica MNEMOSINE/Hipatia/Robin;
+  eje de filtrado mio vs tercero identificable.
+- `MEMBRANA_HARDENING_v0.md` - endurecimiento de la membrana: persona como unidad de
+  autorizacion, gate nominal separado del de IDs, cifrado en reposo de resoluciones,
+  dedup por obra.

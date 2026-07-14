@@ -161,3 +161,10 @@ La migracion semantica no espera al PC.
 La soberania operativa si.
 
 No mezclar esos relojes.
+
+## Documentos relacionados
+
+- `PRE_LINUX_KEY_GATE.md` - compuerta dura de la Via A: no instalar Linux sobre C:
+  sin backup offline **verificado** de las dos llaves de las capsulas Anillo 0
+  (academica + Caso 0), los fosiles exclusivos de Groot y las sesiones. Sin la
+  llave, la capsula clinica cifrada es irrecuperable para siempre.
