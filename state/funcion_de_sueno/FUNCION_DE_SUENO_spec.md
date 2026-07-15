@@ -175,3 +175,5 @@ evidencia, rotacion a los 3 ciclos, v1 aspiracional, respetar RETOMAR.
 - `MEMBRANA_HARDENING_v0.md` - endurecimiento de la membrana: persona como unidad de
   autorizacion, gate nominal separado del de IDs, cifrado en reposo de resoluciones,
   dedup por obra.
+- `SIENT_ETICO_v0.md` - contrato de destilado sintetico no resoluble para razonamiento
+  con modelos comerciales, preferentemente proveedor unico DeepSeek, sin exponer raw.
