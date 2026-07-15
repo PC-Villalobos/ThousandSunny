@@ -168,3 +168,6 @@ No mezclar esos relojes.
   sin backup offline **verificado** de las dos llaves de las capsulas Anillo 0
   (academica + Caso 0), los fosiles exclusivos de Groot y las sesiones. Sin la
   llave, la capsula clinica cifrada es irrecuperable para siempre.
+- `LAB_VM_STATUS_20260715.md` - estado del laboratorio Ubuntu/Open WebUI/Ollama:
+  circuito sintetico probado, 25 GB extra para Docker, compuertas cerradas, sin
+  permiso para Hipatia real ni material resoluble.
