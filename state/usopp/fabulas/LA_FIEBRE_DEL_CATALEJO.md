@@ -3,7 +3,7 @@
 Fabula del Thousand Sunny — primera piedra.
 
 ```yaml
-version: 1.1
+version: 1.2
 actor: Fable 5 (narrador invitado, por encargo del Capitan via GO explicito)
 encargo_fuente:
   archivo: ENCARGO_FABLE_5_FABULA_THOUSAND_SUNNY_20260718.md
@@ -149,17 +149,34 @@ No toda fiebre esta en el mar: a veces arde la linterna del vigia. Restate a ti 
 | Los dos relojes | Cronos (fecha de origen) y kairos (peso del momento) |
 | La regla de la ausencia | Jinbe (rumbo), Vivi (soberania), Brook (cancion); nadie da un GO |
 
+## Datacion de los hechos
+
+Respuesta al punto ciego mas afilado del veredicto de Cowork: "los 43/43 sin fecha son un 0,94 en potencia". Cada numero de la fabula lleva ahora su fecha o su desconocido honesto.
+
+| Hecho | occurred_at | Fuente de datacion |
+|---|---|---|
+| Atlas 1.391/1.391 y 43/43 pruebas | desconocido (anterior al 2026-07-18) | pendiente de datar desde los checkpoints y PRs de las sesiones Codex (~2-5 jul) |
+| Censo Drive 15.760 ids / 2.747 grupos | desconocido (anterior al 2026-07-18) | pendiente de datar desde la sesion saturada recuperada |
+| Correccion Pluton/Poseidon y planos del nuevo Puente | desconocido (anterior al 2026-07-18) | conversaciones de diseno; pendiente de datar |
+| Cinco procedencias y critica del cartel de feria | desconocido (anterior al 2026-07-18) | conversacion de construccion del Puente; pendiente de datar |
+| Instalacion y verificacion de Ollama (0.32.1, 127.0.0.1:11434) | 2026-07-18, 11:48-12:11 Europe/Madrid | conversacion con marcas de hora |
+| Cierre de Obsidian y pestanas (~1,6 GiB recuperados) | 2026-07-18, ~12:05-12:11 Europe/Madrid | conversacion con marcas de hora |
+| Recalibracion del catalejo (colector de CPU) | 2026-07-18, 12:12-12:22 Europe/Madrid | conversacion con marcas de hora; cambio en collectors.mjs |
+| Regla de la ausencia (Jinbe/Vivi/Brook) | 2026-07-18, 12:42-12:47 Europe/Madrid | conversacion con marcas de hora |
+| Linaje hermano del catalejo: "verificado no es asumido" | 2026-07-18 (sesion de 1:05 a 12:00 aprox.) | ananda_sutras_20260718, sutra 3, con cita textual del Capitan a Codex |
+| Encargo y redaccion de la fabula | 2026-07-18, desde las 12:50 | frontmatter chronos |
+
+Un "desconocido" en esta tabla no es un fallo de la fabula: es su doctrina aplicada. Antes de pintar una fecha, se declara que no se tiene.
+
 ## Juramento del Puente de Mando
 
-Nota v1.1: moraleja y juramento definitivos quedan en espera de la respuesta de Cowork. Se registran las dos candidatas.
+Electo por convergencia de los dos veredictos (Fable 5, v1; Cowork, 2026-07-18). Ratificacion del Capitan pendiente: se fija en la consagracion.
 
-Candidata de Fable 5 (v1):
+> "Toda luz confiesa su origen; el vigia se resta a si mismo de la medida; y un eco nunca es una orden."
+
+Liturgia del Puente (version extendida de Fable 5; no compite con el juramento, lo despliega):
 
 "En este puente, toda luz confiesa su origen; la palabra 'desconocido' se pronuncia sin verguenza; el vigia se resta a si mismo de la medida; y ninguna voz habla por el Capitan: en su ausencia, Jinbe sostiene el rumbo, Vivi custodia el reino y Brook mantiene la cancion."
-
-Candidata del Capitan (tras las tres pruebas):
-
-"Toda luz confiesa su origen; el vigia se resta a si mismo de la medida; y un eco nunca es una orden."
 
 ## Evaluacion critica
 
@@ -182,3 +199,4 @@ Riesgo de grandilocuencia:
 
 - v1 (2026-07-18): propuesta inicial de Fable 5, respuesta al encargo del Capitan.
 - v1.1 (2026-07-18): tras las tres pruebas del Capitan (fidelidad: alta; potencia mitica: muy alta; grandilocuencia: aprobada con vigilancia). Cambios: (1) "la voz se ha perdido" corregida a "dejo de oirse pero seguia inscrita bajo la cubierta" — las sesiones no se perdieron, dejaron de ser legibles en la interfaz; (2) los 43 cortes de Zoro se distinguen en el diccionario como funcion narrativa (actor material: Codex/Usopp); (3) el escriba que asiente se precisa a la evidencia real (HTTP 200 sin aparicion en relectura); (4) procedencia del encargo declarada como fuente externa no versionada; (5) etiquetado chronos/kairos/provenance/authority incorporado al frontmatter; (6) juramento definitivo en espera de la respuesta de Cowork, con las dos candidatas registradas. Catalejo, blanco del desconocido, grafo cerrado y regla de la ausencia: intactos.
+- v1.2 (2026-07-18): tras el segundo veredicto (Cowork, leido desde la rama del PR #73 en commit c428c90; veredicto: apta para consagracion). Cambios: (1) juramento electo por convergencia de ambos veredictos — la candidata del Capitan; la version de Fable 5 queda como liturgia del Puente, no compiten; (2) seccion "Datacion de los hechos" anadida en respuesta al punto ciego mas afilado ("los 43/43 sin fecha son un 0,94 en potencia"): cada numero lleva fecha o desconocido honesto; (3) moraleja central sin cambios — ningun veredicto la impugno. Confirmaciones independientes de Cowork registradas: el camarote de la voz consta en los sutras del dia; el catalejo tiene linaje hermano en la correccion del Capitan a Codex (sutra 3, "verificado no es asumido", verificado por Fable 5 en ananda_sutras_20260718); el escriba que asiente lo padecio Cowork con este mismo PR. Pendiente: los otros dos puntos ciegos del veredicto de Cowork, no relayados en detalle; incorporar cuando el documento del veredicto este versionado o accesible. La consagracion sigue siendo acto del Capitan: verified_at continua en null y kairos.status en pendiente_consagracion.
