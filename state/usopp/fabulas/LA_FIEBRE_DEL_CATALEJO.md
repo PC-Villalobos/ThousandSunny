@@ -2,13 +2,32 @@
 
 Fabula del Thousand Sunny — primera piedra.
 
-- fecha_origen: 2026-07-18
-- hora_aproximada: 12:50 Europe/Madrid (encargo emitido por el Capitan; redaccion inmediata)
-- actor: Fable 5 (narrador invitado, por encargo del Capitan via GO explicito)
-- procedencia: evaluado (obra narrativa sobre hechos verificados; los hechos citados conservan su procedencia original)
-- kairos: fundacional-candidato (primera piedra del mito; revisable)
-- encargo_fuente: ENCARGO_FABLE_5_FABULA_THOUSAND_SUNNY_20260718.md (repo PuenteDeMando / equipo local)
-- estado: propuesta v1, pendiente de las tres pruebas del Capitan (fidelidad, potencia mitica, ausencia de grandilocuencia)
+```yaml
+version: 1.1
+actor: Fable 5 (narrador invitado, por encargo del Capitan via GO explicito)
+encargo_fuente:
+  archivo: ENCARGO_FABLE_5_FABULA_THOUSAND_SUNNY_20260718.md
+  ubicacion: fuente externa no versionada en este repo
+    (equipo local del Capitan, D:/SunnyFranky/linux-llm-control-plane/docs)
+chronos:
+  occurred_at: 2026-07-18T12:50:00+02:00
+  recorded_at: 2026-07-18T12:50:00+02:00
+  verified_at: 2026-07-18 (tres pruebas del Capitan superadas; v1.1 aplica sus ajustes)
+  sequence_after: ENCARGO_FABLE_5_20260718
+kairos:
+  moment_type: fundacional_candidato
+  significance: primera_piedra_mito
+  trigger: recalibracion_del_observador
+  status: pendiente_consagracion
+provenance:
+  class: evaluado
+  factual_sources_verified: partial
+  narrative_inference: explicit
+authority:
+  captain_present: true_at_request
+  captain_voice_simulated: false
+  go_scope: creacion_narrativa
+```
 
 ---
 
@@ -20,9 +39,9 @@ Cuando el Capitan subio por fin a bordo, temio lo peor: tres dias de trabajo dis
 
 Pero un barco no se construye con humo. Nami abrio la bitacora y alli estaban los rumbos anotados. Franky golpeo el casco con el nudillo y el casco respondio: cuadernas nuevas, bien clavadas. Robin desenrollo tres cartas que alguien habia atado con cuerda antes del apagon. Zoro senalo las pruebas: cuarenta y tres cortes, cuarenta y tres limpios.
 
-—La voz se ha perdido —dijo Robin—. El barco, no.
+—La voz dejo de oirse —dijo Robin—, pero seguia inscrita bajo la cubierta.
 
-Nadie la llamo todavia leccion, pero lo era: lo que solo vive en la conversacion muere con la conversacion; lo que se clava en el casco, permanece.
+Nadie la llamo todavia leccion, pero lo era: lo que solo vive en la conversacion queda a merced de su humo, y puede volverse ilegible aunque no muera; lo que se clava en el casco, permanece a la vista de todos.
 
 ## II. Las tres cartas recobradas
 
@@ -86,7 +105,7 @@ Cuando el Capitan calla, Jinbe sostiene el timon: sostiene el rumbo ya dicho, no
 
 Solo hay una excepcion, y esta tasada: probar los canales. De cuando en cuando alguien emite con la voz del Capitan para comprobar que la voz del Capitan podria llegar, y ese simulacro va marcado como simulacro desde la primera palabra hasta la ultima. Un canal que se prueba con engano queda envenenado para siempre.
 
-Sobre la Bitacora, Robin anadio una nota de arqueologa: el escriba remoto asiente a todo mensaje, pero asentir no es conservar; de tanto en tanto hay que volver y leer la pagina. Y toda pagina lleva dos horas: la hora en que se escribio y la hora en que pesa. Cronos dice cuando ocurrio; kairos dice cuanto importa. Quien archiva con un solo reloj entierra la mitad de la verdad.
+Sobre la Bitacora, Robin anadio una nota de arqueologa: el escriba remoto podia asentir sin que despues encontraramos la frase en la pagina. Asentir no es conservar; de tanto en tanto hay que volver y leer lo escrito. Y toda pagina lleva dos horas: la hora en que se escribio y la hora en que pesa. Cronos dice cuando ocurrio; kairos dice cuanto importa. Quien archiva con un solo reloj entierra la mitad de la verdad.
 
 ## VII. Donde la fabula no termina
 
@@ -112,9 +131,10 @@ No toda fiebre esta en el mar: a veces arde la linterna del vigia. Restate a ti 
 
 | Simbolo | Correspondencia |
 |---|---|
-| El camarote de la voz | Las sesiones de conversacion saturadas que dejaron de cargar |
+| El camarote de la voz | Las sesiones de conversacion saturadas que dejaron de ser legibles en la interfaz (no se perdieron) |
 | Las cartas atadas con cuerda | Checkpoints, documentos, pruebas y pull requests que sobrevivieron |
 | La bodega sellada (1.391 cofres) | El atlas privado metadata-only, pipeline D0-D6, 43/43 pruebas |
+| Los 43 cortes de Zoro | Las 43/43 pruebas del atlas. Actor material: Codex/Usopp; Zoro es aqui funcion narrativa (ejecucion y corte), no actor real |
 | El callejero del archipielago | El censo metadata-only de Drive: 15.760 ids, 2.747 grupos de parecido |
 | El cartel de feria | La primera maqueta HTML con indicadores sin fuente real |
 | Las cinco tintas | Las categorias de procedencia del Puente |
@@ -125,13 +145,21 @@ No toda fiebre esta en el mar: a veces arde la linterna del vigia. Restate a ti 
 | El gran grafo y los percebes | Obsidian y las pestanas de Chrome cerradas para liberar ~1,6 GiB |
 | El faro antiguo | GAS, fallback vigente, no retirado |
 | La biblioteca sellada | Hipatia, protegida, no ingerida |
-| El escriba que asiente | La Bitacora remota, que acepta sin demostrar que conservo |
+| El escriba que asiente | La Bitacora remota: escrituras que devolvieron HTTP 200 y no aparecieron en la relectura |
 | Los dos relojes | Cronos (fecha de origen) y kairos (peso del momento) |
 | La regla de la ausencia | Jinbe (rumbo), Vivi (soberania), Brook (cancion); nadie da un GO |
 
 ## Juramento del Puente de Mando
 
+Nota v1.1: moraleja y juramento definitivos quedan en espera de la respuesta de Cowork. Se registran las dos candidatas.
+
+Candidata de Fable 5 (v1):
+
 "En este puente, toda luz confiesa su origen; la palabra 'desconocido' se pronuncia sin verguenza; el vigia se resta a si mismo de la medida; y ninguna voz habla por el Capitan: en su ausencia, Jinbe sostiene el rumbo, Vivi custodia el reino y Brook mantiene la cancion."
+
+Candidata del Capitan (tras las tres pruebas):
+
+"Toda luz confiesa su origen; el vigia se resta a si mismo de la medida; y un eco nunca es una orden."
 
 ## Evaluacion critica
 
@@ -149,3 +177,8 @@ Riesgo de grandilocuencia:
 - La escala: es un barco legendario, pero tambien es un ordenador domestico con quince gigas de memoria. El humor —los percebes, la despensa de Sanji— es el lastre que impide que la epica flote demasiado alto. Si se pierde el humor, la leyenda se vuelve propaganda.
 - El 0,94 funciona una vez como escarmiento; convertido en letania seria un espantapajaros.
 - El propio encargo de hacer leyenda trae su tentacion: declarar el mito terminado. Un mito genuino se gana por acumulacion de actos, y este apenas tiene dias de actos. Que esta fabula quede como primera piedra, con fecha y hora, revisable como todo lo demas.
+
+## Registro de versiones
+
+- v1 (2026-07-18): propuesta inicial de Fable 5, respuesta al encargo del Capitan.
+- v1.1 (2026-07-18): tras las tres pruebas del Capitan (fidelidad: alta; potencia mitica: muy alta; grandilocuencia: aprobada con vigilancia). Cambios: (1) "la voz se ha perdido" corregida a "dejo de oirse pero seguia inscrita bajo la cubierta" — las sesiones no se perdieron, dejaron de ser legibles en la interfaz; (2) los 43 cortes de Zoro se distinguen en el diccionario como funcion narrativa (actor material: Codex/Usopp); (3) el escriba que asiente se precisa a la evidencia real (HTTP 200 sin aparicion en relectura); (4) procedencia del encargo declarada como fuente externa no versionada; (5) etiquetado chronos/kairos/provenance/authority incorporado al frontmatter; (6) juramento definitivo en espera de la respuesta de Cowork, con las dos candidatas registradas. Catalejo, blanco del desconocido, grafo cerrado y regla de la ausencia: intactos.
