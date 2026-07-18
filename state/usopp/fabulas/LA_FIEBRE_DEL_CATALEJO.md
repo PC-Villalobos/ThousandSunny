@@ -12,7 +12,7 @@ encargo_fuente:
 chronos:
   occurred_at: 2026-07-18T12:50:00+02:00
   recorded_at: 2026-07-18T12:50:00+02:00
-  verified_at: 2026-07-18 (tres pruebas del Capitan superadas; v1.1 aplica sus ajustes)
+  verified_at: null  # se fija en la consagracion formal; las tres pruebas de 2026-07-18 constan en el registro de versiones
   sequence_after: ENCARGO_FABLE_5_20260718
 kairos:
   moment_type: fundacional_candidato
