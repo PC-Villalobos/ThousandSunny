@@ -6,7 +6,7 @@ trabajo; no lo ejecuta. La ejecución de C0 ocurre en la máquina local del
 Capitán y requiere su GO propio, distinto de la aprobación del plano.
 
 ```yaml
-version: 0.2-encargo
+version: 0.2.1-encargo
 estado: borrador, pendiente de revision y de GO C0 (que autoriza solo C0-A)
 chronos:
   occurred_at: 2026-07-19
@@ -82,7 +82,9 @@ denegado por defecto y sin credenciales de nube en el entorno del proceso.
 
 ### 2.4 Pruebas de fuga (guion ejecutable)
 
-Las cinco pruebas de la sección 8 del plano, con procedimiento y evidencia:
+Las cinco familias de prueba de la sección 8 del plano, desplegadas en seis
+controles numerados (1, 1b, 2, 3, 4, 5), con procedimiento y evidencia. El
+acta registra los seis controles, uno por uno:
 
 1. **Canarios.** Tras un ciclo completo de ingesta + 10 consultas, barrido de
    cada canario exclusivamente sobre material local: repos git locales,
@@ -117,14 +119,16 @@ Las cinco pruebas de la sección 8 del plano, con procedimiento y evidencia:
 ### 2.5 Acta de resultados C0
 
 Documento único con: una fila por llave (1-7) con su evidencia; una fila por
-prueba de fuga con resultado; la decisión de cifrado/backup elegida; los
+uno de los seis controles de fuga (1, 1b, 2, 3, 4, 5) con su resultado —
+ninguno puede omitirse—; la decisión de cifrado/backup elegida; los
 desconocidos que queden; y el veredicto propuesto (C0 superada o no). El acta
 es la entrada para que el Capitán decida sobre C1.
 
 ## 3. Criterios de salida
 
 - Llaves 1-7 verificadas con evidencia anotada (llave 8 corresponde a C1).
-- Cinco pruebas de fuga pasadas con cero fugas.
+- Los seis controles de fuga (cinco familias, controles 1, 1b, 2, 3, 4, 5)
+  pasados con cero fugas.
 - Decisión de cifrado y backup aprobada por el Capitán.
 - Acta de resultados firmada y archivada dentro de la cámara, con copia opaca
   (identificadores no resolubles) hacia la Bitácora.
@@ -157,3 +161,6 @@ es la entrada para que el Capitán decida sobre C1.
   comprobacion estructural, sin abrir contenido protegido. Mejoras: backup
   externo definido como soporte local/extraible cifrado y desconectable (nunca
   Drive ni nube) y canarios ampliados a 32 hex.
+- v0.2.1 (2026-07-19): precision editorial del revisor — la nomenclatura pasa
+  a "cinco familias de prueba, seis controles (1, 1b, 2, 3, 4, 5)" en las
+  secciones 2.4, 2.5 y 3, para que el acta no pueda omitir el control 1b.
