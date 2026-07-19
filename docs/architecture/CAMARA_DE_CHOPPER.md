@@ -1,11 +1,12 @@
 # Cámara de Chopper — Plano de la cámara clínica local
 
 Plano minucioso previo a toda construcción. Este documento no autoriza nada:
-aprobar el plano es un GO del Capitán; incorporar el primer documento sintético
-(C0) es otro; el primer material real (C1) exige un GO independiente adicional.
+aprobar el plano solo permite preparar el encargo de C0, no ejecutarlo;
+ejecutar C0 (corpus sintético) exige su propio GO; el primer material real
+(C1) exige otro GO independiente adicional. Tres actos, tres firmas.
 
 ```yaml
-version: 0.1-plano
+version: 0.2-plano
 estado: propuesta, pendiente de aprobacion del Capitan
 chronos:
   occurred_at: 2026-07-19
@@ -80,8 +81,9 @@ Componentes, cada uno con su regla dura:
   resuelta, no fecha de migración (doctrina de los dos relojes).
 - **Compuerta.** Servicio local único de entrada. Decide por consulta: quién
   pregunta, con qué rol, qué compartimentos alcanza, qué modelo puede responder.
-  Regla inicial para modelos en la nube: `DENY`. Solo el Capitán decide una
-  excepción, por consulta, y qué versión desidentificada cruza.
+  Regla para modelos en la nube: `DENY` — en C0 y C1 el egreso externo es
+  técnicamente imposible, no solo denegado; a partir de C2, únicamente la
+  excepción extraordinaria descrita en la sección 5.
 - **Recuperación (RAG).** Índice local con embeddings locales. Recupera los
   fragmentos mínimos necesarios; el modelo nunca recibe el corpus completo.
 - **Seudonimización.** Alias por defecto siempre que la pregunta no necesite
@@ -92,34 +94,47 @@ Componentes, cada uno con su regla dura:
   nivel de certeza (escala Deckard N0-N5). Sin fuente citada, la respuesta se
   marca como no fundada.
 - **Contexto efímero.** El contexto de cada consulta se construye, se usa y se
-  destruye. Ni el prompt ni los fragmentos ni la respuesta alimentan memoria
-  alguna fuera de la auditoría.
+  destruye, y "destruir" se define operacionalmente: memoria del proceso
+  liberada, cachés purgadas, archivos temporales eliminados, historial de la
+  interfaz vaciado y logs sin rastro del contenido. Ni el prompt ni los
+  fragmentos ni la respuesta alimentan memoria alguna fuera de la auditoría.
 - **Auditoría.** Registro local append-only por consulta: quién preguntó, qué
-  fuentes se recuperaron (referencias, no contenido), qué modelo respondió,
-  cuándo. La auditoría no contiene texto clínico y por eso puede espejarse como
-  evento hacia la Bitácora.
+  fuentes se recuperaron, qué modelo respondió, cuándo. Dentro de la cámara,
+  las fuentes se anotan por referencia. Hacia fuera (Bitácora), solo cruzan
+  identificadores opacos no resolubles, resultado, hora y clase de evento; la
+  tabla de correspondencia entre identificador opaco y fuente real permanece
+  cifrada dentro de la cámara y nunca sale.
 - **Borrado.** Capacidad demostrada de eliminar un caso completo: documentos,
-  índices, alias y su presencia en copias de seguridad programadas.
+  índices, alias y copias de seguridad. Se distingue operacionalmente entre
+  borrado físico, caducidad programada y borrado criptográfico (destruir la
+  clave que cifra la copia). No se promete eliminación inmediata de una copia
+  inmutable si la tecnología elegida no puede demostrarla: en ese caso la vía
+  declarada es criptográfica o por caducidad, y así consta en la auditoría.
 
 ## 5. Reglas de frontera
 
-Sumideros prohibidos para contenido clínico, sin excepción y con bloqueo
-técnico además de normativo: GitHub, Drive general, Bitácora, logs del sistema,
-telemetría, OpenWebUI público, cualquier modelo externo no autorizado por
-consulta.
+Sumideros prohibidos para contenido clínico, con bloqueo técnico además de
+normativo: GitHub, Drive general, Bitácora, logs del sistema, telemetría,
+OpenWebUI público y modelos externos.
 
 El proceso de la cámara corre sin credenciales de nube cargadas y con egreso de
-red denegado por defecto. La excepción hacia un modelo externo, cuando el
-Capitán la autorice, es por consulta, con versión desidentificada explícita y
-queda registrada en la auditoría.
+red denegado por defecto. Régimen por fase:
+
+- **C0 y C1**: egreso hacia modelos externos técnicamente imposible — sin
+  credenciales, sin ruta de red, sin código de cliente. No existe excepción.
+- **C2 en adelante**: cabe una excepción extraordinaria, por consulta,
+  autorizada individualmente por el Capitán, con versión desidentificada
+  explícita, y registrada en la auditoría. Nunca cruzan fuentes originales ni
+  referencias resolubles: solo el texto desidentificado que el Capitán aprobó
+  para esa consulta concreta.
 
 ## 6. Fases
 
 | Fase | Contenido | Modelo | Criterio de salida | GO |
 |---|---|---|---|---|
-| C0 | Corpus sintético; pruebas de fugas | Ollama local | ocho llaves 1-7 verificadas; cero fugas en las pruebas de la sección 8 | aprobación de este plano |
-| C1 | Un caso real seudonimizado, solo lectura | Ollama local | citas correctas contra fuente; auditoría completa; cero fugas | GO independiente (Capitán + Vivi) |
-| C2 | Varios casos; recuperación con citas y auditoría en uso real | Ollama local (nube solo por excepción del Capitán) | calidad de respuesta evaluada por el clínico; auditoría revisada | GO del Capitán |
+| C0 | Corpus sintético; pruebas de fugas | Ollama local (egreso externo imposible) | ocho llaves 1-7 verificadas; cero fugas en las pruebas de la sección 8 | GO propio de C0 (la aprobación del plano solo permite preparar su encargo, no ejecutarlo) |
+| C1 | Un caso real seudonimizado, solo lectura | Ollama local (egreso externo imposible) | citas correctas contra fuente; auditoría completa; cero fugas | GO independiente (Capitán + Vivi) |
+| C2 | Varios casos; recuperación con citas y auditoría en uso real | Ollama local; nube solo como excepción extraordinaria por consulta (sección 5) | calidad de respuesta evaluada por el clínico; auditoría revisada | GO del Capitán |
 | C3 | Corpus protegido completo | según política vigente | aislamiento, calidad y borrado comprobados de nuevo a escala | GO del Capitán |
 
 Estado actual: justo antes de C0. Nada construido, nada incorporado.
@@ -161,8 +176,24 @@ Diseñadas antes de construir, ejecutadas en C0 y repetidas en cada fase:
 
 ## 10. Decisiones que quedan en manos del Capitán
 
-1. Aprobar o corregir este plano (habilita C0 sintético, nada más).
-2. Elegir la ubicación física de la cámara en su máquina local.
-3. El GO independiente de C1, con intervención de Vivi (separación de pilares,
+1. Aprobar o corregir este plano (permite preparar el encargo de C0, nada más).
+2. El GO propio de C0 (ejecutar el corpus sintético y las pruebas de fuga).
+3. Elegir la ubicación física de la cámara en su máquina local.
+4. El GO independiente de C1, con intervención de Vivi (separación de pilares,
    consentimiento, doble rol).
-4. Toda excepción de cruce hacia un modelo externo, por consulta.
+5. Toda excepción de cruce hacia un modelo externo (solo desde C2), por
+   consulta.
+
+## Registro de versiones
+
+- v0.1 (2026-07-19): plano inicial.
+- v0.2 (2026-07-19): correcciones obligatorias del revisor antes de aprobacion:
+  (1) separacion estricta de actos — aprobar el plano solo permite preparar el
+  encargo de C0, que exige su propio GO; (2) la Bitacora solo recibe
+  identificadores opacos no resolubles, resultado, hora y clase de evento;
+  (3) regimen de egreso por fase — C0/C1 tecnicamente imposible, C2+ excepcion
+  extraordinaria desidentificada sin fuentes originales ni referencias
+  resolubles; (4) destruccion del contexto y borrado definidos
+  operacionalmente, distinguiendo borrado fisico, caducidad programada y
+  borrado criptografico, sin prometer eliminacion inmediata de copias
+  inmutables.
