@@ -7,7 +7,9 @@ ejecutar C0 (corpus sintético) exige su propio GO; el primer material real
 
 ```yaml
 version: 0.2-plano
-estado: propuesta, pendiente de aprobacion del Capitan
+estado: aprobado por el Capitan (2026-07-19, "Aprobado, GO"), tras veredicto
+  del revisor sin objeciones pendientes. La aprobacion autoriza preparar el
+  encargo de C0; la ejecucion de C0 sigue requiriendo su GO propio.
 chronos:
   occurred_at: 2026-07-19
   recorded_at: 2026-07-19
