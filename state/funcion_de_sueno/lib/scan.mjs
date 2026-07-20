@@ -35,6 +35,13 @@ export function isSkippedDir(entryName, config) {
   return (config.skipDirs || []).some((skip) => entryName.toLowerCase() === skip.toLowerCase());
 }
 
+// DEUDA (hallazgo #1, code-review Ola M0): el match es SENSIBLE A MAYUSCULAS
+// (`includes` exacto). Una carpeta protegida con distinta caja (p.ej. `hold_clinico`
+// en vez de `HOLD_CLINICO`) NO se detectaria como protegida y su contenido se
+// leeria. Aceptable con el corpus sintetico actual (marcadores en mayusculas), pero
+// DEBE resolverse antes de conectar corpus real/clinico: normalizar la caja de ruta
+// y de los marcadores (y decidir sobre acentos/Unicode) para que la membrana no
+// dependa de la disciplina de nombrado. No se aborda aqui a proposito.
 export function hasProtectedMarker(filePath, config) {
   const normalized = toPosix(filePath);
   return (config.protectedPathMarkers || []).some((marker) => normalized.includes(marker));

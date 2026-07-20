@@ -61,9 +61,18 @@ function stableId(type, key) {
   return sha256(`${type}|${key}`).slice(0, 16);
 }
 function loadState(statePath) {
+  // Fichero ausente = primer run legitimo -> estado fresco.
   if (!fs.existsSync(statePath)) return { runs: 0, proposalIds: [], lastRun: null };
-  try { return JSON.parse(fs.readFileSync(statePath, "utf8")); }
-  catch { return { runs: 0, proposalIds: [], lastRun: null }; }
+  const raw = fs.readFileSync(statePath, "utf8");
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    // Fallar en voz alta: un estado presente pero corrupto NO debe resetearse en
+    // silencio, porque proposals.jsonl es append-only y un reset re-anexaria todas
+    // las propuestas como nuevas (ids duplicados). El operador decide (reparar o
+    // borrar el estado) en vez de acumular duplicados sin aviso.
+    throw new Error(`melampo: estado corrupto en ${statePath}: ${err.message}`);
+  }
 }
 
 // Extrae "semillas" de cada documento legible; los protegidos quedan como registro

@@ -40,6 +40,11 @@ protegido no se abre en absoluto.
 
 ## Qué NO hace todavia (proximos GO)
 
+- **Membrana sensible a mayusculas** (deuda, hallazgo #1 del code-review): la
+  deteccion de rutas protegidas (`hasProtectedMarker` en `scan.mjs`) hace un
+  `includes` exacto. Una carpeta protegida con distinta caja (`hold_clinico`) no se
+  detectaria y su contenido se leeria. No afecta al corpus sintetico (mayusculas),
+  pero **debe resolverse antes de conectar corpus real/clinico**.
 - **Crash-consistency**: `run()` hace `append(proposals.jsonl)` y luego
   `write(state.json)` de forma **no atomica**. Un fallo entre ambas escrituras puede
   dejar propuestas anexadas sin sus ids en el estado (re-anexado al reiniciar), o el

@@ -12,11 +12,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { digest, propose, run, recover } from "./melampo.mjs";
 import { ACCESS } from "../funcion_de_sueno/lib/scan.mjs";
 
-const CORPUS = path.join(path.dirname(new URL(import.meta.url).pathname), "corpus");
+const CORPUS = path.join(path.dirname(fileURLToPath(import.meta.url)), "corpus");
 
 function tmp() {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), "melampo-lab-"));
@@ -81,6 +82,14 @@ test("idempotencia: correr dos veces no duplica propuestas", () => {
   assert.equal(lines.length, first.total, "el fichero no crece en la segunda corrida");
   const ids = lines.map((l) => JSON.parse(l).id);
   assert.equal(new Set(ids).size, ids.length, "no hay ids duplicados");
+});
+
+test("estado corrupto: run() falla en voz alta en vez de resetear en silencio", () => {
+  const { proposalsPath, statePath } = tmp();
+  fs.writeFileSync(statePath, "{ esto no es json valido");
+  assert.throws(() => run({ root: CORPUS, proposalsPath, statePath }), /corrupto/);
+  // loadState falla antes de cualquier append: no debe quedar proposals.jsonl.
+  assert.equal(fs.existsSync(proposalsPath), false, "no debe anexar propuestas con estado corrupto");
 });
 
 test("recuperacion: 'alpha' devuelve los documentos alpha con evidencia", () => {
