@@ -47,6 +47,7 @@ Mira hacia **dentro**. Barre La Maceta y **es el único escritor del spine**.
 - skills de rol: `usopp-barrido` (barrido de bodega), `usopp-resumen` (resumen diario)
 - skills crew que usa: `crew-barrer-cabos`, `crew-cerrar-bitacora`
 - substrato típico: **Codex** (local, La Maceta) + trigger **GAS**
+- fábula fundacional: [`La fiebre del catalejo`](state/usopp/fabulas/LA_FIEBRE_DEL_CATALEJO.md) — consagrada 2026-07-18 (v2.0.2, narrador invitado Fable 5 por GO del Capitán; PR #73)
 - estado: ⚠ `usoppResumen` (GAS) caído 12–14 jun por autorización — ver `RUTINAS.md`
 
 ### 🔧 Franky — Carpintero · *scaffolding*

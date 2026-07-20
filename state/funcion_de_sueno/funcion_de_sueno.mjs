@@ -56,6 +56,7 @@ function parseArgs(argv) {
   const args = {
     root: process.cwd(),
     config: null,
+    executor: null,
     actor: "codex",
     role: "Groot",
     cloudRequest: false
@@ -65,6 +66,7 @@ function parseArgs(argv) {
     const token = argv[i];
     if (token === "--root") args.root = argv[++i];
     else if (token === "--config") args.config = argv[++i];
+    else if (token === "--executor") args.executor = argv[++i];
     else if (token === "--actor") args.actor = argv[++i];
     else if (token === "--role") args.role = argv[++i];
     else if (token === "--cloud-request") args.cloudRequest = true;
@@ -74,6 +76,12 @@ function parseArgs(argv) {
     }
   }
 
+  // Separacion executor/actor (Codex, barrido 2026-07-20): el `executor` es quien
+  // ejecuta materialmente el ciclo (p.ej. github-actions, un cron de maquina); el
+  // `actor` es la identidad cognitiva que interpreta el rol. Por compatibilidad, si
+  // no se declara executor se asume igual al actor. La vigilancia de fusion NO
+  // cambia: sigue contando racha por (actor, role), no por executor.
+  args.executor = args.executor || args.actor;
   args.root = path.resolve(args.root);
   return args;
 }
@@ -84,6 +92,10 @@ function printHelp() {
 Usage:
   node funcion_de_sueno.mjs --root "C:/La maceta de Groot" --actor codex --role Usopp
   node funcion_de_sueno.mjs --config sleep_config.groot.json --cloud-request
+  node funcion_de_sueno.mjs --executor github-actions --actor deterministic-sleep-engine --role Groot
+
+  --executor  quien ejecuta materialmente el ciclo (maquina/cron); por defecto = actor.
+              La vigilancia de fusion sigue contando por (actor, role), no por executor.
 
 Phases:
   0 boot              carga contrato, estado previo y compuertas
@@ -304,10 +316,13 @@ function phase3NremDeep(phase1, phase2) {
   return { issues, attractorTotals, readable, metadataOnly, coherenceScore };
 }
 
-function phase4RemRoleRotation(config, previousState, actor, role) {
+function phase4RemRoleRotation(config, previousState, actor, role, executor = actor) {
   const ledger = [...(previousState.roleLedger || [])];
-  ledger.push({ timestamp: new Date().toISOString(), actor, role });
+  ledger.push({ timestamp: new Date().toISOString(), executor, actor, role });
 
+  // Guardrail de fusion SIN CAMBIOS: la racha se cuenta por (actor, role). El
+  // executor se registra para trazabilidad pero no altera la deteccion de fusion,
+  // de modo que separar la identidad no debilita la alarma.
   let streak = 0;
   for (let i = ledger.length - 1; i >= 0; i -= 1) {
     const entry = ledger[i];
@@ -328,7 +343,7 @@ function phase4RemRoleRotation(config, previousState, actor, role) {
 
   return {
     ledger,
-    current: { actor, role, streak },
+    current: { executor, actor, role, streak },
     nextSuggestedRole: nextRole,
     warnings
   };
@@ -343,7 +358,7 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   lines.push("");
   lines.push(`Version: ${VERSION}`);
   lines.push(`Root: ${root}`);
-  lines.push(`Actor/Rol: ${args.actor} / ${args.role}`);
+  lines.push(`Executor/Actor/Rol: ${args.executor || args.actor} / ${args.actor} / ${args.role}`);
   lines.push("");
   lines.push("## Fases");
   lines.push("");
@@ -466,12 +481,13 @@ function main() {
   const phase1 = phase1Hypnagogia(root, config, previousState);
   const phase2 = phase2NremIndex(root, config, phase1);
   const phase3 = phase3NremDeep(phase1, phase2);
-  const phase4 = phase4RemRoleRotation(config, previousState, args.actor, args.role);
+  const phase4 = phase4RemRoleRotation(config, previousState, args.actor, args.role, args.executor);
   const outputs = phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, stamp);
   const cloudRequestPath = args.cloudRequest ? writeCloudRequest(root, outDir, stamp, args) : null;
 
   const runSummary = {
     timestamp: new Date().toISOString(),
+    executor: args.executor,
     actor: args.actor,
     role: args.role,
     files: phase1.files.length,
@@ -491,6 +507,7 @@ function main() {
   appendToLedger(ledgerPath, {
     ts: new Date().toISOString(),
     event: "daily_tick",
+    executor: args.executor,
     actor: args.actor,
     role: args.role,
     phases: ["N1", "N2", "N3", "REM"],
