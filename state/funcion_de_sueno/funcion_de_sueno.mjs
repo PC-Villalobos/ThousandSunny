@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
 import os from "node:os";
+
+import { ACCESS, scanFiles, sleepLegacyClassify } from "./lib/scan.mjs";
 
 const VERSION = "0.1.0";
 
@@ -113,42 +114,8 @@ function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
 }
 
-function toPosix(p) {
-  return p.replaceAll("\\", "/");
-}
-
 function nowStamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
-}
-
-function sha256(buffer) {
-  return crypto.createHash("sha256").update(buffer).digest("hex");
-}
-
-function isSkippedDir(entryName, config) {
-  return config.skipDirs.some((skip) => entryName.toLowerCase() === skip.toLowerCase());
-}
-
-function hasProtectedMarker(filePath, config) {
-  const normalized = toPosix(filePath);
-  return config.protectedPathMarkers.some((marker) => normalized.includes(marker));
-}
-
-function walkFiles(root, config, acc = []) {
-  if (!fs.existsSync(root)) return acc;
-  const entries = fs.readdirSync(root, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(root, entry.name);
-    if (entry.isDirectory()) {
-      if (!isSkippedDir(entry.name, config)) walkFiles(fullPath, config, acc);
-      continue;
-    }
-    if (!entry.isFile()) continue;
-    const ext = path.extname(entry.name).toLowerCase();
-    if (!config.includeExtensions.includes(ext)) continue;
-    acc.push(fullPath);
-  }
-  return acc;
 }
 
 function loadState(statePath) {
@@ -169,34 +136,32 @@ function loadState(statePath) {
 }
 
 function phase1Hypnagogia(root, config, previousState) {
-  const files = walkFiles(root, config);
+  // El escaneo (incluida la frontera de acceso) vive ahora en lib/scan.mjs.
+  // sleepLegacyClassify reproduce la frontera historica del motor: protegidos y
+  // sobredimensionados se hashean (hash_authorized) pero no se analizan; el resto
+  // es contenido legible. El motor de sueno necesita el hash de todos para deltas,
+  // por eso no usa el nivel stat_only (ese es para la membrana estricta de Melampo).
+  const scanned = scanFiles(root, config, sleepLegacyClassify);
   const records = [];
   const deltas = [];
 
-  for (const filePath of files) {
-    const stat = fs.statSync(filePath);
-    const rel = toPosix(path.relative(root, filePath));
-    const tooLarge = stat.size > config.maxFileBytes;
-    const protectedOnly = hasProtectedMarker(filePath, config);
-    const buffer = fs.readFileSync(filePath);
-    const hash = sha256(buffer);
-    const previous = previousState.files?.[rel];
-
+  for (const item of scanned) {
     const record = {
-      rel,
-      bytes: stat.size,
-      mtime: stat.mtime.toISOString(),
-      hash,
-      ext: path.extname(filePath).toLowerCase(),
-      contentAccess: tooLarge || protectedOnly ? "metadata_only" : "readable",
-      skipReason: tooLarge ? "max_file_bytes" : protectedOnly ? "protected_path" : null
+      rel: item.rel,
+      bytes: item.bytes,
+      mtime: item.mtime,
+      hash: item.hash,
+      ext: item.ext,
+      contentAccess: item.access === ACCESS.CONTENT_READABLE ? "readable" : "metadata_only",
+      skipReason: item.tooLarge ? "max_file_bytes" : item.protected ? "protected_path" : null
     };
     records.push(record);
 
+    const previous = previousState.files?.[item.rel];
     if (!previous) {
-      deltas.push({ type: "new", rel });
-    } else if (previous.hash !== hash) {
-      deltas.push({ type: "changed", rel });
+      deltas.push({ type: "new", rel: item.rel });
+    } else if (previous.hash !== item.hash) {
+      deltas.push({ type: "changed", rel: item.rel });
     }
   }
 
