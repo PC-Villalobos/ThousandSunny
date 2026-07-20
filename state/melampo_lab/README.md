@@ -33,12 +33,19 @@ protegido no se abre en absoluto.
 - Membrana estricta: el protegido nunca se lee.
 - Deteccion de familias: duplicado exacto (por hash) y version (por titulo).
 - Relaciones candidatas por co-referencia, **con evidencia** (`sharedLink`, etc.).
-- Almacen de propuestas **idempotente y reanudable** (ids estables; re-correr no duplica).
+- Almacen de propuestas con **idempotencia secuencial** (ids estables; re-correr una
+  ejecucion completa no duplica).
 - Ninguna propuesta se promueve a canon: todas quedan `status: "propuesta"`.
 - Recuperacion minima que explica su porque.
 
 ## Qué NO hace todavia (proximos GO)
 
+- **Crash-consistency**: `run()` hace `append(proposals.jsonl)` y luego
+  `write(state.json)` de forma **no atomica**. Un fallo entre ambas escrituras puede
+  dejar propuestas anexadas sin sus ids en el estado (re-anexado al reiniciar), o el
+  estado con ids pero el fichero truncado (no se reconstruye). Lo demostrado es
+  idempotencia **secuencial**, no reanudacion segura tras fallo. Resolverlo exige
+  escritura transaccional (temp+rename o log con marca de commit).
 - Concurrencia multi-trabajador y colisiones deliberadas.
 - Rollback / rechazo interactivo de propuestas.
 - Metricas completas de recuperacion (precision/recall) sobre corpus real.

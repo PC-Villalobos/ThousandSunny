@@ -6,10 +6,10 @@
 // evidencia. No escribe canon, no toca fuentes, no toca el genoma de Metatron.
 //
 // Que NO es (todavia): concurrencia multi-trabajador, rollback interactivo,
-// metricas completas de recuperacion. Eso es un GO posterior. Aqui se demuestra el
-// nucleo: membrana estricta + deteccion de familias + relaciones candidatas con
-// evidencia + almacen de propuestas idempotente y reanudable + una consulta de
-// recuperacion.
+// metricas completas de recuperacion, y CRASH-CONSISTENCY (ver run()). Eso es un GO
+// posterior. Aqui se demuestra el nucleo: membrana estricta + deteccion de familias
+// + relaciones candidatas con evidencia + almacen de propuestas con IDEMPOTENCIA
+// SECUENCIAL (re-correr completo no duplica) + una consulta de recuperacion.
 //
 // Uso:
 //   node melampo.mjs                      # digiere el corpus y escribe propuestas
@@ -149,7 +149,14 @@ export function propose(seeds) {
   return out;
 }
 
-// Idempotente y reanudable: solo escribe propuestas cuyo id no exista ya en el estado.
+// Idempotencia SECUENCIAL: solo escribe propuestas cuyo id no exista ya en el estado.
+//
+// LIMITACION conocida (crash-consistency, pendiente de GO): el orden es
+// append(proposals.jsonl) -> write(state.json), y no es atomico. Si el proceso cae
+// entre ambos, las propuestas quedan anexadas pero sus ids no llegan al estado, y un
+// reinicio podria re-anexarlas. El caso inverso (estado con ids pero proposals.jsonl
+// truncado/perdido) tampoco se reconstruye. Resolverlo exige escritura transaccional
+// (p.ej. temp+rename, o un log con marca de commit). Aqui NO se aborda.
 export function run({ root = CORPUS, proposalsPath = PROPOSALS, statePath = STATE } = {}) {
   const state = loadState(statePath);
   const known = new Set(state.proposalIds);
