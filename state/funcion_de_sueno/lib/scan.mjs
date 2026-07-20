@@ -35,16 +35,17 @@ export function isSkippedDir(entryName, config) {
   return (config.skipDirs || []).some((skip) => entryName.toLowerCase() === skip.toLowerCase());
 }
 
-// DEUDA (hallazgo #1, code-review Ola M0): el match es SENSIBLE A MAYUSCULAS
-// (`includes` exacto). Una carpeta protegida con distinta caja (p.ej. `hold_clinico`
-// en vez de `HOLD_CLINICO`) NO se detectaria como protegida y su contenido se
-// leeria. Aceptable con el corpus sintetico actual (marcadores en mayusculas), pero
-// DEBE resolverse antes de conectar corpus real/clinico: normalizar la caja de ruta
-// y de los marcadores (y decidir sobre acentos/Unicode) para que la membrana no
-// dependa de la disciplina de nombrado. No se aborda aqui a proposito.
+// La deteccion es CASE-INSENSITIVE a proposito (hallazgo #1, code-review Ola M0): la
+// membrana de seguridad NO debe depender de la disciplina de nombrado. `hold_clinico`,
+// `HOLD_CLINICO` y `Hold_Clinico` cuentan todos como protegidos. Como es un contrato
+// de seguridad reutilizable, un consumidor debe poder confiar en el sin conocer la
+// caja exacta de cada carpeta.
+// (Acentos/Unicode: los marcadores actuales son ASCII; si se anaden marcadores
+// no-ASCII, revisar normalizacion Unicode ademas de la caja.)
 export function hasProtectedMarker(filePath, config) {
-  const normalized = toPosix(filePath);
-  return (config.protectedPathMarkers || []).some((marker) => normalized.includes(marker));
+  const normalized = toPosix(filePath).toLowerCase();
+  return (config.protectedPathMarkers || [])
+    .some((marker) => normalized.includes(String(marker).toLowerCase()));
 }
 
 export function walkFiles(root, config, acc = []) {
