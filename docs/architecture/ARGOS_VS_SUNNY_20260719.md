@@ -37,14 +37,14 @@ Lo que **no** está documentado en ningún sitio de este ecosistema: la arquitec
 | | Odysseus | Argos | Thousand Sunny |
 |---|---|---|---|
 | Naturaleza | Producto local terminado (interfaz, agentes, MCP, memoria persistente) | Arquitectura personal de digestión de memoria | Sistema operativo humano-IA (tripulación, autoridad, compuertas) |
-| Fortaleza actual | Plataforma general desplegable | Metabolismo de memoria ya ejecutándose: ingestión → extracción → grafo → canon, concurrente | Gobierno semántico: procedencia, certeza, autoridad humana, checkpoints append-only, separación simulación/propuesta/autoridad |
+| Fortaleza actual | Plataforma general desplegable | Arquitectura integrada de trabajo, memoria y delegación; Melampo madura como ciclo de digestión bajo gates y validación humana | Gobierno semántico: procedencia, certeza, autoridad humana, checkpoints append-only, separación simulación/propuesta/autoridad |
 | Punto débil relativo | — | Autoridad y gobierno no visibles desde fuera | No existe todavía un único motor continuo de captura→clasificación→enlace→consolidación→recuperación |
 
 ## La diferencia central
 
-Argos ya tiene metabolismo (un ciclo que corre y produce estructura visible). Thousand Sunny tiene constitución, órganos y sistema nervioso — atlas metadata-only, función de sueño, checkpoints, contratos de autoridad, Puente local — pero todavía no un metabolismo unificado corriendo de forma continua.
+Argos tiene más integrada la arquitectura de trabajo, memoria y delegación, con Melampo todavía madurando dentro de ella. Thousand Sunny posee órganos equivalentes, pero aún debe integrarlos en un circuito único y fiable.
 
-## Piezas que le faltan a Sunny para alcanzar lo que Argos ya demuestra
+## Piezas que le faltan a Sunny para integrar su metabolismo en un circuito único y fiable
 
 1. **Sustrato común** — almacén único de nodos, relaciones, procedencia, temporalidad y estado canónico.
 2. **Melampo propio** — ciclo nocturno que ingiera solo fuentes autorizadas, deduplique, descubra familias y proponga enlaces sin canonizar automáticamente.
