@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
 import os from "node:os";
+
+import { ACCESS, scanFiles, sleepLegacyClassify } from "./lib/scan.mjs";
 
 const VERSION = "0.1.0";
 
@@ -55,6 +56,7 @@ function parseArgs(argv) {
   const args = {
     root: process.cwd(),
     config: null,
+    executor: null,
     actor: "codex",
     role: "Groot",
     cloudRequest: false
@@ -64,6 +66,7 @@ function parseArgs(argv) {
     const token = argv[i];
     if (token === "--root") args.root = argv[++i];
     else if (token === "--config") args.config = argv[++i];
+    else if (token === "--executor") args.executor = argv[++i];
     else if (token === "--actor") args.actor = argv[++i];
     else if (token === "--role") args.role = argv[++i];
     else if (token === "--cloud-request") args.cloudRequest = true;
@@ -73,6 +76,12 @@ function parseArgs(argv) {
     }
   }
 
+  // Separacion executor/actor (Codex, barrido 2026-07-20): el `executor` es quien
+  // ejecuta materialmente el ciclo (p.ej. github-actions, un cron de maquina); el
+  // `actor` es la identidad cognitiva que interpreta el rol. Por compatibilidad, si
+  // no se declara executor se asume igual al actor. La vigilancia de fusion NO
+  // cambia: sigue contando racha por (actor, role), no por executor.
+  args.executor = args.executor || args.actor;
   args.root = path.resolve(args.root);
   return args;
 }
@@ -83,6 +92,10 @@ function printHelp() {
 Usage:
   node funcion_de_sueno.mjs --root "C:/La maceta de Groot" --actor codex --role Usopp
   node funcion_de_sueno.mjs --config sleep_config.groot.json --cloud-request
+  node funcion_de_sueno.mjs --executor github-actions --actor deterministic-sleep-engine --role Groot
+
+  --executor  quien ejecuta materialmente el ciclo (maquina/cron); por defecto = actor.
+              La vigilancia de fusion sigue contando por (actor, role), no por executor.
 
 Phases:
   0 boot              carga contrato, estado previo y compuertas
@@ -113,42 +126,8 @@ function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
 }
 
-function toPosix(p) {
-  return p.replaceAll("\\", "/");
-}
-
 function nowStamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
-}
-
-function sha256(buffer) {
-  return crypto.createHash("sha256").update(buffer).digest("hex");
-}
-
-function isSkippedDir(entryName, config) {
-  return config.skipDirs.some((skip) => entryName.toLowerCase() === skip.toLowerCase());
-}
-
-function hasProtectedMarker(filePath, config) {
-  const normalized = toPosix(filePath);
-  return config.protectedPathMarkers.some((marker) => normalized.includes(marker));
-}
-
-function walkFiles(root, config, acc = []) {
-  if (!fs.existsSync(root)) return acc;
-  const entries = fs.readdirSync(root, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(root, entry.name);
-    if (entry.isDirectory()) {
-      if (!isSkippedDir(entry.name, config)) walkFiles(fullPath, config, acc);
-      continue;
-    }
-    if (!entry.isFile()) continue;
-    const ext = path.extname(entry.name).toLowerCase();
-    if (!config.includeExtensions.includes(ext)) continue;
-    acc.push(fullPath);
-  }
-  return acc;
 }
 
 function loadState(statePath) {
@@ -169,34 +148,32 @@ function loadState(statePath) {
 }
 
 function phase1Hypnagogia(root, config, previousState) {
-  const files = walkFiles(root, config);
+  // El escaneo (incluida la frontera de acceso) vive ahora en lib/scan.mjs.
+  // sleepLegacyClassify reproduce la frontera historica del motor: protegidos y
+  // sobredimensionados se hashean (hash_authorized) pero no se analizan; el resto
+  // es contenido legible. El motor de sueno necesita el hash de todos para deltas,
+  // por eso no usa el nivel stat_only (ese es para la membrana estricta de Melampo).
+  const scanned = scanFiles(root, config, sleepLegacyClassify);
   const records = [];
   const deltas = [];
 
-  for (const filePath of files) {
-    const stat = fs.statSync(filePath);
-    const rel = toPosix(path.relative(root, filePath));
-    const tooLarge = stat.size > config.maxFileBytes;
-    const protectedOnly = hasProtectedMarker(filePath, config);
-    const buffer = fs.readFileSync(filePath);
-    const hash = sha256(buffer);
-    const previous = previousState.files?.[rel];
-
+  for (const item of scanned) {
     const record = {
-      rel,
-      bytes: stat.size,
-      mtime: stat.mtime.toISOString(),
-      hash,
-      ext: path.extname(filePath).toLowerCase(),
-      contentAccess: tooLarge || protectedOnly ? "metadata_only" : "readable",
-      skipReason: tooLarge ? "max_file_bytes" : protectedOnly ? "protected_path" : null
+      rel: item.rel,
+      bytes: item.bytes,
+      mtime: item.mtime,
+      hash: item.hash,
+      ext: item.ext,
+      contentAccess: item.access === ACCESS.CONTENT_READABLE ? "readable" : "metadata_only",
+      skipReason: item.tooLarge ? "max_file_bytes" : item.protected ? "protected_path" : null
     };
     records.push(record);
 
+    const previous = previousState.files?.[item.rel];
     if (!previous) {
-      deltas.push({ type: "new", rel });
-    } else if (previous.hash !== hash) {
-      deltas.push({ type: "changed", rel });
+      deltas.push({ type: "new", rel: item.rel });
+    } else if (previous.hash !== item.hash) {
+      deltas.push({ type: "changed", rel: item.rel });
     }
   }
 
@@ -339,10 +316,13 @@ function phase3NremDeep(phase1, phase2) {
   return { issues, attractorTotals, readable, metadataOnly, coherenceScore };
 }
 
-function phase4RemRoleRotation(config, previousState, actor, role) {
+function phase4RemRoleRotation(config, previousState, actor, role, executor = actor) {
   const ledger = [...(previousState.roleLedger || [])];
-  ledger.push({ timestamp: new Date().toISOString(), actor, role });
+  ledger.push({ timestamp: new Date().toISOString(), executor, actor, role });
 
+  // Guardrail de fusion SIN CAMBIOS: la racha se cuenta por (actor, role). El
+  // executor se registra para trazabilidad pero no altera la deteccion de fusion,
+  // de modo que separar la identidad no debilita la alarma.
   let streak = 0;
   for (let i = ledger.length - 1; i >= 0; i -= 1) {
     const entry = ledger[i];
@@ -363,7 +343,7 @@ function phase4RemRoleRotation(config, previousState, actor, role) {
 
   return {
     ledger,
-    current: { actor, role, streak },
+    current: { executor, actor, role, streak },
     nextSuggestedRole: nextRole,
     warnings
   };
@@ -378,7 +358,7 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   lines.push("");
   lines.push(`Version: ${VERSION}`);
   lines.push(`Root: ${root}`);
-  lines.push(`Actor/Rol: ${args.actor} / ${args.role}`);
+  lines.push(`Executor/Actor/Rol: ${args.executor || args.actor} / ${args.actor} / ${args.role}`);
   lines.push("");
   lines.push("## Fases");
   lines.push("");
@@ -501,12 +481,13 @@ function main() {
   const phase1 = phase1Hypnagogia(root, config, previousState);
   const phase2 = phase2NremIndex(root, config, phase1);
   const phase3 = phase3NremDeep(phase1, phase2);
-  const phase4 = phase4RemRoleRotation(config, previousState, args.actor, args.role);
+  const phase4 = phase4RemRoleRotation(config, previousState, args.actor, args.role, args.executor);
   const outputs = phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, stamp);
   const cloudRequestPath = args.cloudRequest ? writeCloudRequest(root, outDir, stamp, args) : null;
 
   const runSummary = {
     timestamp: new Date().toISOString(),
+    executor: args.executor,
     actor: args.actor,
     role: args.role,
     files: phase1.files.length,
@@ -526,6 +507,7 @@ function main() {
   appendToLedger(ledgerPath, {
     ts: new Date().toISOString(),
     event: "daily_tick",
+    executor: args.executor,
     actor: args.actor,
     role: args.role,
     phases: ["N1", "N2", "N3", "REM"],
