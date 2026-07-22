@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-22T04:28:43.747Z",
+  "updatedAt": "2026-07-22T19:15:57.151Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -57,9 +57,9 @@
       "contentAccess": "readable"
     },
     "CREW.md": {
-      "hash": "90559853ce777ce15a148104ba8a67535a89632bddda23aa2179e3489e68bf6f",
-      "bytes": 5750,
-      "mtime": "2026-07-22T04:28:39.777Z",
+      "hash": "753bb6f7df350c5bf2e73ace9a98d061ce50f07d0347f40681adbad12548af8a",
+      "bytes": 5937,
+      "mtime": "2026-07-22T19:14:48.000Z",
       "contentAccess": "readable"
     },
     "LLAVES_DEL_CAPITAN.md": {
@@ -144,6 +144,12 @@
       "hash": "81e0f209757157a2c90c905974cfdec1dbbe126252c05df8a400d09d3d48db7f",
       "bytes": 9135,
       "mtime": "2026-07-22T04:28:39.778Z",
+      "contentAccess": "readable"
+    },
+    "docs/architecture/ARGOS_VS_SUNNY_20260719.md": {
+      "hash": "477fd46e4be3c6c450105d8235f96ec203a9afa9f690953a83fc1c29918fc9e6",
+      "bytes": 6570,
+      "mtime": "2026-07-22T19:14:48.000Z",
       "contentAccess": "readable"
     },
     "docs/architecture/CAMARA_DE_CHOPPER.md": {
@@ -273,15 +279,15 @@
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_ledger.jsonl": {
-      "hash": "5abba0eef9b948251252584c0646b89db7acfbd7970bf3c5ea712ef9b12c5e4c",
-      "bytes": 13036,
-      "mtime": "2026-07-22T04:28:39.782Z",
+      "hash": "b6d131fa4bca37d987fb921d834ec28bbc63001410207d5db8e25c250c5b6ab1",
+      "bytes": 13295,
+      "mtime": "2026-07-22T19:14:48.000Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_state.json": {
-      "hash": "7c05b54b0d7e144563168e9aa439c552cb8c5297765affc2cb663dd7edd50a29",
-      "bytes": 50723,
-      "mtime": "2026-07-22T04:28:39.782Z",
+      "hash": "2806e0990956bbbb10eab3673f75345e287292f143d6fba92022b6868c317c55",
+      "bytes": 51344,
+      "mtime": "2026-07-22T19:14:48.000Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/CARTOGRAFIA_SUSTRATO.md": {
@@ -450,6 +456,60 @@
       "hash": "26e9a4e07204bf057a7bb39676e51737d851a969ef697101e451b42eb65f5eb1",
       "bytes": 754,
       "mtime": "2026-07-22T04:28:39.785Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/README.md": {
+      "hash": "1fb0a18672e763a46c4e0bdfa17d04e41f0d446970b29b297af06f79886153dd",
+      "bytes": 3257,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/HOLD_CLINICO/clinico.md": {
+      "hash": "9bb9e8b0db48b2e91b647d07d971114a2105139713a02dd45bc16769d45bcfdc",
+      "bytes": 63,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "metadata_only"
+    },
+    "state/melampo_lab/corpus/alpha_dup.md": {
+      "hash": "375bf4b8c16c87ba0fd30fc47355c1298c4459b7887bdb1137c8f9a6e4c848fb",
+      "bytes": 61,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/alpha_v1.md": {
+      "hash": "375bf4b8c16c87ba0fd30fc47355c1298c4459b7887bdb1137c8f9a6e4c848fb",
+      "bytes": 61,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/alpha_v2.md": {
+      "hash": "7bb3e3c2ea2e120558710147d511287786bfa0978f6a3085d93391668566a3d4",
+      "bytes": 85,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/beta.md": {
+      "hash": "5b0bffb5703afbba325c65e2484ab73797f1bf3ee562be1418ef407864e0c52a",
+      "bytes": 44,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/delta.md": {
+      "hash": "6bde76206b3572a5024940baefaec7e120324a894638a1a24cd252e50e9f36a0",
+      "bytes": 41,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/gamma.md": {
+      "hash": "c9c3d05011259f94d316248c6b7a688b0c5da5bf6183cf324b9b848dd61bd8a4",
+      "bytes": 57,
+      "mtime": "2026-07-22T19:14:48.000Z",
+      "contentAccess": "readable"
+    },
+    "state/melampo_lab/corpus/orphan.md": {
+      "hash": "ebb10f23d94670a89d33f19eadfb6736e02102765b2f1c33584ec701771aed5c",
+      "bytes": 55,
+      "mtime": "2026-07-22T19:14:48.000Z",
       "contentAccess": "readable"
     },
     "state/metatron/METATRON_GESTATION_STATE.md": {
