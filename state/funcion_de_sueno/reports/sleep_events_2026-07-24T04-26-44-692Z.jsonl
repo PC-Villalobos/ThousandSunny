@@ -1,0 +1,3 @@
+{"phase":"hypnagogia","files":125,"deltas":2}
+{"phase":"nrem_deep","coherenceScore":0.8160000000000001,"issues":23}
+{"phase":"rem_role_rotation","executor":"github-actions","actor":"deterministic-sleep-engine","role":"Groot","streak":2,"nextSuggestedRole":"Nami","warnings":0}
