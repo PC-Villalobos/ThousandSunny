@@ -4,6 +4,8 @@
 
 **Actualizada el 2026-07-26 desde sesión cloud, verificando contra `origin`.** Cambiaron tres puntos: §1 (la divergencia de tronco), §4 (la literalidad de la costura) y §5 (la racha de Groot). El historial del contraste está en `state/cierres/CIERRE_ARCO_20260725.md`.
 
+**Segunda corrección, el mismo día, tras consolidar el ledger (PR #86).** La primera lectura de §5 seguía siendo vista parcial y concluía que la rotación de actor estaba rota. Es falso: la rotación funcionaba, y las rachas de 10 y 11 eran artefacto de leer sólo el tronco. §5 y el pendiente §6.3 quedan reescritos en consecuencia.
+
 Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este archivo **antes** de auditar, proponer o ejecutar nada. Si lo que ves en tu entorno contradice esto, tu entorno está mirando el árbol equivocado. Comprueba antes de afirmar.
 
 ---
@@ -65,7 +67,7 @@ Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. J
 | :---- | :---- |
 | Genoma Metatrón | Los **seis** archivos N0–N5 existen en `state/metatron/genoma/`. N0 tiene contenido (2.967 B). **N1–N5 son stubs** de \~850 B con `status: "stub — contenido pendiente de sesión con acceso a bóveda local"`. No hay que crearlos: hay que rellenarlos. |
 | Función de Sueño | **Viva.** El remoto tiene parte nocturno del 2026-07-25. El ledger local llega al 07-22 solo porque la copia local va 13 commits por detrás. |
-| Rotación de actor | **Sigue rota, y además renombrada.** `f95b3ce` separó `executor` de `actor` el 2026-07-23: el actor pasó de `github-actions` a `deterministic-sleep-engine` y la racha se reinició de 10 a 1 sin que rotara nadie. Volvió a 3 el 2026-07-25 y el informe de esa noche vuelve a emitir `[high] role_fusion_risk … rotate to Nami`. **Matiz que corrige la lectura anterior:** `drift` nunca bajó a `false` en ningún ciclo. Lo que se perdió fue la continuidad histórica del contador, no la señal. No es ceguera: es un contador reseteado con la alarma intacta. |
+| Rotación de actor | **No estaba rota: era vista parcial.** Sobre el ledger consolidado (74 eventos, tras absorber en el PR #86 los 24 huérfanos de la ruta agéntica), la racha **recalculada** por `(actor, role)` no supera **3** en toda la historia del sistema. De 06-19 a 07-22 hubo alternancia diaria real entre `claude-code` y `github-actions`. Las rachas de 10 y 11 eran artefacto de leer sólo el tronco, que no veía la mitad agéntica de los eventos. El campo `streak` almacenado sigue llegando a 11 y **no es dato fiable**: se preservó verbatim a propósito. **Lo que sí es real hoy:** la ruta agéntica dejó de escribir el 2026-07-22, así que del 23 al 25 de julio hay tres noches seguidas de `deterministic-sleep-engine` sin contraparte, y el parte del 25 emite `[high] role_fusion_risk … rotate to Nami`. El problema no es un contador que se reinició: es que un actor dejó de aparecer. |
 | Meditación semántica | Muda 12+ días, con 3 disonancias sin atender. |
 | PLACENTA\_ROOT | Existe (2.316 B), conceptual. |
 | Franky Build Kit (Linux) | Bloqueado: requiere USB booteable \+ backup verificado. |
@@ -80,7 +82,7 @@ No es lo que decían las auditorías. Es esto:
 
 1. **Coser el Hipatia Bridge Runtime al repo** — hoy son dos sistemas que no se conocen.  
 2. **Rellenar N1–N5** con contenido real. Requiere al Capitán y acceso a la bóveda local.  
-3. **Romper la racha de Groot** — forzar rotación **real** de actor en la Función de Sueño. El contador se reinició por el renombrado de `f95b3ce`, no por una rotación: sigue habiendo un solo ejecutor cada noche.  
+3. **~~Romper la racha de Groot~~ — reconectar la ruta agéntica al sueño.** El pendiente cambia de objeto: no había racha que romper (§5), la rotación funcionaba. Lo que hay que arreglar es que la ruta agéntica dejó de escribir al ledger el 2026-07-22, dejando un solo actor por noche desde el 23.  
 4. **Atender las 3 disonancias** de la meditación semántica.  
 5. **Reescribir las skills** que faltan, en `.claude/skills/`, contra la bitácora local.
 
