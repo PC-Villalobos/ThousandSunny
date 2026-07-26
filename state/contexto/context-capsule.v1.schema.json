@@ -275,13 +275,13 @@
       "enum": ["available", "offline", "stale", "unknown"]
     },
     "claim": {
-      "description": "Unidad de memoria, no de evidencia: afirmacion compacta + estado epistemico + procedencia + puntero.",
+      "description": "Unidad de memoria, no de evidencia: afirmacion compacta + estado epistemico + procedencia + puntero. El enum de 'status' se alinea con epistemic_status del contrato de Bitacora: la v1 original usaba valores propios (verified/reported/contested/stale) que no existen alli, y esa desalineacion es la que obligo a normalizar un evento de esta capsula antes de publicarlo.",
       "type": "object",
       "required": ["claim", "status", "source", "valid_at"],
       "additionalProperties": false,
       "properties": {
         "claim": { "type": "string", "maxLength": 240 },
-        "status": { "enum": ["verified", "reported", "contested", "stale"] },
+        "status": { "$ref": "#/$defs/epistemic_status" },
         "source": {
           "type": "string",
           "description": "Procedencia citable: 'git:983f6e5', 'bitacora:BIT-...', 'cierre:CIERRE_ARCO_20260726'."
@@ -294,22 +294,49 @@
       }
     },
     "event_digest": {
+      "description": "Forma compacta de un evento de Bitacora. Los nombres y enums siguen el contrato real de POST /api/events, leido de state/funcion_de_sueno/lib/bitacora.mjs. La v1 original exigia un campo 'meaning' que el contrato no define; corregido.",
       "type": "object",
-      "required": ["id", "ts", "meaning"],
+      "required": ["id", "ts", "actor", "title"],
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string" },
         "ts": { "type": "string", "format": "date-time" },
         "actor": { "type": "string" },
-        "meaning": {
+        "role": { "type": "string" },
+        "topic": { "type": "string" },
+        "title": {
           "type": "string",
           "maxLength": 240,
-          "description": "Campo meaning del evento de Bitacora, recortado. Nunca before/change/after completos."
+          "description": "Campo title del evento. Es el resumen citable; en la capsula nunca viajan before/change/after completos."
         },
+        "message": {
+          "type": "string",
+          "maxLength": 480,
+          "description": "Campo message, recortado. Se omite bajo presupuesto tiny."
+        },
+        "event_kind": { "$ref": "#/$defs/event_kind" },
+        "epistemic_status": { "$ref": "#/$defs/epistemic_status" },
+        "status": { "$ref": "#/$defs/event_status" },
+        "sensitivity": { "$ref": "#/$defs/sensitivity" },
+        "source": { "$ref": "#/$defs/source" },
         "next_safe_action": { "type": ["string", "null"] },
-        "sensitivity": { "type": "string" },
         "expand": { "type": "string" }
       }
+    },
+    "event_kind": {
+      "enum": ["observation", "decision", "action", "result", "learning", "transition", "projection"]
+    },
+    "epistemic_status": {
+      "enum": ["observed", "calculated", "inferred", "evaluated", "proposed", "unknown"]
+    },
+    "event_status": {
+      "enum": ["observed", "decided", "executed", "verified", "blocked", "superseded"]
+    },
+    "sensitivity": {
+      "enum": ["public_safe", "internal"]
+    },
+    "source": {
+      "enum": ["captain", "codex", "claude", "github", "obsidian", "local_runtime", "other"]
     },
     "cursor": {
       "description": "Contrato del almacen de cursores. Un registro por consumidor. Hoy NO existe almacen: es el hueco 2 del contrato.",

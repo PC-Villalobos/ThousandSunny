@@ -95,15 +95,26 @@ written by whoever had the context in hand.
 
 ### 2. Write a checkpoint at end
 
-The checkpoint contract is the bitácora event schema `hipatia-bitacora-v1.1`. It already
-requires `before`, `change`, `after`, `meaning`, `next_safe_action`, `evidence[]`, `source`,
-`sensitivity` and `thread_id`, with closed enums. **Do not design a second checkpoint
+The checkpoint contract is `POST /api/events` on the Bridge Runtime. Ten mandatory fields,
+five of them closed enums — read them from `state/funcion_de_sueno/lib/bitacora.mjs`, which is
+the repo's executable reference and quotes the server source:
+
+- Text: `actor`, `role`, `topic`, `title`, `message`
+- Enums: `event_kind`, `epistemic_status`, `sensitivity`, `status`, `source`
+
+`change`, `after`, `next_safe_action`, `evidence[]`, `scope`, `relations`, `project` and
+`phase` are optional payload — emitted, not required. **Do not design a second checkpoint
 format** — a third protocol competing with this file and `POSICION.md` is exactly the cost
 being removed.
 
-Write through the Bridge Runtime service, never by editing the JSONL, and confirm with
-`write_verified`. Nothing clinical and no guarded path travels in the event: the membrane is
-metadata-only.
+A value outside an enum sends the event to Cuarentena. `epistemic_status` is the one to get
+right: it is where an event declares whether what it asserts was observed, calculated,
+inferred or merely proposed. Without it a second-hand report canonises as verified fact on
+the next read.
+
+Write through the service, never by editing the JSONL, and confirm with `write_verified`.
+Nothing clinical and no guarded path travels in the event: the membrane is metadata-only,
+`sensitivity` fixed to `internal`.
 
 The hub CLI (`npm --prefix "$SUNNY_HUB_PATH" run checkpoint`) is **deprecated**. It writes to
 the May-2026 legacy store, which no one reads as current.
