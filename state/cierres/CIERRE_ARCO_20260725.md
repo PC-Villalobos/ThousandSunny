@@ -165,7 +165,34 @@ satisfaría la búsqueda del auditor sin llevar posición alguna, que es exactam
 de fallo de Antigravity que este arco vino a cerrar. Mejor ausente y declarado que presente
 y hueco.
 
-Hasta que el contenido aterrice, el ancla para sesiones remotas es este directorio.
+**Ejecutado el 2026-07-26.** `POSICION.md` está commiteado en la raíz del repo, verbatim tal
+como lo entregó el Capitán. No se editó ni una línea: la posición es de su autoría y las
+correcciones van aquí, no dentro de ella.
+
+### Deltas entre `POSICION.md` (levantada el 25/07) y el remoto (verificado el 26/07)
+
+`POSICION.md` abre diciendo *"si lo que ves en tu entorno contradice esto, comprueba antes
+de afirmar"*. Comprobado. Tres puntos han cambiado desde que se levantó; la posición no se
+toca, el delta se registra.
+
+| Punto | Lo que dice `POSICION.md` | Verificado el 26/07 |
+|---|---|---|
+| §1 Rama por defecto | `franky` divergida de `main`: 3 delante, 8 detrás | **Superado.** `franky ⊃ main` estricto: +8 / −0, `merge-base` = HEAD de `main`. Lo resolvieron `95fb653` y `489aeca` |
+| §5 Rotación de actor | Rota: 10 `daily_tick` con `actor: github-actions` | **Renombrado, no rotado.** `f95b3ce` separó executor de actor el 23/07: `actor` es ahora `deterministic-sleep-engine`, `executor` es `github-actions`. La racha se reinició 10 → 1 y volvió a 3 el 25/07, con `role_fusion_risk` emitiéndose de nuevo. `drift` nunca bajó a `false` |
+| §4 Costura pendiente | El repo no contiene ninguna referencia a `127.0.0.1:8765` | **Matiz.** Era cierto hasta este arco; la única ocurrencia ahora es documental, en este mismo fichero. La costura sigue pendiente: ningún skill ni script apunta al Bridge Runtime |
+
+Verificado y **sin cambios** respecto a lo que dice la posición:
+
+- §3 — `.claude/skills/` contiene exactamente `franky`, `nami`, `robin-cronos`,
+  `robin-meditacion`, `sueno`, `zoro-migrate` y `README.md`. Coincidencia exacta.
+- §5 — el genoma tiene los seis ficheros N0–N5. `N0` con contenido (`status: "activo"`);
+  `N1`–`N5` son stubs de 760–915 B con `status: "stub — contenido pendiente de sesion con
+  acceso a boveda local"`. Hay que rellenarlos, no crearlos.
+- §1 — la rama por defecto del repo es `claude/franky-feature-O1BkB`, confirmado contra la
+  API de GitHub.
+
+No verificable desde la nube: §5 sobre el retraso de la copia local del ledger. El ledger
+del remoto llega al 25/07 con 50 entradas.
 
 ## Obsoleto respecto al mapa del 2026-07-20
 
