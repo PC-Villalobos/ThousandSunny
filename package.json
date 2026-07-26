@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "npm run test:security && npm run test:hub-utils && npm run test:lib && npm run test:sueno",
+    "test": "npm run test:security && npm run test:hub-utils && npm run test:lib && npm run test:r4 && npm run test:sueno",
     "test:lib": "node --test state/funcion_de_sueno/lib/*.test.mjs",
+    "test:r4": "node --test state/contexto/*.test.mjs",
     "test:security": "node state/usopp/odysseus-extraction/phase0-local-test/test_phase0_security_kernel.js",
     "test:hub-utils": "node state/usopp/odysseus-extraction/phase0-local-test/test_hub_utils.js",
     "test:sueno": "python3 -m unittest discover -s state/funcion_de_sueno -p 'test_*.py' -v"

@@ -1,0 +1,74 @@
+{
+  "fixture_id": "training-signal-001",
+  "fixture_kind": "r4-acceptance",
+  "is_capsule_instance": false,
+  "purpose": "Materializar la recaida contractual del 2026-07-26 como caso de aceptacion de draft-r4. No es una capsula ni un evento: es material de prueba. La capsula es una proyeccion que se genera; esto se commitea a proposito porque una prueba sin caso no prueba nada.",
+  "provenance": {
+    "generated_in": "sesion cloud sobre 66bea1d, 2026-07-26",
+    "episode": {
+      "first_error_commit": "567e2877ea04f293bed69ed0dcb08f716fa368ba",
+      "correcting_commit_that_relapsed": "bcf93360418c79a93d424de83a81909b0adaae28",
+      "second_correction_commit": "17cedcb64f0d3f9133ae02f18a92507739d5760b",
+      "failure_mode_phrase": "confundir el evento materializado con el payload mínimo",
+      "cited_artifact": "state/funcion_de_sueno/lib/bitacora.mjs",
+      "refuting_datum_in_cited_artifact": "(por defecto internal)"
+    },
+    "recomputable_here": [
+      "existencia y orden de los tres commits del episodio",
+      "correction_to_relapse_seconds, por identidad del commit que corrige y recae",
+      "same_failure_mode, contra el texto de CONTEXT_CAPSULE_v1.md",
+      "correction_inside_cited_artifact, contra la cabecera de bitacora.mjs",
+      "contract.schema_blob, contra el arbol Git"
+    ],
+    "unverifiable_here": [
+      "bitacora:BIT-20260726T163512Z-02abb38a5efd",
+      "bitacora:BIT-20260726T163616Z-0f25a1678130"
+    ],
+    "unverifiable_reason": "El Bridge de Hipatia solo es alcanzable desde superficie local. Esta sesion cloud no lo ve; los identificadores viajan como cita, no como comprobacion. La aceptacion se apoya solo en lo recomputable desde el repo.",
+    "window_note": "correction_to_relapse_seconds vale 0 porque la correccion del primer error y la recaida son el mismo artefacto: bcf9336 corrige a 567e287 y dentro de esa misma correccion reaparece la confusion de capas. Mide simultaneidad documental, no un proceso cognitivo del actor.",
+    "divergences": [
+      {
+        "what": "CONTEXT_CAPSULE_v1.md seccion 6 ilustra la senal con correction_to_relapse_seconds: 14400",
+        "measured": 0,
+        "resolution": "El 14400 del documento es ilustrativo, no medido. No se corrige el documento: se registra la divergencia. Reescribir el ejemplo borraria el registro de como se estimo antes de medirlo."
+      },
+      {
+        "what": "CONTEXT_CAPSULE_v1.md cita 672ee23 como primer error",
+        "measured": "567e2877ea04f293bed69ed0dcb08f716fa368ba",
+        "resolution": "672ee23 no resuelve en este repositorio; es un hash previo al rebase. El fixture usa el commit que si resuelve. El documento no se toca."
+      }
+    ]
+  },
+  "contract": {
+    "name": "context-capsule.v1",
+    "revision": "draft-r4",
+    "schema_tag": "context-capsule-v1-draft-r4",
+    "schema_commit": "66bea1d43018e198f8a3ac115be19be8c3992b0d",
+    "schema_blob": "6ec02bc042d442cb48a523f6c54d6ef03b9ca8c6"
+  },
+  "training_signals": [
+    {
+      "signal_id": "contract-layer-relapse-20260726",
+      "observations": {
+        "recurrence_after_correction": true,
+        "correction_to_relapse_seconds": 0,
+        "correction_available_to_actor": true,
+        "correction_inside_cited_artifact": true,
+        "same_failure_mode": true,
+        "epistemic_status": "observed",
+        "evidence": [
+          "git:567e2877ea04f293bed69ed0dcb08f716fa368ba",
+          "git:bcf93360418c79a93d424de83a81909b0adaae28",
+          "git:17cedcb64f0d3f9133ae02f18a92507739d5760b",
+          "bitacora:BIT-20260726T163616Z-0f25a1678130"
+        ]
+      },
+      "assessment": {
+        "claim": "El mismo modo de fallo reaparecio dentro del artefacto que corregia su primera aparicion",
+        "epistemic_status": "inferred",
+        "status": "proposed",
+        "causes": "unknown"
+      }
+    }
+  ]
+}
