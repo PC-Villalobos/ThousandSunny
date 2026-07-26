@@ -164,9 +164,15 @@ If `BITACORA_GAS_URL` is unset, the GAS block is left in the report as a fallbac
 state/
   funcion_de_sueno/   — sleep function: spec, ledger, reports, .mjs engine
   deckard/            — Deckard knowledge packets (certainty levels N0–N5)
+  cierres/            — arc closure records (narrative + verified evidence)
 ```
 
 Use only relative paths inside `state/`. Absolute paths (`C:\...`) do not exist in cloud environments.
+
+**Cloud sessions: read the position anchor first.** `POSICION.md` is local to the captain's
+machine and is not reachable from a cloud session. Before auditing anything, read the most
+recent record in `state/cierres/` — it carries the last arc's verified state, inherited
+pendings, and captain's decisions. It does not replace `POSICION.md` where that is available.
 
 ## House rules
 
