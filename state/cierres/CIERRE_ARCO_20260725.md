@@ -149,13 +149,23 @@ Este fichero es la mitad alcanzable de esa salvaguarda: una sesión cloud que no
 `POSICION.md` debe leer el cierre de arco más reciente en `state/cierres/` antes de
 auditar. No lo sustituye — `POSICION.md` es más completo y sigue siendo local.
 
-Quedan dos opciones abiertas, ambas del Capitán:
+### Decisión del Capitán (2026-07-26)
 
-1. Commitear `POSICION.md` (o un derivado public-safe) al repo.
-2. Dar al puntero de auto-memory una variante para sesiones remotas que apunte aquí.
+`POSICION.md` **entra al repo**. El Capitán adjudica qué es public-safe; no es una decisión
+que la nube tome ni una que la nube pueda bloquear.
 
-No se ha hecho ninguna de las dos: la primera requiere decidir qué de `POSICION.md` es
-public-safe, y esa decisión no es de la nube.
+Estado de ejecución: **pendiente de contenido**. El fichero no existe en este entorno —
+comprobado en el disco de la sesión, en todas las refs de ambos repos, en el historial
+completo, y en el índice de código de GitHub para `PC-Villalobos/ThousandSunny`: cero
+coincidencias. Vive sólo en la máquina del Capitán, escrito el 2026-07-25 y nunca
+commiteado.
+
+No se crea un stub. Un `POSICION.md` con contenido inventado o con un "pendiente" dentro
+satisfaría la búsqueda del auditor sin llevar posición alguna, que es exactamente el modo
+de fallo de Antigravity que este arco vino a cerrar. Mejor ausente y declarado que presente
+y hueco.
+
+Hasta que el contenido aterrice, el ancla para sesiones remotas es este directorio.
 
 ## Obsoleto respecto al mapa del 2026-07-20
 
