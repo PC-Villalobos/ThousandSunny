@@ -134,6 +134,42 @@ La alarma se re-armó sola en tres noches y está firing ahora mismo. El pendien
 vivo, pero no es un fallo de observabilidad ciega: es un reinicio de contador con la
 señal intacta.
 
+### Rectificación del mismo día, tras consolidar el ledger (PR #86)
+
+**Todo el análisis anterior de esta sección es vista parcial y su conclusión es falsa.** Se
+conserva tal cual, sin borrar, porque el error importa más que la corrección: es
+exactamente el modo de fallo que este arco vino a documentar, cometido otra vez y con la
+misma causa.
+
+El ledger del tronco sólo contenía 50 de los 74 eventos del sistema. Los 24 restantes eran
+de la ruta agéntica (`actor: claude-code`), vivían en ramas sin absorber desde el
+2026-06-19, y por eso ninguna lectura del tronco podía verlos. Absorbidos en el PR #86.
+
+Sobre el journal consolidado, recalculado de forma independiente:
+
+```
+racha RECALCULADA maxima por (actor, role):  3
+racha ALMACENADA maxima (campo streak):     11
+06-19 -> 07-22: claude-code y github-actions alternan cada dia
+```
+
+**La rotación no estaba rota. Funcionaba.** Las rachas de 10 y 11 eran íntegramente
+artefacto de vista parcial, y la afirmación de arriba —*"sigue habiendo un solo ejecutor,
+cada noche, sin rotar"*— era falsa para toda la ventana histórica.
+
+Dos matices que sí sobreviven a la rectificación:
+
+- El campo `streak` almacenado llega a 11 y **no es dato fiable**. El PR #86 lo preserva
+  verbatim a propósito: reescribir registros históricos de un ledger de auditoría es peor
+  que convivir con un dato malo, y su derivación correcta es del encargo Groot 1-3.
+- Del 23 al 25 de julio sí hay tres noches seguidas de `deterministic-sleep-engine` sin
+  contraparte, y la alarma del 25 es real. Pero la causa no es el renombrado: **la ruta
+  agéntica dejó de escribir al ledger el 2026-07-22.** El problema no es un contador que se
+  reinició, es un actor que dejó de aparecer.
+
+El pendiente heredado nº6 cambia de objeto en consecuencia: no hay racha que romper, hay
+una ruta que reconectar.
+
 ## 3. `POSICION.md` no es alcanzable desde la nube
 
 Verificado: el fichero no existe en `origin/main` ni en
@@ -182,7 +218,7 @@ conserva como historial de qué cambió y contra qué evidencia, no como discrep
 | Punto | Lo que dice `POSICION.md` | Verificado el 26/07 |
 |---|---|---|
 | §1 Rama por defecto | `franky` divergida de `main`: 3 delante, 8 detrás | **Superado.** `franky ⊃ main` estricto: +8 / −0, `merge-base` = HEAD de `main`. Lo resolvieron `95fb653` y `489aeca` |
-| §5 Rotación de actor | Rota: 10 `daily_tick` con `actor: github-actions` | **Renombrado, no rotado.** `f95b3ce` separó executor de actor el 23/07: `actor` es ahora `deterministic-sleep-engine`, `executor` es `github-actions`. La racha se reinició 10 → 1 y volvió a 3 el 25/07, con `role_fusion_risk` emitiéndose de nuevo. `drift` nunca bajó a `false` |
+| §5 Rotación de actor | Rota: 10 `daily_tick` con `actor: github-actions` | **Rectificado dos veces el mismo día.** La primera lectura decía "renombrado, no rotado"; tras consolidar el ledger en el PR #86 resultó ser también vista parcial. La rotación funcionaba: racha recalculada máxima 3 sobre 74 eventos. Lo real es que la ruta agéntica dejó de escribir el 22/07. Detalle en la rectificación de la sección 2 |
 | §4 Costura pendiente | El repo no contiene ninguna referencia a `127.0.0.1:8765` | **Matiz.** Era cierto hasta este arco; la única ocurrencia ahora es documental, en este mismo fichero. La costura sigue pendiente: ningún skill ni script apunta al Bridge Runtime |
 
 Verificado y **sin cambios** respecto a lo que dice la posición:
