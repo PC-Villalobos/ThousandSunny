@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PC-Villalobos/ThousandSunny/state/contexto/context-capsule.v1.schema.json",
+  "title": "context-capsule.v1",
+  "description": "Proyeccion unica de arranque para cualquier nakama (Claude, Codex, Gemini, automatizaciones). Es una proyeccion reconstruible, no una fuente. Se deriva de Bitacora de Hipatia + Git + state/. Nunca se edita a mano y nunca se commitea una instancia como si fuera estado.",
+  "type": "object",
+  "required": [
+    "capsule_version",
+    "generated_at",
+    "budget",
+    "authority",
+    "position",
+    "git",
+    "bitacora",
+    "closures",
+    "work",
+    "sleep",
+    "seals",
+    "cursor",
+    "recommended_reads"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "capsule_version": {
+      "const": "context-capsule.v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "budget": {
+      "description": "Presupuesto con el que se construyo esta capsula. El router escoge tiny salvo que la tarea pida otra cosa.",
+      "type": "object",
+      "required": ["name", "token_ceiling"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "enum": ["tiny", "normal", "deep", "audit"] },
+        "token_ceiling": { "type": "integer", "minimum": 1 },
+        "truncated": {
+          "type": "array",
+          "description": "Bloques recortados para respetar el techo. Un bloque recortado se declara; no se omite en silencio.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "authority": {
+      "description": "Orden de autoridad y salud de cada almacen. Resuelve de una vez la pregunta que hoy cada sesion re-descubre.",
+      "type": "object",
+      "required": ["order", "health"],
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "type": "array",
+          "description": "De mayor a menor autoridad. La primera alcanzable y sana manda.",
+          "items": { "enum": ["bitacora_hipatia", "repo_git", "cierres_narrativos", "hub_legacy"] }
+        },
+        "health": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bitacora_hipatia": { "$ref": "#/$defs/health" },
+            "repo_git": { "$ref": "#/$defs/health" },
+            "cierres_narrativos": { "$ref": "#/$defs/health" },
+            "hub_legacy": { "$ref": "#/$defs/health" }
+          }
+        },
+        "degraded_reason": {
+          "type": ["string", "null"],
+          "description": "Por que la capsula no se construyo con la autoridad primaria. Null si se construyo con ella."
+        }
+      }
+    },
+    "position": {
+      "description": "L0. Donde esta el barco. Compacto y siempre presente.",
+      "type": "object",
+      "required": ["position_version", "canonical_repo", "default_branch"],
+      "additionalProperties": false,
+      "properties": {
+        "position_version": {
+          "type": "string",
+          "description": "Fecha de la ultima actualizacion de POSICION.md. Si no coincide con la del repo, la capsula esta caduca."
+        },
+        "canonical_repo": { "type": "string" },
+        "default_branch": { "type": "string" },
+        "dead_trees": {
+          "type": "array",
+          "description": "Arboles que NO son el repo. Evita que un agente audite un cadaver y publique la conclusion.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "git": {
+      "type": "object",
+      "required": ["branch", "head", "ahead", "behind", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "branch": { "type": "string" },
+        "head": { "type": "string" },
+        "ahead": { "type": "integer", "minimum": 0 },
+        "behind": { "type": "integer", "minimum": 0 },
+        "dirty": { "type": "boolean" },
+        "untracked": {
+          "type": "array",
+          "description": "Solo rutas. Nunca contenido.",
+          "items": { "type": "string" }
+        },
+        "recent_commits": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["sha", "subject"],
+            "additionalProperties": false,
+            "properties": {
+              "sha": { "type": "string" },
+              "subject": { "type": "string" },
+              "at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    },
+    "bitacora": {
+      "description": "L2 episodica. Solo el cursor y el recuento; los eventos completos son L4 y se piden aparte.",
+      "type": "object",
+      "required": ["reachable", "last_event_id", "event_count"],
+      "additionalProperties": false,
+      "properties": {
+        "reachable": { "type": "boolean" },
+        "endpoint": { "type": "string" },
+        "last_event_id": { "type": ["string", "null"] },
+        "event_count": { "type": ["integer", "null"], "minimum": 0 },
+        "chain_verified": {
+          "type": ["boolean", "null"],
+          "description": "Cadena de hash encadenada intacta. Null si no se pudo comprobar."
+        },
+        "unresolved_mutations": { "type": ["integer", "null"], "minimum": 0 },
+        "events_since_cursor": {
+          "type": "array",
+          "description": "Delta desde cursor.last_event_id. Forma compacta: nunca el evento entero.",
+          "items": { "$ref": "#/$defs/event_digest" }
+        }
+      }
+    },
+    "closures": {
+      "type": "object",
+      "required": ["formal_count", "unabsorbed"],
+      "additionalProperties": false,
+      "properties": {
+        "formal_count": {
+          "type": ["integer", "null"],
+          "description": "Registros en closure_records.jsonl. Cadena encadenada: no se anade sin reproducir su canonicalizacion exacta."
+        },
+        "last_closure_hash": { "type": ["string", "null"] },
+        "unabsorbed": {
+          "type": "array",
+          "description": "Cierres narrativos en state/cierres/ sin evento formal correspondiente. Este es el hueco que hoy nadie ve.",
+          "items": {
+            "type": "object",
+            "required": ["ref", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "ref": { "type": "string" },
+              "reason": { "type": "string" },
+              "versioned": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "work": {
+      "description": "L1. Lo unico que un agente necesita para no preguntar por donde ibamos.",
+      "type": "object",
+      "required": ["next_safe_action", "open_blockers"],
+      "additionalProperties": false,
+      "properties": {
+        "active_missions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["packet_id", "title", "status"],
+            "additionalProperties": false,
+            "properties": {
+              "packet_id": { "type": "string" },
+              "title": { "type": "string" },
+              "status": { "enum": ["open", "in_progress", "parked", "blocked"] }
+            }
+          }
+        },
+        "open_blockers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["claim", "owner"],
+            "additionalProperties": false,
+            "properties": {
+              "claim": { "type": "string" },
+              "owner": { "type": "string" },
+              "irreversible_risk": { "type": "boolean" },
+              "expand": { "type": "string" }
+            }
+          }
+        },
+        "recent_decisions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/claim" }
+        },
+        "next_safe_action": {
+          "type": ["string", "null"],
+          "description": "Se hereda del campo next_safe_action del ultimo evento de Bitacora. Lo escribio quien tenia el contexto en la mano; recuperarlo cuesta cero."
+        }
+      }
+    },
+    "sleep": {
+      "description": "Salud de la Funcion de Sueno. Barato y es el unico canario automatico que hay.",
+      "type": "object",
+      "required": ["last_cycle_at", "actor", "role", "streak", "drift"],
+      "additionalProperties": false,
+      "properties": {
+        "last_cycle_at": { "type": ["string", "null"], "format": "date-time" },
+        "executor": { "type": ["string", "null"] },
+        "actor": { "type": ["string", "null"] },
+        "role": { "type": ["string", "null"] },
+        "streak": { "type": ["integer", "null"], "minimum": 0 },
+        "drift": { "type": ["boolean", "null"] },
+        "rotate": {
+          "type": ["boolean", "null"],
+          "description": "true cuando streak >= 3. Riesgo de fusion actor/rol."
+        }
+      }
+    },
+    "seals": {
+      "description": "L5. Que esta sellado y que GO lo abre. Su fallo no cuesta tokens: rompe un sello. Es el bloque caro de equivocarse.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["zone", "state", "gate"],
+        "additionalProperties": false,
+        "properties": {
+          "zone": { "type": "string" },
+          "state": { "enum": ["sealed", "metadata_only", "open"] },
+          "gate": {
+            "type": "string",
+            "description": "Que autoriza abrirlo. Ej: 'GO C0 del Capitan'."
+          },
+          "paths": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "cursor": {
+      "description": "Eco del cursor del consumidor con el que se pidio la capsula. Convierte la contextualizacion en un diff.",
+      "$ref": "#/$defs/cursor"
+    },
+    "recommended_reads": {
+      "description": "Punteros para ampliar. La capsula NO inyecta documentos: el modelo pide la evidencia solo si la necesita.",
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["ref", "why"],
+        "additionalProperties": false,
+        "properties": {
+          "ref": { "type": "string" },
+          "why": { "type": "string" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "health": {
+      "enum": ["available", "offline", "stale", "unknown"]
+    },
+    "claim": {
+      "description": "Unidad de memoria, no de evidencia: afirmacion compacta + estado epistemico + procedencia + puntero.",
+      "type": "object",
+      "required": ["claim", "status", "source", "valid_at"],
+      "additionalProperties": false,
+      "properties": {
+        "claim": { "type": "string", "maxLength": 240 },
+        "status": { "enum": ["verified", "reported", "contested", "stale"] },
+        "source": {
+          "type": "string",
+          "description": "Procedencia citable: 'git:983f6e5', 'bitacora:BIT-...', 'cierre:CIERRE_ARCO_20260726'."
+        },
+        "valid_at": { "type": "string" },
+        "expand": {
+          "type": "string",
+          "description": "Ruta o endpoint para traer la evidencia completa bajo demanda."
+        }
+      }
+    },
+    "event_digest": {
+      "type": "object",
+      "required": ["id", "ts", "meaning"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "ts": { "type": "string", "format": "date-time" },
+        "actor": { "type": "string" },
+        "meaning": {
+          "type": "string",
+          "maxLength": 240,
+          "description": "Campo meaning del evento de Bitacora, recortado. Nunca before/change/after completos."
+        },
+        "next_safe_action": { "type": ["string", "null"] },
+        "sensitivity": { "type": "string" },
+        "expand": { "type": "string" }
+      }
+    },
+    "cursor": {
+      "description": "Contrato del almacen de cursores. Un registro por consumidor. Hoy NO existe almacen: es el hueco 2 del contrato.",
+      "type": "object",
+      "required": ["consumer", "last_seen_at"],
+      "additionalProperties": false,
+      "properties": {
+        "consumer": {
+          "type": "string",
+          "description": "Identidad estable del motor: 'codex-usopp', 'claude-code', 'gemini-sanji', 'deterministic-sleep-engine'."
+        },
+        "last_event_id": { "type": ["string", "null"] },
+        "last_git_commit": { "type": ["string", "null"] },
+        "last_closure_hash": { "type": ["string", "null"] },
+        "last_seen_at": { "type": "string", "format": "date-time" },
+        "scope": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
