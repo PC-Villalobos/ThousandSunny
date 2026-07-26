@@ -183,6 +183,52 @@ test("observaciones: el dato que desmentia la lectura estaba dentro del artefact
   assert.equal(signal().observations.correction_inside_cited_artifact, true);
 });
 
+test("observaciones: 'disponible' se deriva de autoria comun y coexistencia, no se declara", (t) => {
+  // Esta era la unica observacion que la suite tomaba del fixture sin recomputar.
+  // `available` no significa leido ni interiorizado: significa que el dato estaba en el
+  // arbol que el actor tenia delante, en un archivo que su commit no toco y que ese
+  // mismo commit cita como fuente. Todo lo demas seria atribuir estado interno.
+  if (!hasHistory()) {
+    t.skip("historia no disponible en este clon (clon superficial)");
+    return;
+  }
+  const chain = [episode.first_error_commit, episode.correcting_commit_that_relapsed, episode.second_correction_commit];
+  const authors = chain.map((sha) => git("log", "-1", "--format=%an <%ae>", sha));
+  assert.deepEqual(
+    [...new Set(authors)],
+    [episode.actor_identity],
+    "los tres commits del episodio ya no comparten una sola identidad de actor"
+  );
+
+  const relapse = episode.correcting_commit_that_relapsed;
+  const before = git("rev-parse", `${relapse}^:${episode.cited_artifact}`);
+  const after = git("rev-parse", `${relapse}:${episode.cited_artifact}`);
+  assert.equal(before, after, "el commit de la recaida modifico el artefacto citado; entonces no era material previo");
+  assert.ok(
+    readAt(`${relapse}^`, episode.cited_artifact).includes(episode.refuting_datum_in_cited_artifact),
+    "el dato que desmentia la lectura no estaba en el arbol antes del commit"
+  );
+  assert.notEqual(
+    git("log", "-1", "--format=%an <%ae>", "--diff-filter=A", "--", episode.cited_artifact),
+    episode.actor_identity,
+    "el artefacto citado lo produjo el propio actor; la disponibilidad se argumenta de otra forma"
+  );
+
+  // Coexistencia: un unico blob del documento corrige el primer error y ya trae el segundo.
+  const atRelapse = flatten(readAt(relapse, DOC_PATH));
+  assert.ok(!atRelapse.includes(MARK_FIRST_ERROR) && atRelapse.includes(MARK_RELAPSE));
+  assert.ok(
+    atRelapse.includes(episode.cited_artifact),
+    "el commit de la recaida no cita el artefacto donde estaba el dato que lo desmiente"
+  );
+
+  assert.equal(signal().observations.correction_available_to_actor, true);
+  assert.ok(
+    /no afirma que se leyera/i.test(episode.availability_definition),
+    "la definicion de 'disponible' debe declarar explicitamente lo que no afirma"
+  );
+});
+
 test("observaciones: el documento nombra un unico modo de fallo para las dos veces", () => {
   const doc = flatten(fs.readFileSync(path.join(REPO_ROOT, DOC_PATH), "utf8"));
   assert.ok(doc.includes(episode.failure_mode_phrase), "el modo de fallo declarado no aparece en el documento");
