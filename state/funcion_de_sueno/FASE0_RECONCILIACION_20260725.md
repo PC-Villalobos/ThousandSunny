@@ -173,3 +173,9 @@ para cualquier auditoria futura, no esta en `origin/main` ni en
 instruccion "leer POSICION.md antes de auditar nada" no puede cumplirse desde
 una sesion remota. O se versiona, o el puntero necesita una variante explicita
 para sesiones sin acceso al disco del Capitan.
+
+**Resuelto el 2026-07-25, despues de redactarse este informe.** El PR #84
+(`Merge 0d0cabd`) subio `POSICION.md` a la rama canonica. El hallazgo queda
+cerrado con evidencia: el fichero ya es alcanzable desde cualquier sesion
+remota. Se conserva el texto original porque el informe es un registro fechado,
+no un documento vivo; esta nota es la enmienda, no una reescritura.
