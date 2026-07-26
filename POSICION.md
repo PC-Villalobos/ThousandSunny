@@ -2,6 +2,8 @@
 
 **Levantada el 2026-07-25 por Nami (Claude/Opus 5\) leyendo los árboles reales, no resúmenes.**
 
+**Actualizada el 2026-07-26 desde sesión cloud, verificando contra `origin`.** Cambiaron tres puntos: §1 (la divergencia de tronco), §4 (la literalidad de la costura) y §5 (la racha de Groot). El historial del contraste está en `state/cierres/CIERRE_ARCO_20260725.md`.
+
 Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este archivo **antes** de auditar, proponer o ejecutar nada. Si lo que ves en tu entorno contradice esto, tu entorno está mirando el árbol equivocado. Comprueba antes de afirmar.
 
 ---
@@ -12,7 +14,7 @@ Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este arch
 | :---- | :---- |
 | **Repo canónico** | `C:\Users\usuario\OneDrive\Documentos\GitHub\ThousandSunny` |
 | Remoto | `https://github.com/PC-Villalobos/ThousandSunny.git` |
-| Rama por defecto | `claude/franky-feature-O1BkB` (divergida de `main`: 3 delante, 8 detrás) |
+| Rama por defecto | `claude/franky-feature-O1BkB`. **Ya no diverge de `main`:** lo contiene de forma estricta, 8 delante y 0 detrás, con `merge-base` en el HEAD de `main` (`08dd0cb`). Reconciliado el 2026-07-23 por `95fb653` y `489aeca`; verificado contra el remoto el 2026-07-26 |
 | Repo hermano | `...\GitHub\PuenteDeMando` → `PC-Villalobos/PuenteDeMando`, rama `main` |
 
 ### Árboles que NO son el repo
@@ -53,7 +55,7 @@ Decisión del Capitán, 2026-07-24, registrada como evento `BIT-20260724T134345Z
 
 Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. JSONL es la fuente soberana; SQLite y Markdown se reconstruyen; Obsidian es vista.
 
-**Costura pendiente:** el repo canónico no contiene **ninguna** referencia a `127.0.0.1:8765`. El Hipatia Bridge Runtime vive fuera de ThousandSunny y el repo todavía no sabe que existe. Hasta que se cosa, cualquier skill o script que escriba en GAS está escribiendo en el archivo histórico, no en la bitácora viva.
+**Costura pendiente:** ningún skill, script ni configuración del repo canónico apunta a `127.0.0.1:8765`. Desde el 2026-07-26 el repo sí lo **menciona**, pero sólo en prosa —este archivo y `state/cierres/`—, nunca en código ejecutable. El Hipatia Bridge Runtime vive fuera de ThousandSunny y el código del repo todavía no sabe que existe. Hasta que se cosa, cualquier skill o script que escriba en GAS está escribiendo en el archivo histórico, no en la bitácora viva.
 
 ---
 
@@ -63,7 +65,7 @@ Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. J
 | :---- | :---- |
 | Genoma Metatrón | Los **seis** archivos N0–N5 existen en `state/metatron/genoma/`. N0 tiene contenido (2.967 B). **N1–N5 son stubs** de \~850 B con `status: "stub — contenido pendiente de sesión con acceso a bóveda local"`. No hay que crearlos: hay que rellenarlos. |
 | Función de Sueño | **Viva.** El remoto tiene parte nocturno del 2026-07-25. El ledger local llega al 07-22 solo porque la copia local va 13 commits por detrás. |
-| Rotación de actor | **Rota.** Diez `daily_tick` seguidos con `actor: github-actions`, `role: Groot`, `drift: true`, `verdict: neutral`, `attractor: null`. Diez días de veredicto neutral es ceguera, no salud. |
+| Rotación de actor | **Sigue rota, y además renombrada.** `f95b3ce` separó `executor` de `actor` el 2026-07-23: el actor pasó de `github-actions` a `deterministic-sleep-engine` y la racha se reinició de 10 a 1 sin que rotara nadie. Volvió a 3 el 2026-07-25 y el informe de esa noche vuelve a emitir `[high] role_fusion_risk … rotate to Nami`. **Matiz que corrige la lectura anterior:** `drift` nunca bajó a `false` en ningún ciclo. Lo que se perdió fue la continuidad histórica del contador, no la señal. No es ceguera: es un contador reseteado con la alarma intacta. |
 | Meditación semántica | Muda 12+ días, con 3 disonancias sin atender. |
 | PLACENTA\_ROOT | Existe (2.316 B), conceptual. |
 | Franky Build Kit (Linux) | Bloqueado: requiere USB booteable \+ backup verificado. |
@@ -78,7 +80,7 @@ No es lo que decían las auditorías. Es esto:
 
 1. **Coser el Hipatia Bridge Runtime al repo** — hoy son dos sistemas que no se conocen.  
 2. **Rellenar N1–N5** con contenido real. Requiere al Capitán y acceso a la bóveda local.  
-3. **Romper la racha de Groot** — forzar rotación de actor en la Función de Sueño.  
+3. **Romper la racha de Groot** — forzar rotación **real** de actor en la Función de Sueño. El contador se reinició por el renombrado de `f95b3ce`, no por una rotación: sigue habiendo un solo ejecutor cada noche.  
 4. **Atender las 3 disonancias** de la meditación semántica.  
 5. **Reescribir las skills** que faltan, en `.claude/skills/`, contra la bitácora local.
 

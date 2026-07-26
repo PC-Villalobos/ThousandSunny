@@ -172,8 +172,12 @@ correcciones van aquí, no dentro de ella.
 ### Deltas entre `POSICION.md` (levantada el 25/07) y el remoto (verificado el 26/07)
 
 `POSICION.md` abre diciendo *"si lo que ves en tu entorno contradice esto, comprueba antes
-de afirmar"*. Comprobado. Tres puntos han cambiado desde que se levantó; la posición no se
-toca, el delta se registra.
+de afirmar"*, y cierra con *"se actualiza cuando cambie la posición, no cuando cambie la
+opinión"*. Comprobado: tres puntos habían cambiado desde que se levantó.
+
+**Reconciliado el 2026-07-26 por instrucción del Capitán.** Los tres deltas están ya
+incorporados a `POSICION.md`, que es de nuevo la posición vigente. La tabla siguiente se
+conserva como historial de qué cambió y contra qué evidencia, no como discrepancia abierta.
 
 | Punto | Lo que dice `POSICION.md` | Verificado el 26/07 |
 |---|---|---|
