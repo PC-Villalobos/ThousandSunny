@@ -324,18 +324,23 @@
       }
     },
     "event_kind": {
+      "description": "Enum cerrado de POST /api/events. Ademas OBLIGATORIO en la entrada (required_input).",
       "enum": ["observation", "decision", "action", "result", "learning", "transition", "projection"]
     },
     "epistemic_status": {
+      "description": "Enum cerrado de POST /api/events. Ademas OBLIGATORIO en la entrada (required_input). Es donde un evento declara si lo que afirma fue observado, calculado, inferido o solo propuesto.",
       "enum": ["observed", "calculated", "inferred", "evaluated", "proposed", "unknown"]
     },
     "event_status": {
+      "description": "Enum cerrado de POST /api/events, campo `status`. NO obligatorio: el servidor aplica `observed` por defecto.",
       "enum": ["observed", "decided", "executed", "verified", "blocked", "superseded"]
     },
     "sensitivity": {
+      "description": "Enum cerrado de POST /api/events. NO obligatorio: el servidor aplica `internal` por defecto.",
       "enum": ["public_safe", "internal"]
     },
     "source": {
+      "description": "Enum cerrado de POST /api/events. NO obligatorio: el servidor aplica `local_runtime` por defecto.",
       "enum": ["captain", "codex", "claude", "github", "obsidian", "local_runtime", "other"]
     },
     "cursor": {

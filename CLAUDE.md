@@ -95,22 +95,30 @@ written by whoever had the context in hand.
 
 ### 2. Write a checkpoint at end
 
-The checkpoint contract is `POST /api/events` on the Bridge Runtime. Ten mandatory fields,
-five of them closed enums — read them from `state/funcion_de_sueno/lib/bitacora.mjs`, which is
-the repo's executable reference and quotes the server source:
+The checkpoint contract is `POST /api/events` on the Bridge Runtime. It has three layers, and
+collapsing them is a documented failure mode — see
+`state/contexto/CONTEXT_CAPSULE_v1.md` §3, where it happened twice:
 
-- Text: `actor`, `role`, `topic`, `title`, `message`
-- Enums: `event_kind`, `epistemic_status`, `sensitivity`, `status`, `source`
+- **`required_input` — seven fields.** `actor`, `role`, `topic`, `title`, `message`,
+  `event_kind`, `epistemic_status`. Without them the POST is not accepted.
+- **`closed_enums` — five vocabularies.** `event_kind`, `epistemic_status`, `sensitivity`,
+  `status`, `source`. A value outside them sends the event to Cuarentena. Only the first two
+  are also required; `sensitivity`, `status` and `source` default to `internal`, `observed`
+  and `local_runtime`.
+- **`stored_event`.** The materialised event carries more fields than the client sends — the
+  server generates, normalises or blanks them. `change`, `after`, `next_safe_action`,
+  `evidence[]`, `scope`, `relations`, `project` and `phase` are optional payload. **A field
+  appearing in the stored event does not make it required of the writer.**
 
-`change`, `after`, `next_safe_action`, `evidence[]`, `scope`, `relations`, `project` and
-`phase` are optional payload — emitted, not required. **Do not design a second checkpoint
-format** — a third protocol competing with this file and `POSICION.md` is exactly the cost
-being removed.
+`bitacora.mjs` documents this contract but does not enforce it: `appendEvent` posts the
+payload raw. The server is the only authority on what is required.
 
-A value outside an enum sends the event to Cuarentena. `epistemic_status` is the one to get
-right: it is where an event declares whether what it asserts was observed, calculated,
-inferred or merely proposed. Without it a second-hand report canonises as verified fact on
-the next read.
+**Do not design a second checkpoint format** — a third protocol competing with this file and
+`POSICION.md` is exactly the cost being removed.
+
+`epistemic_status` is the one to get right: it is where an event declares whether what it
+asserts was observed, calculated, inferred or merely proposed. Without it a second-hand
+report canonises as verified fact on the next read.
 
 Write through the service, never by editing the JSONL, and confirm with `write_verified`.
 Nothing clinical and no guarded path travels in the event: the membrane is metadata-only,

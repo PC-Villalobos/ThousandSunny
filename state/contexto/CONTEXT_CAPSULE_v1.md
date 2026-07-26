@@ -64,26 +64,37 @@ lee directamente. Ver §3.
 
 ## 3. Lo que ya está construido y no hay que rediseñar
 
-`POST /api/events` obliga a diez campos, cinco de ellos con enum cerrado. Leído de
-`state/funcion_de_sueno/lib/bitacora.mjs`, que a su vez lo leyó del fuente del servidor
-(`_bitacora/scripts/bitacora_server.py`):
+El contrato tiene **tres capas** y confundirlas es el error que esta sección ha cometido dos
+veces. Verificado por Codex contra `make_event` en `_bitacora/scripts/bitacora_server.py`
+(líneas 150-205), leyendo el servidor vivo desde la máquina del Capitán.
 
-| Campo | Tipo | Valores |
+**Capa 1 — `required_input`: siete campos.** Sin ellos el `POST` no se acepta.
+
+`actor`, `role`, `topic`, `title`, `message`, `event_kind`, `epistemic_status`
+
+**Capa 2 — `closed_enums`: cinco vocabularios.** Un valor fuera de ellos manda el evento a
+Cuarentena. Dos de los cinco son además obligatorios; los otros tres tienen valor por defecto,
+así que están validados pero no exigidos.
+
+| Campo | Valores | ¿Obligatorio? |
 |---|---|---|
-| `actor` | texto | — |
-| `role` | texto | — |
-| `topic` | texto | — |
-| `title` | texto | — |
-| `message` | texto | — |
-| `event_kind` | **enum** | `observation` `decision` `action` `result` `learning` `transition` `projection` |
-| `epistemic_status` | **enum** | `observed` `calculated` `inferred` `evaluated` `proposed` `unknown` |
-| `sensitivity` | **enum** | `public_safe` `internal` (por defecto `internal`) |
-| `status` | **enum** | `observed` `decided` `executed` `verified` `blocked` `superseded` |
-| `source` | **enum** | `captain` `codex` `claude` `github` `obsidian` `local_runtime` `other` |
+| `event_kind` | `observation` `decision` `action` `result` `learning` `transition` `projection` | sí |
+| `epistemic_status` | `observed` `calculated` `inferred` `evaluated` `proposed` `unknown` | sí |
+| `sensitivity` | `public_safe` `internal` | no — por defecto `internal` |
+| `status` | `observed` `decided` `executed` `verified` `blocked` `superseded` | no — por defecto `observed` |
+| `source` | `captain` `codex` `claude` `github` `obsidian` `local_runtime` `other` | no — por defecto `local_runtime` |
 
-`change`, `after`, `next_safe_action`, `evidence[]`, `scope`, `relations`, `project` y `phase`
-viajan como carga opcional: el constructor de eventos de sueño los emite, el contrato no los
-exige.
+**Capa 3 — `stored_event`.** El evento materializado en el log lleva más campos que los que
+el cliente envía: el servidor los genera, los normaliza o los deja vacíos. `change`, `after`,
+`next_safe_action`, `evidence[]`, `scope`, `relations`, `project` y `phase` viajan como carga
+opcional — el constructor de sueño los emite, el contrato no los exige. **Que un campo
+aparezca en el evento almacenado no lo convierte en obligatorio para quien escribe.**
+
+**`bitacora.mjs` no valida nada de esto.** `appendEvent` hace `POST` del payload en crudo; las
+constantes `ALLOWED_*` se exportan pero no se aplican en cliente. Su cabecera es
+documentación, no cumplimiento. Por eso leerla como si fuera el contrato induce exactamente
+la confusión de capas que describe esta sección: la única autoridad sobre qué es obligatorio
+es el servidor.
 
 `epistemic_status` es el campo decisivo para lo que persigue este contrato. Es donde un
 evento declara si lo que afirma fue observado, calculado, inferido o sólo propuesto. Sin él,
@@ -93,23 +104,36 @@ un informe heredado se canoniza como hecho comprobado a la primera relectura.
 se hace. La cápsula **lee** el contrato; no lo sustituye. Lo que falta no es el esquema: es
 el binding. Nadie hace `GET` de vuelta.
 
-### Rectificación — la primera versión de esta sección era falsa
+### Rectificación — esta sección se equivocó dos veces, y de la misma manera
 
-La versión que entró en `672ee23` afirmaba que el contrato obligaba a `before`, `change`,
-`after`, `meaning`, `next_safe_action`, `evidence[]`, `source`, `sensitivity` y `thread_id`.
-De esos nueve, sólo `sensitivity` y `source` son obligatorios. `before`, `meaning` y
-`thread_id` no aparecen siquiera en el constructor. Y los seis que sí lo son —`topic`,
-`title`, `message`, `event_kind`, `epistemic_status`, `status`— no se mencionaban.
+**Primer error (`672ee23`).** Afirmaba que el contrato obligaba a `before`, `change`, `after`,
+`meaning`, `next_safe_action`, `evidence[]`, `source`, `sensitivity` y `thread_id`. Casi
+ninguno lo es; `before`, `meaning` y `thread_id` no aparecen siquiera en el constructor.
+Procedencia: lectura de sesión anterior contra el fuente en la máquina del Capitán, dada por
+buena sin poder reverificarla.
 
-La conclusión sobrevive: hay un contrato real con enums cerrados y no debe rediseñarse. La
-evidencia con que se sostenía, no. Procedencia del error: se leyó en sesión anterior contra
-el fuente en la máquina del Capitán y se dio por bueno sin poder reverificarlo — **el fallo
-exacto que §2 existe para prevenir, cometido dentro de este documento**. La rectificación se
-deja al lado y no se borra el error, porque el modo de fallo importa más que la corrección.
+**Segundo error (`bcf9336`).** La corrección declaró **diez** campos obligatorios y, peor,
+señaló a `POSICION.md` como discrepante por decir «siete obligatorios y cinco enums
+cerrados». `POSICION.md` tenía razón. Los tres enums restantes tienen valor por defecto: son
+vocabulario validado, no requisito de entrada. Procedencia: se leyó la **cabecera de comentario**
+de `bitacora.mjs` —que lista los siete requisitos y los cinco enums bajo un solo epígrafe, y
+que además escribe «(por defecto internal)» junto a `sensitivity`— y se tomó la lista entera
+por obligatoria. El dato que la desmentía estaba dentro del texto que se estaba citando.
 
-Confirmación colateral: el 2026-07-26 esta cápsula viajó a la Bitácora por relé con
-`status: "reported"` y `sensitivity: "public"`. Codex los normalizó a `observed` e `internal`
-antes de publicar. Ninguno de los dos estaba en el enum; sin esa normalización el evento
+El patrón es el mismo las dos veces: **confundir el evento materializado con el payload
+mínimo**, y tomar por contrato una fuente que sólo lo describe. La primera vez fue un esquema
+recordado; la segunda, un comentario de código. Ninguna de las dos era el servidor. Por eso
+§3 se organiza ahora en tres capas explícitas: mientras la distinción no esté escrita, se
+vuelve a colapsar.
+
+Corrección detectada por Codex leyendo `make_event` en el servidor vivo, y registrada como
+bloqueo de revisión en `BIT-20260726T163616Z-0f25a1678130` antes de cualquier merge. Ninguno
+de los dos errores se borra: el modo de fallo importa más que la corrección, y aquí el modo de
+fallo se repitió después de haberlo diagnosticado.
+
+Confirmación colateral: el 2026-07-26 una aportación de esta cápsula viajó a la Bitácora por
+relé con `status: "reported"` y `sensitivity: "public"`. Codex los normalizó a `observed` e
+`internal` antes de publicar. Ninguno estaba en el enum; sin esa normalización el evento
 habría ido a Cuarentena.
 
 ---
@@ -117,38 +141,45 @@ habría ido a Cuarentena.
 ## 4. Mapeo campo a campo
 
 `repo` = sale de un archivo de este repositorio; comprobable sin red.
-`confirmado` = el endpoint está atestiguado por código del repo (`bitacora.mjs`).
-`sin confirmar` = el endpoint se dio por existente en sesión anterior y **ningún código del
-repo lo respalda**. Puede existir; aquí no consta.
+`vivo` = el endpoint respondió `200` contra el servicio, verificado desde superficie local.
+`vivo (repo)` = además está atestiguado por código de este repo, así que una sesión cloud
+puede comprobarlo sin red.
 `hueco` = no existe almacén ni consulta que lo dé.
 
 | Bloque de la cápsula | Fuente | Cómo se obtiene | Estado |
 |---|---|---|---|
 | `position` | `POSICION.md` §1 | Lectura del repo | repo |
-| `git` | git local, o evidencia git de Hipatia | `git` directo; el endpoint `/api/git/repositories/…/status` no consta en el repo | repo |
-| `bitacora.last_event_id` / `event_count` / `chain_verified` | Bitácora | `GET /api/events` | sin confirmar |
-| `bitacora.events_since_cursor` | Bitácora | Sin filtro `since` conocido — se recorta en cliente | sin confirmar |
-| `closures.formal_count` / `last_closure_hash` | `closure_records.jsonl` | `GET /api/closure/dashboard` | sin confirmar |
+| `git` | git local, o evidencia git de Hipatia | `git` directo; o `/api/git/repositories/…/status`, vivo | repo |
+| `bitacora.last_event_id` / `event_count` / `chain_verified` | Bitácora | `GET /api/events` | vivo |
+| `bitacora.events_since_cursor` | Bitácora | Sin filtro `since` conocido — se recorta en cliente | vivo, hueco menor |
+| `closures.formal_count` / `last_closure_hash` | `closure_records.jsonl` | `GET /api/closure/dashboard` | vivo |
 | `closures.unabsorbed` | `state/cierres/` vs. cadena formal | Diff de nombres | repo (parcial) |
-| `work.active_missions` | Bitácora | `GET /api/missions` | sin confirmar |
+| `work.active_missions` | Bitácora | `GET /api/missions` | vivo |
 | `work.open_blockers` | último cierre + `POSICION.md` §6 | Lectura del repo | repo |
-| `work.recent_decisions` | eventos, campos `title` / `message` | `GET /api/events` | sin confirmar |
-| `work.next_safe_action` | eventos, campo `next_safe_action` | Último evento | sin confirmar, y **hoy nadie lo lee** |
+| `work.recent_decisions` | eventos, campos `title` / `message` | `GET /api/events` | vivo |
+| `work.next_safe_action` | eventos, campo `next_safe_action` | Último evento | vivo, y **hoy nadie lo lee** |
 | `sleep` | `state/funcion_de_sueno/sleep_ledger.jsonl` | Última línea del ledger | repo |
 | `seals` | prosa de `POSICION.md`, `CLAUDE.md`, guardas de la Función de Sueño | Ninguno. Los sellos viven en prosa | **hueco caro** |
 | `cursor` | — | No existe almacén de cursores | **hueco** |
 | `recommended_reads` | derivado | Se calcula de los huecos y bloqueos | repo |
-| `authority.health` | sondeo | `GET /api/health` más alcanzabilidad de cada almacén | confirmado |
+| `authority.health` | sondeo | `GET /api/health` más alcanzabilidad de cada almacén | vivo (repo) |
 
-**Sólo dos endpoints están atestiguados por código del repo: `GET /api/health` y
-`POST /api/events`.** Los demás vienen de la lectura de la sesión anterior contra la máquina
-del Capitán y siguen sin poder comprobarse desde la nube.
+**Los cuatro endpoints responden `200` contra el servicio vivo.** Verificado por Codex el
+2026-07-26 desde la máquina del Capitán —`/api/health`, `/api/events`,
+`/api/closure/dashboard`, `/api/git/repositories/thousandsunny/status`— más `POST /api/events`
+con `write_verified=true`. Registrado en `BIT-20260726T163512Z-02abb38a5efd`.
+
+Lo que la nube puede comprobar por sí sola sigue siendo distinto: sólo `GET /api/health` y
+`POST /api/events` están atestiguados por código de este repo. Los otros dos son verificación
+de superficie local, no del repositorio. La distinción importa porque una sesión cloud no
+puede reproducirla.
 
 Rectificación: `672ee23` afirmaba que «diez de trece bloques salen de endpoints que ya
-funcionan». Cinco bloques (`position`, `work.open_blockers`, `sleep`, `recommended_reads` y
-parte de `closures`) salen del repo y no necesitan endpoint alguno — eso se mantiene y es la
-parte barata. Pero los que sí dependen de la Bitácora descansan en endpoints sin confirmar, y
-presentarlos como «ya funcionan» era pasar herencia por verificación.
+funcionan» cuando ninguno estaba confirmado; `bcf9336` los degradó todos a «sin confirmar»
+cuando cinco bloques no necesitan endpoint alguno. Ambos extremos eran imprecisos. El reparto
+real: cinco bloques (`position`, `work.open_blockers`, `sleep`, `recommended_reads` y parte de
+`closures`) salen del repo y no tocan la red — ésa es la parte barata y siempre disponible;
+el resto depende de la Bitácora y hoy responde.
 
 ### Los tres huecos, por orden de coste
 
@@ -158,8 +189,13 @@ presentarlos como «ya funcionan» era pasar herencia por verificación.
    bloque `seals` los vuelve estructura con puerta declarada.
 2. **No hay almacén de cursores.** Sin él la cápsula es una foto, no un diff, y `codex-usopp`
    sigue preguntando "¿qué ocurrió estos días?".
-3. **`GET /api/events` no filtra por `since`.** Menor: con 22 eventos se recorta en cliente.
-   Importa a los cientos, no ahora.
+3. **`GET /api/events` no filtra por `since`.** Menor: se recorta en cliente. Importa a los
+   cientos de eventos, no ahora.
+
+El hueco que había en cuarto lugar —endpoints sin confirmar contra el servicio vivo— se cerró
+el 2026-07-26. Queda una asimetría estructural, no un hueco: **el Bridge sólo es alcanzable
+desde superficie local.** Ninguna sesión cloud puede verificar ni escribir; depende de relé.
+Cualquier consumidor de esta cápsula que corra en la nube hereda esa limitación.
 
 ---
 
@@ -211,7 +247,7 @@ viene a eliminar.
 
 - **Seis niveles de memoria L0–L5.** El sustrato real tiene tres almacenes físicos, no seis.
   Seis es taxonomía que nadie mantiene. La cápsula los colapsa en bloques con presupuesto.
-- **Rediseñar el checkpoint.** Ya existe, con diez campos obligatorios y cinco enums
+- **Rediseñar el checkpoint.** Ya existe: siete campos de entrada obligatorios y cinco enums
   cerrados (§3). Tocarlo abre un tercer protocolo.
 - **Migración destructiva de las trece SQLite.** Primero interfaz de consulta común encima;
   luego migración por dominios con comprobación de recuentos y hashes.
@@ -230,9 +266,9 @@ contradictorio automatiza la confusión más rápido.**
    2026-07-26 (`d094bba`, reconciliado por merge, sin `--force`).
 3. ~~Alinear §3 y el esquema con el contrato real de `POST /api/events`~~ — hecho en esta
    rama tras leer `bitacora.mjs`.
-4. Confirmar contra el **servicio vivo** los endpoints que §4 marca `sin confirmar`. El
-   Bridge está encendido en la máquina del Capitán, pero ninguna sesión cloud lo alcanza:
-   requiere una superficie local o el relé.
+4. ~~Confirmar los endpoints contra el servicio vivo~~ — hecho por Codex el 2026-07-26 desde
+   superficie local: los cuatro responden `200`, más `POST /api/events` con
+   `write_verified=true` (`BIT-20260726T163512Z-02abb38a5efd`).
 5. Levantar el bloque `seals` a estructura — el hueco caro. Cada sello necesita puerta
    tipada: autoridad, GO requerido, operaciones prohibidas, condición de apertura, evidencia
    y **caducidad**. Sin caducidad un sello sobrevive a su motivo, que es cómo `CLAUDE.md`
