@@ -38,7 +38,12 @@ const DEFAULT_CONFIG = {
     "Zoro",
     "Sanji",
     "Jimbe",
-    "Franky"
+    "Franky",
+    // Groot es el rol por defecto (ver parseArgs) y el que el workflow nocturno
+    // pasa cada noche, pero faltaba en este anillo. Sin el, findIndex devolvia -1
+    // y nextSuggestedRole caia siempre en roles[0] ("Nami") por aritmetica, no por
+    // sucesion. La sugerencia de rotacion era un artefacto del indice -1.
+    "Groot"
   ],
   attractors: {
     sofia: ["Sofia", "Sofía", "coherencia", "estado atractor", "baja probabilidad"],
