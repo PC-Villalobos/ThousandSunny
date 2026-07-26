@@ -6,6 +6,7 @@
   "type": "object",
   "required": [
     "capsule_version",
+    "contract",
     "generated_at",
     "budget",
     "authority",
@@ -16,6 +17,7 @@
     "work",
     "sleep",
     "seals",
+    "training_signals",
     "cursor",
     "recommended_reads"
   ],
@@ -23,6 +25,27 @@
   "properties": {
     "capsule_version": {
       "const": "context-capsule.v1"
+    },
+    "contract": {
+      "description": "Identidad verificable de la revision exacta del contrato. El generador rellena commit y blob; el esquema solo valida su forma para evitar un punto fijo imposible.",
+      "type": "object",
+      "required": ["name", "revision", "schema_tag", "schema_commit", "schema_blob"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "const": "context-capsule.v1" },
+        "revision": { "const": "draft-r4" },
+        "schema_tag": { "const": "context-capsule-v1-draft-r4" },
+        "schema_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Commit que contiene esta revision del esquema."
+        },
+        "schema_blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "OID del blob Git del esquema, normalizado por Git. Nunca es un hash de los bytes del archivo de trabajo."
+        }
+      }
     },
     "generated_at": {
       "type": "string",
@@ -250,6 +273,11 @@
         }
       }
     },
+    "training_signals": {
+      "description": "Senales derivadas de episodios. Separa hechos recomputables de la interpretacion para no canonizar una inferencia como medida.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/training_signal" }
+    },
     "cursor": {
       "description": "Eco del cursor del consumidor con el que se pidio la capsula. Convierte la contextualizacion en un diff.",
       "$ref": "#/$defs/cursor"
@@ -290,6 +318,54 @@
         "expand": {
           "type": "string",
           "description": "Ruta o endpoint para traer la evidencia completa bajo demanda."
+        }
+      }
+    },
+    "training_signal": {
+      "type": "object",
+      "required": ["signal_id", "observations", "assessment"],
+      "additionalProperties": false,
+      "properties": {
+        "signal_id": { "type": "string" },
+        "observations": {
+          "type": "object",
+          "required": [
+            "recurrence_after_correction",
+            "correction_to_relapse_seconds",
+            "correction_available_to_actor",
+            "correction_inside_cited_artifact",
+            "same_failure_mode",
+            "epistemic_status",
+            "evidence"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "recurrence_after_correction": { "type": "boolean" },
+            "correction_to_relapse_seconds": { "type": "integer", "minimum": 0 },
+            "correction_available_to_actor": { "type": "boolean" },
+            "correction_inside_cited_artifact": { "type": "boolean" },
+            "same_failure_mode": { "type": "boolean" },
+            "epistemic_status": { "const": "observed" },
+            "evidence": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "assessment": {
+          "type": "object",
+          "required": ["claim", "epistemic_status", "status", "causes"],
+          "additionalProperties": false,
+          "properties": {
+            "claim": { "type": "string", "maxLength": 240 },
+            "epistemic_status": { "const": "inferred" },
+            "status": { "const": "proposed" },
+            "causes": {
+              "const": "unknown",
+              "description": "La senal mide una recurrencia; no atribuye estados internos ni causas cognitivas al actor."
+            }
+          }
         }
       }
     },

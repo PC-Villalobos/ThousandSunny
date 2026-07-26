@@ -27,6 +27,40 @@ y no lo ha leído nadie nunca. Recuperarlo cuesta cero.
 La cápsula es una **proyección**, no una fuente. Se deriva; no se edita; no se commitea una
 instancia como si fuera estado. Si se pierde, se regenera.
 
+### Identidad contractual — `draft-r4`
+
+`capsule_version: context-capsule.v1` identifica la familia, no la revisión exacta. Desde
+`draft-r4`, toda instancia declara también:
+
+```json
+{
+  "contract": {
+    "name": "context-capsule.v1",
+    "revision": "draft-r4",
+    "schema_tag": "context-capsule-v1-draft-r4",
+    "schema_commit": "<commit de la revisión r4>",
+    "schema_blob": "<OID Git del blob del esquema>"
+  }
+}
+```
+
+`schema_commit` y `schema_blob` son valores del **generador**, no constantes autorreferentes
+del esquema. Ambos se validan como cuarenta hexadecimales. Intentar fijar en el propio
+esquema el blob de ese mismo archivo no tiene punto fijo: escribir el valor cambiaría el
+blob que pretende identificar.
+
+`schema_blob` significa el OID que devuelve Git para
+`state/contexto/context-capsule.v1.schema.json`; nunca un SHA-256 de los bytes del árbol de
+trabajo. Así la identidad no cambia entre LF y CRLF. La comprobación completa es:
+
+1. `schema_tag` se resuelve a `schema_commit`;
+2. `schema_commit:ruta_del_schema` se resuelve a `schema_blob`;
+3. el validador usa contenido con ese mismo blob.
+
+La etiqueta fija procedencia, no aprobación. `context-capsule-v1-draft-r4` sigue siendo
+draft y no implica merge del PR. Las etiquetas `context-capsule-v1-*` se protegen contra
+actualización y borrado; crear una nueva revisión requiere una etiqueta nueva.
+
 ---
 
 ## 2. Procedencia de las cifras de este documento
@@ -148,6 +182,7 @@ puede comprobarlo sin red.
 
 | Bloque de la cápsula | Fuente | Cómo se obtiene | Estado |
 |---|---|---|---|
+| `contract` | etiqueta + commit + blob Git | `git rev-parse` sobre la referencia y la ruta | repo |
 | `position` | `POSICION.md` §1 | Lectura del repo | repo |
 | `git` | git local, o evidencia git de Hipatia | `git` directo; o `/api/git/repositories/…/status`, vivo | repo |
 | `bitacora.last_event_id` / `event_count` / `chain_verified` | Bitácora | `GET /api/events` | vivo |
@@ -160,6 +195,7 @@ puede comprobarlo sin red.
 | `work.next_safe_action` | eventos, campo `next_safe_action` | Último evento | vivo, y **hoy nadie lo lee** |
 | `sleep` | `state/funcion_de_sueno/sleep_ledger.jsonl` | Última línea del ledger | repo |
 | `seals` | prosa de `POSICION.md`, `CLAUDE.md`, guardas de la Función de Sueño | Ninguno. Los sellos viven en prosa | **hueco caro** |
+| `training_signals` | relaciones `continues` / `supersedes` + timestamps | Derivación recomputable de eventos | diseño tipado, sin generador |
 | `cursor` | — | No existe almacén de cursores | **hueco** |
 | `recommended_reads` | derivado | Se calcula de los huecos y bloqueos | repo |
 | `authority.health` | sondeo | `GET /api/health` más alcanzabilidad de cada almacén | vivo (repo) |
@@ -240,6 +276,39 @@ no existen en el contrato. No es cosmética: fue esa desalineación la que oblig
 un evento de esta cápsula antes de publicarlo en la Bitácora. Una cápsula que habla un
 dialecto distinto del almacén al que apunta produce exactamente el trabajo de traducción que
 viene a eliminar.
+
+### Señal de entrenamiento: observación antes que veredicto
+
+Una recurrencia posterior a una corrección no prueba que un actor «no aprendió». Sí permite
+medir que el mismo modo de fallo reapareció dentro de una ventana, después de que el
+correctivo estuviera disponible. `training_signals` separa ambos niveles:
+
+```json
+{
+  "signal_id": "contract-layer-relapse-20260726",
+  "observations": {
+    "recurrence_after_correction": true,
+    "correction_to_relapse_seconds": 14400,
+    "correction_available_to_actor": true,
+    "correction_inside_cited_artifact": true,
+    "same_failure_mode": true,
+    "epistemic_status": "observed",
+    "evidence": [
+      "bitacora:BIT-20260726T163512Z-02abb38a5efd",
+      "bitacora:BIT-20260726T163616Z-0f25a1678130"
+    ]
+  },
+  "assessment": {
+    "claim": "El correctivo no impidió una recurrencia observable en esa ventana",
+    "epistemic_status": "inferred",
+    "status": "proposed",
+    "causes": "unknown"
+  }
+}
+```
+
+Las observaciones deben poder recomputarse desde el registro. La evaluación permanece
+`inferred` y `proposed`; las causas internas del actor quedan `unknown`.
 
 ---
 
