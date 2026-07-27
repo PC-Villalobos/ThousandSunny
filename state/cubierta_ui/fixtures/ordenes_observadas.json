@@ -1,0 +1,95 @@
+{
+  "procedencia": "Lectura de la Cubierta desplegada, reportada por el Capitan el 2026-07-27 a las 23:5x CEST.",
+  "estatuto": "observed por el Capitan, inferred por quien escribe este fichero: no se leyo el ledger, se leyo la pantalla.",
+  "limite": "Los campos createdAt no aparecian en la superficie desplegada. Van a null a proposito: es el AJUSTE 4 y su ausencia es el dato.",
+  "ordenes": [
+    {
+      "orderId": "ORD-TG-567384347",
+      "text": "Deliberad si procede consultar la salud del bridge mediante el adaptador tipado autorizado.",
+      "orderState": "deliberated",
+      "createdAt": null,
+      "contractVersion": "v3",
+      "execution": { "status": "executed" },
+      "workers": [
+        {
+          "actor": "claude",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "clarification_required",
+          "epistemicStatus": "inferred"
+        },
+        {
+          "actor": "codex",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "assessment_provided",
+          "epistemicStatus": "inferred"
+        }
+      ]
+    },
+    {
+      "orderId": "ORD-TG-567384343",
+      "text": "Comprobad la salud del puente sin ejecutar ninguna otra accion.",
+      "orderState": "deliberated",
+      "createdAt": null,
+      "contractVersion": "v2",
+      "execution": { "status": "executed" },
+      "workers": [
+        {
+          "actor": "claude",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "inferred"
+        },
+        {
+          "actor": "codex",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "inferred"
+        }
+      ]
+    },
+    {
+      "orderId": "ORD-TG-567384333",
+      "text": "Comprobad la salud del puente sin ejecutar ninguna otra accion.",
+      "orderState": "not_authorized",
+      "createdAt": null,
+      "contractVersion": "v2",
+      "execution": { "status": "proposed" },
+      "workers": [
+        {
+          "actor": "claude",
+          "deliveryStatus": "pending",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "unknown"
+        },
+        {
+          "actor": "codex",
+          "deliveryStatus": "pending",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "unknown"
+        }
+      ]
+    },
+    {
+      "orderId": "ORD-TG-567384331",
+      "text": "Contrastad si este canal distingue correctamente propuesta, GO y ejecucion. No ejecuteis acciones externas.",
+      "orderState": "deliberated",
+      "createdAt": null,
+      "contractVersion": "v1",
+      "execution": { "status": "not_requested" },
+      "workers": [
+        {
+          "actor": "claude",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "unknown"
+        },
+        {
+          "actor": "codex",
+          "deliveryStatus": "responded",
+          "deliberationOutcome": "unknown",
+          "epistemicStatus": "unknown"
+        }
+      ]
+    }
+  ]
+}

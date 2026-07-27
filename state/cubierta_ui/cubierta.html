@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cubierta — superficie de referencia</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --fondo: #fbfaf7;
+    --tinta: #1b1a18;
+    --tenue: #5f5c56;
+    --linea: #ddd8cf;
+    --tarjeta: #ffffff;
+    --acento: #7a5c2e;
+    --aviso-fondo: #f4efe3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #16181a;
+      --tinta: #e8e6e1;
+      --tenue: #9b968d;
+      --linea: #2e3236;
+      --tarjeta: #1d2023;
+      --acento: #d3ab6a;
+      --aviso-fondo: #23262a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+    background: var(--fondo);
+    color: var(--tinta);
+    font: 16px/1.6 ui-serif, Georgia, "Times New Roman", serif;
+  }
+  main { max-width: 46rem; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; letter-spacing: -.01em; }
+  .subtitulo { color: var(--tenue); margin: 0 0 2rem; font-size: .95rem; }
+  .nota-referencia {
+    border: 1px solid var(--acento);
+    border-radius: .4rem;
+    padding: .9rem 1.1rem;
+    margin-bottom: 2.5rem;
+    background: var(--aviso-fondo);
+    font-size: .9rem;
+  }
+  .nota-referencia strong { color: var(--acento); }
+  article {
+    background: var(--tarjeta);
+    border: 1px solid var(--linea);
+    border-radius: .5rem;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .titular { font-size: 1.1rem; font-weight: 600; margin: 0 0 .6rem; }
+  .cabecera-meta {
+    display: flex; flex-wrap: wrap; gap: .5rem 1rem;
+    font-size: .82rem; color: var(--tenue);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-bottom: 1rem;
+  }
+  .estado-orden, .ejecucion {
+    border-left: 3px solid var(--acento);
+    padding: .5rem 0 .5rem .8rem;
+    margin: .9rem 0;
+  }
+  .etiqueta {
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--tenue); font-family: ui-monospace, monospace; display: block;
+  }
+  .valor { font-weight: 600; }
+  .detalle { color: var(--tenue); font-size: .92rem; }
+  .historico {
+    background: var(--aviso-fondo);
+    border-radius: .3rem;
+    padding: .55rem .8rem;
+    font-size: .86rem;
+    color: var(--tenue);
+    margin: .9rem 0;
+  }
+  .agentes { display: grid; gap: 1rem; margin-top: 1.2rem; }
+  @media (min-width: 40rem) { .agentes { grid-template-columns: 1fr 1fr; } }
+  .agente { border: 1px solid var(--linea); border-radius: .4rem; padding: .9rem 1rem; }
+  .agente h3 {
+    margin: 0 0 .5rem; font-size: .95rem;
+    font-family: ui-monospace, monospace; color: var(--acento);
+  }
+  .campo { margin: .55rem 0; }
+  .aviso-turno {
+    font-size: .86rem; color: var(--tenue);
+    border-top: 1px dashed var(--linea); padding-top: .5rem; margin-top: .7rem;
+  }
+  footer {
+    margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--linea);
+    font-size: .84rem; color: var(--tenue);
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Cubierta</h1>
+  <p class="subtitulo">Comunicacion con la Flota. Estado de las ordenes del canal gobernado.</p>
+
+  <div class="nota-referencia">
+    <strong>Superficie de referencia, no la Cubierta desplegada.</strong>
+    Esta pagina implementa el contrato pedagogico verificado por
+    <code>render.test.mjs</code>. La superficie viva corre en la VM desde otro arbol.
+    La reconciliacion entre ambas esta pendiente y declarada en
+    <code>CONTRATO_PEDAGOGICO.md</code>.
+  </div>
+
+  <div id="ordenes"></div>
+
+  <footer>
+    Entrada autenticada por Telegram · los secretos permanecen en servidor<br>
+    Solo lectura operativa · todo GO sigue ocurriendo en el canal gobernado
+  </footer>
+</main>
+
+<script type="application/json" id="datos">
+{"ordenes": []}
+</script>
+
+<script type="module">
+import { renderOrdenes } from "./render.mjs";
+
+const crudo = JSON.parse(document.getElementById("datos").textContent);
+const fuente = crudo.ordenes.length
+  ? crudo.ordenes
+  : await fetch("./fixtures/ordenes_observadas.json").then((r) => r.json()).then((d) => d.ordenes);
+
+const escapar = (texto) => String(texto).replace(/[&<>"]/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const campo = (etiqueta, bloque) => `
+  <div class="campo">
+    <span class="etiqueta">${escapar(etiqueta)}</span>
+    <span class="valor">${escapar(bloque.titulo)}</span>
+    <div class="detalle">${escapar(bloque.detalle)}</div>
+  </div>`;
+
+document.getElementById("ordenes").innerHTML = renderOrdenes(fuente).map((orden) => `
+  <article>
+    <!-- AJUSTE 3: el titular es lo que se pidio; el identificador va debajo -->
+    <p class="titular">${escapar(orden.titular)}</p>
+    <div class="cabecera-meta">
+      <span>${escapar(orden.referencia)}</span>
+      <!-- AJUSTE 4: el tiempo nunca falta en silencio -->
+      <span>${escapar(orden.momento.texto)}</span>
+    </div>
+
+    <!-- AJUSTE 2: el estado de la orden sale traducido, no en crudo -->
+    <div class="estado-orden">
+      ${campo("Estado de la orden", orden.estado)}
+    </div>
+
+    <!-- AJUSTE 1: la ejecucion es de la ORDEN. Fuera de los bloques de agente. -->
+    <div class="ejecucion">
+      ${campo("Ejecucion de la orden", orden.ejecucion)}
+    </div>
+
+    <!-- AJUSTE 5: sin esto, un muro de "desconocido" se lee como averia -->
+    ${orden.avisoHistorico ? `<p class="historico">${escapar(orden.avisoHistorico)}</p>` : ""}
+
+    <div class="agentes">
+      ${orden.agentes.map((agente) => `
+        <div class="agente">
+          <h3>${escapar(agente.actor)}</h3>
+          ${campo("Entrega", agente.entrega)}
+          ${campo("Resultado", agente.resultado)}
+          ${campo("Evidencia", agente.evidencia)}
+          <!-- AJUSTE 6: el aviso viaja con toda respuesta, sin acortar -->
+          ${agente.avisoTurno ? `<p class="aviso-turno">${escapar(agente.avisoTurno)}</p>` : ""}
+        </div>`).join("")}
+    </div>
+  </article>`).join("");
+</script>
+</body>
+</html>
