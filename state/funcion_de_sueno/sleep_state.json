@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-26T10:35:28.933Z",
+  "updatedAt": "2026-07-27T02:15:30.544Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -781,6 +781,12 @@
       "bytes": 5537,
       "mtime": "2026-07-12T01:53:00.978Z",
       "contentAccess": "readable"
+    },
+    "state/cierres/CIERRE_ARCO_20260726.md": {
+      "hash": "ff47bead393409fd1d050028b7064ff6d82e6e7980793ce5e7eefba29f847f1e",
+      "bytes": 11954,
+      "mtime": "2026-07-27T02:13:12.983Z",
+      "contentAccess": "readable"
     }
   },
   "roleLedger": [
@@ -1008,6 +1014,12 @@
       "executor": "cowork-sandbox",
       "actor": "claude-opus-5-nami",
       "role": "Nami"
+    },
+    {
+      "timestamp": "2026-07-27T02:15:30.544Z",
+      "executor": "claude-code-routine",
+      "actor": "claude-code",
+      "role": "Groot"
     }
   ],
   "runs": [
@@ -1499,6 +1511,19 @@
       "coherenceScore": 0.8076923076923077,
       "reportPath": "/sessions/wonderful-practical-mccarthy/mnt/GitHub/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-26T10-35-27-729Z.md",
       "cloudRequestPath": null
+    },
+    {
+      "timestamp": "2026-07-27T02:15:30.544Z",
+      "executor": "claude-code-routine",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 131,
+      "deltas": 1,
+      "issues": 25,
+      "coherenceScore": null,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-07-27.md",
+      "cloudRequestPath": null,
+      "note": "root=state (parcial); coherenceScore no recalculado (alcance distinto al ciclo anterior, no comparable)."
     }
   ]
 }
