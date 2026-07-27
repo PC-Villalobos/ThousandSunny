@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hipatia://schemas/bitacora-event-v1.1",
+  "title": "Bitacora Hipatia Local event v1/v1.1",
+  "type": "object",
+  "required": [
+    "schema_version", "event_id", "timestamp_utc", "timestamp_local",
+    "actor", "role", "topic", "title", "message", "sensitivity",
+    "status", "source", "previous_hash", "event_hash"
+  ],
+  "properties": {
+    "schema_version": {"enum": ["hipatia-bitacora-v1", "hipatia-bitacora-v1.1"]},
+    "event_id": {"type": "string", "pattern": "^BIT-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{12}$"},
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "timestamp_local": {"type": "string", "format": "date-time"},
+    "actor": {"type": "string", "minLength": 1, "maxLength": 100},
+    "role": {"type": "string", "minLength": 1, "maxLength": 80},
+    "topic": {"type": "string", "minLength": 1, "maxLength": 80},
+    "title": {"type": "string", "minLength": 1, "maxLength": 160},
+    "message": {"type": "string", "minLength": 1, "maxLength": 20000},
+    "mission_id": {"type": "string", "maxLength": 120},
+    "scope": {"type": "string", "maxLength": 500},
+    "sensitivity": {"enum": ["public_safe", "internal"]},
+    "status": {"enum": ["observed", "decided", "executed", "verified", "blocked", "superseded"]},
+    "source": {"enum": ["captain", "codex", "claude", "github", "obsidian", "local_runtime", "other"]},
+    "event_kind": {"enum": ["observation", "decision", "action", "result", "learning", "transition", "projection"]},
+    "epistemic_status": {"enum": ["observed", "calculated", "inferred", "evaluated", "proposed", "unknown"]},
+    "project": {"type": "string", "maxLength": 120},
+    "phase": {"type": "string", "maxLength": 120},
+    "thread_id": {"type": "string", "maxLength": 160},
+    "happened_at": {"type": "string", "maxLength": 40},
+    "understood_at": {"type": "string", "maxLength": 40},
+    "before": {"type": "string", "maxLength": 6000},
+    "change": {"type": "string", "maxLength": 6000},
+    "after": {"type": "string", "maxLength": 6000},
+    "meaning": {"type": "string", "maxLength": 6000},
+    "next_safe_action": {"type": "string", "maxLength": 2000},
+    "perspectives": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["role", "contribution", "confidence", "evidence"],
+        "properties": {
+          "role": {"type": "string", "minLength": 1, "maxLength": 80},
+          "contribution": {"type": "string", "minLength": 1, "maxLength": 4000},
+          "confidence": {"enum": ["low", "medium", "high", "unknown"]},
+          "evidence": {"type": "array", "maxItems": 20, "items": {"type": "string", "maxLength": 1000}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "source_event_id": {"type": "string", "maxLength": 200},
+    "supersedes": {"type": "string", "maxLength": 200},
+    "continues": {"type": "string", "maxLength": 200},
+    "evidence": {"type": "array", "items": {"type": "string", "maxLength": 1000}, "maxItems": 20},
+    "relations": {"type": "array", "items": {"type": "string", "maxLength": 200}, "maxItems": 20},
+    "previous_hash": {"type": "string", "pattern": "^(GENESIS|[0-9a-f]{64})$"},
+    "event_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "hipatia-bitacora-v1.1"}}},
+      "then": {"required": ["event_kind", "epistemic_status", "project", "phase", "thread_id", "happened_at", "understood_at", "before", "change", "after", "meaning", "next_safe_action", "perspectives", "source_event_id", "supersedes", "continues"]}
+    }
+  ],
+  "additionalProperties": false
+}

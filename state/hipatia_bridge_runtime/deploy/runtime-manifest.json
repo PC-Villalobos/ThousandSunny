@@ -1,0 +1,120 @@
+{
+  "schema": "hipatia.bridge-runtime-projection.v1",
+  "captured_at": "2026-07-27T17:49:41.838Z",
+  "source": {
+    "kind": "local_operational_runtime",
+    "authority": "code_observed_not_data_canon",
+    "default_root": "D:\\Biblioteca de Hipatia\\_bitacora"
+  },
+  "files": [
+    {
+      "runtime": "schema/bitacora_event.schema.json",
+      "projection": "schema/bitacora_event.schema.json",
+      "sha256": "836f3623149522fa3b1b0f40010d72e4df36b3e4b1c178b68246ae8c36ccfa49"
+    },
+    {
+      "runtime": "scripts/bitacora_server.py",
+      "projection": "server/bitacora_server.py",
+      "sha256": "9102a6ed534f5348b88273339a3c42d496c9d7d5bf507cf62e05368365daed5f"
+    },
+    {
+      "runtime": "scripts/bridge_core.py",
+      "projection": "server/bridge_core.py",
+      "sha256": "f3e75714faf58dbc6e930f79e0069b4f7ae60183c46175a57d88a5165dec1f86"
+    },
+    {
+      "runtime": "scripts/closure_core.py",
+      "projection": "server/closure_core.py",
+      "sha256": "a7f1d1c7cff06ff4d427e19351eb1e660df0c74da9074aa3cba79e06473d2a22"
+    },
+    {
+      "runtime": "scripts/git_actions.py",
+      "projection": "server/git_actions.py",
+      "sha256": "11a7b2dbaf06621ab5d0bb7057a0ed73a91f1f58ab2c696468a75076c4916af8"
+    },
+    {
+      "runtime": "scripts/git_evidence.py",
+      "projection": "server/git_evidence.py",
+      "sha256": "2c3884438fa7c656dbfe9e43a4fc54243c969092a75a2f361de616ee7d63a5c1"
+    },
+    {
+      "runtime": "scripts/test_bitacora_v1_1.py",
+      "projection": "tests/test_bitacora_v1_1.py",
+      "sha256": "b9b6dcc253e2bc675488748f19f768485dc0f57fb0e555d18b538c9ad36174be"
+    },
+    {
+      "runtime": "scripts/test_bridge_core_lifecycle_ola3e.py",
+      "projection": "tests/test_bridge_core_lifecycle_ola3e.py",
+      "sha256": "ceedeecf72ba28a4feb9fd914c02437e71e2486e65248b8860c5ff40387e4982"
+    },
+    {
+      "runtime": "scripts/test_bridge_core_ola2.py",
+      "projection": "tests/test_bridge_core_ola2.py",
+      "sha256": "ee827bc3059cb5adc7b71635450eba3a100c8d9038a78837f6b34313939c2d33"
+    },
+    {
+      "runtime": "scripts/test_closure_core_ola2_1.py",
+      "projection": "tests/test_closure_core_ola2_1.py",
+      "sha256": "7a7251095b3e726268f55cb3ef66d8f0f82b52ae2f8225b6f003a7195a1be9ec"
+    },
+    {
+      "runtime": "scripts/test_git_actions_ola3b.py",
+      "projection": "tests/test_git_actions_ola3b.py",
+      "sha256": "eede4b4dacdaa0a9c44da02949d0f3a86ee359c5ac906e280ad0cb148d36f48e"
+    },
+    {
+      "runtime": "scripts/test_git_evidence_ola3a.py",
+      "projection": "tests/test_git_evidence_ola3a.py",
+      "sha256": "a601b3e0ca346387e28dc6e23852658e9593e1c20e95d7053410890a126c1c1a"
+    },
+    {
+      "runtime": "scripts/verify_bitacora.py",
+      "projection": "tests/verify_bitacora.py",
+      "sha256": "a5d8d9c8ac67268d8e053d47125b7e1213cddb685ebf13c6914aabea4337317a"
+    }
+  ],
+  "operational_bindings": [
+    {
+      "projection": "server/bitacora_server.py",
+      "symbol": "OBSIDIAN_ROOT",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1",
+      "access": [
+        "read",
+        "write"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    },
+    {
+      "projection": "server/closure_core.py",
+      "symbol": "OBSIDIAN_REPORT",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1\\CIERRE_OPERATIVO.md",
+      "access": [
+        "write"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    },
+    {
+      "projection": "server/closure_core.py",
+      "symbol": "OBSIDIAN_DAILY",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1\\daily",
+      "access": [
+        "read"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    }
+  ],
+  "excluded_roots": [
+    "events",
+    "index",
+    "daily",
+    "closure",
+    "evidence",
+    "operations",
+    "backups",
+    "logs",
+    "config"
+  ]
+}
