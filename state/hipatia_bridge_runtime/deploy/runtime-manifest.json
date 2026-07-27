@@ -73,6 +73,39 @@
       "sha256": "a5d8d9c8ac67268d8e053d47125b7e1213cddb685ebf13c6914aabea4337317a"
     }
   ],
+  "operational_bindings": [
+    {
+      "projection": "server/bitacora_server.py",
+      "symbol": "OBSIDIAN_ROOT",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1",
+      "access": [
+        "read",
+        "write"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    },
+    {
+      "projection": "server/closure_core.py",
+      "symbol": "OBSIDIAN_REPORT",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1\\CIERRE_OPERATIVO.md",
+      "access": [
+        "write"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    },
+    {
+      "projection": "server/closure_core.py",
+      "symbol": "OBSIDIAN_DAILY",
+      "path": "D:\\La maceta de Groot\\40_Biblioteca_Hipatia\\_bitacora_v1\\daily",
+      "access": [
+        "read"
+      ],
+      "boundary": "synced_vault",
+      "decision_status": "inherited_pending_review"
+    }
+  ],
   "excluded_roots": [
     "events",
     "index",
