@@ -14,7 +14,7 @@ try {
         throw "test_bitacora_v1_1.py falló con código $LASTEXITCODE"
     }
 
-    & py -3 -X utf8 -m unittest `
+    & py -3 -X utf8 `
         (Join-Path $PSScriptRoot 'test_projection_manifest.py') `
         -v
     if ($LASTEXITCODE -ne 0) {
