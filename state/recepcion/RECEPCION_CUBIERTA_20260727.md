@@ -1,4 +1,4 @@
-# Recepción externa — incremento «Cubierta» del Puente de Mando
+# Recepción externa — incremento de la Cubierta sobre Sunny Control Bridge
 
 **Fecha:** 2026-07-27
 **Actor de la recepción:** claude-code (sesión cloud)
@@ -6,6 +6,35 @@
 **Constructor del incremento:** Codex, rol Usopp, desde `D:\SunnyFranky\linux-llm-control-plane`
 **GO que autoriza este fichero:** Capitán, 2026-07-27, autorización 1 de 2 (materializar batería y
 asientos en `state/`, sin modificar eventos originales)
+
+---
+
+## Nomenclatura — fijada por el Capitán el 2026-07-27
+
+Tres capas que hasta ese día se venían nombrando como una:
+
+| Capa | Qué es |
+|---|---|
+| **Cubierta** | Espacio de comunicación con la Flota. Se conversa, se observan deliberaciones y se entiende el estado de las órdenes. Es **una estancia del barco**. |
+| **Sunny Control Bridge** | La infraestructura que transporta y gobierna esas comunicaciones. |
+| **Puente de Mando** | Superficie soberana desde la que el Capitán observa y comanda **el conjunto**: rumbo, sistemas, tripulación, misiones, GO, STOP y ejecuciones autorizadas. |
+
+Lo desplegado el 2026-07-27 es **un incremento de la Cubierta sobre Sunny Control Bridge**. No es un
+Puente de Mando. La distinción corrige el alcance sin quitar valor a lo construido.
+
+### Rectificación de este propio documento
+
+La primera versión de este fichero (commit `57dc8c2`, y su PR) se tituló *«incremento Cubierta del
+Puente de Mando»* y se llamó `RECEPCION_PUENTE_20260727.md`. **Era la misma fusión de capas que este
+documento existe para vigilar**, cometida dentro del documento que la vigila.
+
+No se borra: el error queda en el historial de git, que es aquí el registro append-only. El fichero
+se renombra y el título se corrige porque un nombre en `state/` se hereda, y heredar el error es
+peor que registrarlo.
+
+Es la tercera vez que este sistema documenta el mismo patrón —el error dentro de la corrección—:
+antes en PR #90, después en el campo `phase` del evento de cierre de la Cubierta, y ahora aquí. La
+recurrencia importa más que cualquiera de las tres instancias.
 
 ---
 
@@ -94,15 +123,30 @@ onboarding no canónico, casting no identitario, STOP solo visible y no conectad
 Precedente relevante: PR #90 documenta este mismo modo de fallo dos veces —tomar por contrato una
 fuente que solo lo describe—, y la segunda vez dentro del commit que corregía la primera.
 
-### R4 · Colisión de nombres
+### R4 · Nombres — colisión y alcance
 
-**Pregunta:** ¿algún nombre nuevo del incremento colisiona con canon ya existente?
+Dos preguntas, no una. La segunda se añadió el mismo día, después de fallarla.
+
+**R4a — colisión:** ¿algún nombre nuevo del incremento colisiona con canon ya existente?
 **Comprobación:** `grep` del nombre propuesto contra el árbol soberano y contra la lista de skills
 cargadas por el arnés.
 
 **Resultado:** «Jinbe» ya identifica un rol clínico (skill `jinbe`, y `role` canónico en
 `docs/architecture/SUNNY_CORE.md`). El panel pasó a **«Timón técnico»**, provisional, dejando la
 colisión visible en vez de resolverla unilateralmente. El nombre definitivo es del Capitán.
+
+**R4b — alcance:** ¿el nombre con el que se anuncia lo construido **declara más de lo construido**?
+**Comprobación:** contrastar el nombre contra la taxonomía de capas vigente. Si el nombre pertenece
+a una capa superior a la tocada, es una afirmación de alcance disfrazada de etiqueta.
+
+**Resultado:** fallado por todos los actores del ciclo, constructor y recepcionista incluidos.
+Se llamó «Puente de Mando» a un incremento de la **Cubierta**. El Capitán lo detectó; el constructor
+registró rectificación append-only (`BIT-20260727T131257Z-3d4a052d522e`, `phase: Cubierta`) sin
+reescribir el evento original; este documento se rectificó como consta arriba.
+
+**Un nombre que sobredimensiona el alcance no es cosmético: es una afirmación de alcance sin
+evidencia**, y por tanto cae bajo la misma vara que R6. La diferencia con R4a es que la colisión la
+detecta un `grep` y esta no: hace falta la taxonomía escrita, y por eso ahora encabeza este fichero.
 
 Una etiqueta de interfaz es lo más caro de renombrar después, porque quien la aprende es el humano.
 
