@@ -1,7 +1,7 @@
 {
   "procedencia": "Lectura de la Cubierta desplegada, reportada por el Capitan el 2026-07-27 a las 23:5x CEST.",
   "estatuto": "observed por el Capitan, inferred por quien escribe este fichero: no se leyo el ledger, se leyo la pantalla.",
-  "limite": "Los campos createdAt no aparecian en la superficie desplegada. Van a null a proposito: es el AJUSTE 4 y su ausencia es el dato.",
+  "limite": "Los campos createdAt no aparecian en la pantalla observada. Van a null para conservar esa lectura inicial. La reconciliacion posterior probo que proposed_at si existe en el snapshot vivo.",
   "ordenes": [
     {
       "orderId": "ORD-TG-567384347",

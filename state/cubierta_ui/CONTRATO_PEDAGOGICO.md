@@ -1,173 +1,104 @@
-# Contrato pedagogico de la Cubierta
+# Contrato pedagógico de la Cubierta
 
-**Fecha:** 2026-07-27
-**Autor:** claude-code (sesion cloud), rol Nami / Robin / Vivi
-**GO:** Capitan, 2026-07-27 — materializar la superficie minima de la Cubierta, aplicar los ajustes
-pedagogicos, probarla localmente y abrir PR draft; **sin desplegar en Ubuntu**.
+**Primera materialización:** 2026-07-27, Claude Code, como superficie de referencia.
 
----
+**Reconciliación:** 2026-07-28, Codex, contra D y la VM.
 
-## 0. Que es esto, y sobre todo que no es
+**Límite del GO:** actualizar contrato, baseline y pruebas en la rama de PR #96; **sin desplegar**.
 
-**Esto no es una proyeccion de la Cubierta desplegada.**
+## 1. Estatuto del artefacto
 
-La superficie viva corre en la VM (`sunny-flota-bridge`) desde
-`D:\SunnyFranky\linux-llm-control-plane\apps\sunny-control-bridge`. Esta sesion no alcanza ninguno
-de los dos arboles. Todo lo que sabe de la Cubierta procede de lo que el Capitan leyo en pantalla y
-pego en el hilo.
+Esta carpeta contiene un contrato ejecutable y una superficie de referencia reconciliada. No es
+el artefacto desplegable de la Cubierta.
 
-Por eso aqui **no** se hace lo que el PR #95 hizo con el servidor de Hipatia. Alli hubo proyeccion
-real: 13 artefactos leidos del runtime, con sus SHA-256 probandolo. Escribir un HTML a partir de una
-captura y llamarlo proyeccion seria un artefacto inventado con etiqueta de fiel, y dejaria **dos
-Cubiertas divergentes** — el fallo de los dos espejos de OneDrive de `POSICION.md` §7, en otro
-subsistema.
+La reconciliación leyó:
 
-Lo que si es:
+- `D:\SunnyFranky\linux-llm-control-plane\apps\sunny-control-bridge`
+- `/home/ascuas/sunny-flota-bridge`
 
-- **Un contrato ejecutable** de como se traduce cada campo del ciclo gobernado a lenguaje humano,
-  con 19 pruebas que lo sostienen.
-- **Una superficie de referencia** que lo implementa y se puede mirar.
+Los cuatro artefactos incorporados bajo `baseline/` eran idénticos byte a byte en ambos árboles.
+`reconciliation-manifest.json` fija sus SHA-256 y la suite vuelve a calcularlos. Una deriva
+silenciosa rompe la prueba.
 
-Lo que queda pendiente y declarado: **la reconciliacion contra la Cubierta desplegada.** Quien tenga
-acceso a ese arbol —hoy, Codex— compara, aplica y verifica. Esa parte del GO no la puede cumplir
-quien escribe esto, y fingir que si seria exactamente lo que este contrato existe para impedir.
+La regla central sigue siendo:
 
----
+> La traducción hereda el estatuto del origen y nunca lo mejora.
 
-## 1. La regla que gobierna todo
+## 2. Rectificaciones tras observar el código y el ledger vivos
 
-> **La traduccion hereda el estatuto del origen y nunca lo mejora.**
+### 2.1 Ejecución y agentes
 
-Si el registro no sabe, la interfaz dice que no sabe **y dice por que**. Un hueco honesto vale mas
-que un dato reconstruido hacia atras. De ahi salen los seis ajustes.
+La primera recepción afirmó que `Ejecución` estaba dentro del bloque del último worker. Era falso:
+el HTML vivo hace `e.append(head,p,grid,ex)`, por lo que ejecución y `agent-grid` son hermanos.
 
----
+El defecto real es de jerarquía visual. La ejecución aparece inmediatamente después del último
+agente y, especialmente en móvil, puede atribuirse visualmente a ese agente. El contrato conserva
+la ejecución al nivel de la orden y prohíbe que un objeto de agente la cargue, pero este PR no
+despliega el ajuste visual.
 
-## 2. Los seis ajustes
+### 2.2 La orden 347 sí se ejecutó
 
-Nacen de la lectura de la Cubierta desplegada del 2026-07-27. Los tres primeros son defectos
-observados; los tres siguientes, ausencias.
+La pregunta quedó cerrada mediante el ledger vivo: `ORD-TG-567384347` alcanzó
+`execution_executed`, con actor `sunny-control-bridge:typed-executor` y evidencia `observed`.
+La pantalla no inventó la ejecución; la presentó con una jerarquía ambigua.
 
-### Ajuste 1 · La ejecucion pertenece a la orden, no a un trabajador
+El snapshot vivo no proyecta todavía actor ni `executed_at`. El adaptador deja ambos campos
+ausentes; no los reconstruye desde el testimonio.
 
-**Lo observado.** La linea `Ejecucion:` aparecia **dentro del bloque del ultimo worker**: bajo
-`codex` en las cuatro ordenes, nunca bajo `claude`. En `ORD-TG-567384347` eso hacia leer
-«Ejecucion: Ejecutada» como si Codex hubiera ejecutado algo, sobre una orden cuyo texto pedia
-**deliberar si procedia** consultar.
+### 2.3 La marca temporal existe
 
-**Por que importa mas que los otros cinco.** No confunde una etiqueta: **atribuye una accion a un
-actor**. Es la fusion actor/capa —R5— con una ejecucion por medio, que es el dato mas caro de
-equivocar en todo el sistema.
+`proposed_at` sí viaja en la salida real de `translateOrder()`. Que la captura inicial no mostrara
+fecha era una omisión de interfaz, no ausencia del registro. El adaptador la conserva y las pruebas
+lo exigen.
 
-**El contrato.** `renderOrden()` devuelve `ejecucion` al nivel de la orden. Ningun objeto de agente
-lleva campo de ejecucion, y una prueba recorre todos los agentes de todas las ordenes para
-comprobarlo.
+Los `createdAt: null` del fixture conservan la lectura inicial de pantalla. No describen la
+capacidad real del runtime.
 
-*Sigue abierto, y no lo resuelve este fichero:* si en la superficie desplegada aquel «Ejecutada» era
-un fallo de maquetacion o una ejecucion real. En la contextualizacion del 2026-07-27 no constaba
-`execution_executed` para esa orden. Verificarlo exige leer el ledger vivo.
+## 3. Vocabularios reconciliados
 
-### Ajuste 2 · Ningun enum en crudo llega al lector
+El contrato reconoce los valores observados en la implementación viva:
 
-**Lo observado.** El estado de la orden salia sin traducir —`deliberated`, `not_authorized`—
-mientras todo lo de abajo estaba en castellano. Y es la linea que mas pesa: es el titular.
-`not_authorized` con ambos agentes en «Pendiente» no se deja leer — no autorizada por quien, a
-quien, es rechazo o es que nunca hubo GO.
+- Orden: `deliberated`, `authorized`, `not_authorized`, `pending`, `blocked`.
+- Entrega: `pending`, `claimed`, `responded`, `blocked`.
+- Deliberación: `assessment_provided`, `clarification_required`, `cannot_assess`, `unknown`.
+- Epistémico: `observed`, `calculated`, `inferred`, `evaluated`, `proposed`, `unknown`.
+- Ejecución: `not_requested`, `proposed`, `authorized`, `executed`, `blocked`.
 
-**El contrato.** Vocabularios cerrados para los cinco campos. `not_authorized` dice explicitamente
-*«No es un rechazo de los agentes: es que nunca se autorizo»*. Una prueba barre todo el texto
-visible buscando los trece identificadores tecnicos y falla si alguno se filtra.
+`decided` no se canoniza: el runtime observado no lo produce. Un valor futuro queda
+`reconocido:false` y se muestra como no interpretable, en vez de empujar al autor a mentir para
+pasar una guarda.
 
-### Ajuste 3 · El titular es lo que se pidio
+## 4. Seis invariantes pedagógicos
 
-**Lo observado.** `ORD-TG-567384347` en grande, el texto de la orden debajo. Para escanear, el
-identificador es clave de busqueda, no titulo. Es la diferencia entre un visor de log y una cubierta.
+1. La ejecución pertenece a la orden, no a un agente.
+2. Ningún enum crudo llega al lector.
+3. El titular es la instrucción; el ID es referencia.
+4. La marca temporal se muestra o su ausencia se declara.
+5. Lo histórico solo se etiqueta cuando existe versión de contrato; no se infiere por antigüedad.
+6. Toda respuesta conserva literalmente: “El turno terminó. Esto no significa que la orden se
+   ejecutara.”
 
-**El contrato.** `titular` es el texto; `referencia` es el identificador.
+## 5. Integración todavía abierta
 
-### Ajuste 4 · Sin tiempo no hay posicion
+La salida viva no transporta `contract_version`. Por tanto, el adaptador no puede distinguir de
+forma fiable una orden histórica. La ausencia de versión no se convierte en `v1` ni `v2`.
 
-**Lo observado.** Ni una fecha en las cuatro ordenes. «Pendiente: el agente todavia no ha acusado la
-orden» significa cosas opuestas si es de hace tres minutos o de hace cinco dias.
+Tampoco transporta actor ni momento de ejecución. El modelo de referencia admite esos campos,
+pero los deja vacíos cuando la fuente no los entrega.
 
-**El contrato.** La ausencia se declara —`Sin marca temporal en el registro`—, nunca se deja en
-blanco. Una marca ilegible se nombra como ilegible en vez de silenciarse. En el fixture los cuatro
-`createdAt` van a `null` **a proposito**: su ausencia es el dato.
+La superficie de referencia no sustituye a `public/cubierta.html` y no se ha copiado a D ni a la
+VM. Aplicar la mejora visual exige otro incremento y otro GO de despliegue.
 
-### Ajuste 5 · El «desconocido» historico se explica, o parece averia
+## 6. Verificación
 
-**Lo observado.** Tres de cuatro ordenes salian casi enteras en «desconocido». Es **correcto** —son
-anteriores al contrato v3 y no se reconstruye hacia atras—, pero el panel no lo decia. Un lector ve
-un muro de huecos y concluye que el sistema no funciona, cuando lo que ve es al sistema **negandose
-a inventar**, que es su mejor propiedad.
+| Comprobación | Resultado |
+|---|---:|
+| `node --test state/cubierta_ui/*.test.mjs` | 25/25 |
+| Hashes del baseline | 4/4 |
+| Adaptación de salida real de `translateOrder()` | verificada |
+| `authorized`, `blocked`, `calculated`, `evaluated` | reconocidos |
+| `decided` | rechazado sin reinterpretación |
+| Ejecución dentro de objetos de agente | cero |
 
-**El contrato.** Toda orden `v1`/`v2` lleva el aviso, y cada `unknown` de agente lo arrastra. Una
-prueba comprueba tambien lo inverso: una orden v3 **no** puede llevar la coartada historica, para
-que no se convierta en excusa universal.
-
-### Ajuste 6 · El aviso no se acorta nunca
-
-**Lo observado.** Esto ya estaba bien y es lo mas dificil de acertar: *«El turno termino. Esto no
-significa que la orden se ejecutara»* iba pegado a cada respuesta, sin excepcion.
-
-**El contrato.** Se fija como invariante para que ninguna edicion futura lo abrevie por brevedad.
-Una prueba cuenta las seis respuestas del fixture y exige el aviso literal en las seis. Y comprueba
-lo contrario: un agente `pending` **no** recibe aviso de turno terminado.
-
----
-
-## 3. R10 aplicado a este propio contrato
-
-`traducir()` no obliga a que un valor futuro encaje en el vocabulario de hoy. Un valor no listado
-produce `reconocido:false` y un aviso legible que lo cita, **no** un fallo que empuje al siguiente
-autor a etiquetarlo con lo que haya a mano.
-
-Es la leccion de la guarda de bindings de #95: una prueba que exige `boundary == "synced_vault"`
-para todo binding fuerza a mentirle en el primero que no lo sea. Una guarda mal formada no falla en
-voz alta; corrompe la declaracion siguiente en voz baja.
-
----
-
-## 4. Verificacion
-
-| Comprobacion | Resultado |
-|---|---|
-| `node --test state/cubierta_ui/render.test.mjs` | **19/19** |
-| Superficie servida y renderizada en Chromium headless | 4 ordenes, sin errores |
-| Ajuste 1 en el DOM: ejecucion dentro de bloques de agente | **cero** |
-| Aviso de turno en el DOM | 12 apariciones (6 detalle + 6 aviso), las 6 respuestas |
-| Aviso historico en el DOM | 3, las tres ordenes pre-v3 |
-| Enums crudos en el texto visible | **ninguno** |
-
-Nota sobre el conteo: `--dump-dom` vuelca tambien el codigo del `<script>` como texto, asi que una
-busqueda ingenua de `<article>` da 5. Las tarjetas son 4.
-
-La prueba de DOM **no** se commitea como parte de la suite: dependeria de que Chromium exista en la
-maquina, y una suite que falla por el entorno acaba desactivada. Queda como verificacion manual
-reproducible con `python3 -m http.server` desde este directorio.
-
----
-
-## 5. Lo que este incremento NO hace
-
-- **No despliega en Ubuntu.** Explicitamente fuera del GO.
-- **No sustituye a la Cubierta desplegada** ni afirma coincidir con ella.
-- **No resuelve** si el «Ejecutada» de `ORD-TG-567384347` era maquetacion o ejecucion real.
-- **No conecta el STOP**, no compone ordenes, no porta credencial de emision.
-- **No decide** las escrituras heredadas al vault sincronizado (`inherited_pending_review` en
-  `state/hipatia_bridge_runtime/deploy/runtime-manifest.json`).
-
----
-
-## 6. La prueba humana sigue pendiente
-
-El Capitan midio la superficie desplegada con tres palabras: **respondido**, **ejecutado**,
-**pendiente**. Su lectura, y la mia coincidiendo: las dos primeras se distinguian; **ejecutado no**,
-por el ajuste 1.
-
-`posicion()` responde las tres por separado y explicito, para que la siguiente prueba humana tenga
-contra que contrastarse en vez de depender de la impresion general.
-
-Hasta que el Capitan mire una superficie con estos ajustes aplicados y diga si las distingue, la
-legibilidad sigue en `proposed`. Cuando lo diga, sube a `evaluated` —no a `observed`: un lector, una
-lectura, y es el lector que ya conoce el sistema.
+La prueba humana de legibilidad sigue pendiente hasta que el ajuste se aplique a una superficie
+visible. Este PR demuestra el contrato y su compatibilidad; no demuestra una UI desplegada.
