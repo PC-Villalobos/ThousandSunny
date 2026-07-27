@@ -1,0 +1,4 @@
+server/*.py text eol=lf
+tests/*.py text eol=lf
+schema/*.json text eol=lf
+deploy/*.json text eol=lf
