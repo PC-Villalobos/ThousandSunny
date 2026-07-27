@@ -11,6 +11,14 @@
 // Fuente: `_bitacora/scripts/bitacora_server.py` de la Biblioteca de Hipatia.
 //   GET  /api/health  -> { ok, version, events, schemas, bind }
 //   POST /api/events  -> { ok, kind:"ai_event", write_verified, event:{ event_id, event_hash, ... } }
+//   Con idempotency_key estable:
+//     - primer POST: write_performed=true, idempotent_replay=false;
+//     - mismo payload: mismo event_id, write_performed=false, idempotent_replay=true;
+//     - payload distinto: HTTP 409 idempotency_key_conflict.
+//   Un recibo perdido se recupera con GET /api/events?idempotency_key=... antes de
+//   decidir cualquier reintento. Nunca se reenvia un POST ambiguo desde este cliente.
+//   Ese GET verifica existencia, pero no distingue si el POST perdido escribio o
+//   reprodujo: writePerformed e idempotentReplay quedan en null.
 // El log es una cadena de hashes encadenada: el servidor reverifica la cadena y
 // relee tras escribir antes de responder `write_verified`. No se escribe el fichero
 // de eventos a mano desde aqui: se habla con el servicio o no se escribe nada.
@@ -127,12 +135,85 @@ export async function health({ url = bitacoraUrl(), timeoutMs = DEFAULT_TIMEOUT_
   return request(`${url}/api/health`, { timeoutMs });
 }
 
-export async function appendEvent(payload, { url = bitacoraUrl(), timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
-  const result = await request(`${url}/api/events`, { method: "POST", body: payload, timeoutMs });
-  if (!result.reachable) return result;
+async function recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs }) {
+  if (!idempotencyKey) return { status: "not_requested" };
+  const lookup = await request(
+    `${url}/api/events?idempotency_key=${encodeURIComponent(idempotencyKey)}&limit=2`,
+    { timeoutMs }
+  );
+  if (!lookup.reachable) return { status: "lookup_unreachable", lookup };
+  if (!lookup.ok) return { status: "lookup_failed", lookup };
+  if (!Array.isArray(lookup.payload)) return { status: "lookup_invalid", lookup };
+  if (lookup.payload.length === 0) return { status: "not_found", lookup };
+  if (lookup.payload.length > 1) {
+    return {
+      status: "duplicate_idempotency_records",
+      lookup,
+      eventIds: lookup.payload.map((event) => event?.event_id).filter(Boolean)
+    };
+  }
+  return { status: "found", lookup, event: lookup.payload[0] };
+}
+
+export async function appendEvent(payload, {
+  url = bitacoraUrl(),
+  timeoutMs = DEFAULT_TIMEOUT_MS,
+  idempotencyKey = ""
+} = {}) {
+  const body = idempotencyKey ? { ...payload, idempotency_key: idempotencyKey } : payload;
+  const result = await request(`${url}/api/events`, { method: "POST", body, timeoutMs });
+  if (!result.reachable) {
+    const recovery = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
+    if (recovery.status === "duplicate_idempotency_records") {
+      return {
+        ok: false,
+        reachable: true,
+        reason: "duplicate_idempotency_records",
+        recoveryStatus: recovery.status,
+        duplicateIdempotencyRecords: true,
+        duplicateEventIds: recovery.eventIds,
+        writeVerified: null,
+        writePerformed: null,
+        idempotentReplay: null,
+        payload: {
+          ok: false,
+          error: recovery.status,
+          event_ids: recovery.eventIds
+        }
+      };
+    }
+    if (recovery.status !== "found") return { ...result, recoveryStatus: recovery.status };
+    const recovered = recovery.event;
+    return {
+      ok: true,
+      reachable: true,
+      recoveredAfterAmbiguousReceipt: true,
+      recoveryStatus: recovery.status,
+      writeVerified: true,
+      writePerformed: null,
+      idempotentReplay: null,
+      eventId: recovered.event_id,
+      eventHash: recovered.event_hash,
+      payload: { ok: true, event: recovered },
+    };
+  }
+  const idempotencyConflict = result.httpStatus === 409
+    && result.payload?.error === "idempotency_key_conflict";
   return {
     ...result,
-    writeVerified: Boolean(result.payload?.write_verified),
+    writeVerified: typeof result.payload?.write_verified === "boolean"
+      ? result.payload.write_verified
+      : null,
+    writePerformed: typeof result.payload?.write_performed === "boolean"
+      ? result.payload.write_performed
+      : null,
+    idempotentReplay: typeof result.payload?.idempotent_replay === "boolean"
+      ? result.payload.idempotent_replay
+      : null,
+    idempotencyConflict,
+    existingEventId: idempotencyConflict
+      ? (result.payload?.existing_event_id || null)
+      : null,
     eventId: result.payload?.event?.event_id || null,
     eventHash: result.payload?.event?.event_hash || null
   };
@@ -142,12 +223,26 @@ export async function appendEvent(payload, { url = bitacoraUrl(), timeoutMs = DE
 // legible para el parte. Nunca lanza.
 export async function reportSleepCycle(context, options = {}) {
   const payload = buildSleepEvent(context);
-  const result = await appendEvent(payload, options);
+  const idempotencyKey = options.idempotencyKey
+    || (context.reportPath ? `sleep:${context.reportPath}` : "");
+  const result = await appendEvent(payload, { ...options, idempotencyKey });
   if (!result.reachable) {
     return { ok: false, reachable: false, note: `bitacora no alcanzable (${result.reason}); parte solo en repo` };
   }
   if (!result.ok) {
-    return { ok: false, reachable: true, note: `bitacora rechazo el evento (HTTP ${result.httpStatus})`, payload: result.payload };
+    return {
+      ok: false,
+      reachable: result.reachable,
+      note: result.reason === "duplicate_idempotency_records"
+        ? "bitacora bloqueo la recuperacion: duplicate_idempotency_records"
+        : `bitacora rechazo el evento (HTTP ${result.httpStatus})`,
+      idempotencyConflict: Boolean(result.idempotencyConflict),
+      existingEventId: result.existingEventId || null,
+      duplicateIdempotencyRecords: Boolean(result.duplicateIdempotencyRecords),
+      duplicateEventIds: result.duplicateEventIds || [],
+      recoveryStatus: result.recoveryStatus || null,
+      payload: result.payload
+    };
   }
   return {
     ok: true,

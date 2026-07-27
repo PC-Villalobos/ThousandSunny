@@ -103,6 +103,8 @@ test("camino feliz: contrato de /api/events segun bitacora_server.py", async () 
           ok: true,
           kind: "ai_event",
           write_verified: true,
+          write_performed: true,
+          idempotent_replay: false,
           event: { event_id: "BIT-20260726T103527Z-abc123def456", event_hash: "f".repeat(64) }
         }));
       });
@@ -124,6 +126,123 @@ test("camino feliz: contrato de /api/events segun bitacora_server.py", async () 
     assert.equal(reported.eventId, "BIT-20260726T103527Z-abc123def456");
     assert.equal(received.topic, "funcion_de_sueno");
     assert.equal(received.actor, "claude-opus-5-nami");
+    assert.equal(received.idempotency_key, `sleep:${CONTEXT.reportPath}`);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test("acuse perdido: relee por clave y no reenvia el POST", async () => {
+  let postCount = 0;
+  let stored = null;
+  const server = http.createServer((req, res) => {
+    if (req.url?.startsWith("/api/events?idempotency_key=") && req.method === "GET") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(stored ? [stored] : []));
+      return;
+    }
+    if (req.url === "/api/events" && req.method === "POST") {
+      let body = "";
+      req.on("data", (chunk) => { body += chunk; });
+      req.on("end", () => {
+        postCount += 1;
+        const received = JSON.parse(body);
+        stored = {
+          event_id: "BIT-RECOVERED",
+          event_hash: "a".repeat(64),
+          idempotency_key: received.idempotency_key,
+        };
+        req.socket.destroy();
+      });
+      return;
+    }
+    res.writeHead(404); res.end("{}");
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const result = await appendEvent(buildSleepEvent(CONTEXT), {
+      url,
+      timeoutMs: 1000,
+      idempotencyKey: "test:lost-receipt",
+    });
+    assert.equal(result.ok, true);
+    assert.equal(result.recoveredAfterAmbiguousReceipt, true);
+    assert.equal(result.recoveryStatus, "found");
+    assert.equal(result.eventId, "BIT-RECOVERED");
+    assert.equal(result.writePerformed, null);
+    assert.equal(result.idempotentReplay, null);
+    assert.equal(postCount, 1);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test("acuse perdido: dos filas para una clave fallan cerrado", async () => {
+  let postCount = 0;
+  const server = http.createServer((req, res) => {
+    if (req.url?.startsWith("/api/events?idempotency_key=") && req.method === "GET") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify([
+        { event_id: "BIT-DUPLICATE-A", event_hash: "a".repeat(64) },
+        { event_id: "BIT-DUPLICATE-B", event_hash: "b".repeat(64) },
+      ]));
+      return;
+    }
+    if (req.url === "/api/events" && req.method === "POST") {
+      req.resume();
+      req.on("end", () => {
+        postCount += 1;
+        req.socket.destroy();
+      });
+      return;
+    }
+    res.writeHead(404); res.end("{}");
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const result = await appendEvent(buildSleepEvent(CONTEXT), {
+      url,
+      timeoutMs: 1000,
+      idempotencyKey: "test:duplicate-key",
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reachable, true);
+    assert.equal(result.reason, "duplicate_idempotency_records");
+    assert.equal(result.duplicateIdempotencyRecords, true);
+    assert.deepEqual(result.duplicateEventIds, ["BIT-DUPLICATE-A", "BIT-DUPLICATE-B"]);
+    assert.equal(result.writeVerified, null);
+    assert.equal(postCount, 1);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test("409 de idempotencia se eleva como alarma tipada", async () => {
+  const server = http.createServer((req, res) => {
+    res.writeHead(409, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({
+      ok: false,
+      write_verified: false,
+      write_performed: false,
+      idempotent_replay: false,
+      error: "idempotency_key_conflict",
+      existing_event_id: "BIT-EXISTING",
+    }));
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const result = await appendEvent(buildSleepEvent(CONTEXT), {
+      url,
+      idempotencyKey: "test:conflict",
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.idempotencyConflict, true);
+    assert.equal(result.existingEventId, "BIT-EXISTING");
+    assert.equal(result.writeVerified, false);
+    assert.equal(result.writePerformed, false);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
