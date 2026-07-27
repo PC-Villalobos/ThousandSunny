@@ -136,13 +136,23 @@ export async function health({ url = bitacoraUrl(), timeoutMs = DEFAULT_TIMEOUT_
 }
 
 async function recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs }) {
-  if (!idempotencyKey) return null;
+  if (!idempotencyKey) return { status: "not_requested" };
   const lookup = await request(
     `${url}/api/events?idempotency_key=${encodeURIComponent(idempotencyKey)}&limit=2`,
     { timeoutMs }
   );
-  if (!lookup.ok || !Array.isArray(lookup.payload) || lookup.payload.length !== 1) return null;
-  return lookup.payload[0];
+  if (!lookup.reachable) return { status: "lookup_unreachable", lookup };
+  if (!lookup.ok) return { status: "lookup_failed", lookup };
+  if (!Array.isArray(lookup.payload)) return { status: "lookup_invalid", lookup };
+  if (lookup.payload.length === 0) return { status: "not_found", lookup };
+  if (lookup.payload.length > 1) {
+    return {
+      status: "duplicate_idempotency_records",
+      lookup,
+      eventIds: lookup.payload.map((event) => event?.event_id).filter(Boolean)
+    };
+  }
+  return { status: "found", lookup, event: lookup.payload[0] };
 }
 
 export async function appendEvent(payload, {
@@ -153,12 +163,32 @@ export async function appendEvent(payload, {
   const body = idempotencyKey ? { ...payload, idempotency_key: idempotencyKey } : payload;
   const result = await request(`${url}/api/events`, { method: "POST", body, timeoutMs });
   if (!result.reachable) {
-    const recovered = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
-    if (!recovered) return result;
+    const recovery = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
+    if (recovery.status === "duplicate_idempotency_records") {
+      return {
+        ok: false,
+        reachable: true,
+        reason: "duplicate_idempotency_records",
+        recoveryStatus: recovery.status,
+        duplicateIdempotencyRecords: true,
+        duplicateEventIds: recovery.eventIds,
+        writeVerified: null,
+        writePerformed: null,
+        idempotentReplay: null,
+        payload: {
+          ok: false,
+          error: recovery.status,
+          event_ids: recovery.eventIds
+        }
+      };
+    }
+    if (recovery.status !== "found") return { ...result, recoveryStatus: recovery.status };
+    const recovered = recovery.event;
     return {
       ok: true,
       reachable: true,
       recoveredAfterAmbiguousReceipt: true,
+      recoveryStatus: recovery.status,
       writeVerified: true,
       writePerformed: null,
       idempotentReplay: null,
@@ -167,25 +197,23 @@ export async function appendEvent(payload, {
       payload: { ok: true, event: recovered },
     };
   }
-  if (result.ok && !result.payload?.write_verified && idempotencyKey) {
-    const recovered = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
-    if (recovered) {
-      return {
-        ...result,
-        recoveredAfterAmbiguousReceipt: true,
-        writeVerified: true,
-        writePerformed: null,
-        idempotentReplay: null,
-        eventId: recovered.event_id,
-        eventHash: recovered.event_hash,
-      };
-    }
-  }
+  const idempotencyConflict = result.httpStatus === 409
+    && result.payload?.error === "idempotency_key_conflict";
   return {
     ...result,
-    writeVerified: Boolean(result.payload?.write_verified),
-    writePerformed: Boolean(result.payload?.write_performed),
-    idempotentReplay: Boolean(result.payload?.idempotent_replay),
+    writeVerified: typeof result.payload?.write_verified === "boolean"
+      ? result.payload.write_verified
+      : null,
+    writePerformed: typeof result.payload?.write_performed === "boolean"
+      ? result.payload.write_performed
+      : null,
+    idempotentReplay: typeof result.payload?.idempotent_replay === "boolean"
+      ? result.payload.idempotent_replay
+      : null,
+    idempotencyConflict,
+    existingEventId: idempotencyConflict
+      ? (result.payload?.existing_event_id || null)
+      : null,
     eventId: result.payload?.event?.event_id || null,
     eventHash: result.payload?.event?.event_hash || null
   };
@@ -202,7 +230,19 @@ export async function reportSleepCycle(context, options = {}) {
     return { ok: false, reachable: false, note: `bitacora no alcanzable (${result.reason}); parte solo en repo` };
   }
   if (!result.ok) {
-    return { ok: false, reachable: true, note: `bitacora rechazo el evento (HTTP ${result.httpStatus})`, payload: result.payload };
+    return {
+      ok: false,
+      reachable: result.reachable,
+      note: result.reason === "duplicate_idempotency_records"
+        ? "bitacora bloqueo la recuperacion: duplicate_idempotency_records"
+        : `bitacora rechazo el evento (HTTP ${result.httpStatus})`,
+      idempotencyConflict: Boolean(result.idempotencyConflict),
+      existingEventId: result.existingEventId || null,
+      duplicateIdempotencyRecords: Boolean(result.duplicateIdempotencyRecords),
+      duplicateEventIds: result.duplicateEventIds || [],
+      recoveryStatus: result.recoveryStatus || null,
+      payload: result.payload
+    };
   }
   return {
     ok: true,
