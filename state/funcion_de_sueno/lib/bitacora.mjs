@@ -17,6 +17,8 @@
 //     - payload distinto: HTTP 409 idempotency_key_conflict.
 //   Un recibo perdido se recupera con GET /api/events?idempotency_key=... antes de
 //   decidir cualquier reintento. Nunca se reenvia un POST ambiguo desde este cliente.
+//   Ese GET verifica existencia, pero no distingue si el POST perdido escribio o
+//   reprodujo: writePerformed e idempotentReplay quedan en null.
 // El log es una cadena de hashes encadenada: el servidor reverifica la cadena y
 // relee tras escribir antes de responder `write_verified`. No se escribe el fichero
 // de eventos a mano desde aqui: se habla con el servicio o no se escribe nada.
@@ -158,8 +160,8 @@ export async function appendEvent(payload, {
       reachable: true,
       recoveredAfterAmbiguousReceipt: true,
       writeVerified: true,
-      writePerformed: false,
-      idempotentReplay: true,
+      writePerformed: null,
+      idempotentReplay: null,
       eventId: recovered.event_id,
       eventHash: recovered.event_hash,
       payload: { ok: true, event: recovered },
@@ -172,8 +174,8 @@ export async function appendEvent(payload, {
         ...result,
         recoveredAfterAmbiguousReceipt: true,
         writeVerified: true,
-        writePerformed: false,
-        idempotentReplay: true,
+        writePerformed: null,
+        idempotentReplay: null,
         eventId: recovered.event_id,
         eventHash: recovered.event_hash,
       };

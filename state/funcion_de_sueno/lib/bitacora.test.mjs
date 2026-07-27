@@ -169,7 +169,8 @@ test("acuse perdido: relee por clave y no reenvia el POST", async () => {
     assert.equal(result.ok, true);
     assert.equal(result.recoveredAfterAmbiguousReceipt, true);
     assert.equal(result.eventId, "BIT-RECOVERED");
-    assert.equal(result.writePerformed, false);
+    assert.equal(result.writePerformed, null);
+    assert.equal(result.idempotentReplay, null);
     assert.equal(postCount, 1);
   } finally {
     await new Promise((resolve) => server.close(resolve));
