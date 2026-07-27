@@ -36,6 +36,9 @@ Es la tercera vez que este sistema documenta el mismo patrón —el error dentro
 antes en PR #90, después en el campo `phase` del evento de cierre de la Cubierta, y ahora aquí. La
 recurrencia importa más que cualquiera de las tres instancias.
 
+Este documento se ha rectificado **dos veces**. La segunda está en el asiento 3.6: la atribución de
+la causa del duplicado era incorrecta. Ambas quedan escritas donde ocurrieron.
+
 ---
 
 ## 0. Por qué está esto en el repo
@@ -237,8 +240,19 @@ es parte del procedimiento de reinicio limpio que espera GO propio.
 
 ### 3.3 · El campo `meaning` llevaba estatuto demasiado alto
 
-El evento de cierre `BIT-20260727T130330Z-e1da9d2d02b0` se escribió con `status: verified` y
-`epistemic_status: observed`. Correcto para casi todo su contenido —suites, PID, hashes, 401—.
+El cierre de la Cubierta existe **dos veces** en el log. Ambos llevan el mismo contenido y por tanto
+este asiento aplica a los dos:
+
+| Evento | Papel |
+|---|---|
+| `BIT-20260727T130301Z-86652086327c` | **original** |
+| `BIT-20260727T130330Z-e1da9d2d02b0` | **reintento** — duplicado, 29 s después |
+
+La causa del duplicado y su lección están en el asiento 3.6. Aquí solo importa que **una cita simple
+sería vista parcial**, que es el mismo modo de fallo por el que hubo que rectificar `POSICION.md` §5.
+
+Ambos se escribieron con `status: verified` y `epistemic_status: observed`. Correcto para casi todo
+su contenido —suites, PID, hashes, 401—.
 
 No para `meaning`, que afirmaba que el Capitán puede leer el rumbo sin convertir términos del
 runtime en falsos éxitos. **Nadie había leído aún la Cubierta.** Es una afirmación sobre comprensión
@@ -273,6 +287,71 @@ Deuda que permanece: la entrada pública sigue dependiendo de un quick tunnel ef
 de disponibilidad. La URL vigente ese día **no se registra aquí a propósito** — es un punto de
 acceso vivo y este fichero es persistente.
 
+### 3.6 · Acuse ambiguo — el duplicado, y por qué la cola durable queda bloqueada
+
+**Secuencia real**, fijada por el constructor tras revisar el log:
+
+| Intento | Resultado | Evento |
+|---|---|---|
+| 1 | `ok:false` con error de decodificación UTF-8 — rechazo previo al parseo | ninguno |
+| 2 (13:03:01) | **escribió correctamente**; PowerShell sufrió un fallo local y no entregó el recibo | `BIT-…130301Z-86652086327c` |
+| 3 (13:03:30) | reintento a ciegas | `BIT-…130330Z-e1da9d2d02b0` — **duplicado** |
+
+**Rectificación de esta recepción.** La primera lectura del recepcionista atribuyó el duplicado a
+que el constructor había confundido `write_verified:false` con «no escribió». **Esa atribución era
+incorrecta.** En el intento 1 la inferencia del constructor fue acertada: `ok:false` con error de
+decodificación sí indica rechazo antes de escribir. El duplicado no nació de leer mal una bandera,
+sino de **perder el recibo en el cliente**.
+
+La distinción no es académica, porque cambia la reparación:
+
+- Si la causa fuera leer mal la bandera → bastaría leer también `ok` y `error`.
+- Siendo la causa un recibo perdido → **ninguna lectura cuidadosa sirve, porque la respuesta nunca
+  llegó**. Hace falta clave de idempotencia.
+
+Se registra el error de atribución en vez de corregirlo en silencio: es la misma disciplina que este
+documento exige a los demás, y es la segunda rectificación que se hace a sí mismo (la primera, R4b).
+
+**Lo que sí sobrevive de la lectura inicial**, y el constructor lo concede —*«no debía afirmar 'no
+escribió' sin releer»*—: `write_verified:false` carga dos significados opuestos. `bitacora.mjs:14-15`
+documenta que el servidor *«reverifica la cadena y relee **tras escribir** antes de responder
+`write_verified`»*, mientras `bitacora.test.mjs:135` muestra el otro caso, `{ok:false,
+write_verified:false, error:"event_kind no permitido"}`, donde no se escribió nada. **El
+discriminador está en `ok` y `error`, no en la bandera.** Sigue siendo un riesgo vivo aunque no fuera
+la causa de este incidente.
+
+**Consecuencia: la cola durable queda bloqueada** hasta definir cuatro cosas, fijadas por el Capitán:
+
+1. Clave de idempotencia estable, proporcionada por el cliente.
+2. Relectura por esa clave antes de cualquier reintento ambiguo.
+3. Distinción explícita entre **rechazo confirmado**, **escritura no verificada** y **resultado
+   desconocido** — hoy los tres colapsan en `false`.
+4. Reinicio limpio y tratamiento declarado de las órdenes en vuelo (enlaza con el asiento 3.2).
+
+Hoy el sistema ha duplicado un evento de bitácora, reparable con una anotación. Una cola que
+reintente ante acuse ambiguo duplicará **órdenes**. El bloqueo es previo a M0.2, no posterior.
+
+**Sobre la anotación de los duplicados:** el original es el de las 13:03:01 y el duplicado el de las
+13:03:30. Una anotación que invierta ese orden fijaría la causalidad al revés en un log que no admite
+corrección. Ninguno se borra ni se reescribe.
+
+### 3.7 · Preguntas de esta recepción que quedan cerradas
+
+**CORS — cerrada, sin exfiltración.** La recepción preguntó con qué valor sirve Hipatia
+`Access-Control-Allow-Origin`, dado que el Puente lee `127.0.0.1:8765` desde el navegador. Verificado
+por el Capitán contra tres orígenes: el Puente recibe autorización **para su origen exacto**; un
+origen externo no la recibe; `Origin: null` tampoco; el preflight externo devuelve `403`. **No existe
+`Access-Control-Allow-Origin: *`.** Queda escrito para que no haya que volver a preguntarlo.
+
+**Las tres cautelas sobre M0.2 — aceptadas antes de construir.** El Capitán las fija así:
+
+- **STOP será indicador, no mando**, hasta tener contrato propio.
+- **El Puente no portará credenciales de emisión.** Es capacidad, no intención: solo compone órdenes
+  para enviarlas por el canal soberano.
+- **El acceso remoto queda declarado no disponible** fuera del equipo donde coexisten navegador e
+  Hipatia. Es decisión declarada, no descubrimiento posterior, y conviene leerla junto a la garantía
+  del hombre al agua de `LLAVES_DEL_CAPITAN.md` §3.
+
 ---
 
 ## 4. Lo que esta recepción NO autoriza
@@ -283,6 +362,9 @@ Escrito para que un lector futuro no lo tome por permiso:
   Eso es la autorización 2 y requiere GO propio.
 - **No** autoriza el procedimiento de reinicio limpio ni la elevación de autoridad para
   `systemctl`.
+- **No** autoriza reparar la semántica de idempotencia del asiento 3.6. Corresponde GO propio, y va
+  **antes** de M0.2, no después.
+- **No** autoriza construir M0.2 ni anotar los eventos duplicados.
 - **No** autoriza entrada estable, cola durable, ni conectar el STOP.
 - **No** conecta OpenClaw, no admite DeepSeek como destino, no canoniza el onboarding.
 - **No** fija «Timón técnico» como nombre definitivo.
