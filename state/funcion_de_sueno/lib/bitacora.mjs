@@ -11,6 +11,12 @@
 // Fuente: `_bitacora/scripts/bitacora_server.py` de la Biblioteca de Hipatia.
 //   GET  /api/health  -> { ok, version, events, schemas, bind }
 //   POST /api/events  -> { ok, kind:"ai_event", write_verified, event:{ event_id, event_hash, ... } }
+//   Con idempotency_key estable:
+//     - primer POST: write_performed=true, idempotent_replay=false;
+//     - mismo payload: mismo event_id, write_performed=false, idempotent_replay=true;
+//     - payload distinto: HTTP 409 idempotency_key_conflict.
+//   Un recibo perdido se recupera con GET /api/events?idempotency_key=... antes de
+//   decidir cualquier reintento. Nunca se reenvia un POST ambiguo desde este cliente.
 // El log es una cadena de hashes encadenada: el servidor reverifica la cadena y
 // relee tras escribir antes de responder `write_verified`. No se escribe el fichero
 // de eventos a mano desde aqui: se habla con el servicio o no se escribe nada.
@@ -127,12 +133,57 @@ export async function health({ url = bitacoraUrl(), timeoutMs = DEFAULT_TIMEOUT_
   return request(`${url}/api/health`, { timeoutMs });
 }
 
-export async function appendEvent(payload, { url = bitacoraUrl(), timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
-  const result = await request(`${url}/api/events`, { method: "POST", body: payload, timeoutMs });
-  if (!result.reachable) return result;
+async function recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs }) {
+  if (!idempotencyKey) return null;
+  const lookup = await request(
+    `${url}/api/events?idempotency_key=${encodeURIComponent(idempotencyKey)}&limit=2`,
+    { timeoutMs }
+  );
+  if (!lookup.ok || !Array.isArray(lookup.payload) || lookup.payload.length !== 1) return null;
+  return lookup.payload[0];
+}
+
+export async function appendEvent(payload, {
+  url = bitacoraUrl(),
+  timeoutMs = DEFAULT_TIMEOUT_MS,
+  idempotencyKey = ""
+} = {}) {
+  const body = idempotencyKey ? { ...payload, idempotency_key: idempotencyKey } : payload;
+  const result = await request(`${url}/api/events`, { method: "POST", body, timeoutMs });
+  if (!result.reachable) {
+    const recovered = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
+    if (!recovered) return result;
+    return {
+      ok: true,
+      reachable: true,
+      recoveredAfterAmbiguousReceipt: true,
+      writeVerified: true,
+      writePerformed: false,
+      idempotentReplay: true,
+      eventId: recovered.event_id,
+      eventHash: recovered.event_hash,
+      payload: { ok: true, event: recovered },
+    };
+  }
+  if (result.ok && !result.payload?.write_verified && idempotencyKey) {
+    const recovered = await recoverByIdempotencyKey(idempotencyKey, { url, timeoutMs });
+    if (recovered) {
+      return {
+        ...result,
+        recoveredAfterAmbiguousReceipt: true,
+        writeVerified: true,
+        writePerformed: false,
+        idempotentReplay: true,
+        eventId: recovered.event_id,
+        eventHash: recovered.event_hash,
+      };
+    }
+  }
   return {
     ...result,
     writeVerified: Boolean(result.payload?.write_verified),
+    writePerformed: Boolean(result.payload?.write_performed),
+    idempotentReplay: Boolean(result.payload?.idempotent_replay),
     eventId: result.payload?.event?.event_id || null,
     eventHash: result.payload?.event?.event_hash || null
   };
@@ -142,7 +193,9 @@ export async function appendEvent(payload, { url = bitacoraUrl(), timeoutMs = DE
 // legible para el parte. Nunca lanza.
 export async function reportSleepCycle(context, options = {}) {
   const payload = buildSleepEvent(context);
-  const result = await appendEvent(payload, options);
+  const idempotencyKey = options.idempotencyKey
+    || (context.reportPath ? `sleep:${context.reportPath}` : "");
+  const result = await appendEvent(payload, { ...options, idempotencyKey });
   if (!result.reachable) {
     return { ok: false, reachable: false, note: `bitacora no alcanzable (${result.reason}); parte solo en repo` };
   }
