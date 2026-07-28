@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-27T04:48:44.590Z",
+  "updatedAt": "2026-07-28T00:00:00.000Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -787,6 +787,156 @@
       "bytes": 5386,
       "mtime": "2026-07-27T04:48:42.632Z",
       "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/lib/bitacora.mjs": {
+      "hash": "ef362f352abb942edd22304bc5dd3812f84674272f75130860abc81625dc9722",
+      "bytes": 11289,
+      "mtime": "2026-07-27T23:43:39+02:00",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/lib/bitacora.test.mjs": {
+      "hash": "8857982165f0c38692a903186ae17db52468c966978cc44b0cc8a9e3e4d5a8ea",
+      "bytes": 9900,
+      "mtime": "2026-07-27T23:43:39+02:00",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/lib/scan.mjs": {
+      "hash": "40cbe724eb19968bf842262c0b7dd00517de19fb36e9cb099be66a1615de65f5",
+      "bytes": 5526,
+      "mtime": "2026-07-26T12:35:49+02:00",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/lib/scan.test.mjs": {
+      "hash": "9b92ffa27fb5607f0b0722931f26d53d3e1c3dc64ed27754398ba28ed2f3d011",
+      "bytes": 6581,
+      "mtime": "2026-07-20T07:01:05+00:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/.gitattributes": {
+      "hash": "7bba5c3f398ac4d6a2dcd27551e42340799584839709b5ed8e8189f1f3ca501b",
+      "bytes": 99,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/README.md": {
+      "hash": "88ff8e8f34e90a8b0971a8f86c14fd53e3ecb81b5c31b20217a5b4061fc52378",
+      "bytes": 2885,
+      "mtime": "2026-07-27T23:44:45+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/deploy/runtime-manifest.json": {
+      "hash": "a57c24912b4afec116ab85eef0fd380d6626379ff6cfb0d3189db70bdbacbe6b",
+      "bytes": 3992,
+      "mtime": "2026-07-27T23:44:45+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/deploy/sync_to_local.ps1": {
+      "hash": "41dcffc28d35c2f5a08517a936d2ca2c4430c7acdc987c78b1cc182bd8987a1e",
+      "bytes": 3467,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/schema/bitacora_event.schema.json": {
+      "hash": "836f3623149522fa3b1b0f40010d72e4df36b3e4b1c178b68246ae8c36ccfa49",
+      "bytes": 3707,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/server/bitacora_server.py": {
+      "hash": "9102a6ed534f5348b88273339a3c42d496c9d7d5bf507cf62e05368365daed5f",
+      "bytes": 40932,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/server/bridge_core.py": {
+      "hash": "f3e75714faf58dbc6e930f79e0069b4f7ae60183c46175a57d88a5165dec1f86",
+      "bytes": 18853,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/server/closure_core.py": {
+      "hash": "a7f1d1c7cff06ff4d427e19351eb1e660df0c74da9074aa3cba79e06473d2a22",
+      "bytes": 15260,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/server/git_actions.py": {
+      "hash": "11a7b2dbaf06621ab5d0bb7057a0ed73a91f1f58ab2c696468a75076c4916af8",
+      "bytes": 16161,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/server/git_evidence.py": {
+      "hash": "2c3884438fa7c656dbfe9e43a4fc54243c969092a75a2f361de616ee7d63a5c1",
+      "bytes": 8662,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/README.md": {
+      "hash": "e0c0521bf1332cf8e5369e5333f38d1a07fa7c556ffa36e28432dcf3120a3020",
+      "bytes": 826,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/run_portable.ps1": {
+      "hash": "753dcb6374dcef2baeb62bdd5fe8b40bfccd5964040acb91440949987cd9dbbf",
+      "bytes": 673,
+      "mtime": "2026-07-27T20:34:05+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_bitacora_v1_1.py": {
+      "hash": "b9b6dcc253e2bc675488748f19f768485dc0f57fb0e555d18b538c9ad36174be",
+      "bytes": 3983,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_bridge_core_lifecycle_ola3e.py": {
+      "hash": "ceedeecf72ba28a4feb9fd914c02437e71e2486e65248b8860c5ff40387e4982",
+      "bytes": 5426,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_bridge_core_ola2.py": {
+      "hash": "ee827bc3059cb5adc7b71635450eba3a100c8d9038a78837f6b34313939c2d33",
+      "bytes": 3798,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_closure_core_ola2_1.py": {
+      "hash": "7a7251095b3e726268f55cb3ef66d8f0f82b52ae2f8225b6f003a7195a1be9ec",
+      "bytes": 3404,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_git_actions_ola3b.py": {
+      "hash": "eede4b4dacdaa0a9c44da02949d0f3a86ee359c5ac906e280ad0cb148d36f48e",
+      "bytes": 4216,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_git_evidence_ola3a.py": {
+      "hash": "a601b3e0ca346387e28dc6e23852658e9593e1c20e95d7053410890a126c1c1a",
+      "bytes": 2070,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/test_projection_manifest.py": {
+      "hash": "afd405ee797ee8d4404ecd00d99660f760df2bc188e7028ee89a22bba6c143f3",
+      "bytes": 3440,
+      "mtime": "2026-07-27T23:44:45+02:00",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/verify_bitacora.py": {
+      "hash": "a5d8d9c8ac67268d8e053d47125b7e1213cddb685ebf13c6914aabea4337317a",
+      "bytes": 5085,
+      "mtime": "2026-07-27T19:53:25+02:00",
+      "contentAccess": "readable"
+    },
+    "state/recepcion/RECEPCION_CUBIERTA_20260727.md": {
+      "hash": "6e6dc1b743782868d589d74a8ef7711cb27e168275729f76a068e9d17b38e10a",
+      "bytes": 29047,
+      "mtime": "2026-07-27T22:00:54+00:00",
+      "contentAccess": "readable"
     }
   },
   "roleLedger": [
@@ -1019,6 +1169,12 @@
       "timestamp": "2026-07-27T04:48:44.589Z",
       "executor": "github-actions",
       "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-28T00:00:00.000Z",
+      "executor": "claude-code",
+      "actor": "claude-code",
       "role": "Groot"
     }
   ],
@@ -1523,6 +1679,20 @@
       "coherenceScore": 0.8015267175572519,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-27T04-48-44-551Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-27T04-48-44-551Z.md"
+    },
+    {
+      "timestamp": "2026-07-28T00:00:00.000Z",
+      "executor": "claude-code",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 156,
+      "deltas": 25,
+      "issues": 2,
+      "coherenceScore": null,
+      "verdict": "fertil",
+      "level": 2,
+      "attractor": null,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-07-28.md"
     }
   ]
 }
