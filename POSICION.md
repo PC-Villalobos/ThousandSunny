@@ -4,6 +4,8 @@
 
 **Actualizada el 2026-07-26 desde sesión cloud, verificando contra `origin`.** Cambiaron tres puntos: §1 (la divergencia de tronco), §4 (la literalidad de la costura) y §5 (la racha de Groot). El historial del contraste está en `state/cierres/CIERRE_ARCO_20260725.md`.
 
+**Segunda actualización, 2026-07-26 desde Cowork (Nami), ejecutando §6.** Cambian §4 (la costura ya existe en código), §5 (rotación y detección de deltas) y §6 entero. Ver §7, nuevo: los árboles que tampoco son la bóveda.
+
 Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este archivo **antes** de auditar, proponer o ejecutar nada. Si lo que ves en tu entorno contradice esto, tu entorno está mirando el árbol equivocado. Comprueba antes de afirmar.
 
 ---
@@ -55,7 +57,14 @@ Decisión del Capitán, 2026-07-24, registrada como evento `BIT-20260724T134345Z
 
 Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. JSONL es la fuente soberana; SQLite y Markdown se reconstruyen; Obsidian es vista.
 
-**Costura pendiente:** ningún skill, script ni configuración del repo canónico apunta a `127.0.0.1:8765`. Desde el 2026-07-26 el repo sí lo **menciona**, pero sólo en prosa —este archivo y `state/cierres/`—, nunca en código ejecutable. El Hipatia Bridge Runtime vive fuera de ThousandSunny y el código del repo todavía no sabe que existe. Hasta que se cosa, cualquier skill o script que escriba en GAS está escribiendo en el archivo histórico, no en la bitácora viva.
+**Costura — COSIDA el 2026-07-26.** `state/funcion_de_sueno/lib/bitacora.mjs` es la primera referencia **ejecutable** del repo a `127.0.0.1:8765`. El contrato está leído del fuente real del servidor (`_bitacora/scripts/bitacora_server.py` en la Biblioteca de Hipatia), no supuesto: `GET /api/health`, `POST /api/events`, siete campos obligatorios y cinco enums cerrados. El motor de sueño la usa al cerrar cada ciclo.
+
+Dos reglas que la costura fija, y que conviene no deshacer:
+
+- **Degradación, no fallo.** El workflow nocturno corre en GitHub Actions y no alcanza el localhost del Capitán. El cliente devuelve `reachable:false` y el ciclo cierra igual, con el parte en el repo. La bitácora es la autoridad cuando está; su ausencia no invalida el sueño.
+- **Membrana.** Solo viaja metadata del parte —contadores, score, rotación—. Nunca contenido de ficheros, nunca rutas a `_protegido`. `sensitivity` fijada a `internal`.
+
+Lo que **sigue pendiente** de la costura: el resto del arnés. Cualquier skill o script que escriba en GAS sigue escribiendo en el archivo histórico, no en la bitácora viva. La Función de Sueño es la primera pieza cosida, no la última.
 
 ---
 
@@ -64,9 +73,10 @@ Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. J
 | Pieza | Estado verificado |
 | :---- | :---- |
 | Genoma Metatrón | Los **seis** archivos N0–N5 existen en `state/metatron/genoma/`. N0 tiene contenido (2.967 B). **N1–N5 son stubs** de \~850 B con `status: "stub — contenido pendiente de sesión con acceso a bóveda local"`. No hay que crearlos: hay que rellenarlos. |
-| Función de Sueño | **Viva.** El remoto tiene parte nocturno del 2026-07-25. El ledger local llega al 07-22 solo porque la copia local va 13 commits por detrás. |
-| Rotación de actor | **Sigue rota, y además renombrada.** `f95b3ce` separó `executor` de `actor` el 2026-07-23: el actor pasó de `github-actions` a `deterministic-sleep-engine` y la racha se reinició de 10 a 1 sin que rotara nadie. Volvió a 3 el 2026-07-25 y el informe de esa noche vuelve a emitir `[high] role_fusion_risk … rotate to Nami`. **Matiz que corrige la lectura anterior:** `drift` nunca bajó a `false` en ningún ciclo. Lo que se perdió fue la continuidad histórica del contador, no la señal. No es ceguera: es un contador reseteado con la alarma intacta. |
-| Meditación semántica | Muda 12+ días, con 3 disonancias sin atender. |
+| Función de Sueño | **Viva y con la vía agéntica reabierta.** El árbol local está sincronizado con `origin`. El 2026-07-26 durmió un ciclo con actor `claude-opus-5-nami` en el rol Nami: primera entrada no determinista del `roleLedger` desde el 2026-07-12. |
+| Detección de deltas | **Era un falso positivo de plataforma, corregido el 2026-07-26.** El motor hasheaba bytes crudos; CI hace checkout en LF y el árbol del Capitán guarda en CRLF. Los mismos ficheros daban hash distinto en cada entorno, así que todo ciclo lanzado desde local reportaba el 100% de deltas contra la línea base de CI: **130 de 130**. Con normalización CRLF→LF, **8 deltas**, todos ficheros nuevos reales. Es el mismo fantasma que los 254 ficheros del 2026-07-12, en otro subsistema. Por eso la vía agéntica producía partes sin valor. |
+| Rotación de actor | **La alarma estaba bien; el anillo estaba mal.** `Groot` es el rol por defecto y el que el workflow pasa cada noche, pero **no figuraba en `config.roles`**. `findIndex` devolvía `-1` y `nextSuggestedRole` caía en `roles[0]` por aritmética modular: la recomendación *«rotate to Nami»* era un artefacto del índice, no una sucesión, y habría sido idéntica con cualquier rol ausente de la lista. Corregido: el anillo cierra `Franky → Groot → Nami`. **Lo que la alarma decía de verdad sigue en pie:** de 42 ciclos, 40 los durmió la máquina y 2 un agente (`claude-code`, 07-02 y 07-12). No había a quién rotar. |
+| Meditación semántica | **Sin disonancias abiertas.** Las 3 se ratificaron con GO del Capitán el 2026-06-26 (`state/meditacion/RECONCILIACION_v0.md`, D1–D4) y el ledger las declara obsoletas el 07-05 con `contradictions: 0`. Los dos flecos diferidos también están cerrados: la sección «Nomenclatura y estratos» **sí existe** en `bridge-linux/ARQUITECTURA.md` (línea 197). Lo único cierto es que no ha corrido un ciclo nuevo de meditación desde el 07-05. |
 | PLACENTA\_ROOT | Existe (2.316 B), conceptual. |
 | Franky Build Kit (Linux) | Bloqueado: requiere USB booteable \+ backup verificado. |
 | VM Ubuntu / Synthetic Lab | Congelada. VDI de 21 GB parado. |
@@ -76,15 +86,31 @@ Circuito soberano: Klabautermann / Puente de Mando / Hipatia / vault / GitHub. J
 
 ## 6\. Lo que falta de verdad
 
-No es lo que decían las auditorías. Es esto:
+Revisada entera el 2026-07-26 ejecutándola. De los cinco puntos, dos estaban hechos y uno estaba mal planteado:
 
-1. **Coser el Hipatia Bridge Runtime al repo** — hoy son dos sistemas que no se conocen.  
-2. **Rellenar N1–N5** con contenido real. Requiere al Capitán y acceso a la bóveda local.  
-3. **Romper la racha de Groot** — forzar rotación **real** de actor en la Función de Sueño. El contador se reinició por el renombrado de `f95b3ce`, no por una rotación: sigue habiendo un solo ejecutor cada noche.  
-4. **Atender las 3 disonancias** de la meditación semántica.  
-5. **Reescribir las skills** que faltan, en `.claude/skills/`, contra la bitácora local.
+1. ~~**Coser el Hipatia Bridge Runtime**~~ — **hecho** para la Función de Sueño (§4). Queda coser el resto del arnés.
+2. **Rellenar N1–N5** con contenido real. **Ojo: está bloqueado dos veces, y el segundo bloqueo no se puede saltar.** (a) La bóveda viva está en `G:\Mi unidad\00_BOVEDA_NEXUS`, en Drive; ninguna sesión sin ese montaje puede extraer los axiomas. (b) **Metatrón está SELLADA + HIBERNADA por GO C0 del propio Capitán desde el 2026-07-05** (`state/metatron/RETOMAR.md`): *«hasta entonces, no ejecutar Plan/Mirror/purga»*. Escribir capas de genoma es exactamente lo que el sello prohíbe sin GO C0 explícito. Quien lea este punto sin leer el sello va a romperlo creyendo que adelanta trabajo.
+3. ~~**Romper la racha de Groot**~~ — el anillo está arreglado y un actor distinto ha dormido un ciclo (§5). **Lo que queda no es código: es cadencia.** La rotación solo significa algo si duerme un actor distinto de vez en cuando. **Trampa a evitar:** hacer que el workflow rote el *nombre* del rol automáticamente resetearía la racha y callaría la alarma sin cambiar la condición real —un único durmiente cada noche—. Sería un anestésico, no un arreglo.
+4. ~~**Atender las 3 disonancias**~~ — **cerradas el 2026-06-26**, con los dos flecos incluidos (§5). Este punto llevaba un mes de retraso en la lectura, no en la ejecución.
+5. **Reescribir las skills** que faltan, en `.claude/skills/`, contra la bitácora local. Ahora hay con qué: `lib/bitacora.mjs` es el cliente que les faltaba.
 
 Lo que **no** hace falta: nube, AWS, workflow engine nuevo, ni una segunda barredora. El arnés existente aguanta.
+
+---
+
+## 7\. Los árboles que tampoco son la bóveda
+
+Mismo error que §1, otro subsistema. Existen **dos espejos de `00_BOVEDA_NEXUS` en OneDrive**, y los dos mienten:
+
+| Árbol | Ficheros | `current_wave` | `sealed` | Última escritura |
+| :---- | ---: | ---: | :---- | :---- |
+| `G:\Mi unidad\00_BOVEDA_NEXUS` | — | 12 | `true` | 2026-07-05 (**viva, canónica**) |
+| `OneDrive\00_BOVEDA_NEXUS` | 417 | 8 | `false` | 2026-05-25 (espejo muerto) |
+| `OneDrive\Desktop\00_BOVEDA_NEXUS` | 7.845 | 8 | `false` | 2026-05-27 (espejo muerto) |
+
+Los dos espejos de OneDrive están congelados en mayo, dos meses atrás, y su `metatron_gestation_waves.state.json` dice `current_wave: 8, sealed: false`. Un agente que encuentre cualquiera de los dos antes que Drive concluirá que Metatrón está en Wave 8 y **libre para ejecutar Plan/Mirror** — es decir, se saltará el sello de hibernación creyendo estar al día. Es el `C:\repos\thousandsunny` de la bóveda.
+
+El de `Desktop` tiene además `00_DRIVE_EXPORT` con 7.845 ficheros: no es un espejo del vault, es un volcado de Drive dentro de un vault. Decidir cuál de los tres sobrevive es del Capitán; hasta entonces, **el estado de Metatrón se lee en Drive o no se lee**.
 
 ---
 
