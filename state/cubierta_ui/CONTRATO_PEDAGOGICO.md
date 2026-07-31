@@ -89,11 +89,36 @@ pero los deja vacíos cuando la fuente no los entrega.
 La superficie de referencia no sustituye a `public/cubierta.html` y no se ha copiado a D ni a la
 VM. Aplicar la mejora visual exige otro incremento y otro GO de despliegue.
 
+## 5.1 Candidato posterior, todavía sin desplegar
+
+`runtime_candidate/` materializa el siguiente incremento sin alterar el baseline:
+
+- La ausencia de `deliberation_outcome` o `epistemic_status` se conserva como `not_recorded` desde
+  la reconstrucción del ledger hasta la presentación.
+- `unknown` queda reservado para un desconocimiento explícitamente registrado.
+- `contract_version` procede de `event.schema`; si falta, queda `null` y no autoriza inferencia
+  histórica.
+- `avisoAusenciaEstructural` explica `not_recorded` con independencia de la versión.
+- `avisoHistorico` necesita una versión `v1` o `v2` observada; no nace de la mera ausencia.
+- `proposed_at` se muestra y la ejecución recibe un bloque visual propio, posterior a la rejilla de
+  agentes y rotulado “Ejecución de la orden”.
+
+La regla completa es:
+
+> La ausencia es un estado informativo. Adaptadores, traductores y proyecciones deben
+> transportarla sin sustituirla por el valor semánticamente más cercano. Solo la presentación
+> puede decidir cómo expresarla al lector, sin inferir antigüedad, causa ni resultado.
+
+`preview/` proporciona la comprobación previa al despliegue. Consulta por GET una fuente viva,
+sanitiza en memoria y solo escucha en loopback. Sustituye el texto de la instrucción por una
+etiqueta neutra, limita actores a `claude` y `codex`, y elimina respuestas, evidencias, credenciales,
+identificadores personales y detalles de entrada. No escribe snapshots ni acepta POST.
+
 ## 6. Verificación
 
 | Comprobación | Resultado |
 |---|---:|
-| `node --test state/cubierta_ui/*.test.mjs` | 25/25 |
+| `npm run test:cubierta` | 58/58 |
 | Hashes del baseline | 4/4 |
 | Adaptación de salida real de `translateOrder()` | verificada |
 | `authorized`, `blocked`, `calculated`, `evaluated` | reconocidos |
@@ -101,4 +126,5 @@ VM. Aplicar la mejora visual exige otro incremento y otro GO de despliegue.
 | Ejecución dentro de objetos de agente | cero |
 
 La prueba humana de legibilidad sigue pendiente hasta que el ajuste se aplique a una superficie
-visible. Este PR demuestra el contrato y su compatibilidad; no demuestra una UI desplegada.
+visible. El candidato y su vista previa están construidos, pero esta sesión no dispuso de un
+`initData` efímero para consultar el endpoint autenticado; no se afirma una lectura humana viva.

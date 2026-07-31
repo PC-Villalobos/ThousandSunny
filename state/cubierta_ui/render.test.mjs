@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 import {
+  AVISO_AUSENCIA_ESTRUCTURAL,
   AVISO_HISTORICO,
   AVISO_TURNO,
   SIN_MARCA_TEMPORAL,
@@ -141,21 +142,56 @@ test("las ordenes anteriores a v3 se marcan como historicas", () => {
   assert.equal(esHistorica(porId("ORD-TG-567384347")), false);
 });
 
-test("todo desconocido de una orden historica viaja con su explicacion", () => {
-  for (const modelo of renderOrdenes(ORDENES).filter((m) => m.historica)) {
-    assert.equal(modelo.avisoHistorico, AVISO_HISTORICO);
-    for (const agente of modelo.agentes) {
-      if (agente.resultado.valorCrudo === "unknown") {
-        assert.equal(agente.avisoHistorico, AVISO_HISTORICO);
-      }
-    }
-  }
+test("not_recorded enciende ausencia estructural y unknown no", () => {
+  const orden = structuredClone(porId("ORD-TG-567384343"));
+  orden.workers[0].deliberationOutcome = "not_recorded";
+  orden.workers[0].epistemicStatus = "not_recorded";
+  const [ausente, desconocido] = renderOrden(orden).agentes;
+  assert.equal(ausente.avisoAusenciaEstructural, AVISO_AUSENCIA_ESTRUCTURAL);
+  assert.equal(ausente.avisoHistorico, AVISO_HISTORICO);
+  assert.equal(desconocido.resultado.valorCrudo, "unknown");
+  assert.equal(desconocido.avisoAusenciaEstructural, null);
+  assert.equal(desconocido.avisoHistorico, null);
+});
+
+test("not_recorded sin version explica la ausencia sin inferir historia", () => {
+  const orden = structuredClone(porId("ORD-TG-567384347"));
+  orden.contractVersion = null;
+  orden.workers[0].deliberationOutcome = "not_recorded";
+  const modelo = renderOrden(orden);
+  assert.equal(modelo.historica, false);
+  assert.equal(modelo.avisoHistorico, null);
+  assert.equal(modelo.agentes[0].avisoAusenciaEstructural, AVISO_AUSENCIA_ESTRUCTURAL);
+  assert.equal(modelo.agentes[0].avisoHistorico, null);
 });
 
 test("una orden v3 no arrastra la coartada historica", () => {
   const modelo = renderOrden(porId("ORD-TG-567384347"));
   assert.equal(modelo.avisoHistorico, null);
   for (const agente of modelo.agentes) assert.equal(agente.avisoHistorico, null);
+});
+
+test("antes y despues de las cuatro ordenes conocidas queda fijado", () => {
+  const esperado = new Map([
+    ["ORD-TG-567384347", ["inferred", "inferred"]],
+    ["ORD-TG-567384343", ["inferred", "inferred"]],
+    ["ORD-TG-567384333", ["not_recorded", "not_recorded"]],
+    ["ORD-TG-567384331", ["not_recorded", "not_recorded"]]
+  ]);
+  for (const original of ORDENES) {
+    const despues = structuredClone(original);
+    if (despues.contractVersion !== "v3") {
+      for (const worker of despues.workers) {
+        if (worker.deliberationOutcome === "unknown") worker.deliberationOutcome = "not_recorded";
+        if (worker.epistemicStatus === "unknown") worker.epistemicStatus = "not_recorded";
+      }
+    }
+    assert.deepEqual(
+      renderOrden(despues).agentes.map(a => a.evidencia.valorCrudo),
+      esperado.get(original.orderId),
+      original.orderId
+    );
+  }
 });
 
 // --------------------------------------------------------------------------
