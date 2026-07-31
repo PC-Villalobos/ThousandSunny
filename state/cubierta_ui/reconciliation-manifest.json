@@ -50,5 +50,22 @@
     "El snapshot vivo no transporta contract_version; no permite marcar historia de forma fiable.",
     "El snapshot vivo no proyecta actor ni executed_at de la ejecucion.",
     "La superficie de referencia de este directorio no es el artefacto desplegable."
-  ]
+  ],
+  "candidate": {
+    "path": "runtime_candidate",
+    "status": "tested_not_deployed",
+    "base": "baseline",
+    "changes": [
+      "Preserva not_recorded frente a unknown desde la reconstruccion del ledger.",
+      "Proyecta contract_version desde event.schema sin inferencia retrospectiva.",
+      "Muestra proposed_at y separa visualmente la ejecucion de los agentes."
+    ],
+    "preview": {
+      "path": "preview",
+      "persistence": "none",
+      "bind": "127.0.0.1",
+      "writes": false,
+      "live_human_reading": "blocked_missing_ephemeral_init_data"
+    }
+  }
 }

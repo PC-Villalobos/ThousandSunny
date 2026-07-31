@@ -22,6 +22,9 @@ export const AVISO_HISTORICO =
   "Orden anterior al contrato v3. El registro de entonces no capturaba estos campos; " +
   "no se reconstruye hacia atras lo que no se observo.";
 
+export const AVISO_AUSENCIA_ESTRUCTURAL =
+  "Este campo no fue registrado. La ausencia se conserva y no se interpreta como desconocimiento declarado.";
+
 // Los mapas son cerrados. Un valor no listado NO se deja pasar en crudo: se traduce a
 // un aviso explicito de que el vocabulario no lo reconoce. Vease `traducir`.
 const ESTADO_ORDEN = {
@@ -81,7 +84,11 @@ const DELIBERACION = {
   },
   unknown: {
     titulo: "Resultado historico desconocido",
-    detalle: "No se reconstruye hacia atras lo que el registro no capturo."
+    detalle: "El agente declaro explicitamente que no conoce el resultado."
+  },
+  not_recorded: {
+    titulo: "No registrado",
+    detalle: AVISO_AUSENCIA_ESTRUCTURAL
   }
 };
 
@@ -108,7 +115,11 @@ const EPISTEMICO = {
   },
   unknown: {
     titulo: "Desconocido",
-    detalle: "El registro no permite asignar un estatuto mas preciso."
+    detalle: "El agente declaro explicitamente que no conoce el estatuto."
+  },
+  not_recorded: {
+    titulo: "No registrado",
+    detalle: AVISO_AUSENCIA_ESTRUCTURAL
   }
 };
 
@@ -220,7 +231,11 @@ function renderWorker(worker, historica) {
     evidencia,
     // AJUSTE 6: el aviso viaja con toda respuesta, sin excepcion y sin acortar.
     avisoTurno: entrega.valorCrudo === "responded" ? AVISO_TURNO : null,
-    avisoHistorico: historica && (!resultado.reconocido || resultado.valorCrudo === "unknown")
+    avisoAusenciaEstructural:
+      resultado.valorCrudo === "not_recorded" || evidencia.valorCrudo === "not_recorded"
+        ? AVISO_AUSENCIA_ESTRUCTURAL
+        : null,
+    avisoHistorico: historica && resultado.valorCrudo === "not_recorded"
       ? AVISO_HISTORICO
       : null
   };
