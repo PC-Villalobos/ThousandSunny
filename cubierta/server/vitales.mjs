@@ -6,36 +6,79 @@
 
 export const TINTAS = ["medido", "calculado", "inferido", "evaluado", "propuesto", "desconocido"];
 
-function vital(nombre, valor, unidad, tinta, fuente, motivo = null) {
+/**
+ * Cada vital lleva DOS etiquetas, y hacen falta las dos:
+ *   `tinta`  -- como se derivo el numero (doctrina canonica de las cinco tintas)
+ *   `origen` -- quien responde de el: `observado` (lo midio el barco),
+ *               `declarado` (lo afirma el agente y nadie lo ha comprobado),
+ *               `no_observable` o `sin_dato`.
+ * Un mismo "medido" no vale igual si lo midio el barco que si lo dice el actor
+ * de si mismo. Antes de este corte todo lo autodeclarado se pintaba como
+ * `medido` a secas, y eso era la mentira de fondo del tablero.
+ */
+function vital(nombre, valor, unidad, tinta, fuente, origen, motivo = null) {
+  const vacio = valor === null || valor === undefined;
   return {
     nombre,
     valor: valor ?? null,
     unidad,
-    tinta: valor === null || valor === undefined ? "desconocido" : tinta,
+    tinta: vacio ? "desconocido" : tinta,
+    origen: vacio ? (origen === "observado" ? "sin_dato" : origen) : origen,
     fuente,
-    motivo: valor === null || valor === undefined ? motivo || "sin dato en la ultima senal" : null,
+    motivo: vacio ? motivo || "sin dato en la ultima senal" : null,
+  };
+}
+
+function deAlmacen(nombre, unidad, lectura, tinta = "medido") {
+  if (!lectura || lectura.valor === null) return null;
+  return {
+    nombre,
+    valor: lectura.valor,
+    unidad,
+    tinta: lectura.tipo === "tasa" ? "calculado" : tinta,
+    origen: "observado",
+    fuente: `almacen medido (${lectura.tipo}, n=${lectura.n})`,
+    motivo: `muestra de hace ${Math.round((lectura.edad_ms || 0) / 1000)}s`,
   };
 }
 
 /**
- * Vitales de una encarnacion concreta (un actor encarnando a un personaje).
- * `senal` es la ultima senal del agente; `residente` es el modelo cargado en
- * Ollama, si lo hay.
+ * Vitales de un personaje. Prefiere SIEMPRE la medida sobre la declaracion:
+ * si el almacen tiene muestra propia, esa gana y va como `observado`; si no, se
+ * muestra lo que el agente afirma, etiquetado `declarado`.
  */
-export function calcularVitales({ senal = null, residente = null, sueno = null, nakamaId = null } = {}) {
+export function calcularVitales({
+  senal = null,
+  ejes = null,
+  lecturas = null,
+  sueno = null,
+  nakamaId = null,
+} = {}) {
   const v = senal?.vitales || {};
   const vitales = [
-    vital("pulso", v.tokens_por_s ?? null, "tok/s", "medido", "senal del agente"),
-    vital("latencia", v.latencia_ms ?? null, "ms", "medido", "senal del agente"),
-    vital("carga de contexto", v.contexto_pct ?? null, "%", "calculado", "senal del agente"),
-    vital("errores en ventana", v.errores ?? null, "n", "medido", "senal del agente"),
+    deAlmacen("pulso", "tok/s", lecturas?.tokens_por_s)
+      || vital("pulso", v.tokens_por_s ?? null, "tok/s", "medido", "senal del agente", "declarado"),
+    deAlmacen("latencia", "ms", lecturas?.latencia_ms)
+      || vital("latencia", v.latencia_ms ?? null, "ms", "medido", "senal del agente", "declarado"),
+    vital("carga de contexto", v.contexto_pct ?? null, "%", "calculado", "senal del agente", "declarado"),
+    vital("errores en ventana", v.errores ?? null, "n", "medido", "senal del agente", "declarado"),
     vital(
       "residencia",
-      residente?.bytes_vram != null ? Math.round(residente.bytes_vram / 1e6) : null,
+      ejes?.residencia?.estado === "observado" ? ejes.residencia.valor : null,
       "MB",
       "medido",
-      "ollama /api/ps",
-      residente ? "el modelo esta cargado pero no reporta VRAM" : "ningun modelo residente asociado",
+      ejes?.residencia?.fuente || "ollama /api/ps",
+      ejes?.residencia?.estado === "no_observable" ? "no_observable" : "observado",
+      ejes?.residencia?.motivo || "ningun modelo residente asociado",
+    ),
+    vital(
+      "memoria",
+      ejes?.memoria?.estado === "observado" ? ejes.memoria.valor : null,
+      "MB",
+      "medido",
+      ejes?.memoria?.fuente || "sonda de proceso",
+      ejes?.memoria?.estado === "no_observable" ? "no_observable" : "observado",
+      ejes?.memoria?.motivo || null,
     ),
   ];
 
@@ -49,6 +92,7 @@ export function calcularVitales({ senal = null, residente = null, sueno = null, 
     "ciclos seguidos",
     "calculado",
     "sleep_ledger.jsonl",
+    "observado",
     aplicaFusion ? null : "este personaje no aparece en el ultimo ciclo de sueno",
   ));
 

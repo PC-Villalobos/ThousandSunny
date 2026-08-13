@@ -189,7 +189,7 @@ export function dibujar(ctx, escena) {
 }
 
 function figura(ctx, px, py, acento, opciones = {}) {
-  const { apagado = false, aro = null, sombrero = false, fantasma = false } = opciones;
+  const { apagado = false, aro = null, sombrero = false, fantasma = false, aroHueco = false } = opciones;
   ctx.save();
   if (fantasma) ctx.globalAlpha = 0.3;
   else if (apagado) ctx.globalAlpha = 0.42;
@@ -204,8 +204,11 @@ function figura(ctx, px, py, acento, opciones = {}) {
 
   if (aro) {
     ctx.strokeStyle = aro;
-    ctx.lineWidth = 2;
+    // Aro hueco = creible, no verificado. La diferencia entre lo que el agente
+    // dice y lo que el barco ha comprobado tiene que verse de un vistazo.
+    ctx.lineWidth = aroHueco ? 1 : 2;
     if (fantasma) ctx.setLineDash([4, 4]);
+    else if (aroHueco) ctx.setLineDash([2, 3]);
     ctx.beginPath();
     ctx.ellipse(px, py + 2, 16, 8, 0, 0, Math.PI * 2);
     ctx.stroke();
@@ -241,27 +244,43 @@ const AROS = {
   apagado: null,
 };
 
+// Encargo de pulso real, seccion 7. El veredicto manda sobre el aro.
+const AROS_PRESENCIA = {
+  declarado: "#6fa8d6",
+  no_observable: "#7a8894",
+  mudo: "#d6a24a",
+  discordante: "#e0714a",
+};
+
 const ETIQUETA_PRESENCIA = {
   en_puerto: "sin actor",
   a_bordo: null,
+  declarado: "declarado",
+  no_observable: "fuera de alcance",
+  mudo: "MUDO",
+  discordante: "DISCORDANTE",
   amarrado: "amarrado",
   fantasma: "FANTASMA",
   a_la_deriva: "a la deriva",
 };
+
+const AVISO = { mudo: "?", discordante: "!=", fantasma: "!", a_la_deriva: "!" };
 
 function dibujarNakama(ctx, n, ox, oy) {
   const { sx, sy } = proyectar(n.px, n.py);
   const px = sx + ox;
   const py = sy + oy;
   const fantasma = n.presencia === "fantasma" || n.presencia === "a_la_deriva";
+  const hueco = n.presencia === "declarado" || n.presencia === "no_observable";
   figura(ctx, px, py, n.acento, {
     apagado: !n.encarnado,
     fantasma,
-    aro: fantasma ? "#e0a04a" : (AROS[n.estado] || null),
+    aroHueco: hueco,
+    aro: fantasma ? "#e0a04a" : (AROS_PRESENCIA[n.presencia] || AROS[n.estado] || null),
   });
 
   ctx.font = "600 12px system-ui, sans-serif";
-  const sufijo = ETIQUETA_PRESENCIA[n.presencia];
+  const sufijo = ETIQUETA_PRESENCIA[n.presencia] ?? null;
   const etiqueta = sufijo ? `${n.nombre} (${sufijo})` : n.nombre;
   const w = ctx.measureText(etiqueta).width + 12;
   ctx.fillStyle = fantasma ? "rgba(48,28,10,0.85)" : (n.encarnado ? "rgba(8,14,22,0.85)" : "rgba(8,14,22,0.6)");
@@ -279,10 +298,11 @@ function dibujarNakama(ctx, n, ox, oy) {
   ctx.textAlign = "center";
   ctx.fillText(etiqueta, px, py - 43);
 
-  if (n.estado === "esperando_llave" || n.desvios?.length) {
+  const marca = AVISO[n.presencia] || (n.estado === "esperando_llave" || n.desvios?.length ? "!" : null);
+  if (marca) {
     ctx.font = "bold 15px system-ui, sans-serif";
-    ctx.fillStyle = n.desvios?.length ? "#e0a04a" : "#f2b34a";
-    ctx.fillText("!", px, py - 62);
+    ctx.fillStyle = n.presencia === "discordante" ? "#e0714a" : (n.desvios?.length ? "#e0a04a" : "#f2b34a");
+    ctx.fillText(marca, px, py - 62);
   }
 }
 

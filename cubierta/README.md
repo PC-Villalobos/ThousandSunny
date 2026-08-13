@@ -81,7 +81,11 @@ curl -X POST http://127.0.0.1:8788/api/senal \
 una sala concreta (`world/constituciones.json`), y el motor calcula la ruta,
 baja escaleras y cruza cubiertas hasta llegar.
 
-Un agente que no vuelve a latir en 2 minutos pasa a **fantasma** (ver el Vigia).
+Un agente que no vuelve a latir en 2 minutos pasa a **fantasma** —o a **mudo**,
+si su proceso sigue vivo (ver el Vigia y el pulso real).
+
+Si ademas declara su `pid`, el barco puede **comprobar** que existe en vez de
+creerselo, y ese agente pasa de `declarado` a `a_bordo`.
 
 ## Las salas
 
@@ -107,21 +111,97 @@ hecho geometria. Hay cuatro pruebas sobre esto.
 
 ## Constantes vitales
 
-Cada vital declara su tinta (`medido`, `calculado`, `inferido`, `evaluado`,
-`propuesto`, `desconocido`) y su fuente. Si el dato no existe, sale `null` con
-tinta `desconocido` y un motivo. Nunca se estima nada para rellenar el hueco.
+Cada vital lleva **dos** etiquetas, y hacen falta las dos:
 
-| Vital | De donde sale | Tinta |
+- **tinta** — como se derivo el numero: `medido`, `calculado`, `inferido`,
+  `evaluado`, `propuesto`, `desconocido`.
+- **origen** — quien responde de el: `observado` (lo midio el barco),
+  `declarado` (lo afirma el agente y nadie lo ha comprobado), `no_observable`
+  o `sin_dato`.
+
+Un mismo "medido" no vale igual si lo midio el barco que si lo dice el actor de
+si mismo. Antes del corte de pulso real todo lo autodeclarado se pintaba como
+`medido` a secas, y esa era la mentira de fondo del tablero.
+
+| Vital | De donde sale | Origen |
 |---|---|---|
-| pulso | `tokens_por_s` de la senal / `eval_count` de Ollama | medido |
-| latencia | `latencia_ms` / `total_duration` | medido |
-| carga de contexto | contexto ocupado sobre ventana | calculado |
-| errores en ventana | contador de la senal | medido |
-| residencia | `size_vram` de `/api/ps` | medido |
-| fusion | racha actor+personaje del `sleep_ledger.jsonl` | calculado |
+| pulso | almacen medido (cosecha de `hablar.mjs`); si no hay muestra, lo que declara el agente | `observado` / `declarado` |
+| latencia | igual que el pulso | `observado` / `declarado` |
+| carga de contexto | solo la declara el agente | `declarado` |
+| errores en ventana | solo los declara el agente | `declarado` |
+| residencia | `size_vram` de `/api/ps` | `observado` / `no_observable` |
+| memoria | RSS del proceso donde se pueda leer | `observado` / `no_observable` |
+| fusion | racha actor+personaje del `sleep_ledger.jsonl` | `observado` |
+
+Si el dato no existe, sale `null` con tinta `desconocido` y un motivo. Nunca se
+estima nada para rellenar el hueco.
 
 "Pulso" es un nombre bonito para tokens por segundo. No es una prueba de que ahi
 dentro lata algo, y la ficha del NPC siempre ensena el numero crudo.
+
+## Pulso real: `declarado` frente a `observado`
+
+Encargo: `docs/architecture/ENCARGO_PULSO_REAL.md` (v0.2).
+
+La presencia lleva **dos ejes separados**: lo que el agente dice de si mismo y lo
+que el barco midio por su cuenta. `observado` no es un booleano del personaje:
+es un estado **por eje**, y un mismo nakama puede estar observado en liveness,
+`no_observable` en memoria y `declarado` en throughput a la vez.
+
+| | con algun eje observado | sin ningun eje observado |
+|---|---|---|
+| **latido fresco** | `a_bordo` | `declarado` |
+| **sin latido** | `mudo` | `fantasma` |
+
+Los cinco ejes son `liveness`, `residencia`, `throughput`, `memoria` y
+`escritura`, y cada uno vale `observado`, `declarado`, `no_observable` o
+`sin_dato`. `no_observable` (el instrumento no llega) y `sin_dato` (llega y no ve
+nada) **no son lo mismo** y no se funden.
+
+### Las tres sondas
+
+| Sonda | Mide | Como |
+|---|---|---|
+| proceso | liveness, memoria | `process.kill(pid, 0)` sobre el pid que el agente declara **para si mismo**. Portable a Windows; nunca `/proc`. La RSS degrada a `no_observable` donde no se pueda leer, y no se estima |
+| Ollama | residencia | contraste con `/api/ps`, con jurisdiccion limitada a actores servidos por Ollama |
+| bitacora | escritura | delta del contador de eventos: la unica medida que sobrevive si el agente es remoto |
+
+Y una cuarta fuente que no es una sonda sino una **cosecha**: cuando el Capitan
+conversa con un nakama, Ollama devuelve `eval_count`, `eval_duration` y
+`load_duration` reales. Antes se descartaban; ahora se guardan. El barco mide lo
+que el mismo causa.
+
+### El almacen medido
+
+Ventana de 600 s. Una tasa exige 3 muestras; con 1 o 2 se publica la ultima
+cruda etiquetada, nunca una media que aparente tendencia. Fuera de ventana la
+muestra **se descarta** y el vital vale `null` con la fecha de la ultima medida.
+Prohibido el ultimo valor conocido sin sello de antiguedad: un numero medido
+hace nueve minutos, pintado sin fecha, es una mentira con procedencia
+falsificada.
+
+### `discordante`
+
+Cuando un instrumento **alcanzable** contradice lo declarado. Tres casos y solo
+tres: **D1** proceso declarado inexistente, **D2** residencia incompatible, **D3**
+produccion declarada sin ninguna corroboracion.
+
+Lo gobierna una regla por encima de las tres: **la ausencia de medicion nunca es
+contradiccion**. Si la sonda no responde, el eje es `no_observable` y no se
+emite nada. Y ninguna se evalua contra una afirmacion muerta: hace falta latido
+fresco y trabajo en curso, porque un agente que cierra limpio y apaga su proceso
+se estaba comportando bien.
+
+`discordante` es el **unico** veredicto que no se mueve: ahi el movimiento seria
+activamente enganoso. Suena en el puente y lo sentencia el Capitan, como
+cualquier desvio.
+
+### `chopper-salud`
+
+`GET /api/salud`. Regla dura inversa: **no lee `senal.vitales`**. Todo numero
+sale de una sonda o del almacen. Sabe decir "no puedo medirte" por nakama y por
+eje. Con todas las sondas caidas no devuelve ni un numero, y hay una prueba que
+lo verifica.
 
 ## El Vigia — ver sin vigilar
 
@@ -137,6 +217,10 @@ puede seguir dibujado en el barco y estar declarado fantasma.
 | `en_puerto` | nunca emitio senal: no ha embarcado, no ha desertado |
 | `a_bordo` | latido de menos de 2 minutos |
 | `amarrado` | cerro su tarea y luego callo: silencio limpio |
+| `declarado` | latido fresco, ningun eje observado: creible, no verificado |
+| `mudo` | su proceso sigue vivo y dejo de reportar: vivo pero callado |
+| `discordante` | lo declarado y lo medido no cuadran |
+| `no_observable` | fuera del alcance de los instrumentos. **Nunca suena** |
 | `fantasma` | dijo que trabajaba y dejo de latir: **se le ve, no se le verifica** |
 | `a_la_deriva` | silencio mas largo que la ventana de observacion |
 
@@ -175,7 +259,8 @@ buscarlo y lo ves cruzar el barco.
 | `POST /api/recado` | crear un recado a mano |
 | `POST /api/llave` | el Capitan concede o deniega la camara sellada |
 | `POST /api/veredicto` | el Capitan sentencia un desvio: fertil o decae |
-| `POST /api/hablar` | conversar con un nakama |
+| `POST /api/hablar` | conversar con un nakama (y cosechar sus tiempos reales) |
+| `GET /api/salud` | parte de chopper-salud: solo lo medido, por eje |
 
 ## Pruebas
 
@@ -183,7 +268,11 @@ buscarlo y lo ves cruzar el barco.
 node cubierta/test/test_cubierta.mjs
 ```
 
-20 pruebas. Las que importan no comprueban que el dibujo sea bonito, sino que el
+```bash
+node cubierta/test/test_pulso.mjs
+```
+
+62 pruebas entre las dos suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
 mundo no pueda mentir: que nadie se mueva sin actor, que nadie entre en la camara
 sellada, y que un dato ausente salga como `desconocido` y no como un numero.
 

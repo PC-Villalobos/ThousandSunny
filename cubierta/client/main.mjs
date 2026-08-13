@@ -354,14 +354,20 @@ function pintarDialogo(id) {
     + (n.actor ? ` · encarnado por ${n.actor}` : " · sin actor")
     + (n.latido ? ` · latido ${edad(n.latido_edad_ms)}` : "");
 
+  // Dos etiquetas por vital: la tinta dice COMO se derivo el numero; el origen
+  // dice QUIEN responde de el. Un "medido" del barco no vale lo mismo que un
+  // "medido" que el actor afirma de si mismo.
   $("d-vitales").innerHTML = n.vitales.map((v) => `
     <span class="vital ${v.valor === null ? "sin" : ""}" title="${esc(v.motivo || v.fuente)}">
       ${esc(v.nombre)}: <span class="v">${v.valor === null ? "—" : esc(`${v.valor} ${v.unidad}`)}</span>
-      <span class="tinta ${esc(v.tinta)}">${esc(v.tinta)}</span>
+      <span class="tinta ${esc(v.origen || v.tinta)}">${esc(v.origen || v.tinta)}</span>
     </span>`).join("");
 
   const partes = [];
   if (n.presencia_motivo) partes.push(`[vigia] ${n.presencia_motivo}`);
+  for (const c of n.contradicciones || []) {
+    partes.push(`[${c.codigo}] declara "${c.declarado}" y se observa que ${c.observado} — veredicto ${c.veredicto}`);
+  }
   for (const d of n.desvios || []) partes.push(`[desvio] ${d.detalle} — veredicto ${d.veredicto}`);
   if (n.recado) partes.push(`[recado] ${n.recado.objetivo} — ${n.recado.estado}${n.recado.motivo ? `: ${n.recado.motivo}` : ""}`);
   if (partes.length) {

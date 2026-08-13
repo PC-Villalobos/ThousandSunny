@@ -5,8 +5,9 @@ trabajo; no lo ejecuta. La aprobación de este encargo no es su GO: ejecutarlo
 requiere un GO propio del Capitán, como en el encargo de C0.
 
 ```yaml
-version: 0.1-encargo
-estado: borrador, pendiente de revision y de GO propio
+version: 0.2-encargo
+estado: ejecutado (GO del Capitan 2026-08-13); v0.2 recoge los refinamientos
+  que la ejecucion obligo a hacer sobre v0.1
 chronos:
   occurred_at: 2026-08-13
   recorded_at: 2026-08-13
@@ -130,6 +131,19 @@ Hacerla sonar sería la alerta sin target que prohíbe la ley de la casa.
 Sin esta regla, el sistema se convierte en una máquina de falsas alarmas la
 primera vez que se caiga una sonda.
 
+### 4.1.1 Precondición común a D1, D2 y D3 *(v0.2)*
+
+Las tres exigen, además, que la afirmación contradicha **esté viva**:
+
+- **latido fresco** — sin él no hay afirmación que contradecir;
+- **y trabajo en curso** — si la última señal declara cierre limpio (`termino` o
+  `disponible`), no se evalúa ninguna contradicción.
+
+Sin esto, todo agente que termina bien y apaga su proceso quedaba marcado
+`discordante` durante los dos minutos que su último latido sigue fresco. Se
+detectó **ejecutando** el corte, no diseñándolo: es exactamente la falsa alarma
+que 4.1 prohíbe, entrando por la puerta de atrás.
+
 ### 4.2 Las tres contradicciones que cuentan
 
 Sólo estas tres. Cualquier otra queda fuera del encargo.
@@ -148,6 +162,11 @@ Sólo estas tres. Cualquier otra queda fuera del encargo.
   `FRESCURA_SONDA_PS` de antigüedad **y** es posterior al latido declarado. Un
   modelo puede ser desalojado entre el trabajo y la comprobación; eso es una
   carrera, no una mentira.
+- **Guarda de jurisdicción *(v0.2)*:** la sonda sólo tiene autoridad sobre
+  actores servidos por Ollama, comprobado contra `/api/tags`. Un actor
+  `claude-code` no tiene residencia que verificar ahí, y tratar su ausencia como
+  contradicción habría acusado a **todo agente que no sea local**. Fuera de esa
+  jurisdicción, el eje es `no_observable`.
 
 **D3 — Producción declarada sin ninguna corroboración.**
 - Condición: la señal declara `tokens_por_s > 0` y, dentro de
@@ -253,8 +272,13 @@ Sin arte nuevo. Sólo cómo se dibuja lo que ya existe:
 | `declarado` | sí | **aro hueco**: creíble, no verificado |
 | `mudo` | no | sólido y congelado, marca propia |
 | `discordante` | **no** | marca de contradicción, suena |
-| `no_observable` | sí, si hay latido | aro hueco con marca de fuera de alcance |
+| `no_observable` | no (ver nota) | aro hueco con marca de fuera de alcance |
 | `fantasma` / `a_la_deriva` | no | translúcido sin sombra (como hoy) |
+
+*Nota (v0.2): la fila de `no_observable` decía en v0.1 "sí, si hay latido". Es
+inalcanzable por la derivación de 3.2: con latido fresco y todos los ejes
+`no_observable`, el veredicto es `declarado` (regla 5). En la práctica
+`no_observable` sólo aparece sin latido, y por tanto no se mueve.*
 
 **La regla dura no se toca.** Nunca dijo "medido", dijo **latido verificado**.
 Este encargo añade un eje, no sustituye el existente: la verificación cambia
@@ -343,6 +367,16 @@ depender sólo de `POST /api/senal` si puede depender de una fuente medida.*
 
 ## Registro de versiones
 
+- v0.2 (2026-08-13): recoge los refinamientos que aparecieron **ejecutando** el
+  corte, no disenandolo. (1) Precondicion comun 4.1.1: las tres contradicciones
+  exigen latido fresco y trabajo en curso; sin ella, todo agente que cierra bien
+  y apaga su proceso se marcaba `discordante`. (2) Guarda de jurisdiccion en D2:
+  la sonda de residencia solo manda sobre actores servidos por Ollama,
+  comprobado contra `/api/tags`; sin ella se habria acusado a todo agente no
+  local. (3) Correccion de la fila `no_observable` de la seccion 7, inalcanzable
+  por la derivacion de 3.2. (4) El almacen conserva la marca de la ultima
+  muestra aunque la pode, para poder fechar el "fuera de ventana" que la propia
+  seccion 6 exige.
 - v0.1 (2026-08-13): encargo inicial. Incorpora los tres endurecimientos de
   Codex sobre el diseño previo: (1) contrato de `discordante` cerrado en tres
   contradicciones con umbrales con nombre y no-casos explícitos, gobernado por

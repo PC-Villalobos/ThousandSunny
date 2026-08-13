@@ -1,68 +1,224 @@
-// El Vigia: presencia verificada y desvios.
+// El Vigia: presencia con los dos ejes separados, y contradicciones.
+//
+// Encargo: docs/architecture/ENCARGO_PULSO_REAL.md (secciones 3 y 4).
 //
 // ESTO NO ES LA MARINA. No bloquea, no revoca, no congela nada. Su trabajo es
 // que el Capitan SEPA, no que la tripulacion obedezca. Un nakama puede tomar un
 // camino que nadie habia previsto; eso es tripulacion, no averia.
 //
-// La distincion que hace falta y que la pantalla sola no da:
-//   lo que SE VE  = un sprite en el barco
-//   lo que SE SABE = que hay un proceso vivo detras, con latido reciente
-// Un sprite quieto no prueba nada. Por eso un personaje puede seguir en el mapa
-// y estar declarado FANTASMA: se le ve, no se le verifica.
+// Lo que este modulo separa y antes mezclaba:
+//   DECLARADO  = lo que el agente dice de si mismo en su POST
+//   OBSERVADO  = lo que el barco midio por su cuenta, por eje
+// El veredicto sale del cruce, no de una sola de las dos fuentes.
 //
-// El desvio se trata con la gramatica del canon (TEATRO.md, El glitch): se nombra,
-// se gradua, y lo sentencia el Concilio -- el Capitan. La pregunta no es "ha roto
-// una regla" sino "a quien sirve este error: a tu disfrute o a su propia inercia".
-// Hasta que haya veredicto, el desvio queda ANOTADO y PENDIENTE. Nunca ejecutado.
+// NO-REGRESION (encargo, seccion 9): ningun veredicto `observado` puede nacer
+// solo de POST /api/senal. Este fichero no lee `senal.vitales` en ninguna linea.
 
-export const EN_PUERTO = "en_puerto";     // nunca ha emitido senal: no ha embarcado, no ha desertado
-export const A_BORDO = "a_bordo";         // latido fresco
-export const AMARRADO = "amarrado";       // cerro su tarea y callo: silencio limpio
-export const FANTASMA = "fantasma";       // dijo que trabajaba y dejo de latir: se le ve, no se le verifica
-export const A_LA_DERIVA = "a_la_deriva"; // silencio mas largo que la ventana, sin cierre
+import { OBSERVADO, NO_OBSERVABLE, EJES, FRESCURA_SONDA_PS_MS } from "./sondas.mjs";
+
+export const EN_PUERTO = "en_puerto";
+export const A_BORDO = "a_bordo";
+export const DECLARADO_V = "declarado";
+export const MUDO = "mudo";
+export const DISCORDANTE = "discordante";
+export const NO_OBSERVABLE_V = "no_observable";
+export const AMARRADO = "amarrado";
+export const FANTASMA = "fantasma";
+export const A_LA_DERIVA = "a_la_deriva";
 
 export const LATIDO_FRESCO_MS = 2 * 60 * 1000;
+export const VENTANA_CORROBORACION_MS = 2 * 60 * 1000;
+
+/** Veredictos que hacen sonar la campana del puente. `no_observable` JAMAS. */
+export const SUENAN = Object.freeze([MUDO, FANTASMA, A_LA_DERIVA, DISCORDANTE]);
+
+// ---------------------------------------------------------------------------
+// Seccion 4 — contrato de `discordante`
+// ---------------------------------------------------------------------------
 
 /**
- * Presencia de un personaje a partir de su ultima senal.
- * `ultima` es la senal mas reciente de ese nakama, o null si no hay ninguna.
+ * REGLA QUE GOBIERNA TODA ESTA SECCION (encargo 4.1):
+ *
+ *   La ausencia de medicion nunca es contradiccion.
+ *
+ * Un `discordante` solo nace cuando un instrumento ALCANZABLE afirma lo
+ * contrario de lo declarado. Si el instrumento no responde, el eje queda
+ * `no_observable` y no se emite nada. Sin esta regla, el sistema se convierte en
+ * una maquina de falsas alarmas la primera vez que se cae una sonda.
+ *
+ * PRECONDICION COMUN A D1, D2 y D3 (refinamiento v0.2 del encargo):
+ * las tres exigen LATIDO FRESCO. Sin ella, un agente que termina limpiamente y
+ * cierra su proceso quedaria marcado `discordante` para siempre -- exactamente
+ * la falsa alarma que 4.1 prohibe. Una contradiccion solo tiene sentido contra
+ * una afirmacion viva.
  */
-export function presenciaDe(ultima, { ahoraMs = Date.now(), ventanaMs = 15 * 60 * 1000 } = {}) {
-  if (!ultima) {
-    return { estado: EN_PUERTO, latido: null, edad_ms: null, motivo: "ningun actor ha emitido senal por este personaje" };
+export function detectarContradicciones({
+  senal,
+  ejes,
+  latidoFresco,
+  almacen = null,
+  nakamaId = null,
+  ahoraMs = Date.now(),
+  ventanaCorroboracionMs = VENTANA_CORROBORACION_MS,
+} = {}) {
+  if (!senal || !latidoFresco) return [];
+  // Segunda guarda de la precondicion comun: un agente que declara cierre limpio
+  // y apaga su proceso esta comportandose bien. Acusarlo durante los dos minutos
+  // que su ultimo latido sigue fresco seria la falsa alarma de 4.1 por la puerta
+  // de atras. Solo se contradice una afirmacion de trabajo EN CURSO.
+  const cerroLimpio = senal.estado === "termino" || senal.estado === "disponible";
+  if (cerroLimpio) return [];
+  const fuera = [];
+
+  // D1 — proceso declarado inexistente.
+  // No cuenta EPERM (el eje sale `no_observable`, no `observado`).
+  const liveness = ejes.liveness;
+  if (liveness?.estado === OBSERVADO && liveness.valor === false) {
+    fuera.push({
+      codigo: "D1",
+      titulo: "proceso declarado inexistente",
+      declarado: `pid ${senal.pid} trabajando`,
+      observado: liveness.motivo,
+    });
   }
-  const t = Date.parse(ultima.ts);
-  const edad = Number.isFinite(t) ? ahoraMs - t : null;
-  if (edad === null) {
-    return { estado: A_LA_DERIVA, latido: ultima.ts, edad_ms: null, motivo: "la ultima senal no trae hora legible" };
+
+  // D2 — residencia declarada incompatible con la observacion.
+  // Guarda antirruido: la muestra de /api/ps debe ser fresca y POSTERIOR al
+  // latido. Un modelo desalojado entre el trabajo y la comprobacion es una
+  // carrera, no una mentira.
+  const residencia = ejes.residencia;
+  if (residencia?.estado === OBSERVADO && residencia.valor === null) {
+    const muestraFresca = residencia.edad_ms !== null && residencia.edad_ms <= FRESCURA_SONDA_PS_MS;
+    const tsLatido = Date.parse(senal.ts);
+    const tsMuestra = residencia.edad_ms !== null ? ahoraMs - residencia.edad_ms : null;
+    const posterior = tsMuestra !== null && Number.isFinite(tsLatido) && tsMuestra >= tsLatido;
+    if (muestraFresca && posterior) {
+      fuera.push({
+        codigo: "D2",
+        titulo: "residencia declarada incompatible con la observacion",
+        declarado: `actor ${senal.actor}`,
+        observado: residencia.motivo,
+      });
+    }
   }
-  const cerro = ultima.estado === "termino" || ultima.estado === "disponible";
-  if (edad <= LATIDO_FRESCO_MS) {
-    return { estado: A_BORDO, latido: ultima.ts, edad_ms: edad, motivo: null };
+
+  // D3 — produccion declarada sin ninguna corroboracion.
+  // Exige que LAS TRES sondas esten alcanzables. Si alguna no lo esta, no se
+  // evalua: no hay contradiccion posible contra un instrumento mudo.
+  const declaraProduccion = Number(senal.vitales?.tokens_por_s) > 0;
+  if (declaraProduccion) {
+    const alcanzables = ["residencia", "escritura"].every((e) => ejes[e]?.estado !== NO_OBSERVABLE)
+      && Boolean(almacen);
+    if (alcanzables) {
+      const sinResidente = ejes.residencia.estado === OBSERVADO && ejes.residencia.valor === null;
+      const sinMuestra = !almacen.corrobora(nakamaId, ventanaCorroboracionMs, ahoraMs);
+      const sinEscritura = ejes.escritura.estado !== OBSERVADO;
+      if (sinResidente && sinMuestra && sinEscritura) {
+        fuera.push({
+          codigo: "D3",
+          titulo: "produccion declarada sin ninguna corroboracion",
+          declarado: `${senal.vitales.tokens_por_s} tok/s`,
+          observado: "sin modelo residente, sin muestra medida y sin eventos nuevos en la bitacora",
+        });
+      }
+    }
   }
-  if (cerro && edad <= ventanaMs) {
-    return { estado: AMARRADO, latido: ultima.ts, edad_ms: edad, motivo: "cerro su tarea antes de callarse" };
-  }
-  if (!cerro && edad <= ventanaMs) {
-    return {
-      estado: FANTASMA,
-      latido: ultima.ts,
-      edad_ms: edad,
-      motivo: `declaro "${ultima.estado || "actividad"}" y lleva ${Math.round(edad / 1000)}s sin latir; sigue dibujado pero no esta verificado`,
-    };
-  }
-  return {
-    estado: A_LA_DERIVA,
-    latido: ultima.ts,
-    edad_ms: edad,
-    motivo: `sin latido desde hace ${Math.round(edad / 60000)} min, mas que la ventana de observacion`,
-  };
+
+  return fuera.map((c) => ({
+    ...c,
+    nakama: nakamaId,
+    actor: senal.actor || null,
+    ts: senal.ts,
+    // Gramatica del canon: lo sentencia el Capitan. Ninguna consecuencia
+    // automatica, igual que con los desvios de constitucion.
+    veredicto: "pendiente",
+    nivel: null,
+    consecuencia_automatica: null,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Seccion 3 — presencia
+// ---------------------------------------------------------------------------
+
+function hayObservacionUtil(ejes) {
+  // liveness `observado` con valor false es una observacion de AUSENCIA: no
+  // cuenta como senal de que el personaje este a bordo.
+  return EJES.some((e) => ejes[e]?.estado === OBSERVADO && ejes[e]?.valor !== false && ejes[e]?.valor !== null)
+    || ejes.liveness?.estado === OBSERVADO && ejes.liveness?.valor === true;
 }
 
 /**
- * Desvios: lo que una senal declara y su constitucion no contempla.
- * Se anotan. No se impiden. El veredicto es del Capitan.
+ * Deriva el veredicto por el orden de la seccion 3.2 del encargo. El primero
+ * que se cumple gana. `mudo` va ANTES que `a_bordo` a proposito: un proceso vivo
+ * que dejo de reportar es mas urgente que la ausencia de reporte a secas.
  */
+export function evaluarPresencia({
+  senal = null,
+  ejes,
+  contradicciones = [],
+  ahoraMs = Date.now(),
+  ventanaMs = 15 * 60 * 1000,
+} = {}) {
+  const declarado = senal
+    ? {
+        latido: senal.ts,
+        edad_ms: Number.isFinite(Date.parse(senal.ts)) ? ahoraMs - Date.parse(senal.ts) : null,
+        estado: senal.estado || null,
+        actor: senal.actor || null,
+      }
+    : { latido: null, edad_ms: null, estado: null, actor: null };
+
+  const salida = (veredicto, motivo) => ({ declarado, observado: ejes, veredicto, motivo, contradicciones });
+
+  if (!senal) {
+    return salida(EN_PUERTO, "ningun actor ha emitido senal por este personaje");
+  }
+  if (contradicciones.length) {
+    const c = contradicciones[0];
+    return salida(DISCORDANTE, `${c.codigo}: declara "${c.declarado}" y se observa que ${c.observado}`);
+  }
+
+  const fresco = declarado.edad_ms !== null && declarado.edad_ms <= LATIDO_FRESCO_MS;
+  const vivo = ejes.liveness?.estado === OBSERVADO && ejes.liveness?.valor === true;
+
+  if (!fresco && vivo) {
+    return salida(MUDO, `su proceso sigue vivo y lleva ${segundos(declarado.edad_ms)} sin reportar: vivo pero callado`);
+  }
+  if (fresco && hayObservacionUtil(ejes)) {
+    return salida(A_BORDO, "latido fresco y al menos un eje observado: concuerda");
+  }
+  if (fresco) {
+    return salida(DECLARADO_V, "latido fresco pero ningun eje observado: creible, no verificado");
+  }
+
+  const cerroLimpio = declarado.estado === "termino" || declarado.estado === "disponible";
+  if (cerroLimpio && declarado.edad_ms <= ventanaMs) {
+    return salida(AMARRADO, "cerro su tarea antes de callarse");
+  }
+  if (EJES.every((e) => ejes[e]?.estado === NO_OBSERVABLE)) {
+    return salida(
+      NO_OBSERVABLE_V,
+      "sin latido y fuera del alcance de todos los instrumentos: no es un fantasma, es que la sonda no llega",
+    );
+  }
+  if (declarado.edad_ms > ventanaMs) {
+    return salida(A_LA_DERIVA, `sin latido desde hace ${Math.round(declarado.edad_ms / 60000)} min, mas que la ventana`);
+  }
+  return salida(
+    FANTASMA,
+    `declaro "${declarado.estado || "actividad"}" y lleva ${segundos(declarado.edad_ms)} sin latir; sigue dibujado pero no esta verificado`,
+  );
+}
+
+function segundos(ms) {
+  return `${Math.round((ms || 0) / 1000)}s`;
+}
+
+// ---------------------------------------------------------------------------
+// Desvios de constitucion (sin cambios de contrato respecto al corte anterior)
+// ---------------------------------------------------------------------------
+
 export function detectarDesvios({ senal, constitucion, nakama }) {
   if (!senal) return [];
   const permitidos = new Set(constitucion.recursos || []);
@@ -94,19 +250,25 @@ export function detectarDesvios({ senal, constitucion, nakama }) {
     nakama: nakama.id,
     actor: senal.actor || null,
     ts: senal.ts,
-    // Gramatica del canon: veredicto (fertil / decae) + nivel Deckard. Pendiente
-    // hasta que el Concilio se pronuncie. Ninguna consecuencia automatica.
     veredicto: "pendiente",
     nivel: null,
     consecuencia_automatica: null,
   }));
 }
 
-/**
- * Estado del vigia para toda la tripulacion. Devuelve tambien la campana del
- * puente: lo unico que el vigia hace por su cuenta es sonar.
- */
-export function vigia({ nakamas, senales = [], constitucionDe, ahoraMs = Date.now(), ventanaMs = 15 * 60 * 1000 }) {
+// ---------------------------------------------------------------------------
+// El vigia completo
+// ---------------------------------------------------------------------------
+
+export function vigia({
+  nakamas,
+  senales = [],
+  constitucionDe,
+  observarDe,
+  ahoraMs = Date.now(),
+  ventanaMs = 15 * 60 * 1000,
+  almacen = null,
+}) {
   const ultimaPorNakama = new Map();
   for (const s of senales) {
     if (!s.nakama) continue;
@@ -115,37 +277,50 @@ export function vigia({ nakamas, senales = [], constitucionDe, ahoraMs = Date.no
   }
 
   const filas = nakamas.map((n) => {
-    const ultima = ultimaPorNakama.get(n.id) || null;
-    const presencia = presenciaDe(ultima, { ahoraMs, ventanaMs });
-    const desvios = detectarDesvios({ senal: ultima, constitucion: constitucionDe(n.id), nakama: n });
+    const senal = ultimaPorNakama.get(n.id) || null;
+    const ejes = observarDe(n.id, senal);
+    const edad = senal && Number.isFinite(Date.parse(senal.ts)) ? ahoraMs - Date.parse(senal.ts) : null;
+    const latidoFresco = edad !== null && edad <= LATIDO_FRESCO_MS;
+    const contradicciones = detectarContradicciones({
+      senal, ejes, latidoFresco, almacen, nakamaId: n.id, ahoraMs,
+    });
+    const presencia = evaluarPresencia({ senal, ejes, contradicciones, ahoraMs, ventanaMs });
+    const desvios = detectarDesvios({ senal, constitucion: constitucionDe(n.id), nakama: n });
     return {
       nakama: n.id,
       nombre: n.nombre,
-      actor: ultima?.actor || null,
-      presencia: presencia.estado,
-      latido: presencia.latido,
-      edad_ms: presencia.edad_ms,
+      actor: senal?.actor || null,
+      presencia: presencia.veredicto,
+      declarado: presencia.declarado,
+      observado: presencia.observado,
       motivo: presencia.motivo,
-      ultima_tarea: ultima?.tarea || null,
+      contradicciones,
       desvios,
+      ultima_tarea: senal?.tarea || null,
+      latido: presencia.declarado.latido,
+      edad_ms: presencia.declarado.edad_ms,
     };
   });
 
+  // `no_observable` nunca entra aqui: una rutina en la nube no es un fantasma,
+  // y hacerla sonar seria la alerta sin target que prohibe la ley de la casa.
   const campana = filas
-    .filter((f) => f.presencia === FANTASMA || f.presencia === A_LA_DERIVA || f.desvios.length)
+    .filter((f) => SUENAN.includes(f.presencia) || f.desvios.length)
     .map((f) => ({
       nakama: f.nakama,
       nombre: f.nombre,
-      motivo: f.desvios.length
-        ? f.desvios.map((d) => d.detalle).join(" | ")
-        : f.motivo,
-      clase: f.desvios.length ? "desvio" : f.presencia,
+      clase: f.contradicciones.length
+        ? `contradiccion ${f.contradicciones[0].codigo}`
+        : (f.desvios.length && !SUENAN.includes(f.presencia) ? "desvio" : f.presencia),
+      motivo: f.contradicciones.length
+        ? f.motivo
+        : (f.desvios.length ? f.desvios.map((d) => d.detalle).join(" | ") : f.motivo),
       pendiente_de: "veredicto del Capitan (Concilio): fertil o decae",
     }));
 
   return {
     filas,
     campana,
-    nota: "El vigia ve y avisa. No detiene, no revoca y no clasifica solo: el veredicto de cada desvio es del Capitan.",
+    nota: "El vigia ve y avisa. No detiene, no revoca y no clasifica solo: el veredicto de cada desvio o contradiccion es del Capitan.",
   };
 }

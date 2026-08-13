@@ -14,7 +14,26 @@ import { construirMapa, buscarRuta, buscarRutaEntreCubiertas, construirMapas, pu
 import { MURO, PUERTA, SELLADO, INTERIOR } from "../shared/mapa.mjs";
 import { Mundo } from "../server/mundo.mjs";
 import { calcularVitales, calcularClima } from "../server/vitales.mjs";
-import { presenciaDe, detectarDesvios, vigia, FANTASMA, AMARRADO, EN_PUERTO } from "../server/latido.mjs";
+import {
+  evaluarPresencia, detectarDesvios, vigia,
+  FANTASMA, AMARRADO, EN_PUERTO, A_BORDO,
+} from "../server/latido.mjs";
+import { NO_OBSERVABLE, SIN_DATO, OBSERVADO, EJES } from "../server/sondas.mjs";
+
+// El vigia ahora exige sondas. Estas pruebas son del corte anterior (presencia
+// declarada), asi que corren con el barco a ciegas: sin ningun eje observado,
+// que es justo el escenario en el que aquellas reglas se definieron.
+function ejesCiegos() {
+  return Object.fromEntries(EJES.map((e) => [e, { estado: NO_OBSERVABLE, valor: null, fuente: "x", motivo: "sin sonda en esta prueba", edad_ms: null }]));
+}
+function ejesConEscritura() {
+  return { ...ejesCiegos(), escritura: { estado: SIN_DATO, valor: null, fuente: "bitacora", motivo: "sin eventos nuevos", edad_ms: null } };
+}
+function presenciaDe(senal, opciones = {}) {
+  // El equivalente del corte anterior: una sonda alcanzable que no ve nada, para
+  // que `no_observable` no se coma los veredictos por silencio de instrumentos.
+  return evaluarPresencia({ senal, ejes: ejesConEscritura(), ...opciones });
+}
 import { extraerRecado, hablar } from "../server/hablar.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
@@ -229,21 +248,21 @@ await prueba("sin fuentes, el clima es desconocido y no inventa un porcentaje", 
 process.stdout.write("\nEl vigia: ver sin vigilar\n");
 
 await prueba("quien nunca emitio senal esta en puerto, no desertado", () => {
-  const p = presenciaDe(null);
+  const p = presenciaDe(null).veredicto ? { estado: presenciaDe(null).veredicto } : null;
   assert.equal(p.estado, EN_PUERTO);
 });
 
 await prueba("quien dijo que trabajaba y dejo de latir sale FANTASMA", () => {
   const ahoraMs = Date.now();
   const p = presenciaDe({ ts: new Date(ahoraMs - 5 * 60 * 1000).toISOString(), estado: "trabajando" }, { ahoraMs });
-  assert.equal(p.estado, FANTASMA);
+  assert.equal(p.veredicto, FANTASMA);
   assert.match(p.motivo, /sigue dibujado pero no esta verificado/);
 });
 
 await prueba("quien cerro su tarea antes de callarse sale amarrado, no fantasma", () => {
   const ahoraMs = Date.now();
   const p = presenciaDe({ ts: new Date(ahoraMs - 5 * 60 * 1000).toISOString(), estado: "termino" }, { ahoraMs });
-  assert.equal(p.estado, AMARRADO);
+  assert.equal(p.veredicto, AMARRADO);
 });
 
 await prueba("un desvio se anota como pendiente y sin consecuencia automatica", () => {
@@ -263,8 +282,13 @@ await prueba("un fantasma NO anda: el movimiento exige latido verificado", () =>
   const ahoraMs = Date.now();
   // Robin dijo que trabajaba hace 5 minutos y dejo de latir.
   const senales = [{ nakama: "robin", actor: "claude-code", estado: "trabajando", ts: new Date(ahoraMs - 5 * 60 * 1000).toISOString() }];
-  const g = vigia({ nakamas: tripulacion.nakamas, senales, constitucionDe: (id) => mundo.constitucionDe(id), ahoraMs });
-  const verificados = new Set(g.filas.filter((f) => f.presencia === "a_bordo").map((f) => f.nakama));
+  const g = vigia({
+    nakamas: tripulacion.nakamas, senales,
+    constitucionDe: (id) => mundo.constitucionDe(id),
+    observarDe: () => ejesConEscritura(),
+    ahoraMs,
+  });
+  const verificados = new Set(g.filas.filter((f) => f.presencia === A_BORDO).map((f) => f.nakama));
   assert.equal(verificados.has("robin"), false, "un fantasma no cuenta como encarnado verificado");
 
   const puesto = [...mundo.posiciones.get("robin").tile];
@@ -283,6 +307,7 @@ await prueba("la campana suena por fantasmas y desvios, y solo por eso", () => {
       { nakama: "nami", actor: "claude-code", estado: "trabajando", ts: new Date(ahoraMs - 10 * 1000).toISOString() },
     ],
     constitucionDe: (id) => mundo.constitucionDe(id),
+    observarDe: () => ejesConEscritura(),
     ahoraMs,
   });
   const nombres = g.campana.map((c) => c.nakama);

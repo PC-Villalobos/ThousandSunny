@@ -14,7 +14,10 @@ import { fileURLToPath } from "node:url";
 import { Mundo } from "./mundo.mjs";
 import { leerFuentes, leerSenales } from "./adaptadores.mjs";
 import { calcularVitales, calcularClima } from "./vitales.mjs";
-import { vigia, A_BORDO } from "./latido.mjs";
+import { vigia, A_BORDO, DECLARADO_V } from "./latido.mjs";
+import { AlmacenMedido } from "./almacen.mjs";
+import { observarEjes } from "./sondas.mjs";
+import { informeSalud } from "./salud.mjs";
 import { hablar, backendConfigurado } from "./hablar.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
@@ -35,6 +38,8 @@ const tripulacion = JSON.parse(await readFile(path.join(CUBIERTA, "world", "trip
 const constituciones = JSON.parse(await readFile(path.join(CUBIERTA, "world", "constituciones.json"), "utf8"));
 
 const mundo = new Mundo({ barco, tripulacion, constituciones });
+const almacen = new AlmacenMedido();
+let contadorBitacoraPrevio = null;
 
 let fuentes = [];
 let senalesReplay = [];
@@ -91,12 +96,15 @@ async function sondear() {
     }];
     return;
   }
+  // El delta de escritura compara contra la pasada anterior, no contra si mismo.
+  const anterior = fuente("bitacora")?.datos?.eventos;
   fuentes = await leerFuentes({
     raiz: RAIZ,
     ficheroSenales: FICHERO_SENALES,
     ollamaUrl: process.env.OLLAMA_URL,
     bitacoraUrl: process.env.BITACORA_URL,
   });
+  if (Number.isFinite(anterior)) contadorBitacoraPrevio = anterior;
 }
 
 function fuente(id) {
@@ -120,49 +128,81 @@ function todasLasSenales() {
 }
 
 /**
- * Quien puede moverse: SOLO quien tiene latido verificado (a_bordo).
- * Un fantasma sigue dibujado en el barco, pero no anda. Que su sprite caminase
- * porque hace diez minutos dijo que trabajaba seria exactamente la mentira que
- * este sistema existe para no contar.
+ * Observa los cinco ejes de un personaje. Esta funcion es la UNICA puerta por la
+ * que puede entrar un `observado`, y no toca `senal.vitales` en ningun punto
+ * (no-regresion del encargo, seccion 9).
  */
-function encarnadosVerificados() {
-  const g = vigia({
+function observarDe(nakamaId, senal) {
+  return observarEjes({
+    senal,
+    fuenteOllama: fuente("ollama"),
+    fuenteBitacora: fuente("bitacora"),
+    contadorBitacoraPrevio,
+    lecturaThroughput: almacen.lectura(nakamaId, "tokens_por_s"),
+  });
+}
+
+function pasarVigia() {
+  return vigia({
     nakamas: tripulacion.nakamas,
     senales: todasLasSenales(),
     constitucionDe: (id) => mundo.constitucionDe(id),
+    observarDe,
     ventanaMs: VENTANA_SENAL_MS,
+    almacen,
   });
-  return new Set(g.filas.filter((f) => f.presencia === A_BORDO).map((f) => f.nakama));
+}
+
+/**
+ * Quien puede moverse.
+ *
+ * La regla dura nunca dijo "medido", dijo LATIDO VERIFICADO, y sigue intacta:
+ * mueven `a_bordo` y `declarado`, que son los dos veredictos con latido fresco.
+ * La verificacion cambia COMO se dibuja, no SI se mueve.
+ *
+ * Unica excepcion, y esta si es nueva: `discordante` NO se mueve. Ahi el
+ * movimiento seria activamente enganoso, y eso es peor que el silencio.
+ */
+function encarnadosVerificados(guardia = pasarVigia()) {
+  return new Set(
+    guardia.filas
+      .filter((f) => f.presencia === A_BORDO || f.presencia === DECLARADO_V)
+      .map((f) => f.nakama),
+  );
 }
 
 function construirSnapshot() {
   const vivas = senalesVivas();
   const encarnaciones = mundo.encarnaciones(vivas);
-  const encarnados = encarnadosVerificados();
+  const guardia = pasarVigia();
+  const encarnados = encarnadosVerificados(guardia);
   const sueno = fuente("sueno")?.datos || null;
-  const residentes = fuente("ollama")?.datos?.residentes || [];
 
-  const guardia = vigia({
-    nakamas: tripulacion.nakamas,
-    senales: todasLasSenales(),
-    constitucionDe: (id) => mundo.constitucionDe(id),
-    ventanaMs: VENTANA_SENAL_MS,
-  });
   const porNakama = new Map(guardia.filas.map((f) => [f.nakama, f]));
 
   const nakamas = mundo.estadoNakamas(encarnaciones).map((n) => {
     const enc = encarnaciones.find((e) => e.nakama === n.id) || null;
-    const residente = residentes.find((r) => enc?.actor && String(enc.actor).includes(r.nombre.split(":")[0])) || null;
     const fila = porNakama.get(n.id) || null;
     const verificado = encarnados.has(n.id);
+    const lecturas = {
+      tokens_por_s: almacen.lectura(n.id, "tokens_por_s"),
+      latencia_ms: almacen.lectura(n.id, "latencia_ms"),
+    };
     return {
       ...n,
-      // Sin latido verificado el estado no puede seguir diciendo "trabajando":
-      // eso es lo que se ve, no lo que se sabe.
       estado: verificado ? n.estado : (fila?.presencia === "en_puerto" ? "apagado" : "sin_verificar"),
       verificado,
-      vitales: calcularVitales({ senal: enc?.senal || null, residente, sueno, nakamaId: n.id }),
+      vitales: calcularVitales({
+        senal: enc?.senal || null,
+        ejes: fila?.observado || null,
+        lecturas,
+        sueno,
+        nakamaId: n.id,
+      }),
       presencia: fila?.presencia || "en_puerto",
+      declarado: fila?.declarado || null,
+      observado: fila?.observado || null,
+      contradicciones: fila?.contradicciones || [],
       latido: fila?.latido || null,
       latido_edad_ms: fila?.edad_ms ?? null,
       presencia_motivo: fila?.motivo || null,
@@ -202,6 +242,7 @@ const clientes = new Set();
 
 setInterval(() => {
   mundo.tick(encarnadosVerificados());
+  almacen.podar();
 }, 250);
 
 setInterval(() => { sondear().catch(() => {}); }, 3000);
@@ -307,6 +348,12 @@ const servidor = createServer(async (req, res) => {
 
     if (ruta === "/api/barco") return json(res, 200, { barco, tripulacion, constituciones });
 
+    // El parte de chopper-salud. No lee senal.vitales en ningun punto: con las
+    // sondas caidas devuelve "no puedo medirte" por eje, no numeros.
+    if (ruta === "/api/salud") {
+      return json(res, 200, informeSalud({ filas: pasarVigia().filas, almacen }));
+    }
+
     if (ruta === "/stream") {
       res.writeHead(200, {
         "content-type": "text/event-stream",
@@ -411,6 +458,18 @@ const servidor = createServer(async (req, res) => {
         percepcion,
         texto: String(texto || "").slice(0, 4000),
       });
+      // COSECHA: el barco mide lo que el mismo causa. Estos tiempos venian de
+      // Ollama y hasta ahora se tiraban; ahora son la unica fuente `observada`
+      // de pulso y latencia que existe (encargo 5.2).
+      if (salida.encarnado && salida.vitales) {
+        almacen.registrar(id, {
+          tokens_por_s: salida.vitales.tokens_por_s,
+          latencia_ms: salida.vitales.latencia_ms,
+          carga_ms: salida.vitales.carga_ms,
+          modelo: salida.actor,
+          fuente: "hablar.mjs",
+        });
+      }
       if (salida.encarnado && salida.recado_propuesto) {
         try {
           salida.recado = mundo.crearRecado({
