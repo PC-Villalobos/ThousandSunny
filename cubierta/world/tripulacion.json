@@ -86,8 +86,7 @@
       "sala": "enfermeria",
       "puesto": [5, 12],
       "acento": "#d4707a",
-      "en_crew_md": false,
-      "nota": "No figura aun en el roster de CREW.md. Aqui esta como personaje del mundo; embarcarlo formalmente es acto del Capitan."
+      "en_crew_md": true
     }
   ]
 }
