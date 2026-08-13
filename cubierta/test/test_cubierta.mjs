@@ -164,6 +164,34 @@ await prueba("un recurso fuera de constitucion nace denegado, no se intenta", ()
   assert.equal(recado.estado, "denegado");
 });
 
+process.stdout.write("\nRecados: latidos repetidos no multiplican encargos\n");
+
+await prueba("un latido que repite la misma tarea reutiliza el recado vivo", () => {
+  const mundo = nuevoMundo();
+  const uno = mundo.crearRecado({ nakama: "franky", objetivo: "montar el andamiaje", recursos: ["codigo", "plantillas"] });
+  const equivalente = mundo.recadoEquivalente({ nakama: "franky", objetivo: "montar el andamiaje", recursos: ["plantillas", "codigo"] });
+  assert.equal(equivalente?.id, uno.id, "mismo personaje, objetivo y recursos: es el mismo encargo");
+  assert.equal(mundo.recados.length, 1);
+});
+
+await prueba("otra tarea distinta si abre recado nuevo", () => {
+  const mundo = nuevoMundo();
+  mundo.crearRecado({ nakama: "franky", objetivo: "montar el andamiaje", recursos: ["codigo"] });
+  const otro = mundo.recadoEquivalente({ nakama: "franky", objetivo: "otra cosa", recursos: ["codigo"] });
+  assert.equal(otro, null);
+});
+
+await prueba("el historial de recados no crece sin fin", () => {
+  const mundo = nuevoMundo();
+  for (let i = 0; i < 60; i++) {
+    const r = mundo.crearRecado({ nakama: "franky", objetivo: `tarea ${i}`, recursos: ["codigo"] });
+    r.estado = "hecho";
+  }
+  const vivo = mundo.crearRecado({ nakama: "nami", objetivo: "vivo", recursos: ["conectores"] });
+  assert.ok(mundo.recados.length <= 45, `se poda el historial, quedaron ${mundo.recados.length}`);
+  assert.ok(mundo.recados.some((r) => r.id === vivo.id), "un recado vivo nunca se poda");
+});
+
 process.stdout.write("\nVitales y clima: nada se estima\n");
 
 await prueba("sin senal, todo vital sale desconocido y con motivo", () => {

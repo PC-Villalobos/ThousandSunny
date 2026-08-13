@@ -234,39 +234,58 @@ function edad(ms) {
   return `hace ${Math.round(m / 60)} h`;
 }
 
+/**
+ * Escapa antes de meter nada en innerHTML.
+ *
+ * No es paranoia de manual: buena parte de este HUD son cadenas que llegan de
+ * fuera. `tarea`, `actor` y `recursos` los escribe quien haga POST /api/senal
+ * —una rutina en la nube, un VPS, Codex—, y de ahi salen el objetivo de un
+ * recado, el titulo de un artefacto y el motivo de un desvio. Sin escapar, un
+ * agente con un fallo (o comprometido) ejecuta script en el navegador del
+ * Capitan. El barco acepta senales de fuera: tiene que tratarlas como tales.
+ */
+function esc(valor) {
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function pintarHud() {
   const cubierta = cubiertaDef(capitan.cubierta);
   $("cubierta-actual").textContent = `${cubierta.nombre} — ${cubierta.descripcion}`;
 
   $("aviso-replay").innerHTML = snapshot.aviso_replay
-    ? `<div class="aviso-replay">${snapshot.aviso_replay}</div>` : "";
+    ? `<div class="aviso-replay">${esc(snapshot.aviso_replay)}</div>` : "";
 
   const c = snapshot.clima;
   $("clima").innerHTML = `
-    <div class="estado">${c.resumen.estado}</div>
-    <div class="motivo">${c.resumen.motivo}</div>
+    <div class="estado">${esc(c.resumen.estado)}</div>
+    <div class="motivo">${esc(c.resumen.motivo)}</div>
     ${Object.entries(c.ejes).map(([nombre, eje]) => `
       <div class="eje">
-        <span>${nombre}<span class="base">${eje.base}</span></span>
-        <span class="valor">${eje.valor === null ? "—" : `${eje.valor}${eje.unidad === "%" ? "%" : ` ${eje.unidad}`}`}
-          <span class="tinta ${eje.tinta}">${eje.tinta}</span></span>
+        <span>${esc(nombre)}<span class="base">${esc(eje.base)}</span></span>
+        <span class="valor">${eje.valor === null ? "—" : esc(`${eje.valor}${eje.unidad === "%" ? "%" : ` ${eje.unidad}`}`)}
+          <span class="tinta ${esc(eje.tinta)}">${esc(eje.tinta)}</span></span>
       </div>`).join("")}`;
 
   $("fuentes").innerHTML = snapshot.fuentes.map((f) => `
     <div class="fila">
-      <span class="punto ${f.estado}"></span>
-      <span style="flex:1"><b>${f.id}</b>${f.motivo ? `<span class="motivo"><br>${f.motivo}</span>` : ""}</span>
+      <span class="punto ${esc(f.estado)}"></span>
+      <span style="flex:1"><b>${esc(f.id)}</b>${f.motivo ? `<span class="motivo"><br>${esc(f.motivo)}</span>` : ""}</span>
     </div>`).join("") || '<div class="silencio">sin fuentes</div>';
 
   const campana = snapshot.vigia?.campana || [];
   $("vigia").innerHTML = campana.length
     ? campana.map((a) => `
       <div class="campana">
-        <b>${a.nombre}</b> — ${a.clase}<br>
-        <span class="motivo">${a.motivo}</span>
+        <b>${esc(a.nombre)}</b> — ${esc(a.clase)}<br>
+        <span class="motivo">${esc(a.motivo)}</span>
         <div class="acciones">
-          <button class="primario" data-veredicto="fertil" data-nakama="${a.nakama}" data-clase="${a.clase}">JoyBoy: fertil</button>
-          <button class="peligro" data-veredicto="decae" data-nakama="${a.nakama}" data-clase="${a.clase}">Buggy: decae</button>
+          <button class="primario" data-veredicto="fertil" data-nakama="${esc(a.nakama)}" data-clase="${esc(a.clase)}">JoyBoy: fertil</button>
+          <button class="peligro" data-veredicto="decae" data-nakama="${esc(a.nakama)}" data-clase="${esc(a.clase)}">Buggy: decae</button>
         </div>
       </div>`).join("")
     : '<div class="silencio">nadie fuera de contacto ni fuera de guion</div>';
@@ -275,17 +294,17 @@ function pintarHud() {
   $("recados").innerHTML = recados.length
     ? recados.map((r) => `
       <div class="fila">
-        <span style="flex:1"><b>${r.nakama}</b> — ${r.objetivo}
-          <span class="motivo"><br>${r.estado}${r.motivo ? `: ${r.motivo}` : ""}</span></span>
+        <span style="flex:1"><b>${esc(r.nakama)}</b> — ${esc(r.objetivo)}
+          <span class="motivo"><br>${esc(r.estado)}${r.motivo ? `: ${esc(r.motivo)}` : ""}</span></span>
       </div>`).join("")
     : '<div class="silencio">ningun recado en curso</div>';
 
   $("artefactos").innerHTML = snapshot.artefactos.length
     ? snapshot.artefactos.map((a) => `
       <div class="fila">
-        <span style="flex:1"><b>${a.titulo}</b>
-          <span class="motivo"><br>${a.nakama} · ${new Date(a.ts).toLocaleTimeString()}</span></span>
-        <span class="tinta ${a.tinta}">${a.tinta}</span>
+        <span style="flex:1"><b>${esc(a.titulo)}</b>
+          <span class="motivo"><br>${esc(a.nakama)} · ${esc(new Date(a.ts).toLocaleTimeString())}</span></span>
+        <span class="tinta ${esc(a.tinta)}">${esc(a.tinta)}</span>
       </div>`).join("")
     : '<div class="silencio">todavia no ha vuelto nadie con nada</div>';
 }
@@ -336,9 +355,9 @@ function pintarDialogo(id) {
     + (n.latido ? ` · latido ${edad(n.latido_edad_ms)}` : "");
 
   $("d-vitales").innerHTML = n.vitales.map((v) => `
-    <span class="vital ${v.valor === null ? "sin" : ""}" title="${v.motivo || v.fuente}">
-      ${v.nombre}: <span class="v">${v.valor === null ? "—" : `${v.valor} ${v.unidad}`}</span>
-      <span class="tinta ${v.tinta}">${v.tinta}</span>
+    <span class="vital ${v.valor === null ? "sin" : ""}" title="${esc(v.motivo || v.fuente)}">
+      ${esc(v.nombre)}: <span class="v">${v.valor === null ? "—" : esc(`${v.valor} ${v.unidad}`)}</span>
+      <span class="tinta ${esc(v.tinta)}">${esc(v.tinta)}</span>
     </span>`).join("");
 
   const partes = [];
@@ -352,10 +371,10 @@ function pintarDialogo(id) {
 
   $("d-llave").innerHTML = n.recado?.estado === "esperando_llave"
     ? `<div class="campana">
-         ${n.nombre} esta en la puerta de la camara sellada. Nada cruza sin tu llave, y lo que cruce sera un identificador opaco, nunca contenido.
+         ${esc(n.nombre)} esta en la puerta de la camara sellada. Nada cruza sin tu llave, y lo que cruce sera un identificador opaco, nunca contenido.
          <div class="acciones">
-           <button class="primario" data-llave="conceder" data-recado="${n.recado.id}">Conceder llave</button>
-           <button class="peligro" data-llave="denegar" data-recado="${n.recado.id}">Denegar</button>
+           <button class="primario" data-llave="conceder" data-recado="${esc(n.recado.id)}">Conceder llave</button>
+           <button class="peligro" data-llave="denegar" data-recado="${esc(n.recado.id)}">Denegar</button>
          </div>
        </div>`
     : "";

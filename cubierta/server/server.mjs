@@ -228,6 +228,35 @@ function json(res, codigo, cuerpo) {
   res.end(texto);
 }
 
+/**
+ * Guarda de origen para todo lo que muta estado.
+ *
+ * El servidor esta atado a 127.0.0.1, pero eso no basta: cualquier pagina que el
+ * Capitan abra en su navegador puede lanzar un POST a localhost. Sin esta
+ * comprobacion, una web cualquiera podria conceder la llave de la camara
+ * clinica desde otra pestana. Exigimos JSON explicito (mata la peticion simple
+ * sin preflight) y rechazamos todo origen que no sea el propio.
+ */
+function mismoOrigen(req) {
+  const tipo = String(req.headers["content-type"] || "");
+  if (!tipo.toLowerCase().startsWith("application/json")) {
+    return { ok: false, motivo: "se exige content-type: application/json" };
+  }
+  const destino = req.headers["sec-fetch-site"];
+  if (destino && destino !== "same-origin" && destino !== "none") {
+    return { ok: false, motivo: `peticion de otro sitio (sec-fetch-site: ${destino})` };
+  }
+  const origen = req.headers.origin;
+  if (origen) {
+    let host;
+    try { host = new URL(origen).hostname; } catch { host = null; }
+    if (!["127.0.0.1", "localhost", "::1"].includes(host)) {
+      return { ok: false, motivo: `origen no permitido: ${origen}` };
+    }
+  }
+  return { ok: true };
+}
+
 async function leerCuerpo(req, limite = 256 * 1024) {
   const trozos = [];
   let total = 0;
@@ -261,6 +290,11 @@ const servidor = createServer(async (req, res) => {
   const ruta = url.pathname;
 
   try {
+    if (req.method === "POST") {
+      const guarda = mismoOrigen(req);
+      if (!guarda.ok) return json(res, 403, { ok: false, motivo: guarda.motivo });
+    }
+
     if (ruta === "/" || ruta === "/index.html") {
       const html = await readFile(path.join(CUBIERTA, "client", "index.html"));
       res.writeHead(200, { "content-type": MIME[".html"] });
@@ -294,18 +328,25 @@ const servidor = createServer(async (req, res) => {
       await mkdir(path.dirname(FICHERO_SENALES), { recursive: true });
       await appendFile(FICHERO_SENALES, `${JSON.stringify(senal)}\n`, "utf8");
       let recado = null;
+      let reutilizado = false;
       if (senal.nakama && Array.isArray(senal.recursos) && senal.recursos.length) {
-        recado = mundo.crearRecado({
-          nakama: senal.nakama,
-          actor: senal.actor,
-          objetivo: senal.tarea || "sin objetivo declarado",
-          recursos: senal.recursos,
-          evidencia: senal.evidencia || null,
-        });
+        const objetivo = senal.tarea || "sin objetivo declarado";
+        // Un latido que repite la misma tarea no abre un recado nuevo.
+        recado = mundo.recadoEquivalente({ nakama: senal.nakama, objetivo, recursos: senal.recursos });
+        reutilizado = Boolean(recado);
+        if (!recado) {
+          recado = mundo.crearRecado({
+            nakama: senal.nakama,
+            actor: senal.actor,
+            objetivo,
+            recursos: senal.recursos,
+            evidencia: senal.evidencia || null,
+          });
+        }
       }
       const agentes = await leerSenales({ fichero: FICHERO_SENALES, ventanaMs: VENTANA_SENAL_MS });
       fuentes = [...fuentes.filter((f) => f.id !== "agentes"), agentes];
-      return json(res, 200, { ok: true, senal, recado });
+      return json(res, 200, { ok: true, senal, recado, recado_reutilizado: reutilizado });
     }
 
     if (ruta === "/api/recado" && req.method === "POST") {

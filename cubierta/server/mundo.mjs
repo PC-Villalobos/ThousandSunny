@@ -104,8 +104,36 @@ export class Mundo {
     });
   }
 
+  /**
+   * Recado vivo equivalente: mismo personaje, mismo objetivo, mismos recursos.
+   *
+   * Un agente sano late cada pocos segundos repitiendo su tarea. Sin esto, cada
+   * latido abriria un recado nuevo y el mismo nakama estaria dando vueltas al
+   * barco en bucle por un unico encargo: movimiento sin trabajo detras, que es
+   * justo lo que este sistema no puede permitirse mostrar.
+   */
+  recadoEquivalente({ nakama, objetivo, recursos = [] }) {
+    const firma = [...recursos].sort().join("|");
+    return this.recados.find((r) => (
+      r.nakama === nakama
+      && r.estado !== "hecho"
+      && r.estado !== "denegado"
+      && r.objetivo === objetivo
+      && r.pasos.map((p) => p.recurso).sort().join("|") === firma
+    )) || null;
+  }
+
+  /** El historial no crece sin fin: se conservan los vivos y los 40 ultimos cerrados. */
+  podarRecados(limiteCerrados = 40) {
+    const vivos = this.recados.filter((r) => r.estado !== "hecho" && r.estado !== "denegado");
+    const cerrados = this.recados.filter((r) => r.estado === "hecho" || r.estado === "denegado");
+    if (cerrados.length <= limiteCerrados) return;
+    this.recados = [...cerrados.slice(-limiteCerrados), ...vivos];
+  }
+
   crearRecado({ nakama, objetivo, recursos = [], actor = null, evidencia = null }) {
     if (!this.nakama(nakama)) throw new Error(`nakama desconocido: ${nakama}`);
+    this.podarRecados();
     const recado = {
       id: nuevoId("recado"),
       nakama,
