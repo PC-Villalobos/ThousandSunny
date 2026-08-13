@@ -1,0 +1,93 @@
+{
+  "version": "0.1",
+  "fuente_canonica": "CREW.md",
+  "nota": "Un nakama es un PERSONAJE (TEATRO.md). El ACTOR que lo encarna es aparte y puede cambiar. Un personaje sin actor existe en el mapa pero no se mueve.",
+  "capitan": {
+    "id": "capitan",
+    "nombre": "Capitan",
+    "cubierta": "cubierta",
+    "tile": [12, 10],
+    "acento": "#e8d9a0"
+  },
+  "nakamas": [
+    {
+      "id": "nami",
+      "nombre": "Nami",
+      "rol": "Navegante",
+      "dominio": "intake / proa: mira hacia fuera y pesca demandas nuevas",
+      "cubierta": "cubierta",
+      "sala": "puente",
+      "puesto": [10, 3],
+      "acento": "#e0803c",
+      "en_crew_md": true
+    },
+    {
+      "id": "jimbe",
+      "nombre": "Jimbe",
+      "rol": "Timonel",
+      "dominio": "navegacion web autonoma y clima operativo",
+      "cubierta": "cubierta",
+      "sala": "puente",
+      "puesto": [14, 3],
+      "acento": "#4f8fbf",
+      "en_crew_md": true,
+      "capacidad_sensible": true
+    },
+    {
+      "id": "robin",
+      "nombre": "Robin",
+      "rol": "Arqueologa",
+      "dominio": "poneglifos: audita sentido, fecha el corpus, separa canon de fosil",
+      "cubierta": "entrepuente",
+      "sala": "biblioteca",
+      "puesto": [5, 4],
+      "acento": "#8f6fb0",
+      "en_crew_md": true
+    },
+    {
+      "id": "franky",
+      "nombre": "Franky",
+      "rol": "Carpintero",
+      "dominio": "scaffolding: construye estructura y modulos",
+      "cubierta": "entrepuente",
+      "sala": "taller",
+      "puesto": [16, 4],
+      "acento": "#5fb0b0",
+      "en_crew_md": true
+    },
+    {
+      "id": "usopp",
+      "nombre": "Usopp",
+      "rol": "Francotirador",
+      "dominio": "bodega / spine: unico escritor de la bitacora",
+      "cubierta": "entrepuente",
+      "sala": "taller",
+      "puesto": [19, 4],
+      "acento": "#c4b04a",
+      "en_crew_md": true
+    },
+    {
+      "id": "zoro",
+      "nombre": "Zoro",
+      "rol": "Espadachin",
+      "dominio": "corta nudos de formato: migra y mueve material sin tocar fuentes",
+      "cubierta": "bodega",
+      "sala": "archivo",
+      "puesto": [5, 4],
+      "acento": "#7fae5f",
+      "en_crew_md": true
+    },
+    {
+      "id": "chopper",
+      "nombre": "Chopper",
+      "rol": "Medico",
+      "dominio": "salud operativa de la tripulacion y, bajo llave, la camara clinica",
+      "cubierta": "entrepuente",
+      "sala": "enfermeria",
+      "puesto": [5, 12],
+      "acento": "#d4707a",
+      "en_crew_md": false,
+      "nota": "No figura aun en el roster de CREW.md. Aqui esta como personaje del mundo; embarcarlo formalmente es acto del Capitan."
+    }
+  ]
+}

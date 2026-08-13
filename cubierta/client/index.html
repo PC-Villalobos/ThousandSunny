@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cubierta — Thousand Sunny</title>
+<style>
+  :root {
+    --tinta: #f0e2c4;
+    --tinta-suave: rgba(240, 226, 196, 0.62);
+    --panel: rgba(9, 16, 25, 0.86);
+    --borde: rgba(240, 226, 196, 0.16);
+    --ok: #8fd36a;
+    --aviso: #e0a04a;
+    --malo: #e0714a;
+    --frio: #6fa8d6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #050a10; }
+  body {
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--tinta);
+    user-select: none;
+  }
+  canvas { display: block; position: absolute; inset: 0; }
+
+  .panel {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    padding: 12px 14px;
+  }
+  .panel h2 {
+    margin: 0 0 8px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    font-weight: 600;
+  }
+
+  #cabecera { top: 14px; left: 14px; min-width: 260px; max-width: 320px; }
+  #cabecera .nombre { font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
+  #cabecera .cubierta { color: var(--tinta-suave); font-size: 12px; margin-top: 2px; }
+
+  #lateral { top: 14px; right: 14px; width: 320px; max-height: calc(100vh - 130px); overflow-y: auto; }
+  #pie { bottom: 14px; left: 14px; right: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  .aviso-replay {
+    margin-top: 10px; padding: 7px 9px; border-radius: 7px;
+    background: rgba(224, 160, 74, 0.14); border: 1px solid rgba(224, 160, 74, 0.5);
+    color: #f2c483; font-size: 12px;
+  }
+  .clima { margin-top: 10px; }
+  .clima .estado { font-size: 15px; font-weight: 600; }
+  .clima .motivo { font-size: 11px; color: var(--tinta-suave); }
+  .eje { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 3px 0; border-bottom: 1px dashed rgba(240,226,196,0.08); }
+  .eje .valor { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .eje .base { display: block; font-size: 10px; color: var(--tinta-suave); font-weight: 400; }
+
+  .fila { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid rgba(240,226,196,0.06); }
+  .fila:last-child { border-bottom: 0; }
+  .punto { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+  .punto.ok { background: var(--ok); }
+  .punto.sin_senal { background: #566; }
+  .punto.error { background: var(--malo); }
+  .motivo { color: var(--tinta-suave); font-size: 11px; }
+
+  .tinta { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--borde); color: var(--tinta-suave); }
+  .tinta.medido { border-color: rgba(143,211,106,0.5); color: #b8e39c; }
+  .tinta.calculado { border-color: rgba(111,168,214,0.5); color: #a5cbe8; }
+  .tinta.desconocido { border-color: rgba(240,226,196,0.2); }
+
+  button {
+    font: inherit; color: var(--tinta); cursor: pointer;
+    background: rgba(240,226,196,0.07);
+    border: 1px solid var(--borde); border-radius: 7px; padding: 7px 12px;
+  }
+  button:hover { background: rgba(240,226,196,0.14); }
+  button.primario { background: rgba(143,211,106,0.16); border-color: rgba(143,211,106,0.45); }
+  button.peligro { background: rgba(224,113,74,0.14); border-color: rgba(224,113,74,0.45); }
+  .tecla { font-size: 11px; color: var(--tinta-suave); }
+  kbd { background: rgba(240,226,196,0.1); border: 1px solid var(--borde); border-radius: 4px; padding: 1px 5px; font: 11px monospace; }
+
+  #dialogo {
+    position: absolute; left: 50%; bottom: 70px; transform: translateX(-50%);
+    width: min(720px, calc(100vw - 40px)); display: none;
+  }
+  #dialogo .cara { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  #dialogo .cara .disco { width: 34px; height: 34px; border-radius: 50%; flex: 0 0 34px; }
+  #dialogo .cara .quien { font-weight: 700; font-size: 15px; }
+  #dialogo .cara .rol { color: var(--tinta-suave); font-size: 12px; }
+  #dialogo .cuerpo { max-height: 210px; overflow-y: auto; font-size: 13px; white-space: pre-wrap; }
+  #dialogo .vitales { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .vital { border: 1px solid var(--borde); border-radius: 6px; padding: 4px 7px; font-size: 11px; }
+  .vital .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .vital.sin { opacity: 0.45; }
+  #dialogo form { display: flex; gap: 8px; margin-top: 10px; }
+  #dialogo input {
+    flex: 1; font: inherit; color: var(--tinta); padding: 8px 10px;
+    background: rgba(0,0,0,0.35); border: 1px solid var(--borde); border-radius: 7px;
+  }
+  .campana { margin-top: 10px; padding: 8px 10px; border-radius: 7px; background: rgba(224,160,74,0.12); border: 1px solid rgba(224,160,74,0.45); font-size: 12px; }
+  .campana .acciones { display: flex; gap: 6px; margin-top: 6px; }
+  .silencio { text-align: center; color: var(--tinta-suave); font-size: 12px; padding: 8px 0; }
+  .apagado-aviso {
+    position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+    text-align: center; pointer-events: none; display: none;
+  }
+  .apagado-aviso .grande { font-size: 20px; font-weight: 600; letter-spacing: 0.04em; }
+  .apagado-aviso .peq { font-size: 13px; color: var(--tinta-suave); margin-top: 6px; max-width: 460px; }
+</style>
+</head>
+<body>
+  <canvas id="lienzo"></canvas>
+
+  <div class="apagado-aviso" id="apagado">
+    <div class="grande">El barco esta quieto</div>
+    <div class="peq" id="apagado-motivo"></div>
+  </div>
+
+  <section class="panel" id="cabecera">
+    <div class="nombre">Thousand Sunny</div>
+    <div class="cubierta" id="cubierta-actual">—</div>
+    <div id="aviso-replay"></div>
+    <div class="clima" id="clima"></div>
+  </section>
+
+  <aside class="panel" id="lateral">
+    <h2>Fuentes</h2>
+    <div id="fuentes"></div>
+    <h2 style="margin-top:14px">Vigia</h2>
+    <div id="vigia"></div>
+    <h2 style="margin-top:14px">Recados</h2>
+    <div id="recados"></div>
+    <h2 style="margin-top:14px">Artefactos</h2>
+    <div id="artefactos"></div>
+  </aside>
+
+  <section class="panel" id="dialogo">
+    <div class="cara">
+      <div class="disco" id="d-disco"></div>
+      <div>
+        <div class="quien" id="d-quien"></div>
+        <div class="rol" id="d-rol"></div>
+      </div>
+    </div>
+    <div class="vitales" id="d-vitales"></div>
+    <div class="cuerpo" id="d-cuerpo"></div>
+    <div id="d-llave"></div>
+    <form id="d-form">
+      <input id="d-texto" placeholder="Habla con el nakama..." autocomplete="off">
+      <button class="primario" type="submit">Decir</button>
+      <button type="button" id="d-cerrar">Cerrar</button>
+    </form>
+  </section>
+
+  <footer class="panel" id="pie">
+    <span class="tecla"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o flechas: mover</span>
+    <span class="tecla"><kbd>E</kbd>: hablar / usar escalera</span>
+    <span class="tecla"><kbd>Esc</kbd>: cerrar</span>
+    <span class="tecla" id="pista"></span>
+  </footer>
+
+  <script type="module" src="/client/main.mjs"></script>
+</body>
+</html>

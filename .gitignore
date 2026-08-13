@@ -29,6 +29,9 @@ npm-debug.log*
 *.swp
 *.swo
 
+# Cubierta - estado de runtime local (senales de agentes, veredictos del Capitan)
+cubierta/state/
+
 # Local raw mirrors - never publish Drive bruto in this public repo
 40_Biblioteca_Hipatia/
 state/maceta_groot/40_Biblioteca_Hipatia/
