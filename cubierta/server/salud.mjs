@@ -1,143 +1,96 @@
 // chopper-salud: el parte medico de la tripulacion.
 //
-// Encargo: docs/architecture/ENCARGO_PULSO_REAL.md (seccion 8).
+// REGLA DURA, inversa a la habitual: este modulo NO PUEDE leer lo que el actor
+// afirma de si mismo. Solo salida de sonda y almacen medido. Si lo unico
+// disponible es el autoinforme, la respuesta es que no se ha comprobado --
+// nunca un numero pelado.
 //
-// REGLA DURA, inversa a la habitual: este modulo NO PUEDE leer `senal.vitales`
-// como fuente primaria. Solo salida de sonda y almacen medido. Si lo unico
-// disponible es el autoinforme del agente, la respuesta es "declarado, no
-// observado" -- nunca un numero pelado.
-//
-// Y sabe decir "no puedo medirte" de forma GRANULAR: por nakama y por eje. Un
+// Sabe decir "no puedo medirte" de forma GRANULAR: por nakama y por eje. Un
 // medico que solo sabe decir "no se nada" cuando se le cae un instrumento
 // tampoco esta midiendo.
 //
-// Estructuralmente, la prueba de aceptacion se cumple por construccion: como
-// aqui no entra ni una lectura de `senal.vitales`, con todas las sondas caidas
-// no queda ningun numero que publicar.
+// CONVERGENCIA EPISTEMICA
+// Todo estatuto sale del nucleo compartido `shared/epistemico.mjs`, con el
+// umbral canonico de `observed` (dos referencias de evidencia) y `not_recorded`
+// para la ausencia. Ningun enum crudo sale de aqui hacia el lector: cada valor
+// viaja traducido con titulo y detalle.
 
-import { OBSERVADO, NO_OBSERVABLE, SIN_DATO, EJES } from "./sondas.mjs";
-import { DISCORDANTE, MUDO, A_BORDO, DECLARADO_V, NO_OBSERVABLE_V } from "./latido.mjs";
+import { EJES } from "./sondas.mjs";
+import { calcularVitales, CONTRATO_VERSION } from "./vitales.mjs";
+import { presentarPresencia, presentarEje, presentarContradiccion } from "../shared/vocabulario.mjs";
+import { AVISO_AUSENCIA_ESTRUCTURAL } from "../../shared/epistemico.mjs";
 
 const NO_PUEDO = "no puedo medirte";
 
-function vitalDeEje(nombre, unidad, ejeEstado, tinta = "medido") {
-  if (!ejeEstado || ejeEstado.estado === NO_OBSERVABLE) {
-    return {
-      nombre,
-      valor: null,
-      unidad,
-      tinta: "desconocido",
-      origen: NO_OBSERVABLE,
-      sonda: ejeEstado?.fuente || null,
-      motivo: `${NO_PUEDO}: ${ejeEstado?.motivo || "sin instrumento para este eje"}`,
-    };
-  }
-  if (ejeEstado.estado === SIN_DATO || ejeEstado.valor === null) {
-    return {
-      nombre,
-      valor: null,
-      unidad,
-      tinta: "desconocido",
-      origen: ejeEstado.estado,
-      sonda: ejeEstado.fuente,
-      motivo: ejeEstado.motivo || "la sonda responde y no hay nada que reportar",
-    };
-  }
-  return {
-    nombre,
-    valor: ejeEstado.valor,
-    unidad,
-    tinta,
-    origen: OBSERVADO,
-    sonda: ejeEstado.fuente,
-    motivo: ejeEstado.motivo,
-  };
-}
-
-function vitalDeAlmacen(nombre, unidad, lectura) {
-  if (!lectura || lectura.valor === null) {
-    return {
-      nombre,
-      valor: null,
-      unidad,
-      tinta: "desconocido",
-      origen: SIN_DATO,
-      sonda: "almacen medido (hablar.mjs)",
-      motivo: `${NO_PUEDO}: ${lectura?.motivo || "sin muestras medidas"}`,
-    };
-  }
-  return {
-    nombre,
-    valor: lectura.valor,
-    unidad,
-    tinta: lectura.tipo === "tasa" ? "calculado" : "medido",
-    origen: OBSERVADO,
-    sonda: `almacen medido (${lectura.tipo}, n=${lectura.n})`,
-    // El sello de antiguedad es obligatorio: un numero medido sin fecha es una
-    // mentira con procedencia falsificada (encargo 6).
-    motivo: `muestra de hace ${Math.round((lectura.edad_ms || 0) / 1000)}s${lectura.motivo ? `; ${lectura.motivo}` : ""}`,
-  };
-}
-
 /**
  * Parte de salud de un nakama. `fila` es la fila del vigia; `almacen` el
- * almacen medido. En ningun punto se consulta lo que el agente afirma de si.
+ * almacen medido. En ningun punto se consulta lo que el actor afirma de si.
  */
 export function saludDe(fila, almacen, ahoraMs = Date.now()) {
   const ejes = fila.observado || {};
-  const vitales = [
-    vitalDeAlmacen("pulso", "tok/s", almacen?.lectura(fila.nakama, "tokens_por_s", ahoraMs)),
-    vitalDeAlmacen("latencia", "ms", almacen?.lectura(fila.nakama, "latencia_ms", ahoraMs)),
-    vitalDeAlmacen("despertar", "ms", almacen?.lectura(fila.nakama, "carga_ms", ahoraMs)),
-    vitalDeEje("residencia", "MB", ejes.residencia),
-    vitalDeEje("memoria", "MB", ejes.memoria),
-    vitalDeEje("escritura", "eventos", ejes.escritura),
-  ];
+  const lecturas = almacen
+    ? {
+        tokens_por_s: almacen.lectura(fila.nakama, "tokens_por_s", ahoraMs),
+        latencia_ms: almacen.lectura(fila.nakama, "latencia_ms", ahoraMs),
+      }
+    : null;
 
-  const noPuedoMedir = EJES.filter((e) => ejes[e]?.estado === NO_OBSERVABLE)
-    .map((e) => ({ eje: e, motivo: ejes[e].motivo }));
+  // Se pasa `ejes` y `lecturas`, jamas la fuente declarada.
+  const { vitales } = calcularVitales({ ejes, lecturas, nakamaId: fila.nakama, ahoraMs });
+
+  const noPuedoMedir = EJES
+    .filter((e) => ejes[e]?.estado === "no_observable")
+    .map((e) => ({
+      eje: e,
+      presentacion: presentarEje("no_observable"),
+      motivo: `${NO_PUEDO}: ${ejes[e].motivo || AVISO_AUSENCIA_ESTRUCTURAL}`,
+    }));
 
   return {
     nakama: fila.nakama,
     nombre: fila.nombre,
-    veredicto: fila.presencia,
+    presencia: presentarPresencia(fila.presencia),
     motivo: fila.motivo,
     actor_declarado: fila.actor,
     ejes: Object.fromEntries(EJES.map((e) => [e, {
-      estado: ejes[e]?.estado || SIN_DATO,
+      presentacion: presentarEje(ejes[e]?.estado ?? null),
       fuente: ejes[e]?.fuente || null,
       motivo: ejes[e]?.motivo || null,
     }])),
     vitales,
     no_puedo_medirte: noPuedoMedir,
-    contradicciones: fila.contradicciones || [],
-    // Lo que el agente afirma se adjunta SOLO como referencia declarada, jamas
-    // como valor del parte, y siempre etiquetado.
+    contradicciones: (fila.contradicciones || []).map((c) => ({
+      ...c,
+      presentacion: presentarContradiccion(c.codigo),
+    })),
     nota_declarada: fila.ultima_tarea
-      ? { tarea: fila.ultima_tarea, origen: "declarado por el agente, no verificado" }
+      ? { tarea: fila.ultima_tarea, aviso: "Declarado por el actor. Ningun instrumento lo ha comprobado." }
       : null,
   };
 }
 
 export function informeSalud({ filas = [], almacen = null, ahoraMs = Date.now() } = {}) {
   const tripulacion = filas.map((f) => saludDe(f, almacen, ahoraMs));
-  const cuenta = (v) => tripulacion.filter((t) => t.veredicto === v).length;
-
-  const medidos = tripulacion.reduce(
-    (a, t) => a + t.vitales.filter((v) => v.valor !== null).length, 0,
+  const cuenta = (clave) => tripulacion.filter((t) => t.presencia.clave === clave).length;
+  const conValor = tripulacion.reduce((a, t) => a + t.vitales.filter((v) => v.valor !== null).length, 0);
+  const afirmadosObservados = tripulacion.reduce(
+    (a, t) => a + t.vitales.filter((v) => v.estatuto.clave === "observed").length, 0,
   );
 
   return {
     ts: new Date(ahoraMs).toISOString(),
+    contract_version: CONTRATO_VERSION,
     generado_por: "chopper-salud",
-    regla: "Este parte no lee lo que el agente afirma de si mismo. Todo numero sale de una sonda o del almacen medido; lo que no se pudo medir se dice, eje por eje.",
+    regla: "Este parte no lee lo que el actor afirma de si mismo. Todo numero sale de una sonda o del almacen medido; "
+      + "lo que no se pudo medir se dice, eje por eje. `observed` exige dos referencias de evidencia.",
     resumen: {
-      a_bordo: cuenta(A_BORDO),
-      declarado: cuenta(DECLARADO_V),
-      mudo: cuenta(MUDO),
-      discordante: cuenta(DISCORDANTE),
-      no_observable: cuenta(NO_OBSERVABLE_V),
-      vitales_con_valor_medido: medidos,
+      a_bordo: cuenta("a_bordo"),
+      declarado: cuenta("declarado"),
+      mudo: cuenta("mudo"),
+      discordante: cuenta("discordante"),
+      no_observable: cuenta("no_observable"),
+      vitales_con_valor: conValor,
+      vitales_afirmados_observados: afirmadosObservados,
     },
     tripulacion,
   };

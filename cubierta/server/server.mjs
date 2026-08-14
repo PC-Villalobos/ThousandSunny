@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 
 import { Mundo } from "./mundo.mjs";
 import { leerFuentes, leerSenales } from "./adaptadores.mjs";
-import { calcularVitales, calcularClima } from "./vitales.mjs";
+import { calcularVitales, calcularClima, CONTRATO_VERSION } from "./vitales.mjs";
 import { vigia, A_BORDO, DECLARADO_V } from "./latido.mjs";
 import { AlmacenMedido } from "./almacen.mjs";
 import { observarEjes } from "./sondas.mjs";
@@ -192,13 +192,16 @@ function construirSnapshot() {
       ...n,
       estado: verificado ? n.estado : (fila?.presencia === "en_puerto" ? "apagado" : "sin_verificar"),
       verificado,
-      vitales: calcularVitales({
-        senal: enc?.senal || null,
-        ejes: fila?.observado || null,
-        lecturas,
-        sueno,
-        nakamaId: n.id,
-      }),
+      ...(() => {
+        const v = calcularVitales({
+          senal: enc?.senal || null,
+          ejes: fila?.observado || null,
+          lecturas, sueno, nakamaId: n.id,
+        });
+        // `declarado_por_actor` y no `declarado`: este ultimo es el bloque de
+        // presencia declarada del vigia, y sobrescribirlo perderia uno de los dos.
+        return { vitales: v.vitales, declarado_por_actor: v.declarado };
+      })(),
       presencia: fila?.presencia || "en_puerto",
       declarado: fila?.declarado || null,
       observado: fila?.observado || null,
@@ -214,6 +217,7 @@ function construirSnapshot() {
 
   return {
     ts: new Date().toISOString(),
+    contract_version: CONTRATO_VERSION,
     modo: ficheroReplay ? "replay" : "vivo",
     aviso_replay: ficheroReplay
       ? `MODO REPLAY sobre ${path.basename(ficheroReplay)}: lo que ves es un fixture, no el estado del barco.`
@@ -314,16 +318,29 @@ async function servirEstatico(res, rutaRelativa) {
   const permitidas = ["client", "shared", "world"];
   const normal = path.normalize(rutaRelativa).replace(/^([/\\])+/, "");
   if (!permitidas.includes(normal.split(path.sep)[0])) return false;
-  const absoluta = path.join(CUBIERTA, normal);
-  if (!absoluta.startsWith(CUBIERTA)) return false;
-  try {
-    const datos = await readFile(absoluta);
-    res.writeHead(200, { "content-type": MIME[path.extname(absoluta)] || "application/octet-stream" });
-    res.end(datos);
-    return true;
-  } catch {
-    return false;
+
+  // Dos raices para `shared/`: la del barco (mapa, vocabulario) y la del repo
+  // (nucleo epistemico compartido con state/cubierta_ui). El navegador colapsa
+  // `../../shared/x.mjs` en `/shared/x.mjs`, asi que ambas se sirven bajo el
+  // mismo prefijo. Los nombres no colisionan y el alcance sigue cerrado: solo
+  // estos dos directorios, nunca un padre arbitrario.
+  const candidatas = [path.join(CUBIERTA, normal)];
+  if (normal.split(path.sep)[0] === "shared") {
+    candidatas.push(path.join(RAIZ, normal));
   }
+
+  for (const absoluta of candidatas) {
+    const raizPermitida = absoluta.startsWith(`${CUBIERTA}${path.sep}`)
+      || absoluta.startsWith(`${path.join(RAIZ, "shared")}${path.sep}`);
+    if (!raizPermitida) continue;
+    try {
+      const datos = await readFile(absoluta);
+      res.writeHead(200, { "content-type": MIME[path.extname(absoluta)] || "application/octet-stream" });
+      res.end(datos);
+      return true;
+    } catch { /* siguiente candidata */ }
+  }
+  return false;
 }
 
 const servidor = createServer(async (req, res) => {

@@ -213,25 +213,28 @@ await prueba("el historial de recados no crece sin fin", () => {
 
 process.stdout.write("\nVitales y clima: nada se estima\n");
 
-await prueba("sin senal, todo vital sale desconocido y con motivo", () => {
-  const vitales = calcularVitales({ senal: null, residente: null, sueno: null, nakamaId: "nami" });
+await prueba("sin sondas, todo vital sale `not_recorded`, nunca `unknown`", () => {
+  const { vitales } = calcularVitales({ senal: null, ejes: null, lecturas: null, nakamaId: "nami" });
   for (const v of vitales) {
     assert.equal(v.valor, null);
-    assert.equal(v.tinta, "desconocido");
-    assert.ok(v.motivo, `${v.nombre} deberia explicar por que no hay dato`);
+    assert.equal(v.estatuto.clave, "not_recorded", `${v.nombre}: la ausencia no ocupa el termino reservado`);
+    assert.equal(v.estatuto.titulo, "No registrado");
   }
 });
 
-await prueba("con senal, el pulso es medido y sale del dato real", () => {
-  const vitales = calcularVitales({ senal: { vitales: { tokens_por_s: 78, latencia_ms: 312 } }, nakamaId: "nami" });
-  const pulso = vitales.find((v) => v.nombre === "pulso");
-  assert.equal(pulso.valor, 78);
-  assert.equal(pulso.tinta, "medido");
+await prueba("lo que el actor declara NO produce ningun vital", () => {
+  const r = calcularVitales({ senal: { vitales: { tokens_por_s: 78, latencia_ms: 312 } }, nakamaId: "nami" });
+  const pulso = r.vitales.find((v) => v.nombre === "pulso");
+  assert.equal(pulso.valor, null, "78 lo dice el actor; el barco no lo ha medido");
+  assert.equal(pulso.estatuto.clave, "not_recorded");
+  // Viaja aparte, etiquetado, para que el Capitan lo vea sin confundirlo.
+  assert.equal(r.declarado.tokens_por_s, 78);
+  assert.match(r.declarado.aviso, /Ningun instrumento las ha comprobado/);
 });
 
 await prueba("la fusion solo aplica al personaje que durmio", () => {
   const sueno = { personaje: "Groot", racha: 18 };
-  const deNami = calcularVitales({ nakamaId: "nami", sueno }).find((v) => v.nombre === "fusion");
+  const deNami = calcularVitales({ nakamaId: "nami", sueno }).vitales.find((v) => v.nombre === "fusion");
   assert.equal(deNami.valor, null);
   assert.match(deNami.motivo, /no aparece en el ultimo ciclo/);
 });
@@ -241,7 +244,7 @@ await prueba("sin fuentes, el clima es desconocido y no inventa un porcentaje", 
   assert.equal(clima.resumen.estado, "desconocido");
   for (const eje of Object.values(clima.ejes)) {
     assert.equal(eje.valor, null);
-    assert.equal(eje.tinta, "desconocido");
+    assert.equal(eje.estatuto.clave, "not_recorded");
   }
 });
 
