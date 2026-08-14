@@ -3,6 +3,7 @@
 // Si el snapshot dice "desconocido", aqui se escribe "desconocido".
 
 import { construirMapas } from "../shared/mapa.mjs";
+import { presentarPresencia, presentarContradiccion } from "../shared/vocabulario.mjs";
 import { dibujar, TW, TH } from "./render.mjs";
 
 const lienzo = document.getElementById("lienzo");
@@ -268,7 +269,7 @@ function pintarHud() {
       <div class="eje">
         <span>${esc(nombre)}<span class="base">${esc(eje.base)}</span></span>
         <span class="valor">${eje.valor === null ? "—" : esc(`${eje.valor}${eje.unidad === "%" ? "%" : ` ${eje.unidad}`}`)}
-          <span class="tinta ${esc(eje.tinta)}">${esc(eje.tinta)}</span></span>
+          <span class="tinta ${esc(eje.estatuto.clave || "sin_estatuto")}" title="${esc(eje.estatuto.detalle)}">${esc(eje.estatuto.titulo)}</span></span>
       </div>`).join("")}`;
 
   $("fuentes").innerHTML = snapshot.fuentes.map((f) => `
@@ -281,7 +282,7 @@ function pintarHud() {
   $("vigia").innerHTML = campana.length
     ? campana.map((a) => `
       <div class="campana">
-        <b>${esc(a.nombre)}</b> — ${esc(a.clase)}<br>
+        <b>${esc(a.nombre)}</b> — ${esc(a.titulo_clase || a.clase)}<br>
         <span class="motivo">${esc(a.motivo)}</span>
         <div class="acciones">
           <button class="primario" data-veredicto="fertil" data-nakama="${esc(a.nakama)}" data-clase="${esc(a.clase)}">JoyBoy: fertil</button>
@@ -349,24 +350,25 @@ function pintarDialogo(id) {
   if (!n) return;
   $("d-disco").style.background = n.acento;
   $("d-quien").textContent = n.nombre;
-  const presencia = n.presencia === "a_bordo" ? "a bordo" : n.presencia.replace(/_/g, " ");
+  const presencia = presentarPresencia(n.presencia).titulo;
   $("d-rol").textContent = `${n.rol} · ${presencia}`
     + (n.actor ? ` · encarnado por ${n.actor}` : " · sin actor")
     + (n.latido ? ` · latido ${edad(n.latido_edad_ms)}` : "");
 
-  // Dos etiquetas por vital: la tinta dice COMO se derivo el numero; el origen
-  // dice QUIEN responde de el. Un "medido" del barco no vale lo mismo que un
-  // "medido" que el actor afirma de si mismo.
+  // Invariante 2 del contrato: ningun enum crudo llega al lector. Se pinta el
+  // TITULO traducido; la clave queda en el tooltip, para quien depura.
   $("d-vitales").innerHTML = n.vitales.map((v) => `
-    <span class="vital ${v.valor === null ? "sin" : ""}" title="${esc(v.motivo || v.fuente)}">
+    <span class="vital ${v.valor === null ? "sin" : ""}" title="${esc([v.estatuto.detalle, v.motivo, v.sello?.texto, v.fuente].filter(Boolean).join(" | "))}">
       ${esc(v.nombre)}: <span class="v">${v.valor === null ? "—" : esc(`${v.valor} ${v.unidad}`)}</span>
-      <span class="tinta ${esc(v.origen || v.tinta)}">${esc(v.origen || v.tinta)}</span>
+      <span class="tinta ${esc(v.estatuto.clave || "sin_estatuto")}">${esc(v.estatuto.titulo)}</span>
+      ${v.sello ? `<span class="sello">${esc(v.sello.texto)}</span>` : ""}
     </span>`).join("");
 
   const partes = [];
   if (n.presencia_motivo) partes.push(`[vigia] ${n.presencia_motivo}`);
   for (const c of n.contradicciones || []) {
-    partes.push(`[${c.codigo}] declara "${c.declarado}" y se observa que ${c.observado} — veredicto ${c.veredicto}`);
+    const t = presentarContradiccion(c.codigo);
+    partes.push(`[${t.titulo}] declara "${c.declarado}" y se observa que ${c.observado}`);
   }
   for (const d of n.desvios || []) partes.push(`[desvio] ${d.detalle} — veredicto ${d.veredicto}`);
   if (n.recado) partes.push(`[recado] ${n.recado.objetivo} — ${n.recado.estado}${n.recado.motivo ? `: ${n.recado.motivo}` : ""}`);

@@ -36,6 +36,13 @@ function pruebasDe(relativo) {
 
 const SUITES = [
   {
+    id: "epistemico",
+    titulo: "Nucleo epistemico compartido",
+    ancla: "shared/epistemico.test.mjs",
+    comando: () => ["node", ["--test", "shared/epistemico.test.mjs"]],
+    ausente: "el nucleo compartido vive en claude/convergencia-epistemica",
+  },
+  {
     id: "cubierta-barco",
     titulo: "Cubierta — mundo, camara sellada y vigia",
     ancla: "cubierta/test/test_cubierta.mjs",

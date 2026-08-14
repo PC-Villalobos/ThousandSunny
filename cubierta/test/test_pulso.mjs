@@ -389,7 +389,8 @@ await prueba("con TODAS las sondas caidas no sobrevive ni un numero", () => {
   const informe = informeSalud({ filas: g.filas, almacen: new AlmacenMedido(), ahoraMs: AHORA });
   const conValor = informe.tripulacion.flatMap((t) => t.vitales).filter((v) => v.valor !== null);
   assert.deepEqual(conValor, [], `sobrevivieron ${conValor.length} numeros pese a no haber medido nada`);
-  assert.equal(informe.resumen.vitales_con_valor_medido, 0);
+  assert.equal(informe.resumen.vitales_con_valor, 0);
+  assert.equal(informe.resumen.vitales_afirmados_observados, 0);
 });
 
 await prueba("el 'no puedo medirte' es granular, por eje", () => {
@@ -400,9 +401,13 @@ await prueba("el 'no puedo medirte' es granular, por eje", () => {
   const t = informeSalud({ filas: g.filas, almacen: new AlmacenMedido(), ahoraMs: AHORA })
     .tripulacion.find((x) => x.nakama === "nami");
   const ejes = t.no_puedo_medirte.map((x) => x.eje);
+  // liveness observado -> a_bordo. Lo que se comprueba es que llega el TITULO,
+  // no la clave cruda `a_bordo`.
+  assert.equal(t.presencia.titulo, "A bordo", "ningun enum crudo llega al lector");
+  assert.equal(t.presencia.clave, "a_bordo");
   assert.equal(ejes.includes("liveness"), false, "liveness si se pudo observar");
   assert.equal(ejes.includes("memoria"), true, "memoria no, y se dice");
-  assert.equal(t.ejes.liveness.estado, OBSERVADO);
+  assert.equal(t.ejes.liveness.presentacion.titulo, "Medido por el barco");
 });
 
 await prueba("un numero medido siempre sale con su sello de antiguedad", () => {
@@ -412,8 +417,9 @@ await prueba("un numero medido siempre sale con su sello de antiguedad", () => {
   const t = informeSalud({ filas: g.filas, almacen, ahoraMs: AHORA }).tripulacion.find((x) => x.nakama === "nami");
   const pulso = t.vitales.find((v) => v.nombre === "pulso");
   assert.equal(pulso.valor, 50);
-  assert.equal(pulso.origen, OBSERVADO);
-  assert.match(pulso.motivo, /muestra de hace \d+s/);
+  // Tres muestras -> media -> operacion reproducible sobre datos -> `calculated`.
+  assert.equal(pulso.estatuto.clave, "calculated");
+  assert.match(pulso.sello.texto, /medido hace \d+s/, "todo numero medido lleva sello de antiguedad");
 });
 
 await prueba("lo que el agente afirma nunca entra como valor del parte", () => {

@@ -15,6 +15,7 @@
 // solo de POST /api/senal. Este fichero no lee `senal.vitales` en ninguna linea.
 
 import { OBSERVADO, NO_OBSERVABLE, EJES, FRESCURA_SONDA_PS_MS } from "./sondas.mjs";
+import { presentarPresencia, presentarContradiccion } from "../shared/vocabulario.mjs";
 
 export const EN_PUERTO = "en_puerto";
 export const A_BORDO = "a_bordo";
@@ -312,6 +313,12 @@ export function vigia({
       clase: f.contradicciones.length
         ? `contradiccion ${f.contradicciones[0].codigo}`
         : (f.desvios.length && !SUENAN.includes(f.presencia) ? "desvio" : f.presencia),
+      // Invariante 2: la campana del puente tampoco pinta enums crudos.
+      titulo_clase: f.contradicciones.length
+        ? presentarContradiccion(f.contradicciones[0].codigo).titulo
+        : (f.desvios.length && !SUENAN.includes(f.presencia)
+            ? "Desvio de constitucion"
+            : presentarPresencia(f.presencia).titulo),
       motivo: f.contradicciones.length
         ? f.motivo
         : (f.desvios.length ? f.desvios.map((d) => d.detalle).join(" | ") : f.motivo),
