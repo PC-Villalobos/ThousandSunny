@@ -45,7 +45,9 @@ def classify(item: dict[str, Any]) -> str:
     return "requires_format_decision"
 
 
-def _ancestor_state(item_id: str, index: dict[str, dict[str, Any]]) -> tuple[bool, bool]:
+def _ancestor_state(
+    item_id: str, index: dict[str, dict[str, Any]], denied_ids: set[str]
+) -> tuple[bool, bool]:
     """Return (is_protected, is_complete); missing parent metadata fails closed."""
     seen: set[str] = set()
     pending = [item_id]
@@ -55,6 +57,8 @@ def _ancestor_state(item_id: str, index: dict[str, dict[str, Any]]) -> tuple[boo
         if current_id in seen:
             continue
         seen.add(current_id)
+        if current_id in denied_ids:
+            return True, complete
         current = index.get(current_id)
         if current is None:
             complete = False
@@ -69,7 +73,9 @@ def _ancestor_state(item_id: str, index: dict[str, dict[str, Any]]) -> tuple[boo
     return False, complete
 
 
-def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, Any]:
+def scan_inventory(
+    inventory: dict[str, Any], root_ids: list[str], denied_ids: set[str] | None = None
+) -> dict[str, Any]:
     """Traverse only normal folders below allowlisted roots.
 
     The inventory schema is ``{"items": [{"id", "name", "mimeType", "parents",
@@ -80,6 +86,7 @@ def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, 
         raise ValueError("inventory.items must be a list")
     if not root_ids:
         raise ValueError("at least one --root-id is required")
+    denied_ids = denied_ids or set()
 
     index = {item.get("id"): item for item in items if isinstance(item, dict) and item.get("id")}
     missing_roots = [root_id for root_id in root_ids if root_id not in index]
@@ -102,7 +109,7 @@ def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, 
         if folder_id in visited_folders:
             continue
         folder = index[folder_id]
-        protected, complete = _ancestor_state(folder_id, index)
+        protected, complete = _ancestor_state(folder_id, index, denied_ids)
         if protected or not complete:
             blocked.append({"id": folder_id, "reason": "protected_or_incomplete_folder_ancestry"})
             continue
@@ -121,7 +128,7 @@ def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, 
                 if not target_id or target_id not in index:
                     blocked.append({"id": item_id, "reason": "shortcut_target_unresolved"})
                     continue
-                target_protected, target_complete = _ancestor_state(target_id, index)
+                target_protected, target_complete = _ancestor_state(target_id, index, denied_ids)
                 reason = "shortcut_target_protected" if target_protected else "shortcut_target_ancestry_incomplete"
                 if target_protected or not target_complete:
                     blocked.append({"id": item_id, "reason": reason})
@@ -130,7 +137,7 @@ def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, 
                 blocked.append({"id": item_id, "reason": "shortcut_not_traversed"})
                 continue
 
-            protected, complete = _ancestor_state(item_id, index)
+            protected, complete = _ancestor_state(item_id, index, denied_ids)
             if protected or not complete:
                 blocked.append({"id": item_id, "reason": "protected_or_incomplete_ancestry"})
                 continue
@@ -149,6 +156,7 @@ def scan_inventory(inventory: dict[str, Any], root_ids: list[str]) -> dict[str, 
         "classes": dict(sorted(classes.items())),
         "blocked": blocked,
         "blocked_count": len(blocked),
+        "denylist_entries": len(denied_ids),
         "shortcut_policy": "resolve_target_then_never_traverse",
     }
 
@@ -157,11 +165,22 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path, help="metadata-only inventory JSON")
     parser.add_argument("--root-id", action="append", dest="root_ids", default=[], help="allowlisted root ID; repeatable")
+    parser.add_argument("--deny-id", action="append", dest="deny_ids", default=[], help="local protected ID; repeatable")
+    parser.add_argument(
+        "--deny-ids-file",
+        type=Path,
+        help="local newline-delimited protected IDs; do not commit this file",
+    )
     parser.add_argument("--out", type=Path, help="optional local derived-report path")
     args = parser.parse_args()
 
     inventory = json.loads(args.input.read_text(encoding="utf-8"))
-    report = scan_inventory(inventory, args.root_ids)
+    denied_ids = set(args.deny_ids)
+    if args.deny_ids_file:
+        denied_ids.update(
+            line.strip() for line in args.deny_ids_file.read_text(encoding="utf-8").splitlines() if line.strip()
+        )
+    report = scan_inventory(inventory, args.root_ids, denied_ids)
     rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

@@ -47,6 +47,17 @@ class DriveBoundaryScanTests(unittest.TestCase):
         self.assertEqual(report["eligible_items"], 0)
         self.assertIn({"id": "orphan", "reason": "protected_or_incomplete_ancestry"}, report["blocked"])
 
+    def test_explicit_local_denylist_blocks_a_nominal_subtree_without_its_name(self):
+        inventory = {"items": [
+            item("root", "04_PERSONAL", FOLDER_MIME),
+            item("review", "unclassified", FOLDER_MIME, ["root"]),
+            item("note", "dated-note", GOOGLE_DOC_MIME, ["review"]),
+        ]}
+        report = scan_inventory(inventory, ["root"], {"review"})
+        self.assertEqual(report["classes"].get("google_doc_requires_conversion", 0), 0)
+        self.assertEqual(report["denylist_entries"], 1)
+        self.assertIn({"id": "review", "reason": "protected_or_incomplete_ancestry"}, report["blocked"])
+
 
 if __name__ == "__main__":
     unittest.main()
