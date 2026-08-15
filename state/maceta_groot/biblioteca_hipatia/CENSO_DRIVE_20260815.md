@@ -366,3 +366,151 @@ el recuento global de `mimeType`.
 - **Sigue pendiente:** la sonda mecanica con Drive montado. Las tres lecturas
   hechas hasta ahora usan el mismo conector; coinciden entre si, pero comparten
   ventana. Coincidir no es lo mismo que ser completo.
+
+---
+
+## Cuarta lectura — `03_PROYECTOS` por dentro (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+Alcance: **primer nivel de los trece hijos** de `03_PROYECTOS`.
+
+| Hijo | Entradas | Ficheros | Texto plano | Google Docs | Otros | Carpetas |
+|---|---:|---:|---:|---:|---:|---:|
+| `NEXUS` | 65 | 62 | **26** | 36 | 0 | 3 |
+| `AGAPE` | 24 | 5 | 0 | 5 | 0 | 19 |
+| `BIOSFERA` | 17 | 16 | 0 | 16 | 0 | 1 |
+| `SOFIA` | 16 | 2 | 0 | 2 | 0 | 14 |
+| `DOCTORADO` | 9 | 1 | 0 | 1 | 0 | 8 |
+| `NEMESIS_SISTEMA` | 7 | *no descendido* | — | — | — | 7 |
+| `TRADING` (b) | 4 | 4 | 0 | 4 | 0 | 0 |
+| `TRADING` (a) | 4 | 0 | 0 | 0 | 0 | 4 |
+| `DECKARD` | 3 | 0 | 0 | 0 | 0 | 3 |
+| `OPERATIVO` | 2 | 2 | 0 | 0 | 2 `.docx` | 0 |
+| `PAPELERA_HIPATIA` | 0 | 0 | 0 | 0 | 0 | 0 |
+| `Proyectos_corto_plazo` | 0 | 0 | 0 | 0 | 0 | 0 |
+| `Proyectos_largo_plazo` | 0 | 0 | 0 | 0 | 0 | 0 |
+| **Total** | **151** | **92** | **26** | **64** | **2** | **59** |
+
+**26 de 92 ficheros en texto plano — el 28%.** Un orden de magnitud por encima de
+todo lo demas, y concentrado entero en `NEXUS`.
+
+Acumulado de las cuatro lecturas: **304 ficheros medidos, 34 en texto plano
+(11,2%)**. La cifra sube respecto al 3,7% anterior, y sube por una razon concreta.
+
+### Hallazgo 12 — la conversion YA se ejecuto una vez, y funciono
+
+Es el hallazgo que desbloquea B3.
+
+En `NEXUS` hay **14 pares**: un Google Doc y, junto a el, su markdown real de la
+serie `WP010_<ID-Deckard>_<slug>_v1.md`, todos creados el **2026-05-24** en una
+sola tanda. Ejemplos de par: "Matriz Nexus Ayurveda DSM-5", "Protocolo Deckard
+Mapa del Micelio", "Blindaje Sofia", "Agent Bridge", "Poda Ontologica",
+"Personhood Jardines", "OKRs Scale-Up".
+
+**No es cierto que la conversion no se haya empezado nunca.** Se hizo una vez,
+sobre 14 piezas, en una carpeta, y se paro. Existe precedente ejecutable y
+nomenclatura ya elegida.
+
+Consecuencia para B3: **no se disena el pipeline desde cero, se reproduce y se
+extiende WP010.** Antes de escribir codigo, mirar como quedaron esas 14 piezas —
+si su calidad es aceptable, el contrato ya esta demostrado y solo falta escalarlo.
+
+Correccion honesta al titular de este censo: "la conversion no esta empezada" era
+cierto para los estantes de la Biblioteca, y **falso para `NEXUS`**. La sonda
+anterior no habia mirado ahi.
+
+### Hallazgo 13 — el contrato de migracion existe, en texto, y esta localizado
+
+`OBSIDIAN_MIGRATION_PROTOCOL_v0_1.md` esta en `NEXUS` como markdown real.
+`vault/vault.config.json` de este repo lo cita como
+`"protocol": "OBSIDIAN_MIGRATION_PROTOCOL_v0.1"`.
+
+El contrato que B3 necesita **ya esta escrito**, y hasta hoy nadie sabia donde
+vivia. Se lee antes de redactar contrato nuevo.
+
+Junto a el, la serie `OBSIDIAN_BATCH_0002..0004` y `OBSIDIAN_PILOT_0001` en
+markdown: son los manifiestos de los lotes que `vault.config.json` lista como
+`SEALED` / `MIRROR` / `OBS`. La trazabilidad de los lotes existe en Drive.
+
+### Hallazgo 14 — `BIOSFERA` es un apelmazamiento de versiones
+
+Dieciseis Google Docs, **todos** titulados "Valoracion Biosferica: Modelo
+Matematico" con sufijos de version (sin sufijo ×3, 1.2, 1.3, 1.3.2 … 1.3.9.2,
+1.4.2, 1.4.3). Creados **todos en unas cuatro horas** del 2026-02-17/18. Tamanos
+de 92 KB a 222 KB: alrededor de 2 MB en total.
+
+Tres comparten titulo identico. Y **las dieciseis estan marcadas `ACT`**, es
+decir activas: ninguna esta senalada como canonica.
+
+Es el mayor apelmazamiento del corpus. Ingerirlo sin resolver version mete
+dieciseis copias del mismo modelo en la Biblioteca. No es trabajo de deduplicado
+por hash —los bytes difieren—: es una decision de **cual es la buena**, y solo el
+Capitan puede tomarla.
+
+### Hallazgo 15 — ya existe un tagger con puntuacion de confianza
+
+En `AGAPE`, el campo `description` de Drive lleva marcas del tipo:
+
+```
+SUN_TAGS: v1 tags=<...> category=<...> confidence=70 taggedAt=2026-05-22T...
+```
+
+Hay **clasificacion automatica previa, versionada, fechada y con confianza**,
+escrita en metadatos de Drive el 2026-05-22.
+
+Robin no parte de cero. El pipeline debe **leer `SUN_TAGS` antes de reclasificar**
+y registrar los desacuerdos en vez de pisarlos: un tagger que contradice al
+anterior sin dejar rastro destruye la unica serie temporal de clasificacion que
+el sistema tiene.
+
+### Hallazgo 16 — las dos carpetas `TRADING` no son duplicados: son una escision
+
+Una tiene **4 subcarpetas y ningun fichero**; la otra **4 ficheros y ninguna
+subcarpeta**. Mismo nombre, contenido disjunto.
+
+Es peor que un duplicado. Un duplicado se resuelve descartando; una escision con
+nombre ambiguo hace que cualquier agente que resuelva por nombre acierte la mitad
+de las veces y no se entere de la otra mitad.
+
+### Hallazgo 17 — tres carpetas completamente vacias
+
+`PAPELERA_HIPATIA`, `Proyectos_corto_plazo` y `Proyectos_largo_plazo`: cero
+entradas las tres.
+
+Util para la decision B1.7: **`PAPELERA_HIPATIA` no tiene uso previo**, asi que
+elegirla como papelera unica no arrastra historia de nadie.
+
+### Hallazgo 18 — dos piezas de tres ordenes de magnitud
+
+`Sesion de trading 02/04/2026` pesa **2,86 MB**; una pieza de `04_PERSONAL` pesa
+**3,06 MB**. Frente a un corpus cuya mediana ronda los 3-4 KB, son volcados de
+conversacion, no notas.
+
+Aqui si aplica la regla 5 de `robin-cronos` —transporte mecanico, no por
+conector—. Al resto del corpus no le aplica: son minutos por conector.
+
+### Hallazgo 19 — `NEMESIS_SISTEMA` no se descendio, y su estructura lo justifica
+
+Solo se leyeron los nombres de sus siete subcarpetas. Entre ellas:
+`INFORMES_CLINICOS`, `Archivo_casos`, `Investigacion` y **`Cumplimiento RGPD`**.
+
+Dos consecuencias:
+
+- La decision del pilar clinico esta **bien puesta donde esta**. Aqui la sonda para.
+- **Existe ya trabajo de cumplimiento RGPD.** Quien redacte la politica de
+  sensibles de B1.5 lo lee antes, igual que lee H007 en `ETH`. Van dos artefactos
+  de proteccion preexistentes que nadie habia localizado.
+
+`AGAPE` refuerza el hallazgo 8 por otra via: contiene una carpeta de material
+derivado de sesiones clinicas y una pieza con nombre propio de un tercero. La
+membrana vuelve a no coincidir con la carpeta.
+
+### Por que el denominador SIGUE sin cerrar
+
+Se ha cerrado el primer nivel de los trece hijos: 151 entradas, 92 ficheros.
+Pero por debajo quedan **59 carpetas de tercer nivel sin abrir**, y
+`NEMESIS_SISTEMA` entero fuera por membrana.
+
+**No se declara el denominador cerrado.** `03_PROYECTOS` pasa de
+`NO_MEDIDO` a `PARCIAL: primer nivel cerrado, 59 carpetas pendientes`.
+Cualquier porcentaje del total sigue siendo invencion.
