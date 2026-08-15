@@ -972,3 +972,26 @@ nivel.**
 
 De esas 29, **nueve no deberian abrirse por sonda automatica**: las nominales de
 `Relaciones_personales`. Van a la cola de Vivi, no a la del escaner.
+
+---
+
+## Nota de traspaso — denylist (claude-code, 2026-08-15)
+
+El escaner de frontera admite desde `0bf06d2` una denylist local por IDs
+(`--deny-id` / `--deny-ids-file`). Verificado en el fuente, no en el resumen:
+`_ancestor_state` arranca en el propio nodo, de modo que un ID denegado se bloquea
+a si mismo **y a toda su descendencia**, y un padre sin metadata falla cerrado.
+
+Los IDs de los nueve subarboles nominales de `04_PERSONAL/Relaciones_personales`
+**se han entregado al Capitan fuera de Git**, para el fichero local que el propio
+escaner marca como "do not commit". No estan en este repositorio, que es publico,
+y no deben estarlo.
+
+Se registra aqui solo para que una lectura futura no concluya que la denylist
+nunca se construyo.
+
+**Fleco senalado:** la denylist propuesta cubre los nueve subarboles nominales,
+que son la mitad *personal* del doble rol. La otra mitad —`SOFIA/Doctorado/notas`,
+donde estan las 18 notas de sesion del hallazgo 25— **no queda cubierta por esa
+lista**. Bloquear solo el lado personal deja pasar el lado con contenido clinico.
+Ambas rutas van a la denylist hasta que Vivi resuelva.
