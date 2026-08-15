@@ -237,3 +237,132 @@ lectura semantica autorizada.
 - **Pendiente:** recorrido recursivo con allowlist por dominio y sonda mecanica
   local. Hasta entonces, B2 sigue `PARCIAL` y el porcentaje global es
   `NO_DEMOSTRADO`.
+
+---
+
+## Tercera lectura — cinco raices por mimeType (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metodo: conector Drive, **metadata-only**,
+primer nivel de las cinco raices. `source_mutations: 0`.
+
+Codex midio **estructura** (entradas, carpetas, profundidad). Esta pasada mide
+lo que faltaba: **de que estan hechos** esos ficheros.
+
+### El contraste estructural PASA
+
+Mis cifras de primer nivel coinciden **exactamente** con las de Codex: 57
+entradas directas y 34 carpetas de segundo nivel, raiz por raiz. Dos sesiones
+distintas, mismo resultado. La regla 4 queda satisfecha en el eje estructural.
+
+Lo que Codex no reporto, y es donde estaba el dato:
+
+| Raiz | Ficheros (1er nivel) | Texto plano | Google Docs | Otros |
+|---|---:|---:|---:|---:|
+| `01_SISTEMA` | 8 | 1 | 6 | 1 script |
+| `03_PROYECTOS` | 0 | 0 | 0 | 0 |
+| `04_PERSONAL` | 7 | 0 | 6 | 1 RTF |
+| `90_ARCHIVO` | 2 | 0 | 2 | 0 |
+| `00_INBOX` | 6 | 0 | 6 | 0 |
+| **Total** | **23** | **1** | **20** | **2** |
+
+**De 23 ficheros sueltos en las cinco raices, uno esta en texto plano.** El
+patron se sostiene fuera de la Biblioteca.
+
+`03_PROYECTOS` no tiene ni un fichero suelto: son 13 carpetas y nada mas. Y son
+las que importan — `NEMESIS_SISTEMA`, `SOFIA`, `AGAPE`, `DECKARD`, `DOCTORADO`.
+El grueso del corpus operativo vive ahi debajo, sin medir.
+
+### Hallazgo 8 — la membrana clinica no coincide con `02_CLINICA`
+
+Este es el hallazgo grave de la pasada.
+
+Hay material clinico **fuera** de `02_CLINICA`, en raices que nadie trata como
+protegidas:
+
+- `01_SISTEMA` contiene una alerta etica con **iniciales de paciente** y la nota
+  de consentimiento sin formalizar, mas un `INTEGRACIONES_CLINICAS.md`.
+- `90_ARCHIVO` contiene dos documentos que referencian el pipeline de sesion de
+  un caso identificado por iniciales.
+- `04_PERSONAL` contiene siete piezas marcadas `[N3-ACT-C0]` / `[N3-LAT-C0]`,
+  es decir **Caso 0**: el propio Capitan como paciente.
+
+**Consecuencia:** cualquier compuerta que vigile solo `02_CLINICA` no protege
+nada. La proteccion tiene que ser por marcador (`C0`, `NEM`, `CLI`, iniciales)
+y por contenido, no por ruta. Es la regla 7 aplicada a nivel de arbol entero.
+
+No se listan aqui titulos ni iniciales. La existencia y el recuento bastan para
+decidir; el detalle es del indice local.
+
+### Hallazgo 9 — el orden cronologico choca con la membrana
+
+La regla 6 de `robin-cronos` ordena las olas **de lo mas antiguo a lo mas
+reciente**. Aplicada literalmente al Drive real, la ola 1 empieza por
+`04_PERSONAL`: carpetas de **2018** (dos libros, canciones, escritos a medias) y
+documentos de 2020, 2021, 2023 y 2025.
+
+Es el unico estrato del Drive con profundidad cronologica real — y es tambien el
+mas protegido: Caso 0, relaciones personales, venta de vivienda.
+
+**La regla del orden y la regla de la membrana se contradicen aqui.** No es un
+detalle de implementacion: es una decision del Capitan con Vivi delante, y hay
+que tomarla **antes** de ordenar ninguna ola por fecha de origen.
+
+Corolario util: la contaminacion del 2026-06-13 **no es universal**. Ninguna de
+las cinco raices la muestra. Esta localizada en `04_Raices` (119 de 124, segun
+el contrapeso de Codex). El resto del corpus conserva cronos utilizable.
+
+### Hallazgo 10 — los duplicados cruzan raices
+
+Dos piezas aparecen en dos raices distintas con nombre casi identico:
+
+- `vivi_auditoria_semanal_20260608.md` — en `01_SISTEMA` y en `04_Raices/ETH`.
+- `HANDOFF_DESPACHO_20260526` — en `01_SISTEMA` sin extension, en `04_Raices/OPE`
+  con `.md` en el titulo.
+
+Una deduplicacion por nombre exacto dentro de cada carpeta **no los encuentra**.
+El deduplicador de B3 tiene que comparar por hash y a lo ancho del arbol, no por
+titulo dentro de carpeta.
+
+Ademas hay una **carpeta** duplicada: `TRADING` existe dos veces bajo
+`03_PROYECTOS`, con dos IDs distintos.
+
+Y hay al menos **tres papeleras** compitiendo: `PAPELERA_HIPATIA`
+(`03_PROYECTOS`), `BASURA` (`00_INBOX`) y `_DUPLICADOS` (`90_ARCHIVO`). Decidir
+cual recibe los descartes es parte de la decision B1 sobre duplicados.
+
+### Hallazgo 11 — si hay markdown en Drive, pero no es la Biblioteca
+
+Correccion de alcance al titular, hecha antes de que alguien la haga mal.
+
+Una consulta global por `mimeType = 'text/markdown'` devuelve **mas de 100
+ficheros** (la primera pagina se agota con `nextPageToken`). Leido sin cuidado,
+eso parece contradecir "solo 7 piezas en texto".
+
+No lo contradice: **ese markdown no es corpus digerido, es el repo volcado**.
+Son `SLEEP_*.md`, `SKILL.md`, `CREW.md`, `RUTINAS.md`, `README.md`,
+`ARQUITECTURA.md` y companeros — codigo y documentacion del sistema subidos a
+Drive, y subidos **al menos dos veces** (tandas del 2026-07-02/04 y del
+2026-07-07, los mismos ficheros bajo padres distintos).
+
+Las dos afirmaciones conviven:
+
+- En las carpetas de la Biblioteca, el corpus no esta convertido. Sigue en pie.
+- En Drive en general si hay markdown, pero es espejo de GitHub, no Biblioteca.
+
+Quien mida "markdown en Drive" sin filtrar por carpeta se dara por migrado otra
+vez, por tercera via distinta. Van tres: la extension del titulo, el `ls`, y ahora
+el recuento global de `mimeType`.
+
+### Estado tras esta pasada
+
+- **Demostrado:** el patron de no-conversion se sostiene fuera de la Biblioteca
+  (1 de 23 en el primer nivel de las cinco raices).
+- **Demostrado:** el contraste estructural entre dos sesiones independientes
+  coincide (57 / 34).
+- **Demostrado:** hay material clinico y de Caso 0 fuera de `02_CLINICA`.
+- **Demostrado:** la contaminacion de fechas esta localizada en `04_Raices`.
+- **Sigue PARCIAL:** el denominador global. `03_PROYECTOS` guarda los cinco
+  pilares y no se ha medido por dentro.
+- **Sigue pendiente:** la sonda mecanica con Drive montado. Las tres lecturas
+  hechas hasta ahora usan el mismo conector; coinciden entre si, pero comparten
+  ventana. Coincidir no es lo mismo que ser completo.

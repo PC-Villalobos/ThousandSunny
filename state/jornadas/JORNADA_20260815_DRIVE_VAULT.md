@@ -49,6 +49,18 @@ Tres decisiones, por escrito, antes de que nadie ejecute nada:
 4. **Formato de destino para las dos piezas que no son documentos**: el Apps
    Script de `SOF` y la hoja de calculo de `OPE`. No entran por el pipeline de
    Docs. Mientras no haya decision, no se cuentan como pendientes de conversion.
+5. **La membrana deja de ser una ruta.** Hay material clinico y de Caso 0 fuera
+   de `02_CLINICA` — en `01_SISTEMA`, `90_ARCHIVO` y `04_PERSONAL` (hallazgo 8
+   del censo). Una compuerta que vigile solo `02_CLINICA` no protege nada. La
+   proteccion pasa a ser **por marcador y contenido**, no por carpeta. Sin esta
+   decision, B3 no arranca.
+6. **Como se resuelve el choque entre el orden cronologico y la membrana**
+   (hallazgo 9). La regla 6 ordena las olas de lo mas antiguo a lo mas reciente;
+   lo mas antiguo del Drive es `04_PERSONAL` — 2018, Caso 0, relaciones
+   personales. Aplicar la regla al pie de la letra empieza la ingesta por el
+   material mas protegido del sistema. **Esta decision quiere a Vivi delante.**
+7. **Cual de las tres papeleras recibe los descartes**: `PAPELERA_HIPATIA`,
+   `BASURA` o `_DUPLICADOS`. Hoy compiten tres.
 
 Salida: tres lineas en este fichero, bajo "Decisiones del Capitan".
 
@@ -91,7 +103,10 @@ Contrato minimo por pieza, tomado de `zoro-migrate` y `robin-cronos`:
 - Frontmatter obligatorio: `id` Deckard, `estado`, `dominio`, `fuente`,
   `fecha_original`, `fecha_origen_resuelta`, `kairos`, `hash_sha256`,
   `github_publish: false`.
-- Deduplicacion aplicada segun la decision de B1.
+- Deduplicacion aplicada segun la decision de B1, **por hash y a lo ancho del
+  arbol**. Los duplicados cruzan raices y cambian de nombre al cruzarlas
+  (hallazgo 10): comparar titulos dentro de una carpeta no los encuentra.
+- Compuerta **por marcador y contenido**, no por ruta (decision B1.5).
 - Idempotente: relanzarlo dos veces no duplica salida.
 
 Exponerlo como script de Paseo en el workspace ya limpio, junto a los cinco
