@@ -18,9 +18,11 @@ Si una tarea no mueve una de las cuatro primeras, hoy no entra.
 
 ## Punto de partida (ya hecho, no repetir)
 
-- **Censo por conector ejecutado.** 144 piezas barridas, 5 en texto plano, 139
-  Google Docs. 27 falsos `.md`. 7 duplicados exactos. Contaminacion de fecha
-  del 2026-06-13 en ACA y NAR. Detalle y limites en el censo.
+- **Censo por conector ejecutado.** 189 piezas barridas, 7 en texto plano, 180
+  Google Docs, 2 objetos que no son documentos. 35 falsos `.md`. 8 pares
+  duplicados. Contaminacion de fecha del 2026-06-13 en ACA, NAR y NEX.
+  **`04_Raices` esta cerrada entera: 124 piezas, 6 en texto.** Detalle y limites
+  en el censo.
 - **Paseo configurado** en el PC del Capitan: workspace unico
   `ThousandSunny — migracion y digestion`, cinco scripts supervisados,
   `paseo.json` + wrapper de preview en el arbol local. Sin schedules.
@@ -39,10 +41,14 @@ Duraciones, no relojes. Empezad cuando empeceis y desplazad el resto.
 Tres decisiones, por escrito, antes de que nadie ejecute nada:
 
 1. **Ola 1 = estante mitico** (65 piezas, 64 por convertir). Confirmar o cambiar.
-2. **Que se hace con los 7 duplicados**: se descartan por `createdTime` mas
+2. **Que se hace con los 8 pares duplicados**: se descartan por `createdTime` mas
    antiguo, o se conservan ambos con marca. Decision del Capitan, no del agente.
+   Uno de ellos (`NEX`) es identico byte a byte; ese no admite duda.
 3. **Umbral de re-apertura de Cubierta** (ver GO/NO-GO al final). Fijarlo hoy,
    no cuando apetezca.
+4. **Formato de destino para las dos piezas que no son documentos**: el Apps
+   Script de `SOF` y la hoja de calculo de `OPE`. No entran por el pipeline de
+   Docs. Mientras no haya decision, no se cuentan como pendientes de conversion.
 
 Salida: tres lineas en este fichero, bajo "Decisiones del Capitan".
 
@@ -53,11 +59,15 @@ Salida: tres lineas en este fichero, bajo "Decisiones del Capitan".
 La regla 4 de `robin-cronos` no admite una sola sonda. El censo de la nube es
 la sonda por conector; falta la mecanica.
 
-- Barrer con Drive montado o API local **los cuatro estratos sin barrer**:
-  `SOF`, `ETH`, `OPE`, `NEX`. Mismo formato de tabla que el censo.
-- Re-barrer `MYT`, `ACA`, `NAR`, `SIS` por el **eje `createdTime`** y contrastar
-  con el barrido por `modifiedTime` de la nube (regla 2: ningun censo es completo
-  hasta barrer ambos ejes).
+`04_Raices` ya esta barrida entera por la nube — los siete estratos, 124 piezas.
+Codex **no la re-inventaria**: la contrasta y sigue hacia lo que nadie ha mirado.
+
+- Barrer con Drive montado o API local **las raices sin tocar**: `01_SISTEMA`,
+  `03_PROYECTOS`, `04_PERSONAL`, `90_ARCHIVO`, `00_INBOX`. Mismo formato de tabla.
+- Re-barrer `04_Raices` y `MYT` por el **eje `createdTime`** y contrastar con el
+  barrido por `modifiedTime` de la nube (regla 2: ningun censo es completo hasta
+  barrer ambos ejes).
+- Comprobar subcarpetas de segundo nivel: la sonda de la nube solo miro el primero.
 - Registrar el desacuerdo entre sondas. El desacuerdo es informacion sobre el
   alcance de cada ventana, no un fallo.
 
@@ -166,10 +176,13 @@ Marcar al cierre. **Todo GO o la Cubierta no se abre.**
 - [ ] Contrapeso ejecutado y denominador real del corpus conocido
 - [ ] Estante mitico convertido: 64 piezas en texto plano verificado por `mimeType`
 - [ ] Cero `source_mutations` en Drive
-- [ ] Los 7 duplicados resueltos segun la decision de B1
+- [ ] Los 8 pares duplicados resueltos segun la decision de B1
 - [ ] 15 de 15 piezas del muestreo pasan las seis casillas de B5
 - [ ] Pipeline relanzable: corre dos veces sin duplicar salida
-- [ ] Lista explicita de sensibles que no se exponen, escrita
+- [ ] Lista explicita de sensibles que no se exponen, escrita **despues** de leer
+      el guardrail vigente `H007_CLI_NAR_ACA_GUARDRAIL_20260614.md` en `ETH`
+      (unico markdown real del estrato, marcado `ACT`). Primeros candidatos ya
+      identificados en `OPE`: alta de autonomo, tarifas y handoff del despacho
 - [ ] Una sola decision de Cubierta, sin ampliacion de alcance
 
 **Umbral para abrir fase fuerte de Cubierta** (no es de hoy, es de la fase):
