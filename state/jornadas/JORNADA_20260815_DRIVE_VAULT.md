@@ -96,7 +96,19 @@ GO C0 del 2026-07-05.
 El entregable no es "los 64 docs convertidos". Es **el script que los convierte
 y que se puede volver a lanzar manana sobre otro estante**.
 
-Contrato minimo por pieza, tomado de `zoro-migrate` y `robin-cronos`:
+**Antes de escribir una linea, mirar `NEXUS`.** El censo (hallazgo 12) encontro
+alli **14 pares** Google Doc + markdown real de la serie
+`WP010_<ID-Deckard>_<slug>_v1.md`, convertidos en una sola tanda el 2026-05-24.
+La conversion ya se ejecuto una vez y funciono. Y el contrato que la rige,
+`OBSIDIAN_MIGRATION_PROTOCOL_v0_1.md`, esta tambien en `NEXUS` en markdown real
+— es el que `vault/vault.config.json` cita y cuya ubicacion nadie conocia
+(hallazgo 13).
+
+Asi que B3 **no disena de cero**: lee el protocolo, evalua la calidad de esas 14
+piezas, y si pasa, reproduce y escala. Si no pasa, corrige sabiendo por que.
+
+Contrato minimo por pieza, tomado de `zoro-migrate`, `robin-cronos` y el
+protocolo v0.1:
 
 - Fuente intacta: `source_mutations: 0`. No mover, no renombrar, no borrar en Drive.
 - Salida en texto plano real, verificable por `mimeType`, no por nombre.
