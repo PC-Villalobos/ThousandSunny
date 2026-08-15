@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-08-14T03:28:34.511Z",
+  "updatedAt": "2026-08-15T01:13:58.510Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
@@ -315,15 +315,15 @@
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_ledger.jsonl": {
-      "hash": "eb3f0ad8eb78f10910c707a227e1c3ca36c5de0e0323c922c05d29c48956b64d",
-      "bytes": 27995,
-      "mtime": "2026-08-14T03:28:33.760Z",
+      "hash": "3ed39e7fd31e90cdf2645b32c6b9311e981a96b5c21580aed34ff6ec916f4c66",
+      "bytes": 28799,
+      "mtime": "2026-08-15T01:13:58.510Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_state.json": {
-      "hash": "26181c5272982ffde6a441ee3b000e08fb04e28f9b901633567ab53b2495ca76",
-      "bytes": 74384,
-      "mtime": "2026-08-14T03:28:33.760Z",
+      "hash": "a37a149b4e4cba469828936f2845368e2ba8b5e0c33676c8d76e08757a2f5d42",
+      "bytes": 75102,
+      "mtime": "2026-08-15T01:13:58.510Z",
       "contentAccess": "readable"
     },
     "state/hipatia_bridge_runtime/README.md": {
@@ -1200,6 +1200,12 @@
       "executor": "github-actions",
       "actor": "deterministic-sleep-engine",
       "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-15T01:13:58.510Z",
+      "executor": "claude-code",
+      "actor": "claude-code",
+      "role": "Groot"
     }
   ],
   "runs": [
@@ -1919,6 +1925,18 @@
       "coherenceScore": 0.8111888111888113,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-14T03-28-34-456Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-14T03-28-34-456Z.md"
+    },
+    {
+      "timestamp": "2026-08-15T01:13:58.510Z",
+      "executor": "claude-code",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-08-15.md",
+      "note": "22/34 historic agentic runs have orphan report references in ledger (never committed)."
     }
   ]
 }
