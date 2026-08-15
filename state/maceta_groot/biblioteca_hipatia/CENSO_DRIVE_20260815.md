@@ -626,3 +626,127 @@ Cada nivel que se abre revela otro. Es la propiedad que importa del arbol, y no 
 resuelve seguir bajando a mano: **la resuelve un recorrido recursivo con allowlist
 por dominio**, que es exactamente lo que Codex tiene pendiente. Esta sonda por
 conector ya no es la herramienta adecuada para lo que queda.
+
+---
+
+## Sexta lectura — cuarto nivel de `03_PROYECTOS` (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+
+**Correccion de recuento:** la quinta lectura declaro 37 carpetas de cuarto nivel.
+Son **36**. `SOFIA/Registro_simbiotico` tiene cinco hijas, no seis; el recuento
+anterior la sobrecontaba en una. Queda corregido aqui, no en silencio.
+
+**127 entradas. 125 ficheros. 15 en texto plano.**
+
+| Tanda | Carpetas | Entradas | Texto | Google Docs | Otros | Subcarpetas |
+|---|---:|---:|---:|---:|---:|---:|
+| `ATLAS_TI` + `ASTROLOGIA` + `SOFIA/Doctorado/notas` | 12 | 44 | 15 | 29 | 0 | 0 |
+| `IELTS` + `Registro_simbiotico` + `Residuos_Tradeando` | 12 | 12 | 0 | 12 | 0 | 0 |
+| `Productos` + `Agape` + `Grimorio` + `Barbara` | 12 | 71 | 0 | 66 | 3 atajos | 2 |
+| **Total** | **36** | **127** | **15** | **107** | **3** | **2** |
+
+**Acumulado de las seis lecturas: 1.042 ficheros medidos, 61 en texto plano — 5,9%.**
+
+### Hallazgo 24 — `ATLAS_TI` es el segundo precedente, y es integro
+
+`NEXUS/ATLAS_TI` tiene **15 ficheros y los 15 estan en texto plano**: siete `.txt`
+numerados (`001_` a `007_`), cuatro `.csv` (`source_manifest`, `corpus_candidato`,
+`codebook_inicial`, `network_seed_edges`) y dos `.md`
+(`ATLAS_TI_SYNC_GUIDE`, `README_ATLAS_TI_PILOTO`), mas un
+`ATLAS_TI_INTEGRATION_STATUS`. Todo del 2026-05-04.
+
+**Es el unico subarbol integramente textual del corpus.** Y no es casualidad:
+tiene estructura numerada (`00_README` … `05_NETWORK_SEEDS`), manifiesto de
+fuentes, codebook y semillas de red. Es un piloto hecho con criterio.
+
+Junto a WP010 (hallazgo 12), van **dos precedentes de conversion exitosa** y
+ninguno de los dos estaba localizado. B3 tiene ahora dos referencias, no una — y
+esta trae ademas el patron de manifiesto y codebook que a WP010 le falta.
+
+Matiz que conviene no perder: `vault/vault.config.json` resolvio ATLAS.ti como
+`no_live_atlas_subscription`, destino `CRESTA_NEURAL`, no tronco. El piloto mejor
+ejecutado del corpus pertenece a la via que se decidio no seguir.
+
+### Hallazgo 25 — notas clinicas vivas a cuatro niveles de profundidad
+
+Es la fuga de membrana mas grave encontrada hasta ahora.
+
+`SOFIA/Doctorado/notas` contiene **18 Google Docs**: notas de sesion fechadas dia
+a dia entre diciembre de 2025 y marzo de 2026 (`13/12/2025`, `19/01/2026`,
+`11/03/2026`…), dos de ellas tituladas con **nombre y apellido** de un caso, una
+referida a un duelo con nombre propio de tercera persona, y otra que ordena una
+*"REESTANDARIZACION COMPLETA del caso bajo el CANON DEFINITIVO NEMESIS v1"*.
+
+Es material clinico **vivo y nominal**, y esta:
+
+- fuera de `02_CLINICA`,
+- fuera de `NEMESIS_SISTEMA`,
+- dentro del pilar `SOFIA` (academico),
+- a **cuatro niveles** de profundidad,
+- y el caso que nombra es uno que el propio skill `vivi` lista como disparador
+  etico explicito.
+
+Ninguna de las cinco lecturas anteriores lo habria visto: no esta en ninguna ruta
+protegida, ni lleva marcador `NEM` o `CLI` en el titulo, ni cuelga de una carpeta
+con nombre clinico. **La compuerta por marcador tampoco lo atrapa** — solo lo
+atrapa mirar contenido, o mirar el nombre propio.
+
+No se reproducen aqui nombres ni iniciales. El recuento y la ubicacion bastan
+para decidir; el detalle es del indice local y de Vivi.
+
+Refuerzo por otra via: en `AGAPE/Agape/borradores...gaia` hay una
+**hoja de consentimiento informado** archivada entre borradores narrativos. Un
+documento legal-clinico dentro del pilar creativo.
+
+### Hallazgo 26 — el andamiaje del Concilio esta vacio
+
+`SOFIA/Registro_simbiotico` tiene cinco hijas: `Concilio`, `Deckard_sesiones`,
+`Claude`, `ChatGPT`, `Gemini`. **Las cuatro primeras estan vacias.** `Gemini`
+tiene un unico volcado de conversacion de 119 KB.
+
+El registro simbiotico de la deliberacion multi-IA —lo que `puente-de-mando`
+existe para alimentar— es una estanteria montada y sin usar.
+
+En total, **12 de las 36 carpetas estan vacias**: `03_EXPORTS_DESDE_ATLAS_TI`,
+`CALENDARIO_VIVO`, `NUEVE_CAMINOS`, `Logs_progreso`, `Cronograma`, `Plan_estudio`,
+`Recursos`, `Concilio`, `Deckard_sesiones`, `Claude`, `ChatGPT`,
+`Impresiones_editoriales`. Un tercio del nivel es estructura sin contenido.
+
+### Hallazgo 27 — la narrativa de Gaia existe dos veces, en ramas paralelas
+
+`AGAPE/Agape` tiene `La estirpe de Gaia` y `borradores, estudio para elaborar la
+narrativa de gaia`. `AGAPE/Productos/La_Estirpe_de_Gaia` tiene, dentro,
+`La_estirpe_de_Gaia` y `borradores_estudio_narrativa_gaia`.
+
+Mismos dos nombres, con y sin guiones bajos, en dos ramas distintas del arbol.
+No es un duplicado de fichero: es **un subarbol entero duplicado con el nombre
+normalizado de otra forma**. Ninguna de las dos ramas esta marcada como canonica.
+
+Y esas dos ultimas son **carpetas de quinto nivel**: el arbol vuelve a abrirse.
+
+### Hallazgo 28 — el peso esta aqui abajo
+
+En `Productos`, `Agape` y `Grimorio` hay al menos diez piezas de mas de 1 MB, con
+maximos de **4,2 MB**, 3,3 MB y 2,9 MB. Frente a la mediana de 3-4 KB del resto
+del corpus, este nivel concentra el volumen real en bytes.
+
+Es narrativa larga —libros, capitulos, versiones completas—, no notas. Aqui si
+aplica el transporte mecanico de la regla 5, y aqui es donde una conversion por
+conector se atragantaria.
+
+Tres atajos mas: **19 en total**.
+
+### El denominador: donde queda
+
+`03_PROYECTOS` pasa a `PARCIAL: cuarto nivel cerrado, 2 carpetas de quinto nivel
+pendientes`.
+
+Dos observaciones que ya no son sobre el arbol sino sobre el metodo:
+
+1. **La rama se estrecha.** De 52 carpetas salieron 36; de 36 salen 2. El arbol
+   converge, y el quinto nivel es alcanzable de un tiron.
+2. **Pero la membrana no converge.** El hallazgo 25 aparecio a cuatro niveles, en
+   una rama academica, sin marcador ni ruta que lo delatara. **Cerrar el
+   denominador no cierra el riesgo.** Son dos trabajos distintos, y el segundo no
+   lo resuelve barrer mas hondo: lo resuelve mirar contenido con Vivi delante.
