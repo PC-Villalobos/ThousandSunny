@@ -995,3 +995,137 @@ que son la mitad *personal* del doble rol. La otra mitad —`SOFIA/Doctorado/not
 donde estan las 18 notas de sesion del hallazgo 25— **no queda cubierta por esa
 lista**. Bloquear solo el lado personal deja pasar el lado con contenido clinico.
 Ambas rutas van a la denylist hasta que Vivi resuelva.
+
+---
+
+## Novena lectura — tercer nivel de las cuatro raices (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+
+### Correccion de reparto
+
+Las 29 carpetas pendientes se reparten **10 bloqueadas + 19 explorables**, no
+9 + 20. Dos precisiones:
+
+- `SOFIA/Doctorado/notas` **no esta entre las 29**. Vive en `03_PROYECTOS` y ya se
+  censo en la sexta lectura. Su denylist protege la *ingesta*, no el censo, que ya
+  ocurrio en metadata-only.
+- `04_PERSONAL/Relaciones_personales` tiene **diez** subcarpetas, no nueve. La
+  decima se llama `ALV` — abreviatura que coincide con el nombre completo de otra
+  de las diez. **Dos carpetas para la misma persona**, una con nombre completo y
+  otra abreviada.
+
+**Recomendacion para la denylist:** denegar el **ID del padre**
+`Relaciones_personales`, no los diez hijos. Un solo ID, cubre `ALV`, y cubre
+tambien cualquier carpeta que se añada despues. Diez entradas envejecen mal; una
+no.
+
+### Lo barrido (19 carpetas)
+
+**143 entradas. 140 ficheros. 50 en texto plano.**
+
+| Carpeta | Entradas | Texto | Google Docs | Otros |
+|---|---:|---:|---:|---:|
+| `01_SISTEMA/NOTEBOOKLM_INBOX/*_MICELIO_UI` | 34 | 17 | 2 | 15 |
+| `90_ARCHIVO/_HISTORICO/99_PAPELERA_CONTROLADA` | 34 | 0 | 31 | 3 |
+| `01_SISTEMA/INDICES/NOTEBOOKLM_INGESTA_2026-05` | 26 | 16 | 0 | 10 |
+| `01_SISTEMA/BITACORA/SUN-0005_Deckard_Fase0` | 12 | 7 | 0 | 5 |
+| `00_INBOX/.../Pendiente_clasificar` | 8 | 0 | 3 | 4 `.docx` |
+| `01_SISTEMA/BITACORA/Sunny_Core_Schemas` | 6 | 0 | 0 | 6 `json` |
+| `90_ARCHIVO/_HISTORICO/UNIR` | 5 | 0 | 5 | 0 |
+| tres cuadernos NotebookLM | 12 | 9 | 0 | 3 |
+| resto (6 carpetas) | 6 | 1 | 3 | 2 |
+| **Total** | **143** | **50** | **43** | **47** |
+
+Cuatro de las 19 estan vacias. Tres carpetas nuevas de quinto nivel: `Latente`,
+`Titulos y CV's`, `TFM`.
+
+**Acumulado de las nueve lecturas: 1.688 ficheros medidos, 170 en texto plano — 10,1%.**
+
+### Hallazgo 34 — hay credenciales en la papelera controlada
+
+Esto no es un hallazgo de censo. Es de seguridad, y va primero.
+
+`90_ARCHIVO/_HISTORICO/99_PAPELERA_CONTROLADA` guarda **34 entradas**, todas
+marcadas `[N0-OBS-ARC]`, con creaciones desde **2018**. Entre ellas, por titulo:
+
+- un documento llamado **`Api Key`**,
+- otro con **credenciales de una cuenta comprada**,
+- un aviso de **activacion de cuenta** de un proveedor.
+
+**Consecuencias, en este orden:**
+
+1. Ningun pipeline —conversion, ingesta, indexado o export— debe tocar esta
+   carpeta. Va a la denylist junto con las rutas de Vivi.
+2. Las credenciales que sigan vivas deberian **rotarse**, independientemente de
+   la migracion. Que esten en una papelera no las desactiva.
+3. El nombre `PAPELERA_CONTROLADA` es enganoso: sugiere descarte gestionado y
+   contiene material sensible activo de siete años.
+
+El censo no ha abierto ninguno de esos documentos. El titulo basta para decidir.
+
+### Hallazgo 35 — la fuga clinica tambien esta en la bandeja de entrada
+
+`00_INBOX/00_ZONA_DE_CAPTURA/Pendiente_clasificar` contiene cuatro `.docx`:
+
+- un **manual clinico** (parte I, marcado FINAL),
+- una **bateria de autoreporte** con **nombre de paciente y fecha**,
+- un **canon formal por iniciales de caso y numero de sesion**,
+- una **ficha** fechada.
+
+Es la **cuarta fuga** de material clinico fuera de su pilar, y la peor ubicada de
+las cuatro. Las anteriores eran sedimento historico; esta esta en la **bandeja de
+entrada**, que es por donde sigue entrando todo lo nuevo.
+
+La diferencia importa: las otras fugas son un problema de limpieza. **Esta es un
+problema de flujo.** Mientras el INBOX siga siendo el punto de entrada sin
+compuerta, la fuga se reproduce sola cada vez que entra material.
+
+Ademas, uno de esos ficheros comparte iniciales de caso con un informe de cierre
+localizado en el barrido global del inicio. No se cruzan aqui: se anota que el
+cruce existe y se deja a Vivi.
+
+### Hallazgo 36 — cuatro motores de tagger, no dos
+
+Ampliacion del hallazgo 30. El campo `description` no solo acumula tres
+vocabularios: el de `HIPATIA_STATE` acumula **cuatro motores distintos**:
+
+```
+Motor: GEMINI
+Motor: SYSTEM
+Motor: OPENAI_RESCUE
+Motor: OPENAI_RESCUE_200
+```
+
+Todos con prefijo `SIMULATED_`, todos de finales de marzo de 2026. Hubo al menos
+cuatro pasadas de clasificacion en seco, con proveedores distintos, escribiendo en
+el mismo campo. Ninguna dejo rastro fuera de ese campo.
+
+La politica de `description` de B3 no es "parsear tres formatos": es **reconstruir
+que paso en marzo** antes de decidir a quien creer.
+
+### Hallazgo 37 — `01_SISTEMA` es infraestructura de datos, no corpus
+
+Las 50 piezas de texto de esta pasada estan casi todas en tres carpetas:
+`MICELIO_UI` (17 de 34), `NOTEBOOKLM_INGESTA_2026-05` (16 de 26) y
+`SUN-0005_Deckard_Fase0` (7 de 12). Con **38 ficheros `json`** acompañandolas.
+
+No es corpus digerido. Es **salida de herramientas**: esquemas, inventarios,
+cuadernos de NotebookLM, UI. Explica el 20% de texto de `01_SISTEMA` del hallazgo
+29 sin contradecirlo, y lo matiza en la direccion que importa: **el texto plano
+del sistema esta donde escribio una maquina, no donde se convirtio un documento.**
+
+Los tres precedentes de conversion real siguen siendo WP010, ATLAS_TI y —con
+reservas— las carpetas documentales de `01_SISTEMA`. Esto no es un cuarto.
+
+Decima clase de formato: `application/vnd.google-apps.presentation`.
+
+### Estado del denominador
+
+**1.688 ficheros medidos, 170 en texto plano (10,1%).**
+
+Pendientes: **3 carpetas de quinto nivel** (`Latente`, `Titulos y CV's`, `TFM`) y
+las **10 bloqueadas** de `Relaciones_personales`. Mas `02_CLINICA`,
+`00_BOVEDA_NEXUS` y los siete hijos de `NEMESIS_SISTEMA`, que no se abren.
+
+A la denylist se suma ahora `99_PAPELERA_CONTROLADA` por el hallazgo 34.
