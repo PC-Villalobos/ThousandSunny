@@ -514,3 +514,115 @@ Pero por debajo quedan **59 carpetas de tercer nivel sin abrir**, y
 **No se declara el denominador cerrado.** `03_PROYECTOS` pasa de
 `NO_MEDIDO` a `PARCIAL: primer nivel cerrado, 59 carpetas pendientes`.
 Cualquier porcentaje del total sigue siendo invencion.
+
+---
+
+## Quinta lectura — tercer nivel de `03_PROYECTOS` (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+Alcance: **las 52 carpetas de tercer nivel**. Los siete hijos de
+`NEMESIS_SISTEMA` siguen sin abrir por membrana.
+
+**650 entradas. 613 ficheros. 12 en texto plano.**
+
+| Tanda | Carpetas | Entradas | Texto | Google Docs | Otros | Subcarpetas |
+|---|---:|---:|---:|---:|---:|---:|
+| `DECKARD` + `NEXUS` | 6 | 127 | 9 | 97 | 15 | 6 |
+| `SOFIA` | 14 | 227 | 3 | 201 | 11 | 12 |
+| `DOCTORADO` + `TRADING-a` + `BIOSFERA` | 14 | 96 | 0 | 80 | 9 | 7 |
+| `AGAPE` | 18 | 200 | 0 | 175 | 13 | 12 |
+| **Total** | **52** | **650** | **12** | **553** | **48** | **37** |
+
+**Acumulado de las cinco lecturas: 917 ficheros medidos, 46 en texto plano — 5,0%.**
+
+La proporcion *baja* respecto al 11,2% anterior. No es contradiccion: el 28% de
+`03_PROYECTOS` estaba concentrado en `NEXUS`, y el fondo del arbol no lo tiene.
+
+### Hallazgo 20 — los atajos atraviesan la membrana
+
+**Dieciseis `application/vnd.google-apps.shortcut`.** Sexta clase de objeto, y la
+unica que no es un fichero: es un puntero a otro sitio del Drive.
+
+Donde estan concentrados:
+
+- `SOFIA/DOCUMENTOS_FUNDACIONALES`: **cinco atajos** creados en la misma tanda del
+  2026-04-02, apuntando a canon clinico — system prompt NEMESIS, rubrica clinica,
+  manual clinico, protocolo de aplicacion del canon, rubrica NEMESIS v1.
+- `DOCTORADO/ETHICS`: **tres atajos y ningun fichero. La carpeta es 100% punteros.**
+- `DOCTORADO/LITERATURE`: cuatro atajos.
+- `DECKARD/REGLAS_OPERATIVAS` y `SOFIA/VALORACION_BIOSFERICA`: uno cada una.
+- `AGAPE`: dos.
+
+**Esto termina de romper la membrana por ruta.** Un pipeline que recorra carpetas
+alcanza el canon clinico **desde `SOFIA` y desde `DOCTORADO`** sin entrar jamas en
+`NEMESIS_SISTEMA` ni en `02_CLINICA`. No es que la compuerta por carpeta sea
+insuficiente: es que los atajos la hacen inoperante por construccion.
+
+Dos consecuencias para B3, ninguna opcional:
+
+1. La compuerta tiene que resolverse **sobre el destino del atajo**, no sobre su
+   ubicacion. Un atajo en `DOCTORADO` cuyo destino es clinico es clinico.
+2. El deduplicador por hash **contara el atajo como pieza distinta del destino**
+   salvo que se resuelva primero. Diecisiete piezas fantasma en potencia.
+
+### Hallazgo 21 — el fondo del arbol es integramente propietario
+
+De las 52 carpetas, **solo dos tienen texto plano**: `NEXUS/WP010_CORPUS_INBOX`
+(9 markdown) y `SOFIA/REFLEXIONES_IA` (3). Las otras cincuenta tienen cero.
+
+Las tandas 3 y 4 juntas —32 carpetas, 296 entradas, `DOCTORADO`, `TRADING`,
+`BIOSFERA` y `AGAPE` enteros— **no contienen ni un solo fichero de texto**.
+
+Y las seis carpetas mas grandes del arbol suman 329 entradas sin una sola pieza
+convertida:
+
+| Carpeta | Entradas | Texto |
+|---|---:|---:|
+| `DECKARD/REGLAS_OPERATIVAS` | 93 | 0 |
+| `SOFIA/PAPERS_Y_LITERATURA` | 64 | 0 |
+| `TRADING-a/Documentacion` | 53 | 0 |
+| `SOFIA/CONVERSACIONES_IA` | 45 | 0 |
+| `AGAPE/ENSAYO` | 42 | 0 |
+| `AGAPE/NARRATIVA` | 32 | 0 |
+
+`REGLAS_OPERATIVAS` merece nota aparte: son las reglas del Protocolo Deckard —el
+corazon normativo del sistema— en 92 Google Docs. Y en `DECKARD/Sistema_Deckard`,
+`DECKARD_SYSTEM_PROMPT.md` y `DECKARD_CORE_FILE v0` **tambien son Google Docs**:
+el fichero que el skill `nemesis-ritual` lee como `DECKARD_CORE_FILE` es un falso
+`.md` mas.
+
+### Hallazgo 22 — dos clases de formato mas
+
+- **14 `application/octet-stream`** en `NEXUS/DESARROLLO`: binarios sin tipo
+  declarado. Ni Docs, ni texto, ni ofimatica reconocible.
+- **14 `.docx`** repartidos (11 en `AGAPE`, 2 en `PENDIENTE_CLASIFICAR_SOFIA`,
+  1 en `SOFIA/Doctorado`), mas 1 `.odt` y 3 hojas de calculo.
+
+Con lo ya censado, el corpus tiene **siete clases** fuera del contrato
+Doc -> Markdown: Apps Script, hoja de calculo, `.docx`, `.odt`, `octet-stream`,
+atajo, y el propio Google Doc. El pipeline de B3 necesita una tabla de decision
+por clase, no una rama unica.
+
+### Hallazgo 23 — el arbol no termina aqui
+
+Bajar un nivel abrio **37 carpetas de cuarto nivel** nuevas. Entre ellas
+`NEXUS/ATLAS_TI` con seis (`00_README` a `05_NETWORK_SEEDS`), `DOCTORADO/IELTS`
+con seis, `AGAPE/Productos` con siete, y `SOFIA/Registro_simbiotico` con seis
+—`Concilio`, `Deckard_sesiones`, `Claude`, `ChatGPT`—.
+
+`Registro_simbiotico/Deckard_sesiones`: sesiones Deckard dentro del pilar `SOFIA`.
+Tercera fuga de material clinico fuera de su pilar, ahora a nivel de carpeta.
+
+Siete de las 52 estan vacias: `VERSIONES`, `PhD_planning`,
+`Operativa y Cowork con IA`, `Propuestas_academicas_refinadas`,
+`TRADING-a/_CAJON`, `TRADING-a/Analisis_backtesting`, `BIOSFERA/Nueva_economia`.
+
+### El denominador, otra vez, sigue sin cerrar
+
+`03_PROYECTOS` pasa de `PARCIAL: primer nivel` a
+`PARCIAL: tercer nivel cerrado, 37 carpetas de cuarto nivel pendientes`.
+
+Cada nivel que se abre revela otro. Es la propiedad que importa del arbol, y no la
+resuelve seguir bajando a mano: **la resuelve un recorrido recursivo con allowlist
+por dominio**, que es exactamente lo que Codex tiene pendiente. Esta sonda por
+conector ya no es la herramienta adecuada para lo que queda.
