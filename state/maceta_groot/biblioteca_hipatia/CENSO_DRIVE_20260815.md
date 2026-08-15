@@ -1129,3 +1129,22 @@ las **10 bloqueadas** de `Relaciones_personales`. Mas `02_CLINICA`,
 `00_BOVEDA_NEXUS` y los siete hijos de `NEMESIS_SISTEMA`, que no se abren.
 
 A la denylist se suma ahora `99_PAPELERA_CONTROLADA` por el hallazgo 34.
+
+---
+
+## Recibo GO-MIG-001 — corte invalidado por frontera (Codex, 2026-08-16)
+
+Se ejecuto el GO de censo metadata-only con la denylist local entonces vigente:
+sin exportacion, lectura de contenido, hash de contenido ni mutacion de Drive
+(`source_mutations: 0`). Durante el corte, el estado coordinado avanzo y la
+novena lectura identifico una subcarpeta nominal adicional fuera de la lista
+inicial de hijos.
+
+Por tanto, el recuento de candidatos de este corte **no se incorpora al
+denominador** ni autoriza ninguna ingesta: queda `BLOQUEADO`, no cerrado. La
+denylist local se endurecio con el ID del padre de la zona nominal para cubrir
+sus descendientes actuales y futuros, sin publicar IDs ni nombres en Git.
+
+El estado publicable que rige el censo es la novena lectura anterior (19
+carpetas). Cualquier continuacion requiere un GO nuevo contra el inventario y
+denylist actualizados, o una reconciliacion metadata-only entre recuentos.
