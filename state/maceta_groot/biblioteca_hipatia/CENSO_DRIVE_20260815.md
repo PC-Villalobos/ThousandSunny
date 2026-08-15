@@ -181,3 +181,59 @@ contraste registrado. Hasta entonces estos numeros son indicativos, no canon.
 
 *Metadata-only. Sin IDs de Drive, sin titulos clinicos, sin contenido. Frontera
 `robin-cronos` regla 5 respetada: el LLM cataloga, no acarrea.*
+
+---
+
+## Contrapeso Codex — 2026-08-15
+
+Actor: Codex, sesion local del Capitan. Metodo: conector Drive de esta sesion,
+**metadata-only**; no hubo descarga ni lectura de contenido, y
+`source_mutations: 0`.
+
+Este corte es una segunda lectura de metadatos desde una sesion distinta; **no**
+es aun la sonda mecanica de una montura local de Drive. Tampoco cierra el
+denominador global: el alcance es las cinco raices que faltaban, a dos niveles,
+con una exclusión conservadora de un subarbol protegido detectado por su nombre.
+
+| Raiz | Entradas directas | Carpetas en segundo nivel | Entradas observadas bajo segundo nivel | Alcance |
+|---|---:|---:|---:|---|
+| `01_SISTEMA` | 16 | 8 | 289 | dos niveles |
+| `03_PROYECTOS` | 13 | 13 | 144 | una carpeta protegida excluida |
+| `04_PERSONAL` | 14 | 7 | 130 | dos niveles |
+| `90_ARCHIVO` | 4 | 2 | 58 | dos niveles |
+| `00_INBOX` | 10 | 4 | 37 | dos niveles |
+| **Total observado** | **57** | **34** | **658** | no recursivo |
+
+Las 658 entradas son las hijas de las carpetas de segundo nivel ya elegibles;
+incluyen carpetas y objetos no documentales. No son un total de corpus ni una
+medida de avance. La exploracion ha encontrado mas profundidad en las cinco
+raices, por lo que declararlas cerradas ahora seria una inferencia falsa.
+
+### Contraste temporal por ambos ejes
+
+El re-barrido de los dos estantes ya censados confirma la advertencia sobre
+`modifiedTime`:
+
+| Estante | Piezas observadas | `createdTime` | `modifiedTime` | Veredicto |
+|---|---:|---|---|---|
+| `04_Raices` | 124 | repartido entre 2026-04-23 y 2026-06-14 | 119 piezas el 2026-06-13 | la fecha de modificacion es huella de movimiento, no orden de origen |
+| `MYTHOS` | 65 | 2026-06-16..2026-07-05 | coincide por dia con `createdTime` | sin contaminacion equivalente en este estante |
+
+El censo anterior acertaba en el fenomeno de `04_Raices`; el contrapeso lo
+reproduce desde otra sesion y precisa su magnitud: 119 de 124 piezas comparten
+la fecha de modificacion. En consecuencia, ninguna ola se ordena por
+`modifiedTime`; conserva ambos ejes y deja `fecha_origen_resuelta` para la
+lectura semantica autorizada.
+
+### Estado de B2
+
+- **Demostrado:** existen subcarpetas y objetos fuera del primer nivel en las
+  cinco raices antes no medidas; no se puede derivar el denominador global de
+  las 189 piezas iniciales.
+- **Demostrado:** la contaminacion de fechas de `04_Raices` es reproducible;
+  MYTHOS no la comparte en la misma forma.
+- **Protegido:** no se descendio al subarbol marcado como sensible, ni a
+  `02_CLINICA` ni a `00_BOVEDA_NEXUS`.
+- **Pendiente:** recorrido recursivo con allowlist por dominio y sonda mecanica
+  local. Hasta entonces, B2 sigue `PARCIAL` y el porcentaje global es
+  `NO_DEMOSTRADO`.
