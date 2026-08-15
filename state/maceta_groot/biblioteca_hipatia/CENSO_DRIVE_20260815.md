@@ -834,3 +834,141 @@ distintas, y conviene no darlos por el mismo cuando el primero termine en verde.
 
 Quedan 21 carpetas de segundo nivel sin abrir en las cuatro raices restantes. Eso
 si es trabajo para el recorrido recursivo, no para esta sonda.
+
+---
+
+## Octava lectura — segundo nivel de las cuatro raices restantes (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+Alcance: las **21 carpetas** de segundo nivel de `01_SISTEMA`, `04_PERSONAL`,
+`90_ARCHIVO` y `00_INBOX`.
+
+**535 entradas. 506 ficheros. 59 en texto plano.**
+
+| Raiz | Carpetas | Entradas | Texto | Google Docs | Otros | Subcarpetas |
+|---|---:|---:|---:|---:|---:|---:|
+| `01_SISTEMA` | 8 | 293 | **59** | 212 | 14 | 8 |
+| `04_PERSONAL` | 7 | 132 | 0 | 116 | 2 | 14 |
+| `90_ARCHIVO` | 2 | 59 | 0 | 51 | 4 | 4 |
+| `00_INBOX` | 4 | 51 | 0 | 48 | 0 | 3 |
+| **Total** | **21** | **535** | **59** | **427** | **20** | **29** |
+
+**Acumulado de las ocho lecturas: 1.548 ficheros medidos, 120 en texto plano — 7,8%.**
+
+### Hallazgo 29 — `01_SISTEMA` es donde la conversion si ocurrio a escala
+
+De las 59 piezas en texto plano de esta pasada, **las 59 estan en `01_SISTEMA`**:
+
+| Carpeta | Entradas | Texto |
+|---|---:|---:|
+| `BITACORA` | 89 | 20 |
+| `INDICES` | 28 | 20 |
+| `CARTA_NAVEGACION` | 26 | 8 |
+| `LOGS` | 38 | 5 |
+| `REGLAS` | 100 | 3 |
+| `PROMPTS` | 2 | 2 |
+| `SCRIPTS` | 6 | 1 |
+
+`INDICES` es el caso mas limpio: 20 de 28 en texto. `BITACORA`, 20 de 89.
+
+Es el **tercer precedente** tras WP010 y ATLAS_TI, y el mas grande de los tres.
+Con una diferencia importante: aqui no hay una tanda unica y fechada, hay texto
+repartido por siete carpetas. Merece mirarse antes de disenar B3 — puede que el
+patron que falta ya este aqui, o puede que sea sedimento de varias tandas sin
+criterio comun. El censo no puede distinguirlo desde los metadatos.
+
+En contraste, **`04_PERSONAL` tiene 132 entradas y cero texto plano**, igual que
+`90_ARCHIVO` y `00_INBOX`.
+
+### Hallazgo 30 — hay un segundo tagger, y no habla el mismo idioma
+
+Junto a `SUN_TAGS` (hallazgo 15), el campo `description` de Drive lleva un
+**segundo vocabulario**:
+
+```
+HIPATIA_STATE: SIMULATED_MANTENER | Motor: GEMINI | 2026-03-24T...
+HIPATIA_STATE: SIMULATED_REVISAR_MANUAL | Motor: SYSTEM | 2026-03-24T...
+```
+
+Aparece en **49 documentos** solo en la pasada de `04_PERSONAL`. Es de **marzo**;
+`SUN_TAGS v1` es de **mayo**. Motores distintos (`GEMINI`, `SYSTEM`), vocabularios
+distintos, y el prefijo `SIMULATED` sugiere que fue una pasada en seco que nunca
+se ejecuto de verdad.
+
+Y no estan solos en ese campo: hay 10 documentos con el marcador Deckard
+`[N3-ACT-C0]`, dos con `[N3-ARC-C0]`, y **cuatro que llevan Deckard y
+`HIPATIA_STATE` a la vez**, concatenados con `|`.
+
+**Tres vocabularios conviviendo en un unico campo de metadatos sin esquema.**
+El pipeline de B3 no puede limitarse a leer `SUN_TAGS`: tiene que parsear un campo
+que acumula al menos tres convenciones de tres momentos distintos, y decidir cual
+gana cuando se contradicen. Eso es una decision de diseno, no un detalle.
+
+### Hallazgo 31 — nueve carpetas con nombre y apellido de personas reales
+
+`04_PERSONAL/Relaciones_personales` contiene **nueve subcarpetas, cada una
+nombrada con el nombre completo de una persona**. No son seudonimos ni iniciales.
+
+Y **una de ellas coincide exactamente con el nombre que aparece en los titulos de
+las notas de sesion de `SOFIA/Doctorado/notas`** (hallazgo 25).
+
+La misma persona figura, por tanto, como:
+
+- carpeta bajo *relaciones personales*, y
+- notas de sesion fechadas bajo el pilar *academico*.
+
+Eso es, literalmente, la pregunta de **doble rol** que el skill `vivi` existe para
+adjudicar —y que su propia descripcion lista como disparador—. Si es paciente, si
+es vinculo personal, o si es ambas cosas en momentos distintos, **no lo decide un
+censo**. Este censo lo senala y para aqui.
+
+Lo que si establece el censo, y es suficiente para bloquear:
+
+> Ninguna ola de ingesta puede incluir `04_PERSONAL/Relaciones_personales` ni
+> `SOFIA/Doctorado/notas` hasta que Vivi resuelva la relacion entre ambas.
+
+No se transcriben nombres en este fichero. Estan en Drive y en el indice local.
+
+### Hallazgo 32 — la papelera no esta vacia
+
+`00_INBOX/BASURA` tiene **46 entradas, 45 de ellas Google Docs**. No es un
+contenedor de descartes reciente: es un deposito con volumen.
+
+Junto con `PAPELERA_HIPATIA` (vacia) y `_DUPLICADOS` (3 piezas), completa el mapa
+de las tres papeleras de la decision B1.7. La que tiene contenido es la que nadie
+habia mirado.
+
+`90_ARCHIVO/_HISTORICO` guarda ademas **tres Apps Script versionados** —
+`THOUSAND SUNNY v4.3`, `v4.0` y un script de reorganizacion — junto a 48
+documentos. Codigo historico versionado a mano dentro del archivo.
+
+### Hallazgo 33 — dos clases de formato mas
+
+`application/json` (**9 ficheros**, en `01_SISTEMA/INDICES` y `BITACORA`) y un
+**PDF**. Con estas, el corpus suma **nueve clases** fuera del contrato
+Doc -> Markdown: Apps Script, hoja de calculo, `.docx`, `.odt`, `octet-stream`,
+atajo, `json`, `pdf`, y el propio Google Doc.
+
+Nota util: los `.json` de `INDICES` probablemente **ya son datos estructurados**,
+no documentos. No necesitan conversion; necesitan validacion de esquema. Es una
+rama distinta en la tabla de decision de B3.
+
+### Estado del denominador global
+
+| Raiz | Estado |
+|---|---|
+| `MYTHOS` | cerrada — 65 ficheros |
+| `04_Raices` | cerrada — 124 ficheros |
+| `03_PROYECTOS` | cerrada — 830 ficheros (salvo `NEMESIS_SISTEMA`) |
+| `01_SISTEMA` | segundo nivel cerrado; **8 carpetas de tercer nivel** pendientes |
+| `04_PERSONAL` | segundo nivel cerrado; **14 carpetas** pendientes (9 son nominales) |
+| `90_ARCHIVO` | segundo nivel cerrado; **4 carpetas** pendientes |
+| `00_INBOX` | segundo nivel cerrado; **3 carpetas** pendientes |
+| `02_CLINICA` | sin tocar — membrana |
+| `00_BOVEDA_NEXUS` | sin tocar — sellada GO C0 |
+
+**1.548 ficheros medidos, 120 en texto plano (7,8%). Quedan 29 carpetas de tercer
+nivel.**
+
+De esas 29, **nueve no deberian abrirse por sonda automatica**: las nominales de
+`Relaciones_personales`. Van a la cola de Vivi, no a la del escaner.
