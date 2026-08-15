@@ -750,3 +750,87 @@ Dos observaciones que ya no son sobre el arbol sino sobre el metodo:
    una rama academica, sin marcador ni ruta que lo delatara. **Cerrar el
    denominador no cierra el riesgo.** Son dos trabajos distintos, y el segundo no
    lo resuelve barrer mas hondo: lo resuelve mirar contenido con Vivi delante.
+
+---
+
+## Septima lectura — quinto nivel: fondo (claude-code, 2026-08-15)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+
+Las dos carpetas de quinto nivel —`La_estirpe_de_Gaia` y
+`borradores_estudio_narrativa_gaia`, ambas bajo
+`AGAPE/Productos/La_Estirpe_de_Gaia`— **estan vacias**.
+
+**El arbol termina.** No hay sexto nivel.
+
+### `03_PROYECTOS` queda cerrada
+
+| Nivel | Ficheros | Texto plano | Carpetas nuevas |
+|---|---:|---:|---:|
+| 1 (los 13 hijos) | 92 | 26 | 59 |
+| 2 (52 carpetas) | 613 | 12 | 37 |
+| 3 (36 carpetas) | 125 | 15 | 2 |
+| 4 (2 carpetas) | 0 | 0 | 0 |
+| **Total** | **830** | **53** | **98** |
+
+**`03_PROYECTOS`: 830 ficheros, 53 en texto plano (6,4%), 98 carpetas.**
+
+Con una sola excepcion, declarada: el subarbol de `NEMESIS_SISTEMA` —siete
+carpetas— no se ha abierto por membrana, y no se abre.
+
+Es la segunda raiz con denominador real cerrado, despues de `04_Raices` (124).
+
+### Correccion al hallazgo 27
+
+La quinta lectura dijo que la narrativa de Gaia existia "dos veces en ramas
+paralelas". Con el fondo a la vista, la descripcion correcta es otra:
+
+- `AGAPE/Agape` tiene el material real: 12 piezas en `La estirpe de Gaia` y 21 en
+  `borradores, estudio para elaborar la narrativa de gaia`.
+- `AGAPE/Productos/La_Estirpe_de_Gaia` tiene 11 piezas propias **mas dos carpetas
+  vacias** que replican esos dos nombres con guiones bajos.
+
+No es un subarbol duplicado: es **contenido repartido entre dos ramas, mas dos
+carcasas vacias que aparentan un espejo**. Peor de leer que un duplicado limpio,
+porque invita a pensar que hay copia donde solo hay estructura.
+
+Sube a **14 de 38** el numero de carpetas vacias en los niveles 3-5.
+
+### Lo que este cierre NO cierra
+
+Una nota para el escaner de frontera de Codex (`drive_boundary_scan.py`), que va
+en la direccion correcta y bloquea bien lo que puede bloquear.
+
+Su clasificador separa por **formato** y por **destino protegido**. El hallazgo 25
+no cae en ninguna de las dos redes:
+
+- Formato: son Google Docs corrientes, como otros 553 del corpus.
+- Destino protegido: no son atajos; son ficheros nativos.
+- Ruta: `SOFIA/Doctorado/notas`, ninguna carpeta con nombre clinico.
+- Marcador: titulos como `13/12/2025` o `19/01/2026`. Sin `NEM`, sin `CLI`, sin `C0`.
+
+Y sin embargo son notas de sesion nominales de un caso vivo.
+
+**El escaner puede cerrar el denominador; no puede cerrar la membrana.** Lo unico
+que separa esas 18 piezas del resto del corpus es lo que dicen dentro y el nombre
+propio que llevan en el titulo. Son dos trabajos distintos con dos herramientas
+distintas, y conviene no darlos por el mismo cuando el primero termine en verde.
+
+### Estado del denominador global
+
+| Raiz | Estado |
+|---|---|
+| `04_Raices` | **cerrada** — 124 ficheros |
+| `03_PROYECTOS` | **cerrada** — 830 ficheros (salvo `NEMESIS_SISTEMA`, 7 carpetas) |
+| `MYTHOS` | cerrada — 65 ficheros |
+| `01_SISTEMA` | primer nivel; 8 carpetas sin abrir |
+| `04_PERSONAL` | primer nivel; 7 carpetas sin abrir |
+| `90_ARCHIVO` | primer nivel; 2 carpetas sin abrir |
+| `00_INBOX` | primer nivel; 4 carpetas sin abrir |
+| `02_CLINICA` | sin tocar — membrana |
+| `00_BOVEDA_NEXUS` | sin tocar — sellada GO C0 |
+
+**Acumulado de las siete lecturas: 1.042 ficheros medidos, 61 en texto plano — 5,9%.**
+
+Quedan 21 carpetas de segundo nivel sin abrir en las cuatro raices restantes. Eso
+si es trabajo para el recorrido recursivo, no para esta sonda.
