@@ -1148,3 +1148,143 @@ sus descendientes actuales y futuros, sin publicar IDs ni nombres en Git.
 El estado publicable que rige el censo es la novena lectura anterior (19
 carpetas). Cualquier continuacion requiere un GO nuevo contra el inventario y
 denylist actualizados, o una reconciliacion metadata-only entre recuentos.
+
+---
+
+## Decima lectura — insumo para GO-ESPEJO-004 (claude-code, 2026-08-16)
+
+Actor: claude-code, sesion cloud. Metadata-only, `source_mutations: 0`.
+Metodo: busqueda por titulo y resolucion de cadena de padres. Sin descender a
+ningun arbol sellado y sin abrir un solo fichero.
+
+**Por que existe esta lectura.** El Capitan abrio en paralelo la via GO-ESPEJO
+(003 y 005 cerrados como `PROPUESTO`, 004A-D y 006 propuestos). Su matriz de
+fuentes clasifica cinco clases —Astrologia Terrestre, Caso 0, Plaud, Drive y
+contextos de Codex/ChatGPT/Claude— y de Drive dice **"no barrido"**. Drive **si
+esta barrido**: nueve lecturas, 1.688 ficheros. La matriz se escribio sin el
+censo delante, en el mismo repositorio donde el censo lleva un dia.
+
+Este bloque es lo que el censo sabe de cada clase, para que las cuatro
+propuestas de acceso no se escriban a ciegas.
+
+### Hallazgo 38 — la clase autorizada contiene a la clase prohibida
+
+`CURSO DE ASTROLOGIA TERRESTRE` tiene **nueve entradas**. Cinco de ellas son de
+la serie `CASO_0_*_PLAUD_20260729` —matriz de eventos, lectura de transitos,
+sustrato indexado, el `json` de 130 KB y el script `.py` que los calcula— mas un
+MOC que las enlaza.
+
+La matriz decide que **Caso 0 queda fuera del espejo** y que **Astrologia
+Terrestre es obra autoral usable**. Ambas cosas viven en la misma carpeta, y la
+mayoria del contenido de esa carpeta es Caso 0 cruzado con Plaud. Autorizar la
+clase por su nombre autoriza las dos.
+
+Es el hallazgo 8 otra vez, un grado peor: alli la membrana clinica no coincidia
+con `02_CLINICA`; aqui **la carpeta permitida es el contenedor de la prohibida**.
+
+**Y lo que mas importa para un espejo:** esas cinco piezas son `text/markdown`
+real. Estan entre los 170 ficheros legibles hoy. El corpus autorial de la carpeta
+sigue en Google Docs, ilegible. Es decir: **lo legible no es lo seguro**. El 10,1%
+que un Espejo Integral podria leer manana esta sesgado hacia el material que
+alguien se molesto en exportar, y ese material es precisamente el cruce Caso 0 +
+Plaud. Un espejo con "acceso al corpus autorizado" leeria antes lo mas sensible
+que lo mas publicable.
+
+### Hallazgo 39 — hay Plaud dentro de la boveda sellada, y el sello no cubre la busqueda
+
+Dos piezas Plaud —un indice marcado `[N0-HOLD-OPE]` y una transcripcion de
+conversacion fechada— cuelgan de `HOLD_OPERACIONES`, que es **hijo directo de
+`00_BOVEDA_NEXUS`**. La boveda esta sellada por GO C0 desde el 2026-07-05.
+
+Dos consecuencias, separadas:
+
+1. **Plaud no es una clase de fuente homogenea.** Una parte esta detras de un
+   sello que el propio Capitan puso y que ningun agente puede levantar. El 004C
+   no puede pedir acceso "a Plaud" como si fuera un bloque.
+2. **El sello protege el descenso, no la busqueda.** No entre en la boveda: pedi
+   titulos que contuvieran una palabra y resolvi de quien colgaban. El resultado
+   nombro contenido sellado. Cualquier agente con el conector puede hacer lo
+   mismo sin proponerselo. **Una denylist por ID de raiz no cierra esta via**; el
+   escaner de frontera de Codex bloquea el descenso, que es el vector que si
+   cubre, pero una busqueda global por titulo lo rodea.
+
+Lo registro y paro ahi. No enumere mas hijos de la boveda.
+
+### Hallazgo 40 — hay una rama entera fuera del censo, y es el arbol de trabajo
+
+La cadena completa de la carpeta de Astrologia Terrestre es:
+
+```
+Mi portatil / Documents / Claude / Projects / CURSO DE ASTROLOGIA TERRESTRE
+```
+
+`Mi portatil` **no es My Drive**: es un espejo de ordenador de Drive para
+escritorio. El portatil del Capitan esta sincronizando su carpeta de trabajo
+hacia Drive. `Projects` tiene nueve carpetas, entre ellas `thousandsunny`,
+`_worktrees`, `PROYECTO QUIRON` y **dos copias** de la carpeta que `CLAUDE.md`
+declara como hogar del hub, identicas salvo por la codificacion del nombre
+(`extension` frente a `extensiÃ³n` — mojibake).
+
+Lo que esto significa:
+
+- **El denominador de 1.688 no la incluye.** Las nueve lecturas barrieron las
+  raices con nombre (`00_INBOX`, `01_SISTEMA`, `03_PROYECTOS`, `04_PERSONAL`,
+  `04_Raices`, `90_ARCHIVO`, `99_PAPELERA_CONTROLADA`, `MYTHOS` y estratos). Esta
+  rama cuelga de otro sitio. **El denominador vuelve a estar abierto.**
+- **El allowlist por raiz de `drive_boundary_scan.py` tampoco la cubre**, salvo
+  que se añadiera esa raiz explicitamente.
+- Arboles de trabajo git sincronizados a la nube. No es un problema de migracion,
+  pero es superficie.
+
+No la he barrido. La señalo y la dejo para que el Capitan decida si entra.
+
+### Hallazgo 41 — dos informes sobre un menor, sueltos en la raiz
+
+Dos Google Docs de agosto de 2026, en la **raiz de Drive**, son informes
+astrologicos sobre un menor de edad, con nombre propio y parentesco explicito en
+el titulo. Uno declara ser incompleto.
+
+No los he abierto y no reproduzco los nombres aqui. Constan porque:
+
+- Son datos personales de un tercero que no puede consentir.
+- Estan fuera de toda carpeta, en la raiz — la misma clase de fallo de flujo del
+  hallazgo 35.
+- Y son *material de la practica de Astrologia Terrestre*, lo que rompe la
+  lectura de esa clase como "obra autoral" sin datos de terceros.
+
+### Las cinco clases, contra lo que el censo sabe
+
+| Clase de fuente | Lo que dice la matriz | Lo que el censo sabe |
+|---|---|---|
+| **Astrologia Terrestre** | obra autoral; revisar procedencia | 3 carpetas homonimas en ramas distintas; la principal contiene 5 piezas Caso 0 + Plaud y 2 informes sobre un menor fuera de ella. No es una clase limpia |
+| **Caso 0** | fuera del arnes; via clinica especifica | correcto como decision, **inaplicable como ruta**: hay Caso 0 en `01_SISTEMA`, `90_ARCHIVO`, `04_PERSONAL` (hallazgo 8) y en la carpeta de Astrologia (38) |
+| **Plaud** | declaraciones propias; seleccion humana previa | insuficiente. Graba **voces de terceros** que no consintieron. Parte esta dentro de `00_BOVEDA_NEXUS` (39) y parte cruzada con Caso 0 (38) |
+| **Drive** | "no barrido"; admision por piezas | barrido: 1.688 ficheros, 170 en texto (10,1%). Denylist vigente: `Relaciones_personales` (ID del padre), `SOFIA/Doctorado/notas`, `99_PAPELERA_CONTROLADA`, `02_CLINICA`, `00_BOVEDA_NEXUS`, los 7 hijos de `NEMESIS_SISTEMA`. Mas la rama nueva del hallazgo 40, sin barrer |
+| **Contextos Codex / ChatGPT / Claude** | no son identidad ni memoria fiable | el reparo es de *fiabilidad*; falta el de *sensibilidad*. Una traza conversacional hereda lo mas sensible que se haya pegado dentro. Esta misma sesion contiene nombres de carpetas clinicas y la estructura de la boveda. **Una traza es un agregador sin control de admision** |
+
+### Veredicto para el 004
+
+Tres cosas que el GO-ESPEJO-004 no puede hacer tal y como esta planteado:
+
+1. **Autorizar por clase de fuente.** Las clases no son disjuntas. Tres de las
+   cinco se solapan en una sola carpeta. La unidad de autorizacion tiene que ser
+   la pieza o el marcador, nunca el nombre de la clase ni la ruta — que es,
+   otra vez, la decision **B1.5** de la jornada, todavia sin escribir.
+2. **Tratar Plaud como una clase.** Esta partido entre material sellado, material
+   cruzado con Caso 0 y voces de terceros. Son tres regimenes distintos.
+3. **Dar por bueno el denominador.** El hallazgo 40 lo reabre.
+
+Y una que si puede hacer ya, sin esperar a nada: **rotar las credenciales** del
+hallazgo 34.
+
+### Estado del denominador
+
+**1.688 ficheros medidos en las raices con nombre, 170 en texto plano (10,1%).**
+Fuera de esa cuenta: la rama `Mi portatil / Documents / Claude / Projects`
+(hallazgo 40), las 3 carpetas de quinto nivel pendientes, las 10 bloqueadas de
+`Relaciones_personales`, `02_CLINICA`, `00_BOVEDA_NEXUS` y los siete hijos de
+`NEMESIS_SISTEMA`.
+
+Ningun ID de Drive, nombre de tercero ni titulo clinico se ha escrito en este
+fichero. La localizacion precisa de las piezas de los hallazgos 38, 39 y 41 se
+entrega al Capitan fuera de Git, como se hizo con la denylist.
