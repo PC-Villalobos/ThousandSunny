@@ -1353,19 +1353,35 @@ Evidencia ya registrada:
 - **Hallazgos 27 y 40.** Los nombres se duplican entre ramas, y una de las
   copias difiere solo en la codificacion. Identificar por nombre no distingue.
 
-Correccion propuesta: **anclar la autorizacion al `hash_sha256` de la pieza,
-no solo a su identificador**. Si el contenido cambia, la autorizacion decae sola
-y hay que renovarla. El campo ya existe en el contrato minimo de B3; no hay que
-inventar nada, solo reutilizarlo como condicion de vigencia y no solo como
-sello de integridad.
+Correccion propuesta: **la vigencia de un grant debe caer sola cuando la pieza
+cambia**, no solo cuando vence un plazo.
+
+**Rectificacion (misma fecha, tras GO-ESPEJO-004R2).** Esta seccion proponia
+anclar la vigencia al `hash_sha256` de la pieza. **Es inviable para el objeto
+vivo y hay que decirlo aqui, no en silencio.** Calcular el hash de un Google Doc
+exige exportarlo, y exportarlo es leerlo: la condicion presupondria justo la
+lectura que pretende autorizar. Con el 89,9% del corpus en formato propietario,
+un contrato anclado al hash seria inaplicable en la practica.
+
+La forma correcta, que viene del contrato por verbo y no de aqui:
+
+- **Para el objeto vivo en el proveedor**: anclar el grant a la **version o
+  revision que el proveedor expone como metadato**. Cambia la version, cae el
+  grant. Se obtiene sin abrir el fichero.
+- **Para el `hash_sha256`**: reservarlo a una **copia de staging ya autorizada**,
+  donde el contenido esta legitimamente en mano y el hash sirve de sello de
+  integridad, que es su papel en el contrato minimo de B3.
+
+El hueco que esta seccion documenta sigue en pie; lo que cambia es el mecanismo.
 
 ### Impacto
 
 - **Sobre B1.** No lo sustituye. La decision 1.5 —proteccion por marcador y
   contenido, no por ruta— sigue siendo el prerrequisito. Estos dos huecos son
   aguas abajo de ella: describen que le falta al contrato *una vez* tomada.
-- **Sobre B3.** El pipeline de conversion ya exige `hash_sha256` por pieza. El
-  hueco B solo le da un segundo uso. Coste cero.
+- **Sobre B3.** El `hash_sha256` que el pipeline ya exige se queda donde estaba:
+  como sello de integridad de la pieza convertida. La vigencia del grant sobre
+  el objeto vivo se ancla a la version del proveedor (ver rectificacion).
 - **Sobre GO-ESPEJO-004.** Ninguna propuesta de acceso deberia escribirse sin
   el verbo `enumerar` y sin la caducidad por cambio. Con la redaccion actual,
   una autorizacion correcta sobre el papel seguiria permitiendo descubrir lo
