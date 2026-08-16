@@ -1288,3 +1288,95 @@ Fuera de esa cuenta: la rama `Mi portatil / Documents / Claude / Projects`
 Ningun ID de Drive, nombre de tercero ni titulo clinico se ha escrito en este
 fichero. La localizacion precisa de las piezas de los hallazgos 38, 39 y 41 se
 entrega al Capitan fuera de Git, como se hizo con la denylist.
+
+---
+
+## Anexo — dos huecos de autorizacion (GO-CENSO-042, claude-code, 2026-08-16)
+
+Actor: claude-code, sesion cloud. **Cero sondas nuevas.** Este anexo no barre
+nada: deriva de hallazgos ya registrados arriba. `source_mutations: 0`.
+
+El contrato de autorizacion que se esta diseñando en la via GO-ESPEJO separa
+**admision de fuente -> lectura -> interpretacion -> propuesta -> accion**, y
+fija que la lectura puede ser integral sobre un corpus admitido pieza a pieza
+mientras ninguna ruta, carpeta o clase conceda acceso por si sola. Es la regla
+correcta y cierra el hallazgo 38.
+
+Le faltan dos cosas, y las dos las demuestra el censo.
+
+### Hueco A — enumerar no es leer, y ningun sello cubre la busqueda
+
+El hallazgo 39 no fue un descenso. Fue una **busqueda global por titulo** y la
+resolucion de la cadena de padres. Con eso apareció material que cuelga de un
+arbol sellado desde el 2026-07-05, incluido un indice marcado `[N0-HOLD-OPE]`.
+No se abrio ningun fichero y no se enumeraron los hijos del arbol.
+
+De ahi se sigue algo que el contrato no dice todavia:
+
+**Una autorizacion por artefacto enumerado gobierna que se puede leer. No
+gobierna que se puede encontrar.**
+
+Un sujeto autorizado sobre doce piezas, con un conector vivo, sigue viendo los
+nombres de miles que nunca se le admitieron. Y el nombre ya es informacion: dice
+que existe, donde cuelga y bajo que marcador. La denylist por ID y el escaner de
+frontera cubren el **descenso**, que es el vector para el que se diseñaron; una
+consulta global los rodea sin tocarlos.
+
+Correccion propuesta: **añadir `enumerar` como verbo propio**, anterior a
+`leer`, con permiso explicito y por defecto denegado fuera del conjunto
+admitido. Sin ese verbo, la compuerta tiene una puerta lateral.
+
+| Verbo | Concede | No concede |
+|---|---|---|
+| **admitir** | que una pieza sea candidata | ni descubrirla ni leerla |
+| **enumerar** | saber que la pieza existe y donde | leer su contenido |
+| **leer** | contenido integral del conjunto admitido | interpretarlo como voluntad del Capitan |
+| **interpretar** | lectura declarada como parcial, con evidencia e incertidumbre | proponer |
+| **proponer** | una accion acotada y reversible, sin ejecutarla | ejecutarla |
+| **actuar** | solo con GO explicito, por pieza y por proposito | nada permanente ni irreversible |
+
+### Hueco B — la caducidad por tiempo no basta; hace falta caducidad por cambio
+
+El contrato incluye caducidad temporal. Correcto pero insuficiente, porque el
+corpus se mueve **en la direccion peligrosa**: el conjunto autorizado sigue
+siendo formalmente valido mientras su vecindario se llena de material nuevo, y
+una pieza que cambia bajo una autorizacion viva la conserva.
+
+Evidencia ya registrada:
+
+- **Hallazgo 38.** La carpeta del curso se creo en abril de 2026. Las cinco
+  piezas de la serie Caso 0 + Plaud entraron el **2026-07-29**, tres meses
+  despues. Una autorizacion concedida en mayo sobre "esa carpeta" habria
+  cubierto en julio material que no existia cuando se firmo.
+- **Hallazgo 35.** El `00_INBOX` sigue recibiendo. Es un problema de flujo: se
+  vuelve a llenar despues de cada limpieza.
+- **Hallazgos 27 y 40.** Los nombres se duplican entre ramas, y una de las
+  copias difiere solo en la codificacion. Identificar por nombre no distingue.
+
+Correccion propuesta: **anclar la autorizacion al `hash_sha256` de la pieza,
+no solo a su identificador**. Si el contenido cambia, la autorizacion decae sola
+y hay que renovarla. El campo ya existe en el contrato minimo de B3; no hay que
+inventar nada, solo reutilizarlo como condicion de vigencia y no solo como
+sello de integridad.
+
+### Impacto
+
+- **Sobre B1.** No lo sustituye. La decision 1.5 —proteccion por marcador y
+  contenido, no por ruta— sigue siendo el prerrequisito. Estos dos huecos son
+  aguas abajo de ella: describen que le falta al contrato *una vez* tomada.
+- **Sobre B3.** El pipeline de conversion ya exige `hash_sha256` por pieza. El
+  hueco B solo le da un segundo uso. Coste cero.
+- **Sobre GO-ESPEJO-004.** Ninguna propuesta de acceso deberia escribirse sin
+  el verbo `enumerar` y sin la caducidad por cambio. Con la redaccion actual,
+  una autorizacion correcta sobre el papel seguiria permitiendo descubrir lo
+  sellado y envejeciendo hacia dentro.
+
+### Estado
+
+**Las dos condiciones quedan como bloqueantes hasta la decision B1.** No
+autorizan ninguna lectura, ingesta ni acceso, y no cambian el denominador:
+sigue en **1.688 ficheros medidos, 170 en texto plano (10,1%)** en las raices
+con nombre, con la rama del hallazgo 40 fuera de la cuenta.
+
+Cero IDs de Drive, cero nombres de terceros, cero titulos sensibles, cero
+localizaciones nuevas en este anexo.
