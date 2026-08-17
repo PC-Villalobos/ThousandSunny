@@ -103,10 +103,74 @@ leen de la documentación viva al implementar; no se copian de aquí.
 El invariante 4 sigue en pie con el motor ya elegido: DeepSeek ocupa la ranura, no
 se cablea. Es lo que permite cambiar de proveedor sin rehacer el Jardín.
 
+## Enclave: la VM Ubuntu
+
+**Decisión del Capitán, 2026-08-17: el enclave es la VM Ubuntu.** El motivo
+declarado es no arrastrar los permisos y las interfaces de Windows.
+
+Precisión que conviene no perder: Ubuntu **no salta** los permisos de Windows. Lo
+que evita es que la lógica de agentes dependa de interfaces de escritorio, sesiones
+abiertas o automatismos frágiles. La independencia que compra es de sustrato, no de
+autoridad.
+
+### Reparto
+
+| Lado | Qué aloja |
+| :---- | :---- |
+| **VM Ubuntu** | Gateway privado del Jardín y la clave de DeepSeek; trabajadores y agentes; cola de misiones, presupuestos, registros y verificaciones; conectores con GitHub, Discord y Telegram; la API que consume Sites |
+| **Windows** | Estación de construcción y biblioteca física. Codex y Claude Code siguen modificando el proyecto desde aquí |
+
+El uso diario del Jardín no depende de que esas aplicaciones estén abiertas. Es la
+misma decisión del apartado 1, ahora con sustrato asignado.
+
+### Frontera de archivos
+
+```
+Biblioteca Windows / disco externo
+        |  solo lectura o zona de admisión explícita
+VM Ubuntu
+        |
+digestión, propuestas y ejecución autorizada
+        |
+Bitácora y proyección Sites
+```
+
+**Invariante 7: no se monta el disco de Windows con acceso de escritura dentro de
+la VM.** Entra por zona de admisión controlada y staging. Así Groot digiere
+cargamentos sin poder alterar la biblioteca original.
+
+Esta frontera es la implementación física del estado `PENDING_ADMISSION` que
+`state/usopp/monitor-coronal/ESTATUTO_COHERENCIA.md` §5 fija para Drive: misma
+regla de admisión explícita, otro sustrato. Y concuerda con `CATALOGO_NUDOS.md`,
+que ya preveía a Groot interpretando la tripulación completa con un solo actor
+disponible, "DeepSeek + OpenClaw/Open WebUI".
+
+### Lo que hereda de la recepción del 2026-07-27
+
+`state/recepcion/RECEPCION_CUBIERTA_20260727.md` cierra con una exclusión que
+parece chocar con esta decisión: *"No conecta OpenClaw, no admite DeepSeek como
+destino"*. **No es contradicción: era alcance de aquel GO**, no una prohibición
+permanente. Esta decisión es precisamente el GO propio al que esa lista remitía.
+
+Tres cosas de aquella recepción sí siguen vinculando, y son las que evitan repetir
+el fallo:
+
+1. **Precedente de desborde hacia esta misma VM.** El asiento R2 registra que un GO
+   que decía "local y reversible" acabó alcanzando la VM con
+   `sunny-flota-bridge.service`. La VM ya tiene huella previa: **inventariar qué
+   corre en ella antes de instalar el gateway**, no suponerla limpia.
+2. **Declarado no es observado (R6).** El motor de OpenClaw se rebajó a *no
+   verificado* porque la configuración no prueba qué motor respondió. Aplica igual
+   a DeepSeek: que la clave esté puesta no demuestra que DeepSeek contestó. El
+   registro del invariante 3 debe guardar la traza de la respuesta, no la
+   configuración.
+3. **OpenClaw sigue requiriendo GO propio.** Puede vivir en el enclave, pero su
+   conexión no viaja incluida en esta decisión.
+
 ## Bloqueos reales del sustrato
 
-El runtime necesita un enclave, y el enclave **hoy no está disponible**. Esto no es
-una dependencia futura difusa, está en la posición verificada:
+El enclave designado **es hoy la pieza congelada**. Esto no es una dependencia
+futura difusa, está en la posición verificada:
 
 | Pieza | Estado en `POSICION.md` §5 |
 | :---- | :---- |
@@ -114,16 +178,25 @@ una dependencia futura difusa, está en la posición verificada:
 | Franky Build Kit (Linux) | **Bloqueado**: requiere USB booteable y backup verificado |
 | Rocket Raccoon / Ubuntu | `unknown` en el Monitor: sin canal de salud identificado |
 
-Cualquier plan que dé el enclave por hecho está construyendo sobre una VM parada.
-Descongelar el sustrato es trabajo previo, no un detalle de despliegue.
+Con la VM Ubuntu designada como enclave, **descongelarla pasa a ser el camino
+crítico del Jardín**, no un detalle de despliegue: es la primera misión, y va antes
+de cualquier gateway, adaptador o presupuesto. Un plan que dé el enclave por hecho
+está construyendo sobre una VM parada.
+
+Nota de coherencia entre fuentes: `POSICION.md` §5 la declara congelada y el Monitor
+la ve `unknown` por falta de canal de salud, mientras el asiento R2 del 2026-07-27
+registra un servicio desplegado en ella. Las tres cosas pueden ser ciertas a la vez
+—VDI parado, sin observabilidad, con huella de un despliegue previo—, pero el estado
+real solo se sabe arrancándola y mirando. Hasta entonces es `unknown`, no "limpia".
 
 ## Lo que este documento no hace
 
 No implementa nada, no fija presupuesto y no toca el Jardín. Registra la separación
 uso/construcción, los invariantes de custodia de la clave y el motor elegido.
 
-Pendiente del Capitán: qué enclave aloja el runtime —hoy bloqueado, ver arriba— y
-con qué presupuesto de créditos arranca. Cada uno requiere misión y GO separados.
+Pendiente del Capitán: con qué presupuesto de créditos arranca el Jardín. Y antes de
+todo, descongelar la VM e inventariar qué corre ya en ella. Cada paso requiere misión
+y GO separados; conectar OpenClaw también.
 
 ---
 
