@@ -1,755 +1,863 @@
 {
   "version": "0.1.0",
-  "updatedAt": "2026-07-25T04:21:42.739Z",
+  "updatedAt": "2026-08-17T01:14:44.000Z",
   "files": {
     ".claude/skills/README.md": {
       "hash": "a90fd59c482cde07494b18db9f5fd3dd0c5f88b2a5440ea3c5e58be1357d046d",
       "bytes": 2089,
-      "mtime": "2026-07-25T04:21:42.072Z",
+      "mtime": "2026-08-16T02:32:51.305Z",
       "contentAccess": "readable"
     },
     ".claude/skills/franky/SKILL.md": {
       "hash": "c520fea3e0b78dc3c0feb2f034357939e893a728dd7d8a14227c1d6eb66e0bb9",
       "bytes": 3104,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     ".claude/skills/nami/SKILL.md": {
       "hash": "a51d2e680174377ba46a56de9b721bc927225466d1ce8db76cab5592b3969e1d",
       "bytes": 3149,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     ".claude/skills/robin-cronos/SKILL.md": {
       "hash": "098717e09a7c511887608d3c1637b730409db273e3ef1e9a165de1ccf792af37",
       "bytes": 6598,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     ".claude/skills/robin-meditacion/SKILL.md": {
       "hash": "49e40a03ff1b969439ee3dceeb4ba6bf64d2ce8a401f69534c9ba986e8f9d77d",
       "bytes": 5338,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     ".claude/skills/sueno/SKILL.md": {
       "hash": "e11b26190afd3ffd6d88f8b03ba45074e3d80a5bb41da642eb7f521f7de22717",
       "bytes": 7838,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     ".claude/skills/zoro-migrate/SKILL.md": {
       "hash": "d664bcb6d67e6ea4ead87fa689ffed43141df343f516d22b27248d9e085c4174",
       "bytes": 3263,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "AGAPE.md": {
       "hash": "9af2118bd6145378cfa686864b332e6c11f514a511a37ac0ff227ed711ada635",
       "bytes": 3827,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
+      "contentAccess": "readable"
+    },
+    "AUDITORIA_SOBERANIA_20260725.md": {
+      "hash": "b99cd8998b6656a88d285fe83b53042d4d19618117b6c7854e4bdbc884186dd8",
+      "bytes": 7621,
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "CLAUDE.md": {
-      "hash": "16e44e73001e43f38e770ad9b188cc24cd076bad3b4668b9fdc2ef8fd7a28b24",
-      "bytes": 8673,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "hash": "50738ddaa702f015679f7038a6e7585317a35c93ff3b715b4ffb2265848bb60d",
+      "bytes": 9370,
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "CREW.md": {
       "hash": "753bb6f7df350c5bf2e73ace9a98d061ce50f07d0347f40681adbad12548af8a",
       "bytes": 5937,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "LLAVES_DEL_CAPITAN.md": {
       "hash": "2aa7b63e6ebadd4e5bc830da5c86b1ee6d7146c13aed27700118c9c627800c80",
       "bytes": 4818,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "OPERACIONES.md": {
       "hash": "67d01869c4b9080a5a2627e95e8e5e2db172c326bf303ffcc579e4da6339179e",
       "bytes": 2017,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
+      "contentAccess": "readable"
+    },
+    "POSICION.md": {
+      "hash": "e30107c19e3366791453771b6327c3ac79cd1913040cef26d1c2b0b98e274b41",
+      "bytes": 11240,
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "README.md": {
       "hash": "fe75c8828db7499e54a97e6019454a990e9f8ad3fd8f39f8b1942990bad93e56",
       "bytes": 3458,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "RUTINAS.md": {
       "hash": "def4835848b93a792a67ba36a10b9c677b8a2bd36b68ebd03551ee2fc871766b",
       "bytes": 4018,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "TEATRO.md": {
       "hash": "2dfb4f7d9db8e435c213d3dc4e67e7ec370e0efccb3ba114b58949163ae970bb",
       "bytes": 7018,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "TESIS.md": {
       "hash": "796ee840eb1798e8c3dd7a90c45bfe565c7e9d9e292c3d2be5a83dae3db91009",
       "bytes": 4557,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.306Z",
       "contentAccess": "readable"
     },
     "bridge-linux/ARQUITECTURA.md": {
       "hash": "68e80236794c676aaf682f7deb7734d61e32eed89c0c761d8929cb57173b94bb",
       "bytes": 9119,
-      "mtime": "2026-07-25T04:21:42.073Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "bridge-linux/BITACORA_CODEX_20260711.md": {
       "hash": "6e167456269689c355961fadf15a1ef08a016d6809e164068a893bf6552e3f19",
       "bytes": 4212,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "bridge-linux/HITO_0_FAST_START.md": {
       "hash": "1712649c3dc0908ab217e4175195a8e18dcffb3f03759c6ce6f01896559f1816",
       "bytes": 3394,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "bridge-linux/LAB_VM_STATUS_20260715.md": {
       "hash": "fb8160860154ff50c61b657595fac7a08a07de4334efff3584b2131b8b88cd26",
       "bytes": 1766,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "bridge-linux/PRE_LINUX_KEY_GATE.md": {
       "hash": "11e5ff5a809929f674e0e6a0e2ee6310dac9f8a5645a3b7ebe1c91377b9ffc8c",
       "bytes": 1723,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "bridge-linux/ROADMAP_SECUENCIA_LINUX.md": {
       "hash": "0d581f50522501abe2d241fb87fc0333cb8a26f3fb3322c39c79091e1efbe7f0",
       "bytes": 4869,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "docs/ADUANA_MYTHOS.md": {
       "hash": "c98de3ed5c927aa3d78ba9f931e9d35f0e7e0eb252f6e0c7a51692982437f5bc",
       "bytes": 4347,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "docs/MIGRACION_SEMANTICA.md": {
       "hash": "81e0f209757157a2c90c905974cfdec1dbbe126252c05df8a400d09d3d48db7f",
       "bytes": 9135,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "docs/architecture/ARGOS_VS_SUNNY_20260719.md": {
       "hash": "477fd46e4be3c6c450105d8235f96ec203a9afa9f690953a83fc1c29918fc9e6",
       "bytes": 6570,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.307Z",
       "contentAccess": "readable"
     },
     "docs/architecture/CAMARA_DE_CHOPPER.md": {
       "hash": "102a443600635c977d6498d1f5820e6399b251eabd86180ddaf3bd8ec942e976",
       "bytes": 11523,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "docs/architecture/ENCARGO_C0_CAMARA_DE_CHOPPER.md": {
       "hash": "9dd29a9ee6cfe8657f05934ac6adbd64d1ed0868407ff663012f63f88dd2bdf4",
       "bytes": 9104,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "docs/architecture/SUNNY_CORE.md": {
       "hash": "c4d77ec711061184d28dd4cd4ce69d219cb3c4045351be65276eb80d59b0b4ac",
       "bytes": 5642,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "package.json": {
       "hash": "506f85890048fb9677f6f7d0e735ce063799c2dd96f7651a06fb85fee88e3dea",
       "bytes": 478,
-      "mtime": "2026-07-25T04:21:42.074Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
+      "contentAccess": "readable"
+    },
+    "state/cierres/CIERRE_ARCO_20260725.md": {
+      "hash": "c966350259d9faa4d3907ffb93d3d714aec949099ea2828e8c6cdf7d03fee0fc",
+      "bytes": 11191,
+      "mtime": "2026-08-16T02:32:51.308Z",
+      "contentAccess": "readable"
+    },
+    "state/cierres/CIERRE_ARCO_20260726.md": {
+      "hash": "ff47bead393409fd1d050028b7064ff6d82e6e7980793ce5e7eefba29f847f1e",
+      "bytes": 11954,
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/concilio/CONCILIO_DE_LOS_GLITCHES.md": {
       "hash": "80d239f35b2406c9952984f1616b0bdd1d86f59f24cfab1a3718034fe31cc72a",
       "bytes": 5171,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/00_BOOTSTRAP_SUNNY_CORE.md": {
       "hash": "b7a4c2b1375518f6694beafd49683acd4f00fee2b1b426227991b9076f4baa27",
       "bytes": 2411,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/01_CANON.md": {
       "hash": "53a28de789038945e35e2af0605b6de98058a2a5783816680d1f8e8d4a718e2b",
       "bytes": 1744,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/05_WORK_PACKETS.md": {
       "hash": "005304fc2eec94c1eeeb7f72636a70c659c0885a77ff0048972cf2058b8a6360",
       "bytes": 3534,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/06_FIBONACCI_GROWTH.md": {
       "hash": "5a59888f786dc1562a114f4155f73d774f3159ec7348f9388f28961eed8c86e1",
       "bytes": 2765,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/07_FECUNDACION_VEGETAL.md": {
       "hash": "bede5f92f81a013d65f01decb2797904b894f91c6ba5872bdc5cab0f0ed326fa",
       "bytes": 2841,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/WP-007_NOTEBOOKLM_BATCH_TEMPLATE.md": {
       "hash": "8bef7643bc53b1a1b7284768967e26f4eb8cbf2cab15fe664d041eea280c5752",
       "bytes": 1609,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/deckard/WP-007_NOTEBOOKLM_PROMPT_CONTRACT.md": {
       "hash": "d97ca91c8aa6a0ffba1955c71d5ea2b6408ac3abcff260914ea2e31e6f137b27",
       "bytes": 6281,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/CONVERGENCIA_MNEMOSINE_HIPATIA_ROBIN.md": {
       "hash": "eeeb1f097b06803ecec37a871fa051cbb8d4e761f424f4716d49881cc27b2717",
       "bytes": 5293,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.308Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/FASE0_RECONCILIACION_20260725.md": {
+      "hash": "85c3d0c3f5e246cef507efc61264c01f28eab5db5f6acd8c99cddef82a51b1dd",
+      "bytes": 9569,
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/FUNCION_DE_SUENO_FASES.md": {
       "hash": "f4b77843f92f5a71d926bdf5a2b57bc4c1faef6e41b3ba9fa8014fea96bc1d77",
       "bytes": 2267,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/FUNCION_DE_SUENO_spec.md": {
       "hash": "105d319f377c7abe3812fe23c4561c27b6238a0f91fbcf3d931a942ce07391f9",
       "bytes": 8514,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
+      "contentAccess": "readable"
+    },
+    "state/funcion_de_sueno/JOURNAL_v1.md": {
+      "hash": "942af8765d427670f412774a7bf72debaf1dd12ebb115e962fba469caa2f4a0b",
+      "bytes": 5462,
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/MEMBRANA_HARDENING_v0.md": {
       "hash": "5233220ea77bb67d4654728962791760dad0f02eb29f8464bd8871accdb141c3",
       "bytes": 2666,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/MNEMOSINE_v0.md": {
       "hash": "52f0fde4a2cc16c006afc963f887bc7ff1df2fd9c93ade1904259b62b0e2188d",
       "bytes": 5623,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/ROUTINE_SETUP.md": {
       "hash": "6cf8d2652d857812f00ff2e3584b16330fdbe4e62960a965e6bdd087c6996d8e",
       "bytes": 9190,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/SIENT_ETICO_v0.md": {
       "hash": "50c24baefbf68878bf82cd1fd39292f2b1eec0884308df36cfd8578f37b7f661",
       "bytes": 5063,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/cloud_request_latest.md": {
       "hash": "1689e4446fde048aedf4fbe51e8ca9763fb9df48c6a5df37a051805d5ab7f1a8",
       "bytes": 840,
-      "mtime": "2026-07-25T04:21:42.075Z",
+      "mtime": "2026-08-16T02:32:51.309Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_config.repo.json": {
       "hash": "5a7597f7eddce25ef82e4def7f09e373bf2f3fe82541b3bf8c8d38c3c434ed1d",
       "bytes": 478,
-      "mtime": "2026-07-25T04:21:42.079Z",
+      "mtime": "2026-08-16T02:32:51.317Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_ledger.jsonl": {
-      "hash": "12c329f2802d01a32364016fdb0a160634de4f24f1571ae8f5efc02548ad6fc9",
-      "bytes": 13891,
-      "mtime": "2026-07-25T04:21:42.079Z",
+      "hash": "8c77e20c4e2905e7dae72948a45855fc29f2ca951991bc0ee925f3c561a66c83",
+      "bytes": 28593,
+      "mtime": "2026-08-16T02:32:51.317Z",
       "contentAccess": "readable"
     },
     "state/funcion_de_sueno/sleep_state.json": {
-      "hash": "3c7c6eea1b4eecff825fa88e478f6956a987605ff2189352d5a734f210f9dddf",
-      "bytes": 55099,
-      "mtime": "2026-07-25T04:21:42.080Z",
+      "hash": "24484b9903777672042074d9532aeb9b93d4bf51832db957296ad954c2bbbbeb",
+      "bytes": 75820,
+      "mtime": "2026-08-16T02:32:51.317Z",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/README.md": {
+      "hash": "88ff8e8f34e90a8b0971a8f86c14fd53e3ecb81b5c31b20217a5b4061fc52378",
+      "bytes": 2885,
+      "mtime": "2026-08-16T02:32:51.318Z",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/deploy/runtime-manifest.json": {
+      "hash": "a57c24912b4afec116ab85eef0fd380d6626379ff6cfb0d3189db70bdbacbe6b",
+      "bytes": 3992,
+      "mtime": "2026-08-16T02:32:51.318Z",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/schema/bitacora_event.schema.json": {
+      "hash": "836f3623149522fa3b1b0f40010d72e4df36b3e4b1c178b68246ae8c36ccfa49",
+      "bytes": 3707,
+      "mtime": "2026-08-16T02:32:51.318Z",
+      "contentAccess": "readable"
+    },
+    "state/hipatia_bridge_runtime/tests/README.md": {
+      "hash": "e0c0521bf1332cf8e5369e5333f38d1a07fa7c556ffa36e28432dcf3120a3020",
+      "bytes": 826,
+      "mtime": "2026-08-16T02:32:51.319Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/CARTOGRAFIA_SUSTRATO.md": {
       "hash": "539e566f4a02df74de0d9e509dfdbd3ccb3aa5b581c4ae7ed8505c990fd04778",
       "bytes": 3750,
-      "mtime": "2026-07-25T04:21:42.080Z",
+      "mtime": "2026-08-16T02:32:51.319Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/CATALOGO_NUDOS.md": {
       "hash": "d708d4e1e35d440740366a67c6373857ea8f894cde3f3e48a759a281617b11cb",
       "bytes": 8919,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/GERMINACION_00.md": {
       "hash": "5cd9ff7ae19d9e3043b850b7455864bcb9a6f7c9c903c3d100e61d1982c1d59d",
       "bytes": 2327,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/GERMINACION_01.md": {
       "hash": "3117de9dd1a084119373690c35f2f872942683a892c57afa8d305293abc5188c",
       "bytes": 4836,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/GERMINACION_02.md": {
       "hash": "9a81433f27234919d8ff6a8423304b6ce7c119ab20c4cd299a45148b417d8efc",
       "bytes": 5345,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/MACETA_GROOT_STATE.md": {
       "hash": "1eaf71b4b71e4c7f74bce2657c04b4c4e185cdf380ffe50c5c82c629d8f0ffaf",
       "bytes": 5873,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/RETOMAR.md": {
       "hash": "650d7b3898ce93e3ec3cdcbe2ca9ee1a1a2d842cb2d0a3fc44a5c204f01275dd",
       "bytes": 3420,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/biblioteca_hipatia/BIBLIOTECA_HIPATIA_PUBLIC_SAFE_20260704_034210.md": {
       "hash": "69146abca0bede32873e5adc1457790e49c3613e6d08a941399c784275addf31",
       "bytes": 2620,
-      "mtime": "2026-07-25T04:21:42.081Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/biblioteca_hipatia/README.md": {
       "hash": "011df8544850b44cd7d8bda0638cf7eeff783c0a0da001a48089f74997c18c80",
       "bytes": 1718,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/chopper/_PROTOCOLO.md": {
       "hash": "573519d10d350d00d6267007aa494f0f87e437c1552f2c3e5b5de5e8dca61c65",
       "bytes": 2375,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/chopper/templates/PACIENTE.md": {
       "hash": "f16cd4e8b53cfe1681822017c8665153b76036390a3c6488de0e87c7b16a9974",
       "bytes": 593,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/chopper/templates/PATRON.md": {
       "hash": "80b7c7174b32152af4e960fae6b0659490253a5c26ace10f9b51692040bc8f3c",
       "bytes": 577,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/chopper/templates/SESION.md": {
       "hash": "a997d27a542b0775a96d2e39b67f133438eae53cabdca9d811ff159a7dfc27d3",
       "bytes": 708,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/N3-ACT-SIS-DESPERTAR-IA-AGENTICA-20260702-001.md": {
       "hash": "9d2cde0959fec40c3b6458aa8e8ab741044dfd884e1ded6c535aa42cfe2c2702",
       "bytes": 2475,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/N3-ACT-SIS-LIDERAZGO-CONTEXTO-20260702-001.md": {
       "hash": "f9f01ef41f185a6a0f8db4098925d228391f773b8015b2b1478a7155a86c8685",
       "bytes": 2086,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/SIS-capa-semantica.md": {
       "hash": "b4f715ac666713e0091004b5a4af2a4d92bd33054db0488b438f1d92fbc9d481",
       "bytes": 2191,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/SIS-cerebro-semantico.md": {
       "hash": "834268d135387e0fac3f0070106bac12c3cee9e241069ecb3cc30df7ae18fc2f",
       "bytes": 801,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/SIS-informe-integral-v5.md": {
       "hash": "3bb4aa11c0c88a32549db22304a1ff2610d8c592bee67eebd4eb1c1b8b1e8ea4",
       "bytes": 739,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/SIS-nakama-ontologia.md": {
       "hash": "522151d5b9f3f1acd9236fc975447a584597df36ad577f9025842c577a5c383b",
       "bytes": 690,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/SIS-simbiosis-nahual.md": {
       "hash": "b9c52b5f042f190d03dbb34dd646803b8856a25f9b0c70ae1735420c281ed54b",
       "bytes": 2371,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/connectoma/_INDICE.md": {
       "hash": "37ca3390a1c7ac7624041bb29c3ca1ec85f11c75118be446675b88f29048f503",
       "bytes": 2430,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/drive_rescue/INDICE_MICELIAR_DRIVE_PUBLIC_SAFE_20260704_032612.md": {
       "hash": "ddcc86b05196e9495515c8f81af6702bdfaeaa59bd3e659dc40e3dcdc301b8a4",
       "bytes": 3141,
-      "mtime": "2026-07-25T04:21:42.082Z",
+      "mtime": "2026-08-16T02:32:51.320Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/drive_rescue/PROTOCOLO_RESCATE_NL_DRIVE_v0_20260704_023000.md": {
       "hash": "355816b070cfdba6eef5296ca38cf4da410fca3d33a91763a883dda7bbc575c9",
       "bytes": 4044,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/drive_rescue/README.md": {
       "hash": "7fc3e3878a9c2f8ae4571b5b38a9e62a5367c633338175baf5e58ff4b999622f",
       "bytes": 1461,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/maceta_groot/operaciones/hopupu/FACTURA_PLANTILLA.md": {
       "hash": "cb0c6ea3e541b6698a4798bde0c914e60cc8c826643c4c4f5e88e12297c684ba",
       "bytes": 2981,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/meditacion/MEDITACION_spec.md": {
       "hash": "f2caf975e1a01acbd8febc91c4aa257352907bb70a1719723c2f15ad41498e11",
       "bytes": 1561,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/meditacion/RECONCILIACION_v0.md": {
       "hash": "8f7bacb4ad64dab844e2f2a819b8babc2d057c248da7641fe875e8048670ca62",
       "bytes": 4379,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/meditacion/meditacion_ledger.jsonl": {
       "hash": "26e9a4e07204bf057a7bb39676e51737d851a969ef697101e451b42eb65f5eb1",
       "bytes": 754,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/README.md": {
       "hash": "1fb0a18672e763a46c4e0bdfa17d04e41f0d446970b29b297af06f79886153dd",
       "bytes": 3257,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/HOLD_CLINICO/clinico.md": {
       "hash": "9bb9e8b0db48b2e91b647d07d971114a2105139713a02dd45bc16769d45bcfdc",
       "bytes": 63,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "metadata_only"
     },
     "state/melampo_lab/corpus/alpha_dup.md": {
       "hash": "375bf4b8c16c87ba0fd30fc47355c1298c4459b7887bdb1137c8f9a6e4c848fb",
       "bytes": 61,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/alpha_v1.md": {
       "hash": "375bf4b8c16c87ba0fd30fc47355c1298c4459b7887bdb1137c8f9a6e4c848fb",
       "bytes": 61,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/alpha_v2.md": {
       "hash": "7bb3e3c2ea2e120558710147d511287786bfa0978f6a3085d93391668566a3d4",
       "bytes": 85,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/beta.md": {
       "hash": "5b0bffb5703afbba325c65e2484ab73797f1bf3ee562be1418ef407864e0c52a",
       "bytes": 44,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/delta.md": {
       "hash": "6bde76206b3572a5024940baefaec7e120324a894638a1a24cd252e50e9f36a0",
       "bytes": 41,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/gamma.md": {
       "hash": "c9c3d05011259f94d316248c6b7a688b0c5da5bf6183cf324b9b848dd61bd8a4",
       "bytes": 57,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/melampo_lab/corpus/orphan.md": {
       "hash": "ebb10f23d94670a89d33f19eadfb6736e02102765b2f1c33584ec701771aed5c",
       "bytes": 55,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/metatron/METATRON_GESTATION_STATE.md": {
       "hash": "56bb6d4a39b6b5ba7f9b4a3aa3986eae49713cdd25698eeb86a126d31eb2b852",
       "bytes": 21059,
-      "mtime": "2026-07-25T04:21:42.083Z",
+      "mtime": "2026-08-16T02:32:51.321Z",
       "contentAccess": "readable"
     },
     "state/metatron/PLACENTA_INTEGRATION_PLAN.md": {
       "hash": "34b2d2a3a7813a2a344cf726ace01b93e5187b72a3513543e76123a6d238bcbf",
       "bytes": 3868,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/PLACENTA_ROOT.md": {
       "hash": "180109e168be1e252d24adbc2b8759017fecdedc8fdd4b5ebecde5c17a17098c",
       "bytes": 2258,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/PLAN_SELLADO_Y_WAVE13_20260705.md": {
       "hash": "cc7381564517269553deace2934debf89447cd78898d5e72181abfe94602300c",
       "bytes": 4205,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/REEF_GROWTH_ARCHITECTURE.md": {
       "hash": "87777fe996b7d09290be0864fe431ec568f5de6de2be4822c08250a55490a7fb",
       "bytes": 11284,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/RETOMAR.md": {
       "hash": "e0cddedab7df6f5855cada5221379035dd98492713a32e5d4bcb2da3d0a94995",
       "bytes": 13316,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N0-SEMILLA-METATRON.md": {
       "hash": "53a1380044ad6abb35aeb6c15de67c48accabac2aae80fee2463d887254fff5a",
       "bytes": 2910,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N1-AXIOMAS-RAICES.md": {
       "hash": "cfa7f70b27584fe88a07c63ca4d3ac5b10213822e78a75ddf5737b68e93d4b73",
       "bytes": 823,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N2-TRONCO.md": {
       "hash": "530ac4eaf6be2f9288c8edc015818b158b4c51ae44c0cac614b52c80951a1f8d",
       "bytes": 760,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N3-RAMAS.md": {
       "hash": "c3962efacc597f343083cbe97c717832aae6ddf1e953546564aadb241a1f9c44",
       "bytes": 915,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N4-HOJAS.md": {
       "hash": "d513cc663a5ac48477a2ad9875a4af80cce2edd87e8a9c7fb8dcc5eadaddd14d",
       "bytes": 810,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/genoma/N5-FRUTOS.md": {
       "hash": "999442d00fbd91eb37a1b7f337aa1fb0fa588ecfcd14825b6de2ee281d25acc1",
       "bytes": 838,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/metatron/wave8/WAVE8-CANDIDATOS.md": {
       "hash": "51d8864cefc26d17595cd186371aeb5cec00147b05c2b80b1c55e800e2669a08",
       "bytes": 1612,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-01_candidates.json": {
       "hash": "b251190e5a779260ede99e0455fd3fc4e366a03bc4f7763c16101cb67b798a24",
       "bytes": 1821,
-      "mtime": "2026-07-25T04:21:42.084Z",
+      "mtime": "2026-08-16T02:32:51.322Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-01_manifest.md": {
       "hash": "2d992308ae5635b9482e97c9167210a4482daf7ca60c5f86bb42a7d0befa67ba",
       "bytes": 1577,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-01_output.md": {
       "hash": "2a999c220de7b36be00c49223d85554cd4a10accd9c50ff2eb33239dd5331910",
       "bytes": 4946,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-01_prompt.md": {
       "hash": "d6f2192c156d311a75d40e9e0659f69b253aa489389a7a94fa2dc83ace6f7854",
       "bytes": 1801,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-02_candidates.json": {
       "hash": "3c0ba0c14abd739d8bbfcb7b7adbb70a947211253a9ce6c5739ed5acf2dad0d7",
       "bytes": 6143,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-02_manifest.md": {
       "hash": "4b9229e6992246b3d5ab5969a2a99f02eeed609aee0a2bcde6379326b7abb77f",
       "bytes": 1445,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-02_output.md": {
       "hash": "3ad2148d74f7aa1d0cdd552af8aca34ef53761ee14ccd1e0ad267cb4a51abc3d",
       "bytes": 4124,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NLM-20260523-02_prompt.md": {
       "hash": "c6da3c47a7627eb194db0e751f05b8638dcf2519ff4bcf41179c1928868032ce",
       "bytes": 1685,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NOTEBOOKLM_MERGE_REVIEW_20260523.json": {
       "hash": "26fbc9d8def7d026ebc01373edee1b49bdd4aaf3ef721f409dbed698bed579c7",
       "bytes": 2581,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NOTEBOOKLM_MERGE_REVIEW_20260523.md": {
       "hash": "2fbf76cfcbd7d844dafecd27e45b9ef8d8ad5bd666704daca9661822dc3d85f9",
       "bytes": 3616,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NOTEBOOKLM_TRIAGE_20260523.json": {
       "hash": "7c735a1b7f752384e46a485183e00a1f84da946225647add8688048db6cbad46",
       "bytes": 5712,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/notebooklm/NOTEBOOKLM_TRIAGE_20260523.md": {
       "hash": "47a832c11b32ad648d43aea2e462e00eedf20251ffb378710ce5bf4466d5aaa9",
       "bytes": 6608,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
+      "contentAccess": "readable"
+    },
+    "state/recepcion/RECEPCION_CUBIERTA_20260727.md": {
+      "hash": "6e6dc1b743782868d589d74a8ef7711cb27e168275729f76a068e9d17b38e10a",
+      "bytes": 29047,
+      "mtime": "2026-08-16T02:32:51.323Z",
       "contentAccess": "readable"
     },
     "state/usopp/fabulas/LA_FIEBRE_DEL_CATALEJO.md": {
       "hash": "6dbd19ac19e587094b18cc9561f095001826933c42d391bcbb92b7d36b63a02d",
       "bytes": 21914,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.323Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/.openai/hosting.json": {
+      "hash": "8c6a82a2446440c1fe221dec18ed22335ca681abbdb3c3cc71d1ba889c59a5f5",
+      "bytes": 91,
+      "mtime": "2026-08-16T02:32:51.324Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/CONNECTOR_CONTRACT.md": {
+      "hash": "2355ddddcddb4d4251e7f46c21009803c27d3347b48f09b855af25e404956a3a",
+      "bytes": 1032,
+      "mtime": "2026-08-16T02:32:51.324Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/README.md": {
+      "hash": "0cd98b84934be0e9fed16454e0ae9facd6a9d425634174c9e20a8508309cdcb9",
+      "bytes": 1672,
+      "mtime": "2026-08-16T02:32:51.324Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/app/data/local-snapshot.json": {
+      "hash": "ff10351bae758137cea64d4e576dbad6e4b996036f748dbb594e873dff8598ab",
+      "bytes": 1053,
+      "mtime": "2026-08-16T02:32:51.324Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/package-lock.json": {
+      "hash": "a48f475b5e84454d798dd92fefd01c38c5f369eb17b6008fc5a54461f349a0e7",
+      "bytes": 380151,
+      "mtime": "2026-08-16T02:32:51.325Z",
+      "contentAccess": "metadata_only"
+    },
+    "state/usopp/monitor-coronal/package.json": {
+      "hash": "7acbb1d9f7e3b8e1083c9c1ee6edb5cab0ab236875c050dfb4846b0ef93b5102",
+      "bytes": 1209,
+      "mtime": "2026-08-16T02:32:51.325Z",
+      "contentAccess": "readable"
+    },
+    "state/usopp/monitor-coronal/tsconfig.json": {
+      "hash": "be18523b23b78b6e1a876ddd107d330f0168bddf09d751b57e0b5edce69c66f3",
+      "bytes": 666,
+      "mtime": "2026-08-16T02:32:51.325Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/HANDOFF_C_TO_A_20260602.md": {
       "hash": "9737d3900083c7df9efe0ee15049588e7137d5db1031f44f09c80956e1a9c1b1",
       "bytes": 2001,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.325Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/phase0-local-test/PHASE0_AUDIT_POST_W12_REQUIREMENTS_20260602.md": {
       "hash": "a4be2e22370523f016dc3d89c52b654629a2e8882bc6545e4940a80eefa25817",
       "bytes": 2120,
-      "mtime": "2026-07-25T04:21:42.085Z",
+      "mtime": "2026-08-16T02:32:51.326Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/phase0-local-test/PHASE0_INTEGRATION_RESULT_20260602.md": {
       "hash": "5cfa870d50380bb79bc070620a7ad6dbcee84bc8d2c1071677f0eeaad4a0b811",
       "bytes": 2248,
-      "mtime": "2026-07-25T04:21:42.086Z",
+      "mtime": "2026-08-16T02:32:51.326Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/phase0-local-test/PHASE0_REAL_PATCH_CHANGES_20260602.md": {
       "hash": "94454e5c1c771bd53c391543d5a861e6bd992d441ddc375f68438afbf6991916",
       "bytes": 6357,
-      "mtime": "2026-07-25T04:21:42.086Z",
+      "mtime": "2026-08-16T02:32:51.326Z",
       "contentAccess": "readable"
     },
     "state/usopp/odysseus-extraction/sunny_refinement_backlog_20260602.json": {
       "hash": "a806016573187bfa3d680b5a83eb345bb541854d2dc10ef4e52609a080b9efa4",
       "bytes": 2651,
-      "mtime": "2026-07-25T04:21:42.086Z",
+      "mtime": "2026-08-16T02:32:51.326Z",
       "contentAccess": "readable"
     },
     "vault/manifests/OBS-BATCH-0015-METATRON-SUBGRAPH-14-2-ACT-20260522.md": {
       "hash": "cefd47c7edb4f323e6193670cbb44f6266396614a190b31d51c0c2e3c72f6480",
       "bytes": 4138,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/manifests/OBS-BATCH-0015-METATRON-SUBGRAPH-14-2-ACT-VERIFICATION-20260522.md": {
       "hash": "74fe437bdb186279989cb7e014e1a5712f968741270f12db6b4e1d751623ca3c",
       "bytes": 2274,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/manifests/OBS-BATCH-0015-TESERACTO-RESCOPE.md": {
       "hash": "67700de17f02e36cbedd2f1fe90a59eb90c5c635dee4fc68eac91fdb2007a46f",
       "bytes": 2100,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/manifests/gastrulation_fate_map.md": {
       "hash": "42d4bd2a136953cbbb76221e858cb2b6a709a444a070162b7784bfce97584963",
       "bytes": 9903,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/metatron/geometry.json": {
       "hash": "3f753b925bf16562895f866fbdf80eecec44375aa457aa4cb6bfd47de6c59750",
       "bytes": 8138,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/templates/ESTADO.json": {
       "hash": "ced16ff362ccacd834f7012ef75f5e4149557c5018c19dbd589f4a82db691e15",
       "bytes": 640,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/templates/NOTA_NEXUS.md": {
       "hash": "add549c54d40ef624c2583ab0beb04aba350cd3bd34009f6526fa36129aff219",
       "bytes": 1011,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/templates/REGISTRO_N0.md": {
       "hash": "70bb0b26f796296baf8671e5c5ff53aaa7048717d6b791d4a2ae1d8e2eb84964",
       "bytes": 602,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     },
     "vault/vault.config.json": {
       "hash": "e84fe7323c337ae729eddad70f970fecaced9e0ec355f00964bcbeaefa896b78",
       "bytes": 5386,
-      "mtime": "2026-07-25T04:21:42.087Z",
+      "mtime": "2026-08-16T02:32:51.327Z",
       "contentAccess": "readable"
     }
   },
@@ -965,6 +1073,149 @@
       "timestamp": "2026-07-25T04:21:42.738Z",
       "executor": "github-actions",
       "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-26T04:36:07.786Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-26T10:35:28.914Z",
+      "executor": "cowork-sandbox",
+      "actor": "claude-opus-5-nami",
+      "role": "Nami"
+    },
+    {
+      "timestamp": "2026-07-27T04:48:44.589Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-28T04:21:15.471Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-29T04:24:31.036Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-30T04:15:14.912Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-07-31T04:33:34.677Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-01T04:30:06.084Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-02T04:33:01.729Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-03T04:40:49.664Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-04T04:24:43.539Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-05T04:23:03.409Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-06T04:24:52.654Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-07T04:01:32.667Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-08T02:58:56.532Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-09T03:06:32.217Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-10T03:17:12.304Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-11T03:08:47.443Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-12T03:27:55.250Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-13T03:31:33.896Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-14T03:28:34.510Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-15T02:17:43.133Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-16T02:32:54.717Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot"
+    },
+    {
+      "timestamp": "2026-08-17T01:14:44.000Z",
+      "actor": "claude-code",
       "role": "Groot"
     }
   ],
@@ -1433,6 +1684,294 @@
       "coherenceScore": 0.8160000000000001,
       "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-25T04-21-42-693Z.md",
       "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-25T04-21-42-693Z.md"
+    },
+    {
+      "timestamp": "2026-07-26T04:36:07.787Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 130,
+      "deltas": 8,
+      "issues": 25,
+      "coherenceScore": 0.8076923076923077,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-26T04-36-07-738Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-26T04-36-07-738Z.md"
+    },
+    {
+      "timestamp": "2026-07-26T10:35:28.933Z",
+      "executor": "cowork-sandbox",
+      "actor": "claude-opus-5-nami",
+      "role": "Nami",
+      "files": 130,
+      "deltas": 8,
+      "issues": 25,
+      "coherenceScore": 0.8076923076923077,
+      "reportPath": "/sessions/wonderful-practical-mccarthy/mnt/GitHub/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-26T10-35-27-729Z.md",
+      "cloudRequestPath": null
+    },
+    {
+      "timestamp": "2026-07-27T04:48:44.589Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 131,
+      "deltas": 4,
+      "issues": 26,
+      "coherenceScore": 0.8015267175572519,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-27T04-48-44-551Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-27T04-48-44-551Z.md"
+    },
+    {
+      "timestamp": "2026-07-28T04:21:15.472Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 7,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-28T04-21-15-419Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-28T04-21-15-419Z.md"
+    },
+    {
+      "timestamp": "2026-07-29T04:24:31.036Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-29T04-24-30-985Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-29T04-24-30-985Z.md"
+    },
+    {
+      "timestamp": "2026-07-30T04:15:14.912Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-30T04-15-14-857Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-30T04-15-14-857Z.md"
+    },
+    {
+      "timestamp": "2026-07-31T04:33:34.678Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-07-31T04-33-34-625Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-07-31T04-33-34-625Z.md"
+    },
+    {
+      "timestamp": "2026-08-01T04:30:06.085Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-01T04-30-06-026Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-01T04-30-06-026Z.md"
+    },
+    {
+      "timestamp": "2026-08-02T04:33:01.730Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 136,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8014705882352942,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-02T04-33-01-677Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-02T04-33-01-677Z.md"
+    },
+    {
+      "timestamp": "2026-08-03T04:40:49.665Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 9,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-03T04-40-49-608Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-03T04-40-49-608Z.md"
+    },
+    {
+      "timestamp": "2026-08-04T04:24:43.540Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-04T04-24-43-484Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-04T04-24-43-484Z.md"
+    },
+    {
+      "timestamp": "2026-08-05T04:23:03.410Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-05T04-23-03-352Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-05T04-23-03-352Z.md"
+    },
+    {
+      "timestamp": "2026-08-06T04:24:52.655Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-06T04-24-52-600Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-06T04-24-52-600Z.md"
+    },
+    {
+      "timestamp": "2026-08-07T04:01:32.667Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-07T04-01-32-632Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-07T04-01-32-632Z.md"
+    },
+    {
+      "timestamp": "2026-08-08T02:58:56.533Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-08T02-58-56-476Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-08T02-58-56-476Z.md"
+    },
+    {
+      "timestamp": "2026-08-09T03:06:32.217Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-09T03-06-32-162Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-09T03-06-32-162Z.md"
+    },
+    {
+      "timestamp": "2026-08-10T03:17:12.305Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-10T03-17-12-249Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-10T03-17-12-249Z.md"
+    },
+    {
+      "timestamp": "2026-08-11T03:08:47.444Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-11T03-08-47-386Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-11T03-08-47-386Z.md"
+    },
+    {
+      "timestamp": "2026-08-12T03:27:55.251Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-12T03-27-55-197Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-12T03-27-55-197Z.md"
+    },
+    {
+      "timestamp": "2026-08-13T03:31:33.896Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-13T03-31-33-841Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-13T03-31-33-841Z.md"
+    },
+    {
+      "timestamp": "2026-08-14T03:28:34.511Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-14T03-28-34-456Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-14T03-28-34-456Z.md"
+    },
+    {
+      "timestamp": "2026-08-15T02:17:43.133Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-15T02-17-43-077Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-15T02-17-43-077Z.md"
+    },
+    {
+      "timestamp": "2026-08-16T02:32:54.717Z",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 2,
+      "issues": 27,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/sleep_report_2026-08-16T02-32-54-661Z.md",
+      "cloudRequestPath": "/home/runner/work/ThousandSunny/ThousandSunny/state/funcion_de_sueno/reports/cloud_request_2026-08-16T02-32-54-661Z.md"
+    },
+    {
+      "timestamp": "2026-08-17T01:14:44.000Z",
+      "executor": "claude-code",
+      "actor": "claude-code",
+      "role": "Groot",
+      "files": 143,
+      "deltas": 0,
+      "issues": 28,
+      "coherenceScore": 0.8111888111888113,
+      "reportPath": "state/funcion_de_sueno/reports/SLEEP_2026-08-17.md",
+      "cloudRequestPath": null
     }
   ]
 }

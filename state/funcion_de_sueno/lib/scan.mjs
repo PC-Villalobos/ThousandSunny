@@ -27,6 +27,22 @@ export function sha256(buffer) {
   return crypto.createHash("sha256").update(buffer).digest("hex");
 }
 
+// Normaliza CRLF -> LF antes de hashear.
+//
+// Por que existe: el runner de CI hace checkout en LF y el arbol de trabajo del
+// Capitan (Windows, `core.autocrlf=true`) guarda en CRLF. Hasheando bytes crudos,
+// los MISMOS ficheros dan hash distinto en cada entorno, y cualquier ciclo agentico
+// lanzado desde el arbol local reportaba el 100% de los ficheros como "changed"
+// contra la linea base de CI. Es el mismo falso positivo que produjo el fantasma de
+// 254 ficheros modificados del 2026-07-12, en otro subsistema.
+//
+// Solo se aplica a las extensiones de texto de `includeExtensions` (.md/.txt/.json/
+// .jsonl). Un cambio real de contenido sigue cambiando el hash; lo que deja de
+// cambiarlo es el sistema operativo donde duerme el barco.
+export function normalizeEol(buffer) {
+  return Buffer.from(buffer.toString("utf8").replaceAll("\r\n", "\n"), "utf8");
+}
+
 export function toPosix(p) {
   return p.replaceAll("\\", "/");
 }
@@ -86,7 +102,7 @@ export function scanOne(root, filePath, config, classify) {
   const access = classify(meta);
   let hash = null;
   if (access !== ACCESS.STAT_ONLY) {
-    hash = sha256(fs.readFileSync(filePath));
+    hash = sha256(normalizeEol(fs.readFileSync(filePath)));
   }
   return { ...meta, access, hash };
 }

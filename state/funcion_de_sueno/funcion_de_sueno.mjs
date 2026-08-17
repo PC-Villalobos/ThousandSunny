@@ -4,6 +4,7 @@ import path from "node:path";
 import os from "node:os";
 
 import { ACCESS, scanFiles, sleepLegacyClassify } from "./lib/scan.mjs";
+import { bitacoraUrl, reportSleepCycle } from "./lib/bitacora.mjs";
 
 const VERSION = "0.1.0";
 
@@ -38,7 +39,12 @@ const DEFAULT_CONFIG = {
     "Zoro",
     "Sanji",
     "Jimbe",
-    "Franky"
+    "Franky",
+    // Groot es el rol por defecto (ver parseArgs) y el que el workflow nocturno
+    // pasa cada noche, pero faltaba en este anillo. Sin el, findIndex devolvia -1
+    // y nextSuggestedRole caia siempre en roles[0] ("Nami") por aritmetica, no por
+    // sucesion. La sugerencia de rotacion era un artefacto del indice -1.
+    "Groot"
   ],
   attractors: {
     sofia: ["Sofia", "Sofía", "coherencia", "estado atractor", "baja probabilidad"],
@@ -466,7 +472,29 @@ function appendToLedger(ledgerPath, entry) {
   fs.appendFileSync(ledgerPath, JSON.stringify(entry) + os.EOL, "utf8");
 }
 
-function main() {
+// Costura con la autoridad operativa: tras cerrar el ciclo se intenta registrar el
+// parte en la Bitacora de Hipatia (127.0.0.1:8765). Si no escucha —CI, servicio
+// apagado— se anota y el ciclo se considera igualmente cerrado: el repo conserva el
+// parte. La bitacora manda cuando esta; su ausencia no invalida el sueno.
+async function reportToBitacora(args, phase1, phase3, phase4, outputs) {
+  const result = await reportSleepCycle({
+    executor: args.executor,
+    actor: args.actor,
+    role: args.role,
+    streak: phase4.current.streak,
+    nextRole: phase4.nextSuggestedRole,
+    summary: {
+      files: phase1.files.length,
+      deltas: phase1.deltas.length,
+      issues: phase3.issues.length + phase4.warnings.length,
+      coherenceScore: phase3.coherenceScore
+    },
+    reportPath: outputs.reportPath
+  });
+  return { url: bitacoraUrl(), ...result };
+}
+
+async function main() {
   const args = parseArgs(process.argv);
   const config = readConfig(args);
   const root = args.root;
@@ -519,6 +547,8 @@ function main() {
     attractor: null
   });
 
+  const bitacora = await reportToBitacora(args, phase1, phase3, phase4, outputs);
+
   console.log(JSON.stringify({
     ok: true,
     version: VERSION,
@@ -529,8 +559,15 @@ function main() {
     reportPath: outputs.reportPath,
     eventsPath: outputs.eventsPath,
     cloudRequestPath,
-    nextSuggestedRole: phase4.nextSuggestedRole
+    nextSuggestedRole: phase4.nextSuggestedRole,
+    bitacora
   }, null, 2));
 }
 
-main();
+// `main` es async desde que existe la costura con la bitacora. Sin este catch, un
+// fallo inesperado se convertiria en unhandled rejection y el ciclo nocturno moriria
+// sin diagnostico legible en el log de CI.
+main().catch((error) => {
+  console.error(JSON.stringify({ ok: false, error: error?.message || String(error) }, null, 2));
+  process.exitCode = 1;
+});

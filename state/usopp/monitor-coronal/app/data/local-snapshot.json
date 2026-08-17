@@ -1,0 +1,31 @@
+﻿{
+    "generatedAt":  "2026-08-02T18:18:33.0864037+02:00",
+    "physical":  {
+                     "files":  700,
+                     "bytes":  5599898,
+                     "newest":  "2026-08-02T17:17:43.3299573+02:00"
+                 },
+    "obsidian":  {
+                     "files":  71,
+                     "bytes":  1958862,
+                     "newest":  "2026-08-02T17:17:43.3299573+02:00",
+                     "vaultDetected":  true
+                 },
+    "groot":  {
+                  "files":  240,
+                  "bytes":  15322707,
+                  "newest":  "2026-08-01T09:46:14.5738240+02:00"
+              },
+    "github":  {
+                   "branch":  "agent/cubierta-not-recorded-preview",
+                   "commit":  "1f80c84",
+                   "changed":  0,
+                   "behind":  0,
+                   "ahead":  0
+               },
+    "rocket":  {
+                   "observer":  "windows-standard",
+                   "vmDetected":  false,
+                   "status":  "unknown"
+               }
+}
