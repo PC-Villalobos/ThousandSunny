@@ -2,6 +2,23 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Protocolo GO (autoridad de despacho)
+
+Antes de operar en este repo, lee `PROTOCOLO_GO.md` en la raiz. Es el protocolo del
+despacho clinico-academico del Capitan y gobierna **cuando** puedes mutar; este fichero
+describe **como** funciona el barco. No compiten en el mismo plano, pero se rozan en un
+punto concreto:
+
+- El Protocolo GO exige un GO explicito antes de cualquier escritura.
+- Este fichero autoriza escrituras recurrentes sin GO por sesion: el checkpoint de cierre,
+  y las tres rutas permitidas de la Funcion de Sueno (`reports/`, `sleep_ledger.jsonl`,
+  `sleep_state.json`).
+
+Interpretacion vigente hasta que el Capitan diga otra cosa: esas escrituras recurrentes
+siguen cubiertas por su GO permanente de rutina, porque son de alcance cerrado y estan
+enumeradas aqui. **Cualquier otra escritura en este repo necesita un GO nuevo.** Si una
+tarea te empuja fuera de esas rutas, no la ejecutes: proponla como el siguiente GO minimo.
+
 ## Role in the fleet
 
 This repo is the **Claude Code cabin** of the Thousand Sunny cognitive ecosystem — the ship itself. It holds skills, configs, state, and CI. It is not the backbone.
