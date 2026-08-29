@@ -186,3 +186,4 @@ carrying no position, which is the exact failure this anchor exists to prevent.
 - When in doubt about canonical paths, ask the captain; do not guess.
 - Any scheduled task that cannot observe its target must be classified `pending-rearchitect` and must not emit empty alerts. Honest silence is worth more than false noise.
 - All operational closes require a handoff with `contexto`, `decision`, `continuidad`, and `session_ref`. Events without `packetId` or a canonical actor go to Cuarentena.
+- Every artefact Claude generates, reviews, or corrects carries a `provenance:` header (`docs/PROCEDENCIA_IA.md`). Provenance is not authority: a self-applied watermark is a declaration, and the verifiable trace lives in the commit trailer, the PR and the Bitacora event. Missing header means `unknown`, never `human`; legacy material stays `unknown_legacy` and is never back-filled.

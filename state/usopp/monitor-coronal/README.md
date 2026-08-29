@@ -3,6 +3,11 @@
 Superficie local de lectura para observar el momentum del Thousand Sunny sin
 convertirse en memoria, ledger ni canon.
 
+**Lo que V1 mide es salud y presencia de fuentes.** El propósito del instrumento
+—observar la coherencia del diálogo humano-IA— está redefinido por el Capitán el
+2026-08-17 en `ESTATUTO_COHERENCIA.md`, y todavía no está implementado. Leer ese
+documento antes de proponer un V2.
+
 ## Estatuto
 
 - `mode: read_only`
