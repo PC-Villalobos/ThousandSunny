@@ -6,12 +6,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo is the **Claude Code cabin** of the Thousand Sunny cognitive ecosystem — the ship itself. It holds skills, configs, state, and CI. It is not the backbone.
 
-The backbone lives outside git in two components:
+The backbone lives outside git. Authority order, decided by the captain on 2026-07-24
+(event `BIT-20260724T134345Z`) and recorded in `POSICION.md` §4:
 
-- **`thousand-sunny-hub/`** — the canonical sumidero (Node.js HTTP server + shared state). Default path on the captain's machine: `C:\Users\usuario\Documents\Claude\Projects\IA como extensión cognitiva personal (Gemini, Claude y ChatGPT)\thousand-sunny-hub\`. Exposed via `$SUNNY_HUB_PATH`.
-- **PuenteDeMando** (separate repo) — Google Apps Script + Sheets + Drive, the presence/notification layer. GAS is an adapter; it mirrors events but does not govern the ship.
+1. **Bitácora de Hipatia — `http://127.0.0.1:8765`. Operational authority.** Bridge Runtime
+   on the captain's machine. JSONL is the sovereign source; SQLite and Markdown are
+   reconstructible projections; Obsidian is a view. Writes go through the service, never by
+   editing the JSONL, and are confirmed with `write_verified`.
+2. **This repo (`state/` + Git).** The only copy the cloud can read. Authority when Hipatia
+   is unreachable; narrative closures in `state/cierres/` accompany the formal event, they
+   do not replace it.
+3. **`thousand-sunny-hub/` — LEGACY, STALE. Not current state.** Node.js HTTP server on the
+   captain's machine (`$SUNNY_HUB_PATH`). Still runs as software, but its last checkpoint is
+   2026-05-24 — two months behind. Architectural heritage and a source of reusable
+   functions; **never load it as the present.**
+4. **PuenteDeMando** (separate repo) — Google Apps Script + Sheets + Drive. Historical
+   archive since 2026-07-24. GAS is an adapter; anything written there goes to the archive,
+   not to the live bitácora.
 
-If the hub is not reachable (e.g. running on GitHub infrastructure), say so explicitly. Do not fabricate state.
+If the authority you need is not reachable (e.g. running on GitHub infrastructure, where
+`127.0.0.1` does not exist), say so explicitly and name which one you fell back to. Do not
+fabricate state, and do not promote a lower rung to authority by silence.
+
+The startup projection that collapses all of this into one read is specified in
+`state/contexto/CONTEXT_CAPSULE_v1.md`. It is a contract, not yet a generator.
 
 ## Architecture: Sunny Core
 
@@ -24,7 +42,12 @@ The canonical hierarchy (from `docs/architecture/SUNNY_CORE.md`):
 5. **Hub local** — current runtime hosting the Core prototype.
 6. **Argos Bridge** — inter-fleet communication (future).
 
-### Hub API (implemented)
+### Hub API (LEGACY — `thousand-sunny-hub`, state frozen at 2026-05-24)
+
+These endpoints work as software but serve stale state. Read them for architecture, never
+for current position. The live surface is the Hipatia Bridge Runtime on `127.0.0.1:8765`
+(`/api/events`, `/api/missions`, `/api/closure/dashboard`, `/api/git/repositories/…/status`);
+its contract is mapped in `state/contexto/CONTEXT_CAPSULE_v1.md` §4.
 
 | Endpoint | What it does |
 |---|---|
@@ -54,29 +77,55 @@ The hub state files (inside `thousand-sunny-hub/`, outside this repo):
 
 ### 1. Load canonical state at start
 
-```bash
-npm --prefix "$SUNNY_HUB_PATH" run pull -- --summary
-```
+Follow the authority order above and stop at the first rung that answers. Do not walk all
+four; that is the token burn this protocol exists to end.
 
-Drop `--summary` for the full JSON. Fallback (direct file reads, in order):
-- `thousand-sunny-hub/state/shared-state.json`
-- `thousand-sunny-hub/state/STATE_OF_THE_SHIP.md`
-- `thousand-sunny-hub/state/PROJECT_REGISTRY.md`
+1. **Hipatia Bitácora** — `GET http://127.0.0.1:8765/api/events` (last event and its
+   `next_safe_action`), `/api/missions`, `/api/closure/dashboard`,
+   `/api/git/repositories/thousandsunny/status`.
+2. **This repo**, if Hipatia is unreachable — `POSICION.md` first, then the most recent
+   record in `state/cierres/`, then the last line of
+   `state/funcion_de_sueno/sleep_ledger.jsonl`.
+3. **Nothing else.** `thousand-sunny-hub` is legacy (`npm --prefix "$SUNNY_HUB_PATH" run
+   pull -- --summary` still works and still returns May state — do not load it as the
+   present). `sync_pull_state` remains broken (`SYNC_VIEW_TOKEN invalido`).
 
-`sync_pull_state` is currently broken (`SYNC_VIEW_TOKEN invalido`). Use `npm run pull` instead.
+Read `next_safe_action` from the last bitácora event before proposing your own. It was
+written by whoever had the context in hand.
 
 ### 2. Write a checkpoint at end
 
-```bash
-npm --prefix "$SUNNY_HUB_PATH" run checkpoint -- \
-  --title "<titulo corto>" \
-  --summary "<resumen accionable>" \
-  --project thousand_sunny_operativo \
-  --actor claude-code \
-  --tag <tag-relevante> \
-  --next "<siguiente paso>" \
-  --blocker "<bloqueo si aplica>"
-```
+The checkpoint contract is `POST /api/events` on the Bridge Runtime. It has three layers, and
+collapsing them is a documented failure mode — see
+`state/contexto/CONTEXT_CAPSULE_v1.md` §3, where it happened twice:
+
+- **`required_input` — seven fields.** `actor`, `role`, `topic`, `title`, `message`,
+  `event_kind`, `epistemic_status`. Without them the POST is not accepted.
+- **`closed_enums` — five vocabularies.** `event_kind`, `epistemic_status`, `sensitivity`,
+  `status`, `source`. A value outside them sends the event to Cuarentena. Only the first two
+  are also required; `sensitivity`, `status` and `source` default to `internal`, `observed`
+  and `local_runtime`.
+- **`stored_event`.** The materialised event carries more fields than the client sends — the
+  server generates, normalises or blanks them. `change`, `after`, `next_safe_action`,
+  `evidence[]`, `scope`, `relations`, `project` and `phase` are optional payload. **A field
+  appearing in the stored event does not make it required of the writer.**
+
+`bitacora.mjs` documents this contract but does not enforce it: `appendEvent` posts the
+payload raw. The server is the only authority on what is required.
+
+**Do not design a second checkpoint format** — a third protocol competing with this file and
+`POSICION.md` is exactly the cost being removed.
+
+`epistemic_status` is the one to get right: it is where an event declares whether what it
+asserts was observed, calculated, inferred or merely proposed. Without it a second-hand
+report canonises as verified fact on the next read.
+
+Write through the service, never by editing the JSONL, and confirm with `write_verified`.
+Nothing clinical and no guarded path travels in the event: the membrane is metadata-only,
+`sensitivity` fixed to `internal`.
+
+The hub CLI (`npm --prefix "$SUNNY_HUB_PATH" run checkpoint`) is **deprecated**. It writes to
+the May-2026 legacy store, which no one reads as current.
 
 Without a checkpoint the session is invisible to Cowork, Telegram, and the rest of the crew.
 
@@ -165,6 +214,7 @@ state/
   funcion_de_sueno/   — sleep function: spec, ledger, reports, .mjs engine
   deckard/            — Deckard knowledge packets (certainty levels N0–N5)
   cierres/            — arc closure records (narrative + verified evidence)
+  contexto/           — context-capsule.v1: startup projection contract + JSON Schema
 ```
 
 Use only relative paths inside `state/`. Absolute paths (`C:\...`) do not exist in cloud environments.
