@@ -35,6 +35,31 @@ y que todo cierre en el spine. Un solo escritor.
 
 ---
 
+## `op-vegapunk-fase-0` — Expedición de custodia sobre material sintético
+
+**Objetivo:** levantar el puerto donde algún día se trabajará material asistencial e
+íntimo, y **probar su circuito con material inventado** antes de admitir una sola
+fuente real. Prueba contrato, no sabiduría: si el barco sabe no confundir asistencia,
+intimidad, investigación y metáfora sin nadie real a bordo.
+
+| # | Nakama / actor | Skill o artefacto | Hace | Substrato |
+|---|---|---|---|---|
+| 1 | Capitán | GO de expedición | fija alcance, prohibiciones y condiciones de parada | — |
+| 2 | Franky | `state/vegapunk/` | levanta el puerto: carta de custodia, motor, fixtures, pruebas | Claude Code |
+| 3 | actor contratado | paquete de Z3 | razona sobre los fixtures y **redacta** constancia; no aplica | DeepSeek (API) |
+| 4 | supervisión | `vegapunk.test.mjs` | valida el borrador y corre el circuito | Claude Code / Codex |
+| 5 | Capitán | GO o STOP | firma el cierre y decide si hay GO-1 (una sola fuente real) | — |
+
+**Prohibido en toda la operación:** fuentes reales de Drive, transcripciones,
+Doctoralia, Plaud, Noa Note, identidad, credenciales, promoción a canon.
+
+**Estado:** Fase 0 corrida — 14 pruebas en verde, 0 fugas
+(`state/vegapunk/FASE_0_INFORME.md`). Pendiente de GO del Capitán para GO-1/2/3.
+**Cierre:** `crew-cerrar-bitacora` — pendiente: la sesión cloud no alcanza la
+Bitácora local; el checkpoint viaja en el cuerpo del PR.
+
+---
+
 ## Plantilla para una Operación nueva
 
 ```markdown

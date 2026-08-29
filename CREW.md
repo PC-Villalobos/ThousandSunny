@@ -89,6 +89,38 @@ Detalle canónico: `state/meditacion/RECONCILIACION_v0.md` (D4).
 
 ---
 
+## Actores contratados — modelos externos por API
+
+Un **actor contratado** es un modelo externo (DeepSeek hoy) que encarna personajes
+sin vivir dentro del barco. En la gramática de `TEATRO.md` es un **actor**: nunca un
+personaje, nunca el director. Se contrata por encargo, no por defecto.
+
+| Actor | Encarna | Alcance verificado | Estado |
+|-------|---------|--------------------|--------|
+| DeepSeek (API) | cualquier personaje portable | lectura + razonamiento supervisado sobre paquete sintético; redacción de constancia **en borrador** | contrato verificado con canario sintético |
+
+Tres reglas, todas en `state/vegapunk/CONTRATO_ACTOR_CONTRATADO.md`:
+
+1. **Recibe el paquete, no la ruta.** Solo Z3 del puerto de Vegapunk. Nunca la
+   bodega, nunca el compartimento de identidad, nunca una credencial.
+2. **Redacta; no aplica y no afirma.** Un actor no dice que un registro se escribió
+   si lo único que produjo fue un borrador. Es la ley 3 de `TEATRO.md` aplicada al
+   substrato externo.
+3. **Manos mediadas.** Si algún día ejecuta herramientas, pasan por un puente que
+   comprueba GO, repositorio, rama y ruta, con la sesión autenticada del Capitán.
+   *"Todos los repositorios de mi cuenta" no es un alcance.* Hoy esto es diseño, no
+   código.
+
+## Puertos y laboratorios (no son nakamas)
+
+Espacios aislados donde se prueba un circuito antes de darle material real. No
+tienen personaje ni voz; tienen ley y pruebas.
+
+| Puerto | Qué prueba | Estado |
+|--------|------------|--------|
+| **Melampo Lab** (`state/melampo_lab/`) | digestión sobre corpus sintético, membrana estricta | vivo |
+| **Puerto de Vegapunk** (`state/vegapunk/`) | custodia de material asistencial, íntimo, cuantificado y metafórico | Fase 0 cerrada con fixtures; sin fuentes reales |
+
 ## Cómo sube a bordo un Nakama nuevo
 
 1. Define su dominio en una frase (qué mira, de qué responde).

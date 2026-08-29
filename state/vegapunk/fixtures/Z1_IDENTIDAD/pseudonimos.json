@@ -1,0 +1,7 @@
+{
+  "_aviso": "COMPARTIMENTO Z1 SINTETICO. Correspondencias inventadas. Ningun actor, ni la tripulacion, ni el Capitan a traves del puerto, abre este fichero: el motor lo trata como stat_only y las pruebas verifican que nunca se llama a readFileSync sobre el.",
+  "mapa": [
+    { "caso": "CASO-SINT-01", "nombre_real": "Persona Inventada Uno", "dni": "00000000X" },
+    { "caso": "CASO-SINT-02", "nombre_real": "Capitan Sintetico", "dni": "00000001Y" }
+  ]
+}
