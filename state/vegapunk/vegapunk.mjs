@@ -22,11 +22,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { walkFiles, sha256, normalizeEol, toPosix, hasProtectedMarker } from "../funcion_de_sueno/lib/scan.mjs";
+import { sha256, normalizeEol, toPosix, hasProtectedMarker, isSkippedDir } from "../funcion_de_sueno/lib/scan.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES = path.join(HERE, "fixtures");
 const RECIBOS = path.join(HERE, "fase0_recibos.jsonl");
+const LEDGER = path.join(HERE, "fase0_ledger.jsonl");
 
 // --- vocabulario del puerto -------------------------------------------------
 
@@ -47,6 +48,15 @@ export const CLASE = Object.freeze({
   METAFORA: "metafora"
 });
 const ORDEN_CLASE = [CLASE.ASISTENCIAL, CLASE.INTIMO, CLASE.CUANTIFICADO, CLASE.METAFORA];
+
+// Sujeto del material. NO es decorativo: decide si algo puede ser `intimo`. Lo
+// intimo lo es porque el sujeto es el propio Capitan; el mismo texto sobre un
+// tercero es una relacion asistencial, no una intimidad.
+export const SUJETO = Object.freeze({
+  CAPITAN: "capitan",
+  TERCERO: "tercero",
+  NINGUNO: "ninguno"
+});
 
 export const FINALIDAD = Object.freeze({
   ASISTENCIA: "asistencia",
@@ -78,10 +88,23 @@ export const PARADA = Object.freeze({
 });
 
 const CONFIG = {
-  includeExtensions: [".md", ".json"],
+  // Lo que el puerto sabe leer. Lo que NO esta aqui no se ignora: se inventaria
+  // igual y se deniega con motivo. Un fichero invisible para el inventario
+  // produce un "la bodega esta revisada" falso, que es peor que una denegacion.
+  extensionesAnalizables: [".md", ".json"],
   skipDirs: [".git", "node_modules"],
   protectedPathMarkers: ["Z1_IDENTIDAD", "HOLD_CLINICO", "00_BOVEDA_NEXUS", "clinical_guarded"]
 };
+
+// Umbral de deteccion: UN solo marcador basta para forzar la reclasificacion.
+// Con dos, una pieza declarada metafora que menciona una paciente una sola vez
+// salia en claro hacia el adaptador (hallazgo H1). La carta ya decia que
+// sobre-detectar solo aprieta y que infra-detectar es inaceptable; el umbral no
+// lo cumplia.
+const UMBRAL_MARCADORES = 1;
+
+// Formato exigido a un GO de puerta. "si" no es un GO (hallazgo H7).
+const FORMATO_GO = /^GO_[A-Z0-9_]{4,64}$/;
 
 // Matriz de acceso: clase x actor -> nivel MAXIMO. La finalidad no puede subir
 // este techo, solo bajarlo. El adaptador (GAS, Drive, Telegram) es el mas atado a
@@ -162,7 +185,7 @@ export function masRestrictiva(a, b) {
 
 function frontmatter(texto) {
   const m = texto.match(/^---\n([\s\S]*?)\n---\n?/);
-  if (!m) return { meta: {}, cuerpo: texto };
+  if (!m) return { meta: {}, cabecera: "", cuerpo: texto };
   const meta = {};
   for (const linea of m[1].split("\n")) {
     const kv = linea.match(/^([a-z_]+):\s*(.*)$/);
@@ -172,38 +195,127 @@ function frontmatter(texto) {
     else if (raw === "null" || raw === "") meta[kv[1]] = null;
     else meta[kv[1]] = raw;
   }
-  return { meta, cuerpo: texto.slice(m[0].length) };
+  return { meta, cabecera: m[1], cuerpo: texto.slice(m[0].length) };
 }
 
-// GARANTIA: un registro de Z1 nunca pasa por readFileSync. Se inventaria por
-// stat y se devuelve sin texto, sin hash y sin cuerpo.
+// Recorre TODO el arbol, sin filtrar por extension. El filtro por extension
+// decide si un fichero se ABRE, no si existe: un fichero que el inventario no ve
+// no puede denegarse, y el puerto acaba afirmando que reviso una bodega que no
+// miro entera (hallazgo H5).
+function walkTodos(root, acc = []) {
+  if (!fs.existsSync(root)) return acc;
+  for (const entrada of fs.readdirSync(root, { withFileTypes: true })) {
+    const full = path.join(root, entrada.name);
+    if (entrada.isDirectory()) {
+      if (!isSkippedDir(entrada.name, CONFIG)) walkTodos(full, acc);
+      continue;
+    }
+    if (entrada.isFile()) acc.push(full);
+  }
+  return acc;
+}
+
+// GARANTIA: un registro de Z1, o de extension no analizable, nunca pasa por
+// readFileSync. Se inventaria por stat y se devuelve sin texto y sin hash.
+//
+// `superficie` es lo que la deteccion mira: nombre del fichero + cabecera +
+// cuerpo. Antes solo miraba el cuerpo, y un `sesion_paciente_03.md` con cuerpo
+// limpio salia como metafora (hallazgo H2). De lo que no se abre queda al menos
+// el nombre, que ya es superficie suficiente para sospechar.
 export function inventariar(root) {
-  return walkFiles(root, CONFIG).map((full) => {
+  return walkTodos(root).map((full) => {
     const rel = toPosix(path.relative(root, full));
-    if (hasProtectedMarker(full, CONFIG)) {
-      return { rel, full, zona: ZONA.Z1_IDENTIDAD, abierto: false, meta: {}, cuerpo: "", hash: null };
+    const ext = path.extname(full).toLowerCase();
+    const protegido = hasProtectedMarker(full, CONFIG);
+    const analizable = CONFIG.extensionesAnalizables.includes(ext);
+
+    if (protegido || !analizable) {
+      return {
+        rel, full, ext, analizable,
+        zona: protegido ? ZONA.Z1_IDENTIDAD : ZONA.Z2_BODEGA,
+        abierto: false, meta: {}, cuerpo: "", hash: null, superficie: rel
+      };
     }
     const buf = fs.readFileSync(full);
     const texto = normalizeEol(buf).toString("utf8");
-    const { meta, cuerpo } = frontmatter(texto);
-    return { rel, full, zona: ZONA.Z2_BODEGA, abierto: true, meta, cuerpo, hash: sha256(normalizeEol(buf)) };
+    const { meta, cabecera, cuerpo } = frontmatter(texto);
+    return {
+      rel, full, ext, analizable: true, zona: ZONA.Z2_BODEGA, abierto: true,
+      meta, cuerpo, hash: sha256(normalizeEol(buf)),
+      superficie: [rel, cabecera, cuerpo].join("\n")
+    };
   });
 }
 
 // --- clasificacion ----------------------------------------------------------
 
 export function clasificar(rec) {
-  // Lo que no se ha abierto no se puede declarar en disonancia: se le aplica la
-  // clase mas restrictiva por defecto y se dice que no hubo lectura. Marcarlo como
-  // "disonante" seria inventar una contradiccion que nadie observo.
+  const declarada = rec.abierto ? (rec.meta.clase_declarada || null) : null;
+  const declaradaValida = declarada === null || ORDEN_CLASE.includes(declarada);
+  const sujeto = rec.abierto ? (rec.meta.sujeto || null) : null;
+  const sujetoValido = sujeto === null || Object.values(SUJETO).includes(sujeto);
+  const avisos = [];
+
+  // La deteccion mira la superficie entera, tambien la de lo que no se abrio.
+  const marcadores = marcadoresAsistenciales(rec.superficie || rec.rel || "");
+  const detectada = marcadores.length >= UMBRAL_MARCADORES ? CLASE.ASISTENCIAL : declarada;
+
+  // Base: lo no leido, lo no declarado y lo declarado con una clase que no
+  // existe caen todos en la clase mas restrictiva. Una clase invalida no se
+  // propaga como si fuera real (hallazgo H4): se nombra y se cierra.
+  let efectiva;
   if (!rec.abierto) {
-    return { declarada: null, detectada: null, efectiva: CLASE.ASISTENCIAL, marcadores: [], disonancia: false, leido: false };
+    efectiva = CLASE.ASISTENCIAL;
+    avisos.push(rec.analizable === false
+      ? `extension no analizable (${rec.ext || "sin extension"}): no se abre, clase mas restrictiva por defecto`
+      : "material no leido: clase mas restrictiva por defecto");
+  } else if (!declaradaValida) {
+    efectiva = CLASE.ASISTENCIAL;
+    avisos.push(`clase declarada desconocida: '${declarada}'`);
+  } else if (!declarada) {
+    efectiva = CLASE.ASISTENCIAL;
+    avisos.push("sin clase declarada: clase mas restrictiva por defecto");
+  } else {
+    efectiva = masRestrictiva(declarada, detectada || declarada);
+    if (efectiva !== declarada) {
+      avisos.push(`disonancia: declarada ${declarada}, marcadores asistenciales ${marcadores.length}`);
+    }
   }
-  const declarada = rec.meta.clase_declarada || null;
-  const marcadores = marcadoresAsistenciales(rec.cuerpo);
-  const detectada = marcadores.length >= 2 ? CLASE.ASISTENCIAL : declarada;
-  const efectiva = declarada ? masRestrictiva(declarada, detectada || declarada) : CLASE.ASISTENCIAL;
-  return { declarada, detectada, efectiva, marcadores, disonancia: efectiva !== declarada, leido: true };
+
+  // El sujeto decide si algo puede ser intimo. Lo intimo lo es porque el sujeto
+  // es el Capitan; el mismo texto sobre un tercero es relacion asistencial. Un
+  // sujeto que no existe se trata como el peor caso (hallazgo H6).
+  if (efectiva === CLASE.INTIMO && sujeto !== SUJETO.CAPITAN) {
+    efectiva = CLASE.ASISTENCIAL;
+    avisos.push(sujetoValido
+      ? `intimo con sujeto '${sujeto}': la intimidad de un tercero es relacion asistencial`
+      : `sujeto declarado desconocido: '${sujeto}'`);
+  }
+
+  return {
+    declarada, declarada_valida: declaradaValida, sujeto, sujeto_valido: sujetoValido,
+    detectada, efectiva, marcadores, avisos,
+    disonancia: rec.abierto && declarada !== null && efectiva !== declarada,
+    leido: Boolean(rec.abierto)
+  };
+}
+
+// Puerta clinica -> investigacion. Exige un GO con formato y con caducidad: un
+// permiso sin fecha de fin es un permiso permanente, que es justo lo que esta
+// puerta existe para no conceder. Antes bastaba cualquier cadena, y
+// `puerta_investigacion: si` abria igual que un GO (hallazgo H7).
+export function puerta(meta, ahora) {
+  const go = meta.puerta_investigacion;
+  if (!go) return { abierta: false, motivo: "sin GO de cruce a investigacion" };
+  if (!FORMATO_GO.test(String(go))) {
+    return { abierta: false, motivo: `GO de puerta con formato invalido: '${go}'` };
+  }
+  const vence = meta.puerta_vence;
+  if (!vence) return { abierta: false, motivo: `GO ${go} sin fecha de caducidad (puerta_vence)` };
+  const fin = Date.parse(String(vence));
+  if (Number.isNaN(fin)) return { abierta: false, motivo: `puerta_vence ilegible: '${vence}'` };
+  if (fin < ahora.getTime()) return { abierta: false, motivo: `GO ${go} caducado el ${vence}` };
+  return { abierta: true, motivo: `puerta abierta por ${go}, vigente hasta ${vence}` };
 }
 
 // --- admision ---------------------------------------------------------------
@@ -216,14 +328,25 @@ function idRecibo(rel, actor, finalidad, hash) {
 // contenido: lleva la huella de la entrada y las reglas que se aplicaron. Es
 // idempotente a proposito (mismo material + mismo solicitante = mismo id), para
 // que re-correr el circuito no invente historia nueva.
-export function admitir({ rec, actor, finalidad }) {
+export function admitir({ rec, actor, finalidad, ahora = new Date() }) {
   const paradas = [];
   const motivos = [];
   const clase = clasificar(rec);
+  motivos.push(...clase.avisos);
 
   if (rec.zona === ZONA.Z1_IDENTIDAD) {
     paradas.push(PARADA.IDENTIDAD);
     motivos.push("compartimento Z1: la correspondencia identidad-seudonimo no sale del puerto");
+  }
+
+  // Un fichero que se DECLARA Z1 sin estar en el compartimento esta mal
+  // colocado, y ya se ha leido para poder ver esa declaracion. Es la leccion
+  // del hallazgo H6, y no se puede tapar: la declaracion no protege, solo la
+  // ruta protege. Lo unico honesto es denegarlo y decir por que.
+  if (rec.abierto && rec.meta.zona === "Z1_IDENTIDAD") {
+    paradas.push(PARADA.IDENTIDAD);
+    motivos.push("se declara Z1 fuera del compartimento: material mal colocado, " +
+      "y ya leido — la cabecera no protege, protege la ruta");
   }
 
   if (rec.abierto && (rec.meta.fixture !== "vegapunk-fase-0" || rec.meta.sintetico !== true)) {
@@ -231,34 +354,38 @@ export function admitir({ rec, actor, finalidad }) {
     motivos.push("la Fase 0 solo admite fixtures sinteticos declarados");
   }
 
-  const identidad = rec.abierto ? marcadoresIdentidad(rec.cuerpo) : [];
+  const identidad = marcadoresIdentidad(rec.superficie || rec.rel || "");
   if (identidad.length > 0) {
     paradas.push(PARADA.IDENTIDAD);
     motivos.push(`marcadores de identidad fuera de Z1: ${identidad.length}`);
   }
 
+  // Techo de la matriz: lo maximo que este solicitante podria alcanzar.
+  let nivelAcceso = NIVEL.DENEGADO;
   let nivel = NIVEL.DENEGADO;
-  if (paradas.length === 0) {
-    nivel = (MATRIZ[clase.efectiva] || {})[actor] || NIVEL.DENEGADO;
 
-    // Puerta clinica -> investigacion. Que un material entrara por asistencia no
-    // lo habilita para investigar con el: hace falta un GO por finalidad, escrito
-    // en la cabecera del propio material. Sin puerta, la finalidad no se sirve.
+  if (paradas.length === 0 && rec.abierto) {
+    nivelAcceso = (MATRIZ[clase.efectiva] || {})[actor] || NIVEL.DENEGADO;
+    nivel = nivelAcceso;
+
     if (finalidad === FINALIDAD.INVESTIGACION && rec.meta.finalidad_origen !== FINALIDAD.INVESTIGACION) {
-      if (!rec.meta.puerta_investigacion) {
-        nivel = NIVEL.DENEGADO;
-        motivos.push("puerta_cerrada: material de finalidad " +
-          `${rec.meta.finalidad_origen} sin GO de cruce a investigacion`);
-      } else {
-        motivos.push(`puerta_abierta por ${rec.meta.puerta_investigacion}`);
-      }
+      const p = puerta(rec.meta, ahora);
+      motivos.push(p.abierta ? p.motivo : `puerta_cerrada: ${p.motivo}`);
+      if (!p.abierta) nivel = NIVEL.DENEGADO;
     }
 
-    // El nivel del puerto nunca es CONTENIDO para clase guardada salvo Capitan.
-    if (GUARDADAS.includes(clase.efectiva) && actor !== ACTOR.CAPITAN && nivel === NIVEL.CONTENIDO) {
-      nivel = NIVEL.DERIVADO;
-      motivos.push("clase guardada: solo derivado fuera del Capitan");
+    // El techo de muelle se aplica AQUI, no mas tarde. Antes vivia dentro de
+    // empaquetar(), asi que admitir() devolvia un recibo que afirmaba
+    // `contenido` sobre material asistencial cuando la salida real era
+    // `derivado` (hallazgo H3). En un sistema cuyo registro de verdad es el
+    // recibo, un recibo que no describe la salida no es un registro: es ruido.
+    const conTecho = nivelDeSalida(clase.efectiva, nivel);
+    if (conTecho !== nivel) {
+      motivos.push("techo de muelle: de una clase guardada no sale texto literal");
+      nivel = conTecho;
     }
+  } else if (paradas.length === 0 && !rec.abierto) {
+    motivos.push("no analizable: el puerto lo ve y lo deniega, no lo ignora");
   }
 
   const recibo = {
@@ -268,15 +395,36 @@ export function admitir({ rec, actor, finalidad }) {
     actor,
     finalidad,
     clase_declarada: clase.declarada,
+    clase_declarada_valida: clase.declarada_valida,
+    sujeto: clase.sujeto,
     clase_efectiva: clase.efectiva,
     disonancia: clase.disonancia,
+    leido: clase.leido,
     marcadores: clase.marcadores,
+    nivel_acceso: nivelAcceso,
     nivel,
     paradas,
     motivos,
     hash_entrada: rec.hash
   };
-  return { nivel, paradas, clase, recibo };
+  return { nivel, nivelAcceso, paradas, clase, recibo };
+}
+
+// Un recibo es la DECISION: content-addressed, sin tiempo, identico si se repite
+// la misma pregunta sobre el mismo material. Un asiento es el EVENTO: cuando se
+// tomo y en que ejecucion. Separarlos es lo que permite auditar el cuando sin
+// romper la idempotencia del id (hallazgo H8).
+export function asiento(recibo, { ts = new Date().toISOString(), runId = null } = {}) {
+  return {
+    ts,
+    run_id: runId,
+    recibo: recibo.id,
+    rel: recibo.rel,
+    actor: recibo.actor,
+    finalidad: recibo.finalidad,
+    nivel: recibo.nivel,
+    paradas: recibo.paradas
+  };
 }
 
 // --- muelle de salida (Z3) --------------------------------------------------
@@ -305,17 +453,16 @@ function derivado(rec, clase) {
 // camino de salida del puerto: nadie recibe rutas, nadie recibe la bodega, nadie
 // recibe Z1. Lo que no pasa la verificacion de fuga no sale: si algo se cuela, el
 // paquete entero se anula.
-export function empaquetar({ registros, actor, finalidad }) {
+export function empaquetar({ registros, actor, finalidad, ahora = new Date() }) {
   const items = [];
   const rechazos = [];
   const recibos = [];
 
   for (const rec of registros) {
-    const admision = admitir({ rec, actor, finalidad });
-    const { clase, recibo } = admision;
-    const nivel = nivelDeSalida(clase.efectiva, admision.nivel);
-    if (nivel !== admision.nivel) recibo.motivos.push("techo de muelle: clase guardada no sale literal");
-    recibo.nivel_salida = nivel;
+    // El nivel viene ya con el techo aplicado desde admitir(): el muelle no
+    // rebaja nada por su cuenta, porque entonces el recibo dejaria de describir
+    // lo que ocurre (hallazgo H3).
+    const { nivel, clase, recibo } = admitir({ rec, actor, finalidad, ahora });
     recibos.push(recibo);
     if (nivel === NIVEL.DENEGADO || nivel === NIVEL.STAT_ONLY) {
       rechazos.push({ rel: rec.rel, nivel, motivos: recibo.motivos, recibo: recibo.id });
@@ -363,12 +510,12 @@ export function verificarFuga(paquete) {
 
 // Corre el circuito completo para los cuatro solicitantes y devuelve el resultado.
 // No decide nada nuevo: expone lo que la politica ya dice, para poder leerlo.
-export function circuitoFase0(root = FIXTURES) {
+export function circuitoFase0(root = FIXTURES, ahora = new Date()) {
   const registros = inventariar(root);
   const corridas = [];
   for (const actor of Object.values(ACTOR)) {
     for (const finalidad of [FINALIDAD.SISTEMA, FINALIDAD.INVESTIGACION]) {
-      corridas.push({ actor, finalidad, ...empaquetar({ registros, actor, finalidad }) });
+      corridas.push({ actor, finalidad, ...empaquetar({ registros, actor, finalidad, ahora }) });
     }
   }
   return { registros, corridas };
@@ -380,8 +527,10 @@ function main() {
   const recibos = corridas.flatMap((c) => c.recibos);
   const fugas = corridas.flatMap((c) => c.fuga);
 
+  const z1 = registros.filter((r) => r.zona === ZONA.Z1_IDENTIDAD).length;
+  const ciegos = registros.filter((r) => r.analizable === false && r.zona !== ZONA.Z1_IDENTIDAD).length;
   console.log(`puerto de Vegapunk — Fase 0 (sintetico)`);
-  console.log(`inventario: ${registros.length} registros (${registros.filter((r) => !r.abierto).length} en Z1, nunca abiertos)`);
+  console.log(`inventario: ${registros.length} registros (${z1} en Z1 nunca abiertos, ${ciegos} no analizables vistos y denegados)`);
   for (const c of corridas) {
     const salen = c.paquete.items.map((i) => `${i.rel}:${i.nivel}`).join(", ") || "nada";
     console.log(`  ${c.actor} / ${c.finalidad} -> ${salen}`);
@@ -389,8 +538,16 @@ function main() {
   console.log(`fugas detectadas: ${fugas.length}`);
 
   if (!dry) {
+    // Dos artefactos, no uno. Los recibos son la decision y son deterministas:
+    // se reescriben enteros y no cambian si nada cambio. El ledger es el evento
+    // y es APPEND-ONLY: cada ejecucion deja su rastro con hora y run_id, y
+    // ninguna ejecucion borra las anteriores.
+    const runId = sha256(recibos.map((r) => r.id).join("|")).slice(0, 12);
+    const ts = new Date().toISOString();
     fs.writeFileSync(RECIBOS, recibos.map((r) => JSON.stringify(r)).join("\n") + "\n", "utf8");
-    console.log(`recibos: ${toPosix(path.relative(process.cwd(), RECIBOS))} (${recibos.length})`);
+    fs.appendFileSync(LEDGER, recibos.map((r) => JSON.stringify(asiento(r, { ts, runId }))).join("\n") + "\n", "utf8");
+    console.log(`recibos: ${toPosix(path.relative(process.cwd(), RECIBOS))} (${recibos.length}, deterministas)`);
+    console.log(`ledger:  ${toPosix(path.relative(process.cwd(), LEDGER))} (+${recibos.length} asientos, run ${runId})`);
   }
   return fugas.length === 0 ? 0 : 1;
 }

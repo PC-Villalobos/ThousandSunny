@@ -22,6 +22,18 @@ más adelante y con GO explícito, trabajar con esos materiales de forma deliber
 | Zona | Qué guarda | Regla |
 |---|---|---|
 | **Z1 · Compartimento de identidad** | la correspondencia identidad ↔ seudónimo | **Nunca se abre.** Se inventaría por `stat`, sin hash y sin cuerpo. Ni la tripulación, ni un actor contratado, ni el puerto mismo la leen. Denegada a todos, siempre. |
+
+**La zona la decide la ruta, no la cabecera.** Un fichero que se *declara*
+`zona: Z1_IDENTIDAD` sin estar en el compartimento está mal colocado — y para
+leer esa declaración ya ha habido que abrirlo. Eso no se puede deshacer: se
+deniega, se dice por qué, y queda escrito que **la declaración no protege; protege
+la ruta**. Quien quiera que algo no se lea, lo pone donde no se lee.
+
+**Nada es invisible para el inventario.** El puerto ve todos los ficheros de la
+bodega; la extensión decide si un fichero **se abre**, no si existe. Lo que no
+sabe leer lo inventaría igual y lo deniega con motivo. Un fichero que el
+inventario no ve no se puede denegar, y el puerto acaba afirmando que revisó una
+bodega que no miró entera.
 | **Z2 · Bodega de custodia** | el material ya seudonimizado, clasificado por clase y finalidad | Se abre solo bajo un GO que nombre caso, clase y finalidad. |
 | **Z3 · Muelle de salida** | los paquetes que salen | **Único camino de salida.** Nadie recibe rutas ni acceso a la bodega: recibe un paquete construido por el puerto, con recibo. |
 
@@ -43,6 +55,22 @@ De más a menos restrictiva. **El orden es la política.**
 contra marcadores. Ante conflicto **gana siempre la clase más restrictiva**, y la
 decisión queda con su evidencia en el recibo. La detección puede sobre-detectar
 —eso solo aprieta— pero no puede infra-detectar.
+
+**Superficie de detección:** nombre del fichero + cabecera + cuerpo. Las tres, no
+solo la última. Un `sesion_paciente_03.md` con el cuerpo limpio arrastra la misma
+relación que si lo dijera dentro. De lo que no se abre queda al menos el nombre.
+
+**Umbral: un marcador basta.** Con dos, una pieza declarada metáfora que menciona
+a una paciente una sola vez salía en claro hacia el adaptador. La regla de
+sobre-detectar ya estaba escrita; el umbral no la cumplía.
+
+**Clase declarada inválida:** una clase que no existe en la tabla no se propaga
+como si existiera. Cae en la más restrictiva, se nombra el valor recibido, y el
+recibo lo marca con `clase_declarada_valida: false`.
+
+**El sujeto gobierna la intimidad.** Lo íntimo lo es porque el sujeto es el
+Capitán. El mismo texto sobre un tercero es una relación asistencial y se
+clasifica como tal. Un `sujeto` que no está en la tabla se trata como el peor caso.
 
 **Regla del material no leído:** lo que no se ha abierto recibe la clase más
 restrictiva por defecto, y **no** se marca como disonante. No se inventa una
@@ -77,8 +105,11 @@ Finalidades: `asistencia` · `investigacion` · `sistema` · `narrativa`.
 
 Que un material entrara por `asistencia` **no** lo habilita para investigar con él.
 El cruce es un acto propio: exige un **GO de puerta** escrito en la cabecera del
-propio material (`puerta_investigacion`). Sin puerta, la finalidad no se sirve —
-`puerta_cerrada` es el motivo, y queda en el recibo.
+propio material (`puerta_investigacion`), con **formato de GO** (`GO_...`) y con
+**fecha de caducidad** (`puerta_vence`) todavía vigente. Un permiso sin fecha de
+fin es un permiso permanente, que es justo lo que esta puerta existe para no
+conceder; y `puerta_investigacion: si` no es un GO. Sin las tres condiciones,
+la finalidad no se sirve — `puerta_cerrada` es el motivo, y queda en el recibo.
 
 En Fase 0 solo `cuantificado_serie.md` lleva puerta, con un GO sintético. Existe
 para probar que la puerta **abre**, no para normalizar que esté abierta.
@@ -102,8 +133,18 @@ Cada decisión emite un recibo: qué se pidió, quién, para qué, qué se conce
 **huella** de la entrada (nunca su contenido), la clase declarada, la efectiva, la
 disonancia con su evidencia, las paradas y los motivos.
 
-Los recibos son **idempotentes**: mismo material + mismo solicitante = mismo id.
-Re-correr el circuito no inventa historia nueva.
+El recibo lleva **dos niveles**: `nivel_acceso`, que es el techo de la matriz, y
+`nivel`, que es **lo que realmente saldría por el muelle**. El techo de muelle se
+aplica en la admisión, no después: un recibo que anuncia `contenido` sobre
+material que sale `derivado` no es un registro, es ruido.
+
+**Recibo y asiento son cosas distintas.** El recibo es la **decisión**:
+content-addressed, sin tiempo, idéntico si se repite la misma pregunta sobre el
+mismo material. El asiento es el **evento**: cuándo se tomó y en qué ejecución,
+referenciando el id del recibo. Separarlos permite auditar el *cuándo* sin romper
+la idempotencia del *qué*. Los recibos se reescriben enteros (`fase0_recibos.jsonl`);
+los asientos son **append-only** (`fase0_ledger.jsonl`) y ninguna ejecución borra
+las anteriores.
 
 ## 7. Prohibido en Fase 0
 

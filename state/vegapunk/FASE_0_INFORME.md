@@ -1,5 +1,10 @@
 # Fase 0 — informe del circuito
 
+> **Estado: corregido.** Este informe describe primero el commit de evidencia
+> `bdcf3e2`, y al final la corrección. El commit de evidencia **no se ha tocado**:
+> sobre él se reproducen ocho fallos de frontera, y esa prueba no se borra del
+> historial. La corrección entra encima, con una prueba por hallazgo.
+
 **Corrido el 2026-08-29** desde sesión cloud, sobre 6 fixtures sintéticos.
 Reproducible: `node state/vegapunk/vegapunk.mjs --dry`.
 
@@ -84,3 +89,52 @@ compartimento.
 
 Ninguno de los tres se ejecuta sin firma del Capitán. **No he iniciado la admisión de
 ninguna fuente real.**
+
+---
+
+# La corrección
+
+Ocho hallazgos de frontera, reproducidos sobre `bdcf3e2` por una auto-revisión y
+confirmados de forma independiente en los tres de gravedad alta. Corregidos aquí,
+con **una prueba `node:test` por hallazgo** que falla en el commit congelado y pasa
+en este.
+
+| # | Qué se rompía | Qué hace ahora |
+|---|---|---|
+| H1 | umbral de dos marcadores: una pieza declarada `metafora` con un solo marcador llegaba al adaptador | **un marcador basta** para forzar la clase más restrictiva |
+| H2 | la detección solo miraba el cuerpo: `sesion_paciente_03.md` con cuerpo limpio salía como metáfora | la superficie de detección es **nombre + cabecera + cuerpo**; de lo que no se abre queda el nombre |
+| H3 | `admitir()` devolvía `contenido` y el muelle rebajaba a `derivado` después: el recibo no describía la salida | el **techo de muelle se aplica en la admisión**; el recibo lleva `nivel_acceso` (techo de matriz) y `nivel` (salida real) |
+| H4 | una `clase_declarada` inexistente se registraba como si existiera | cae en la más restrictiva, se nombra el valor, y el recibo marca `clase_declarada_valida: false` |
+| H5 | `.txt` y `.csv` no se inventariaban: el puerto no los denegaba, no los veía | **el inventario ve todo**; la extensión decide si se abre, no si existe. Lo no analizable se deniega con motivo, sin abrirse |
+| H6 | `sujeto` y `zona` de la cabecera no gobernaban nada | el **sujeto decide la intimidad** (lo íntimo de un tercero es relación asistencial; un sujeto desconocido es el peor caso); una `zona: Z1` declarada fuera del compartimento se **deniega** |
+| H7 | `puerta_investigacion: si` abría la puerta clínica | exige **formato de GO y caducidad vigente**; un permiso sin fecha de fin es un permiso permanente |
+| H8 | recibos sin tiempo: no se podía auditar cuándo se concedió acceso | **recibo** (decisión, sin tiempo, idempotente) y **asiento** (evento, con hora y `run_id`, append-only) son artefactos distintos |
+
+## Verificación de la corrección
+
+```
+node --test state/vegapunk/vegapunk.test.mjs   -> 23 pruebas, 23 en verde
+node state/vegapunk/vegapunk.mjs --dry         -> 7 registros, 0 fugas
+```
+
+Contra el commit congelado, las seis pruebas nuevas que sus exportaciones admiten
+**fallan las seis**; las tres restantes (sujeto, puerta, asiento) ni siquiera
+cargan allí, porque ejercitan capacidades que en `bdcf3e2` no existen.
+
+## Lo que la corrección NO resuelve
+
+- **La declaración no puede proteger.** Para leer una cabecera hay que abrir el
+  fichero. Un material que se declara Z1 fuera del compartimento ya se ha leído
+  cuando el puerto se entera. Se deniega y se dice, pero el daño de la lectura no
+  se deshace: **protege la ruta, no la cabecera**.
+- **Los marcadores siguen sin medirse contra prosa real.** Bajar el umbral a uno
+  aprieta, pero sigue siendo una lista de nueve expresiones calibrada contra
+  fixtures que escribí yo.
+- **Z1 sigue probándose cerrada, no en uso.** No hay circuito que asigne
+  seudónimos.
+- **`npm test` completo no es portable.** `test:sueno` invoca `python3`, que en
+  Windows resuelve al alias de la Microsoft Store; el bloque de Vegapunk pasa y la
+  suite se corta ahí. Es anterior a este puerto y **queda fuera de este PR** a
+  propósito: merece un cambio propio.
+
+Los tres GO propuestos siguen en pie y ninguna fuente real ha entrado.

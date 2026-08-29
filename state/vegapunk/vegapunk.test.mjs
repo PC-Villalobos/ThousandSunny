@@ -17,9 +17,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
-  ACTOR, CLASE, FINALIDAD, NIVEL, PARADA, ZONA,
-  admitir, circuitoFase0, clasificar, empaquetar, inventariar,
-  marcadoresIdentidad, masRestrictiva, nivelDeSalida, verificarFuga
+  ACTOR, CLASE, FINALIDAD, NIVEL, PARADA, SUJETO, ZONA,
+  admitir, asiento, circuitoFase0, clasificar, empaquetar, inventariar,
+  marcadoresIdentidad, masRestrictiva, nivelDeSalida, puerta, verificarFuga
 } from "./vegapunk.mjs";
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures");
@@ -31,6 +31,15 @@ function tmpFixture(nombre, contenido) {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), "vegapunk-"));
   fs.writeFileSync(path.join(d, nombre), contenido, "utf8");
   return d;
+}
+
+// Cabecera sintetica valida, para fixtures de un solo caso.
+function cab(campos) {
+  return "---\nfixture: vegapunk-fase-0\nsintetico: true\n" +
+    Object.entries(campos).map(([k, v]) => `${k}: ${v}`).join("\n") + "\n---\n\n";
+}
+function soloUno(nombre, contenido) {
+  return inventariar(tmpFixture(nombre, contenido))[0];
 }
 
 test("Z1: el compartimento de identidad se inventaria por stat y NUNCA se abre", () => {
@@ -99,7 +108,7 @@ test("puerta clinica a investigacion: cerrada por defecto, abierta solo con GO e
     rec: uno(regs, "cuantificado_serie.md"), actor: ACTOR.CAPITAN, finalidad: FINALIDAD.INVESTIGACION
   });
   assert.equal(conPuerta.nivel, NIVEL.CONTENIDO);
-  assert.ok(conPuerta.recibo.motivos.some((m) => m.startsWith("puerta_abierta")));
+  assert.ok(conPuerta.recibo.motivos.some((m) => m.startsWith("puerta abierta por GO_")));
 });
 
 test("techo de muelle: ninguna clase guardada sale literal, para ningun solicitante", () => {
@@ -164,4 +173,132 @@ test("la clase mas restrictiva gana siempre", () => {
   assert.equal(masRestrictiva(CLASE.METAFORA, CLASE.ASISTENCIAL), CLASE.ASISTENCIAL);
   assert.equal(masRestrictiva(CLASE.CUANTIFICADO, CLASE.INTIMO), CLASE.INTIMO);
   assert.equal(masRestrictiva(CLASE.METAFORA, CLASE.METAFORA), CLASE.METAFORA);
+});
+
+// ---------------------------------------------------------------------------
+// Pruebas de la correccion: una por hallazgo reproducido sobre el commit
+// congelado bdcf3e2. Cada una falla en ese commit y pasa aqui. Los enunciados
+// describen la regla, no el arreglo: si alguien vuelve a romperla por otro
+// camino, estas pruebas siguen siendo las que lo detectan.
+// ---------------------------------------------------------------------------
+
+test("H1 — un solo marcador asistencial basta para reclasificar, y el adaptador lo deniega", () => {
+  const rec = soloUno("imagen.md",
+    cab({ clase_declarada: "metafora", finalidad_origen: "narrativa" }) +
+    "# Imagen\n\nHablo de una paciente que baja las persianas de dia. Nada mas.\n");
+  const c = clasificar(rec);
+  assert.equal(c.declarada, CLASE.METAFORA);
+  assert.equal(c.efectiva, CLASE.ASISTENCIAL, "un marcador ya obliga a la clase mas restrictiva");
+  assert.equal(c.marcadores.length, 1, "y la decision se apoya en la evidencia que hay, no en dos");
+  const { paquete } = empaquetar({ registros: [rec], actor: ACTOR.ADAPTADOR, finalidad: FINALIDAD.SISTEMA });
+  assert.deepEqual(paquete.items, [], "no cruza al adaptador");
+});
+
+test("H2 — la deteccion mira el nombre del fichero y la cabecera, no solo el cuerpo", () => {
+  const rec = soloUno("sesion_paciente_03.md",
+    cab({ clase_declarada: "metafora", finalidad_origen: "narrativa" }) +
+    "# Imagen\n\nUna casa, una persiana bajada, luz de tarde. Nada mas.\n");
+  const c = clasificar(rec);
+  assert.ok(c.marcadores.length > 0, "el nombre del fichero es superficie de deteccion");
+  assert.equal(c.efectiva, CLASE.ASISTENCIAL);
+  const { paquete } = empaquetar({ registros: [rec], actor: ACTOR.ADAPTADOR, finalidad: FINALIDAD.SISTEMA });
+  assert.deepEqual(paquete.items, []);
+});
+
+test("H3 — admitir() devuelve el nivel que realmente saldria, y el recibo lo dice", () => {
+  const rec = uno(inventariar(FIXTURES), "asistencial_episodio.md");
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  assert.equal(a.nivel, NIVEL.DERIVADO, "el techo de muelle se aplica en la admision, no despues");
+  assert.equal(a.recibo.nivel, NIVEL.DERIVADO, "el recibo no puede afirmar una salida que no ocurre");
+  assert.equal(a.recibo.nivel_acceso, NIVEL.CONTENIDO, "y conserva el techo de la matriz, por separado");
+
+  // El nivel del recibo coincide con lo que el muelle entrega, para todos.
+  for (const c of circuitoFase0().corridas) {
+    const porId = new Map(c.recibos.map((r) => [r.id, r]));
+    for (const item of c.paquete.items) {
+      assert.equal(item.nivel, porId.get(item.recibo).nivel, `${item.rel} sale distinto de lo que su recibo dice`);
+    }
+  }
+});
+
+test("H4 — una clase declarada que no existe no se propaga: se nombra y se cierra", () => {
+  const rec = soloUno("typo.md",
+    cab({ clase_declarada: "asistencia", finalidad_origen: "narrativa" }) +
+    "# Algo\n\nTexto neutro, sin marcadores.\n");
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  assert.equal(a.recibo.clase_declarada_valida, false);
+  assert.equal(a.recibo.clase_efectiva, CLASE.ASISTENCIAL, "cae en la clase mas restrictiva");
+  assert.notEqual(a.recibo.clase_efectiva, "asistencia", "y no se registra una clase inexistente");
+  assert.ok(a.recibo.motivos.some((m) => m.includes("clase declarada desconocida")));
+});
+
+test("H5 — lo no analizable se inventaria, no se abre, y se deniega con motivo", () => {
+  const spy = mock.method(fs, "readFileSync");
+  const dir = tmpFixture("serie.csv", "medida,s01\ndespertares,4\n");
+  const rec = inventariar(dir)[0];
+  assert.equal(rec.rel, "serie.csv", "el puerto lo VE");
+  assert.equal(rec.analizable, false);
+  assert.equal(rec.abierto, false);
+  assert.equal(spy.mock.calls.some((c) => String(c.arguments[0]).endsWith(".csv")), false, "y no lo abre");
+
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  assert.equal(a.nivel, NIVEL.DENEGADO, "lo deniega en vez de ignorarlo");
+  assert.ok(a.recibo.motivos.some((m) => m.includes("no analizable")));
+});
+
+test("H6 — el sujeto gobierna: la intimidad de un tercero es relacion asistencial", () => {
+  const cuerpo = "# Nota\n\nTexto identico en los tres.\n";
+  const base = { clase_declarada: "intimo", finalidad_origen: "narrativa" };
+  const propio = clasificar(soloUno("a.md", cab({ ...base, sujeto: SUJETO.CAPITAN }) + cuerpo));
+  const ajeno = clasificar(soloUno("b.md", cab({ ...base, sujeto: SUJETO.TERCERO }) + cuerpo));
+  const raro = clasificar(soloUno("c.md", cab({ ...base, sujeto: "gaviota" }) + cuerpo));
+
+  assert.equal(propio.efectiva, CLASE.INTIMO, "del Capitan sobre si mismo, si es intimo");
+  assert.equal(ajeno.efectiva, CLASE.ASISTENCIAL, "sobre un tercero, no");
+  assert.equal(raro.efectiva, CLASE.ASISTENCIAL, "un sujeto que no existe se trata como el peor caso");
+  assert.equal(raro.sujeto_valido, false);
+});
+
+test("H6 — una zona Z1 declarada fuera del compartimento se deniega: protege la ruta, no la cabecera", () => {
+  const rec = soloUno("dice_z1.md",
+    cab({ clase_declarada: "metafora", finalidad_origen: "narrativa", zona: "Z1_IDENTIDAD" }) +
+    "# Se declara Z1\n\nY no lo es.\n");
+  assert.equal(rec.zona, ZONA.Z2_BODEGA, "la zona la decide la ruta");
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  assert.equal(a.nivel, NIVEL.DENEGADO);
+  assert.ok(a.paradas.includes(PARADA.IDENTIDAD));
+  assert.ok(a.recibo.motivos.some((m) => m.includes("la cabecera no protege")));
+});
+
+test("H7 — la puerta exige un GO con formato y con caducidad vigente", () => {
+  const ahora = new Date("2026-08-29T00:00:00Z");
+  assert.equal(puerta({}, ahora).abierta, false);
+  assert.equal(puerta({ puerta_investigacion: "si" }, ahora).abierta, false, "'si' no es un GO");
+  assert.equal(puerta({ puerta_investigacion: "GO_SINT_FASE0_PUERTA_01" }, ahora).abierta, false,
+    "un GO sin caducidad seria un permiso permanente");
+  assert.equal(puerta({ puerta_investigacion: "GO_SINT_FASE0_PUERTA_01", puerta_vence: "2020-01-01" }, ahora).abierta,
+    false, "un GO caducado no abre");
+  assert.equal(puerta({ puerta_investigacion: "GO_SINT_FASE0_PUERTA_01", puerta_vence: "2027-12-31" }, ahora).abierta,
+    true, "con formato y vigencia, abre");
+
+  const rec = soloUno("falsa.md",
+    cab({ clase_declarada: "cuantificado", finalidad_origen: "asistencia", puerta_investigacion: "si" }) +
+    "# Serie\n\n1 2 3\n");
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.INVESTIGACION, ahora });
+  assert.equal(a.nivel, NIVEL.DENEGADO);
+  assert.ok(a.recibo.motivos.some((m) => m.startsWith("puerta_cerrada")));
+});
+
+test("H8 — el recibo es la decision (sin tiempo, idempotente); el asiento es el evento (con tiempo)", () => {
+  const rec = uno(inventariar(FIXTURES), "cuantificado_serie.md");
+  const a = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  const b = admitir({ rec, actor: ACTOR.CAPITAN, finalidad: FINALIDAD.SISTEMA });
+  assert.equal(a.recibo.id, b.recibo.id, "la misma pregunta sobre el mismo material da el mismo id");
+  assert.equal(a.recibo.ts, undefined, "el recibo no lleva tiempo: es una decision, no un suceso");
+
+  const linea = asiento(a.recibo, { ts: "2026-08-29T21:00:00.000Z", runId: "run-1" });
+  assert.equal(linea.recibo, a.recibo.id, "el asiento referencia el recibo");
+  assert.equal(linea.ts, "2026-08-29T21:00:00.000Z", "y sí lleva el cuando");
+  assert.equal(linea.run_id, "run-1");
+  assert.equal(linea.nivel, a.recibo.nivel);
 });

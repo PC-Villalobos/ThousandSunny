@@ -7,6 +7,7 @@ finalidad_origen: asistencia
 sujeto: tercero
 caso: CASO-SINT-01
 puerta_investigacion: GO_SINT_FASE0_PUERTA_01
+puerta_vence: 2027-12-31
 ---
 
 # Serie cuantificada sintetica
@@ -21,5 +22,7 @@ identificador es el seudonimo del caso.
 | minutos_registro | 0 | 12 | 15 | 21 |
 
 La puerta clinica a investigacion esta abierta para esta serie mediante el GO
-sintetico declarado en la cabecera. Es el unico fixture que la tiene: existe para
-probar que la puerta abre, no para normalizar que este abierta.
+sintetico declarado en la cabecera, y **caduca**: un permiso sin fecha de fin es
+un permiso permanente, que es justo lo que esta puerta existe para no conceder.
+Es el unico fixture que la tiene: existe para probar que la puerta abre, no para
+normalizar que este abierta.

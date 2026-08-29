@@ -29,7 +29,7 @@ antes de admitir una sola nota clínica, transcripción o registro íntimo real*
 ## Uso
 
 ```bash
-node state/vegapunk/vegapunk.mjs        # corre el circuito y escribe fase0_recibos.jsonl
+node state/vegapunk/vegapunk.mjs        # corre el circuito, reescribe recibos y anade asientos al ledger
 node state/vegapunk/vegapunk.mjs --dry  # lo mismo sin escribir nada
 node --test state/vegapunk/vegapunk.test.mjs
 npm test                                # incluye las pruebas del puerto
@@ -52,7 +52,12 @@ Sale con código 1 si el circuito produce cualquier fuga.
 - **El adaptador no recibe nada guardado ni cuantificado.**
 - **Lo que no se declara sintético no entra**, y la identidad fuera de Z1 detiene la
   admisión.
-- **Recibos idempotentes**: re-correr el circuito no inventa historia nueva.
+- **Recibos idempotentes**: re-correr el circuito no inventa historia nueva. El
+  *cuándo* vive aparte, en el ledger append-only, sin romper esa idempotencia.
+- **Nada es invisible**: lo que el puerto no sabe leer lo inventaría igual y lo
+  deniega con motivo, en vez de no verlo.
+- **El sujeto y la ruta gobiernan**: la intimidad de un tercero es relación
+  asistencial, y una zona declarada en la cabecera no protege — protege la ruta.
 
 ## Qué NO demuestra
 
