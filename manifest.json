@@ -1,0 +1,49 @@
+{
+  "paquete": "emision-hipatia-vegapunk-fase-0",
+  "proposito": "Transportar intactos los dos cuerpos de checkpoint hasta la maquina del Capitan. Esta rama es un CANAL, no un archivo: el chat perdio B1 dos veces y los adjuntos nunca llegaron.",
+  "commit_origen": "ca4a2bb8978e96ad76d950f6a6ea67ed5783e0e4",
+  "rama_base_del_origen": "claude/vegapunk-expedicion-fase-0-heajla",
+  "canonicalizacion": "json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\",\":\")) en UTF-8, sin salto de linea final",
+  "huella_sin_clave": "SHA-256 del mismo canonico excluyendo idempotency_key; reproduce la huella que calcula Hipatia",
+  "eventos": [
+    {
+      "etiqueta": "A",
+      "fichero": "A.json",
+      "idempotency_key": "vegapunk-fase0-ts-112-ca4a2bb",
+      "bytes": 2076,
+      "sha256_cuerpo": "df1be6565adffa6207d4034eeeaafceb52daa54915702bc47f0129808c30ab2f",
+      "huella_sin_clave": "25ea6a2f3dcdd4c4dae0c1dd06dd42f4ade38997ba508aed9cd90b324afd349c",
+      "status": "verified",
+      "event_kind": "result",
+      "sensitivity": "public_safe",
+      "event_id": null,
+      "destino_pr": "PC-Villalobos/ThousandSunny#112"
+    },
+    {
+      "etiqueta": "B1",
+      "fichero": "B1.json",
+      "idempotency_key": "vegapunk-fase0-pdm-11-0543358",
+      "bytes": 1622,
+      "sha256_cuerpo": "4d08de89eb9b0f439cd0a00b8434d37343cbd1bf51d92c3f5226679df96caa42",
+      "huella_sin_clave": "021df4ef965f5867688e8aa8d11b672a50e54b066e4a10b94e1f000859afd955",
+      "status": "decided",
+      "event_kind": "decision",
+      "sensitivity": "public_safe",
+      "event_id": null,
+      "destino_pr": "PC-Villalobos/PuenteDeMando#11"
+    }
+  ],
+  "invariantes_verificadas": [
+    "cada fichero re-serializa a los mismos bytes (forma canonica confirmada, no supuesta)",
+    "ningun fichero termina en salto de linea",
+    "event_id ausente en los dos: solo existira en el recibo que devuelva Hipatia",
+    "los diez campos obligatorios presentes y los cinco enums cerrados validos"
+  ],
+  "no_hecho": [
+    "ningun POST a Hipatia",
+    "ningun cambio en PC-Villalobos/ThousandSunny#112 ni en PC-Villalobos/PuenteDeMando#11",
+    "ningun PR, ningun merge",
+    "ninguna de las 30 misiones no registradas tocada"
+  ],
+  "ciclo_de_vida": "La rama no se borra hasta que Hipatia devuelva ambos recibos y el Capitan autorice su retirada."
+}
