@@ -6,7 +6,9 @@
 
 **Segunda actualización, 2026-07-26 desde Cowork (Nami), ejecutando §6.** Cambian §4 (la costura ya existe en código), §5 (rotación y detección de deltas) y §6 entero. Ver §7, nuevo: los árboles que tampoco son la bóveda.
 
-**Tercera actualización, 2026-09-01 desde sesión cloud (Nami), por GO explícito del Capitán.** Cambia §1: se declara `thousand-sunny-world`, un árbol **vivo** que este documento no conocía. Hasta hoy §1 solo distinguía el repo de los cadáveres; faltaba la tercera categoría. Origen del hallazgo: la carta de corrientes del 2026-09-01.
+**Tercera actualización, 2026-09-01/02 desde sesión cloud (Nami), por GO explícito del Capitán.** Cambia §1 en dos puntos: se declara `thousand-sunny-world`, un árbol **vivo** que este documento no conocía —hasta hoy §1 solo distinguía el repo de los cadáveres, y faltaba la tercera categoría—, y se refrescan los números del tronco, que llevaban cinco semanas de retraso. Origen: la carta de corrientes del 2026-09-01.
+
+**Aviso de método para sesiones en la nube, aprendido el 2026-09-02.** Antes de afirmar nada sobre ramas, commits o divergencias, comprueba `git rev-parse --is-shallow-repository`. Un clon superficial inventa divergencias que no existen: en la primera pasada de esa carta produjo tres hallazgos falsos seguidos —partes nocturnos que parecían no aterrizar en la rama canónica, una rama del Monitor que parecía no existir, y un tronco que parecía partido en dos—. Es el mismo fantasma de plataforma que el CRLF de §2 y la detección de deltas de §5, en un subsistema nuevo. Comprueba la profundidad del clon igual que compruebas este fichero: **antes**.
 
 Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este archivo **antes** de auditar, proponer o ejecutar nada. Si lo que ves en tu entorno contradice esto, tu entorno está mirando el árbol equivocado. Comprueba antes de afirmar.
 
@@ -18,7 +20,7 @@ Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este arch
 | :---- | :---- |
 | **Repo canónico** | `C:\Users\usuario\OneDrive\Documentos\GitHub\ThousandSunny` |
 | Remoto | `https://github.com/PC-Villalobos/ThousandSunny.git` |
-| Rama por defecto | `claude/franky-feature-O1BkB`. **Ya no diverge de `main`:** lo contiene de forma estricta, 8 delante y 0 detrás, con `merge-base` en el HEAD de `main` (`08dd0cb`). Reconciliado el 2026-07-23 por `95fb653` y `489aeca`; verificado contra el remoto el 2026-07-26 |
+| Rama por defecto | `claude/franky-feature-O1BkB`. **Sigue sin divergir de `main`**, remedido el 2026-09-02 sobre clon completo: **71 delante y 1 detrás**, `merge-base` en `0d0cabd`. No le falta **ni un fichero** de `main`. El commit «detrás» es `8b1438b`, el propio *merge* que consolidó esta rama **en** `main` el 2026-07-26 (PR #83): sus dos padres —`08dd0cb` y `0d0cabd`— ya son ancestros de esta rama, así que no aporta contenido, solo el objeto del merge. Los números viejos (8 delante, 0 detrás, `merge-base` en `08dd0cb`) eran del 2026-07-26 y los dejaron atrás 71 partes nocturnos. Reconciliado el 2026-07-23 por `95fb653` y `489aeca` |
 | Repo hermano | `...\GitHub\PuenteDeMando` → `PC-Villalobos/PuenteDeMando`, rama `main` |
 
 ### Árboles que NO son el repo
