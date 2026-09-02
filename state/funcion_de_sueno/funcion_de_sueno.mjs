@@ -5,15 +5,20 @@ import os from "node:os";
 
 import { ACCESS, scanFiles, sleepLegacyClassify } from "./lib/scan.mjs";
 import { bitacoraUrl, reportSleepCycle } from "./lib/bitacora.mjs";
+import {
+  assessRoleAssignment,
+  createRoleAssignment,
+  normalizeRoleIdentity
+} from "./role_assignment.mjs";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 
 const DEFAULT_CONFIG = {
   outDir: "99_Sistema/funcion_de_sueno/out",
   stateFile: "99_Sistema/funcion_de_sueno/sleep_state.json",
   includeExtensions: [".md", ".txt", ".json", ".jsonl"],
   maxFileBytes: 250000,
-  fusionThreshold: 3,
+  roleRepetitionDayThreshold: 3,
   requireFrontmatter: false,
   skipDirs: [
     ".git",
@@ -42,7 +47,7 @@ const DEFAULT_CONFIG = {
     "Franky",
     // Groot es el rol por defecto (ver parseArgs) y el que el workflow nocturno
     // pasa cada noche, pero faltaba en este anillo. Sin el, findIndex devolvia -1
-    // y nextSuggestedRole caia siempre en roles[0] ("Nami") por aritmetica, no por
+    // y la antigua sugerencia caia siempre en roles[0] ("Nami") por aritmetica, no por
     // sucesion. La sugerencia de rotacion era un artefacto del indice -1.
     "Groot"
   ],
@@ -62,9 +67,11 @@ function parseArgs(argv) {
   const args = {
     root: process.cwd(),
     config: null,
+    scopeId: null,
     executor: null,
-    actor: "codex",
-    role: "Groot",
+    actor: null,
+    role: null,
+    supervisorModel: null,
     cloudRequest: false
   };
 
@@ -72,9 +79,11 @@ function parseArgs(argv) {
     const token = argv[i];
     if (token === "--root") args.root = argv[++i];
     else if (token === "--config") args.config = argv[++i];
+    else if (token === "--scope-id") args.scopeId = argv[++i];
     else if (token === "--executor") args.executor = argv[++i];
     else if (token === "--actor") args.actor = argv[++i];
     else if (token === "--role") args.role = argv[++i];
+    else if (token === "--supervisor-model") args.supervisorModel = argv[++i];
     else if (token === "--cloud-request") args.cloudRequest = true;
     else if (token === "--help" || token === "-h") {
       printHelp();
@@ -82,12 +91,6 @@ function parseArgs(argv) {
     }
   }
 
-  // Separacion executor/actor (Codex, barrido 2026-07-20): el `executor` es quien
-  // ejecuta materialmente el ciclo (p.ej. github-actions, un cron de maquina); el
-  // `actor` es la identidad cognitiva que interpreta el rol. Por compatibilidad, si
-  // no se declara executor se asume igual al actor. La vigilancia de fusion NO
-  // cambia: sigue contando racha por (actor, role), no por executor.
-  args.executor = args.executor || args.actor;
   args.root = path.resolve(args.root);
   return args;
 }
@@ -96,19 +99,22 @@ function printHelp() {
   console.log(`Funcion de sueno v${VERSION}
 
 Usage:
-  node funcion_de_sueno.mjs --root "C:/La maceta de Groot" --actor codex --role Usopp
-  node funcion_de_sueno.mjs --config sleep_config.groot.json --cloud-request
-  node funcion_de_sueno.mjs --executor github-actions --actor deterministic-sleep-engine --role Groot
+  node funcion_de_sueno.mjs --config state/funcion_de_sueno/sleep_config.repo.json \
+    --scope-id thousandsunny-repo --executor github-actions \
+    --actor deterministic-sleep-engine --role Groot --cloud-request
 
-  --executor  quien ejecuta materialmente el ciclo (maquina/cron); por defecto = actor.
-              La vigilancia de fusion sigue contando por (actor, role), no por executor.
+  --scope-id         perfil y linaje de estado; obligatorio por CLI o config.
+  --executor         infraestructura que inicia el ciclo; obligatorio.
+  --actor            componente que ejecuta el contrato; obligatorio.
+  --role             papel declarado para esta corrida; obligatorio.
+  --supervisor-model modelo supervisor, si existe; opcional y no redefine actor.
 
 Phases:
   0 boot              carga contrato, estado previo y compuertas
   1 hypnagogia        inventaria memoria y detecta deltas episodicos
   2 nrem_index        extrae enlaces, headings, frontmatter y referencias
   3 nrem_deep         audita coherencia de atractores y deriva
-  4 rem_role_rotation simula reparto de papeles y riesgo de fusion actor/rol
+  4 rem_role_rotation mide repeticion declarada; toda rotacion exige decision humana
   5 wake_report       escribe reporte, eventos y nuevo estado
 `);
 }
@@ -124,6 +130,7 @@ function readConfig(args) {
       attractors: { ...config.attractors, ...(parsed.attractors || {}) }
     };
     if (parsed.root) args.root = path.resolve(parsed.root);
+    if (parsed.scopeId && !args.scopeId) args.scopeId = parsed.scopeId;
   }
   return config;
 }
@@ -322,37 +329,20 @@ function phase3NremDeep(phase1, phase2) {
   return { issues, attractorTotals, readable, metadataOnly, coherenceScore };
 }
 
-function phase4RemRoleRotation(config, previousState, actor, role, executor = actor) {
-  const ledger = [...(previousState.roleLedger || [])];
-  ledger.push({ timestamp: new Date().toISOString(), executor, actor, role });
-
-  // Guardrail de fusion SIN CAMBIOS: la racha se cuenta por (actor, role). El
-  // executor se registra para trazabilidad pero no altera la deteccion de fusion,
-  // de modo que separar la identidad no debilita la alarma.
-  let streak = 0;
-  for (let i = ledger.length - 1; i >= 0; i -= 1) {
-    const entry = ledger[i];
-    if (entry.actor === actor && entry.role === role) streak += 1;
-    else break;
-  }
-
-  const roleIndex = config.roles.findIndex((item) => item.toLowerCase() === role.toLowerCase());
-  const nextRole = config.roles[(roleIndex + 1 + config.roles.length) % config.roles.length] || config.roles[0];
-  const warnings = [];
-  if (streak >= config.fusionThreshold) {
-    warnings.push({
-      severity: "high",
-      kind: "role_fusion_risk",
-      detail: `Actor ${actor} has played ${role} for ${streak} consecutive cycles; rotate to ${nextRole}.`
-    });
-  }
-
-  return {
-    ledger,
-    current: { executor, actor, role, streak },
-    nextSuggestedRole: nextRole,
-    warnings
-  };
+function phase4RemRoleRotation(config, previousState, args) {
+  const assignment = createRoleAssignment({
+    scopeId: args.scopeId,
+    executor: args.executor,
+    actor: args.actor,
+    role: args.role,
+    supervisorModel: args.supervisorModel
+  });
+  return assessRoleAssignment({
+    previousLedger: previousState.roleLedger || [],
+    assignment,
+    roles: config.roles,
+    dayThreshold: config.roleRepetitionDayThreshold
+  });
 }
 
 function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, stamp) {
@@ -364,7 +354,8 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   lines.push("");
   lines.push(`Version: ${VERSION}`);
   lines.push(`Root: ${root}`);
-  lines.push(`Executor/Actor/Rol: ${args.executor || args.actor} / ${args.actor} / ${args.role}`);
+  lines.push(`Perfil/Executor/Actor/Rol: ${args.scopeId} / ${args.executor} / ${args.actor} / ${args.role}`);
+  lines.push(`Modelo supervisor: ${args.supervisorModel || "ninguno declarado"}`);
   lines.push("");
   lines.push("## Fases");
   lines.push("");
@@ -372,7 +363,7 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   lines.push(`- Fase 1 hipnagogia: ${phase1.files.length} archivos inventariados; ${phase1.deltas.length} deltas.`);
   lines.push(`- Fase 2 NREM index: enlaces, headings, frontmatter y atractores extraidos donde era seguro leer.`);
   lines.push(`- Fase 3 NREM profundo: score de coherencia ${phase3.coherenceScore.toFixed(3)}; ${phase3.issues.length} incidencias.`);
-  lines.push(`- Fase 4 REM: actor ${args.actor} interpreta ${args.role}; racha ${phase4.current.streak}; siguiente rol sugerido ${phase4.nextSuggestedRole}.`);
+  lines.push(`- Fase 4 REM: asignacion declarada repetida en ${phase4.current.executionStreak} ejecuciones y ${phase4.current.dayStreak} fechas UTC; siguiente rol candidato ${phase4.nextCandidateRole || "ninguno"}; rotacion ${phase4.rotationDecision}.`);
   lines.push("- Fase 5 despertar: reporte, eventos y estado persistidos.");
   lines.push("");
   lines.push("## Deltas episodicos");
@@ -402,7 +393,7 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   lines.push("");
   lines.push("## Calibracion");
   lines.push("");
-  lines.push("Este v0.1 no garantiza ausencia total de alucinacion ni resuelve contexto infinito. Simula coherencia por trazas, deltas, enlaces, atractores y rotacion de roles. La promesa fuerte queda para v1 investigacion.");
+  lines.push("Este motor no demuestra fusion identitaria ni decide rotaciones. Registra asignaciones declaradas, separa ejecuciones de fechas UTC y reserva cualquier cambio de rol al Capitan.");
   lines.push("");
 
   fs.writeFileSync(reportPath, lines.join(os.EOL), "utf8");
@@ -410,7 +401,14 @@ function phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, st
   const events = [
     { phase: "hypnagogia", files: phase1.files.length, deltas: phase1.deltas.length },
     { phase: "nrem_deep", coherenceScore: phase3.coherenceScore, issues: phase3.issues.length },
-    { phase: "rem_role_rotation", ...phase4.current, nextSuggestedRole: phase4.nextSuggestedRole, warnings: phase4.warnings.length }
+    {
+      phase: "rem_role_rotation",
+      ...phase4.current,
+      nextCandidateRole: phase4.nextCandidateRole,
+      rotationDecision: phase4.rotationDecision,
+      legacyEntriesExcluded: phase4.legacyEntriesExcluded,
+      warnings: phase4.warnings.length
+    }
   ];
   fs.writeFileSync(eventsPath, events.map((event) => JSON.stringify(event)).join(os.EOL) + os.EOL, "utf8");
 
@@ -426,19 +424,26 @@ Ejecuta el ciclo de sueno sobre la memoria compartida disponible en el workspace
 Comando recomendado si existe Node.js:
 
 \`\`\`bash
-node state/funcion_de_sueno/funcion_de_sueno.mjs --config state/funcion_de_sueno/sleep_config.repo.json --actor cloud --role Nami --cloud-request
+node state/funcion_de_sueno/funcion_de_sueno.mjs \
+  --config state/funcion_de_sueno/sleep_config.repo.json \
+  --scope-id thousandsunny-repo \
+  --executor github-actions \
+  --actor deterministic-sleep-engine \
+  --role Groot \
+  --cloud-request
 \`\`\`
 
 Objetivo:
 
 - No producir narrativa nueva como verdad canonica.
 - Auditar coherencia, deltas, enlaces y atractores.
-- Rotar el actor por roles para evitar fusion con un personaje.
+- Registrar executor, actor y rol sin afirmar fusion ni rotar automaticamente.
 - Dejar reporte y eventos en \`state/funcion_de_sueno/reports\`.
 - Si el entorno no permite ejecutar Node, leer \`state/funcion_de_sueno/FUNCION_DE_SUENO_FASES.md\` y producir manualmente un reporte siguiendo las mismas fases.
 
 Root local usado al crear este contrato: ${root}
-Actor/Rol de origen: ${args.actor} / ${args.role}
+Perfil/Executor/Actor/Rol de origen: ${args.scopeId} / ${args.executor} / ${args.actor} / ${args.role}
+Modelo supervisor: ${args.supervisorModel || "ninguno declarado"}
 `;
   fs.writeFileSync(requestPath, body, "utf8");
   return requestPath;
@@ -478,11 +483,15 @@ function appendToLedger(ledgerPath, entry) {
 // parte. La bitacora manda cuando esta; su ausencia no invalida el sueno.
 async function reportToBitacora(args, phase1, phase3, phase4, outputs) {
   const result = await reportSleepCycle({
+    scopeId: args.scopeId,
     executor: args.executor,
     actor: args.actor,
     role: args.role,
-    streak: phase4.current.streak,
-    nextRole: phase4.nextSuggestedRole,
+    supervisorModel: args.supervisorModel,
+    executionStreak: phase4.current.executionStreak,
+    dayStreak: phase4.current.dayStreak,
+    nextCandidateRole: phase4.nextCandidateRole,
+    rotationDecision: phase4.rotationDecision,
     summary: {
       files: phase1.files.length,
       deltas: phase1.deltas.length,
@@ -497,6 +506,7 @@ async function reportToBitacora(args, phase1, phase3, phase4, outputs) {
 async function main() {
   const args = parseArgs(process.argv);
   const config = readConfig(args);
+  Object.assign(args, normalizeRoleIdentity(args));
   const root = args.root;
   const outDir = path.resolve(root, config.outDir);
   const statePath = path.resolve(root, config.stateFile);
@@ -509,15 +519,17 @@ async function main() {
   const phase1 = phase1Hypnagogia(root, config, previousState);
   const phase2 = phase2NremIndex(root, config, phase1);
   const phase3 = phase3NremDeep(phase1, phase2);
-  const phase4 = phase4RemRoleRotation(config, previousState, args.actor, args.role, args.executor);
+  const phase4 = phase4RemRoleRotation(config, previousState, args);
   const outputs = phase5WakeReport(root, config, args, phase1, phase3, phase4, outDir, stamp);
   const cloudRequestPath = args.cloudRequest ? writeCloudRequest(root, outDir, stamp, args) : null;
 
   const runSummary = {
     timestamp: new Date().toISOString(),
+    scopeId: args.scopeId,
     executor: args.executor,
     actor: args.actor,
     role: args.role,
+    supervisorModel: args.supervisorModel,
     files: phase1.files.length,
     deltas: phase1.deltas.length,
     issues: phase3.issues.length,
@@ -529,17 +541,23 @@ async function main() {
 
   // Reconciliacion canon (TEATRO/Concilio): el motor escribe el ledger por ciclo
   // (fix N3-06: antes solo escribia sleep_state.json -> ledger desincronizado).
-  // El que suena es Groot (la raiz); la fusion se vigila por actor. El veredicto
-  // semantico (fertil/decae) y el atractor Nova los fija el skill agentico /sueno.
+  // El historial anterior se conserva sin reescritura. Las entradas nuevas declaran
+  // perfil, executor, actor y rol; la repeticion es evidencia diagnostica, no fusion.
   const ledgerPath = path.join(path.dirname(statePath), "sleep_ledger.jsonl");
   appendToLedger(ledgerPath, {
     ts: new Date().toISOString(),
     event: "daily_tick",
+    scope_id: args.scopeId,
     executor: args.executor,
     actor: args.actor,
     role: args.role,
+    supervisor_model: args.supervisorModel,
     phases: ["N1", "N2", "N3", "REM"],
-    streak: phase4.current.streak,
+    execution_streak: phase4.current.executionStreak,
+    day_streak: phase4.current.dayStreak,
+    next_candidate_role: phase4.nextCandidateRole,
+    rotation_decision: phase4.rotationDecision,
+    legacy_entries_excluded: phase4.legacyEntriesExcluded,
     report: path.relative(path.dirname(statePath), outputs.reportPath).split(path.sep).join("/"),
     drift: phase3.issues.length > 0 || phase4.warnings.length > 0,
     verdict: "neutral",
@@ -559,7 +577,8 @@ async function main() {
     reportPath: outputs.reportPath,
     eventsPath: outputs.eventsPath,
     cloudRequestPath,
-    nextSuggestedRole: phase4.nextSuggestedRole,
+    nextCandidateRole: phase4.nextCandidateRole,
+    rotationDecision: phase4.rotationDecision,
     bitacora
   }, null, 2));
 }

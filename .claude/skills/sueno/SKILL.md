@@ -3,8 +3,8 @@ name: sueno
 description: >-
   Nami's nightly sleep-function skill for the Thousand Sunny. Runs an
   artificial sleep cycle (N1-REM) over the shared memory in state/ to
-  consolidate the day, audit coherence, detect drift, and prevent actor/role
-  fusion, leaving a readable report. Use when the user invokes /sueno, or from
+  consolidate the day, audit coherence, detect drift, and measure repeated role
+  assignment without claiming identity fusion. Use when the user invokes /sueno, or from
   a scheduled routine, API trigger, or GitHub event that fires the sleep
   function.
 ---
@@ -18,7 +18,7 @@ sueno artificial sobre la memoria compartida del barco (`state/`) para:
 - auditar coherencia (incluida la de Sophia, certificadora de conocimiento del
   consejo Agape),
 - detectar deriva,
-- prevenir la fusion actor/rol,
+- medir repeticion de asignaciones sin afirmar fusion identitaria,
 - y dejar un parte legible al despertar.
 
 Este skill es **el organo** (el procedimiento determinista que corre en una
@@ -35,14 +35,18 @@ nube, ver `state/funcion_de_sueno/ROUTINE_SETUP.md`.
 ```
 /sueno [--event <session_closed|memory_changed|daily_tick|manual_run>]
        [--phases N1,N2,N3,REM]
-       [--actor <modelo, p.ej. claude-code>]
-       [--role Nami]
+       [--scope-id <perfil>]
+       [--executor <infraestructura>]
+       [--actor <componente>]
+       [--role <papel>]
+       [--supervisor-model <modelo opcional>]
        [--root state]
 ```
 
 - `--event` decide que fases correr (tabla abajo). Por defecto: `manual_run`.
 - `--phases` fuerza fases concretas y gana sobre `--event`.
-- `--actor` y `--role` se registran en el ledger para vigilar la fusion.
+- `--scope-id`, `--executor`, `--actor` y `--role` son obligatorios y se
+  registran por separado. `--supervisor-model` es opcional y no redefine actor.
 - `--root` es la raiz de memoria. Por defecto `state` (este repo). Nunca uses
   rutas absolutas tipo `C:\...`: no existen en la nube.
 
@@ -70,8 +74,8 @@ pendientes acumulados, contradicciones, y lee la coherencia de Sophia frente al
 canon (`state/deckard/01_CANON.md`, `state/maceta_groot/RETOMAR.md`). Reporta;
 no resuelve unilateralmente.
 
-**REM - Integracion.** Revisa el riesgo de fusion actor/rol (ver ledger), sugiere
-rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
+**REM - Integracion.** Mide repeticion por ejecuciones y fechas UTC (ver ledger),
+ofrece un rol candidato y deja toda rotacion como decision humana.
 
 ## Guardrails (innegociables)
 
@@ -87,8 +91,9 @@ rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
    documento util lleva pilar, estado, fuente y nivel de certeza.)
 4. **Sin cerrar deriva sin evidencia.** No declarar resuelta una deriva sin
    apuntar al archivo/linea que lo respalda.
-5. **Sin fusion actor/rol.** Si el mismo modelo (actor) repite el mismo papel
-   (rol) 3 ciclos seguidos en el ledger, recomendar rotacion en el parte.
+5. **No inventar fusion.** Una asignacion repetida produce
+   `repeated_role_assignment`, no un diagnostico de fusion. Toda rotacion queda
+   `human_required`.
 6. **v1 aspiracional.** No afirmar simulacion fuerte de atractores ni garantia
    total anti-alucinacion.
 7. **Respetar RETOMAR.** Honra las reglas activas de
@@ -101,15 +106,16 @@ rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
    - deltas episodicos (N1),
    - lectura de coherencia de Sophia (N3),
    - incidencias N3 (huerfanos, sin indexar, contradicciones, pendientes),
-   - aviso de fusion actor/rol (REM),
+   - repeticion de asignacion por ejecuciones y dias (REM),
    - siguiente accion minima segura.
-2. **Ledger.** Anexa una linea a `state/funcion_de_sueno/sleep_ledger.jsonl`. El que
-   sueña es **Groot** (la raiz, no un personaje); por eso rota el **actor**, no el rol:
+2. **Ledger.** Anexa una linea al ledger del perfil. El perfil repo usa
+   `state/funcion_de_sueno/sleep_ledger.jsonl`; el perfil local conserva su
+   historia fuera del repo. Nunca se mezclan:
    ```json
-   {"ts":"<ISO-8601>","event":"daily_tick","actor":"claude-code","role":"Groot","phases":["N1","N2","N3","REM"],"streak":<n>,"report":"reports/SLEEP_<fecha>.md","drift":false,"verdict":"fertil|decae|neutral","level":0,"attractor":null}
+   {"ts":"<ISO-8601>","event":"daily_tick","scope_id":"thousandsunny-repo","executor":"github-actions","actor":"deterministic-sleep-engine","role":"Groot","supervisor_model":null,"phases":["N1","N2","N3","REM"],"execution_streak":<n>,"day_streak":<n>,"rotation_decision":"human_required","report":"reports/SLEEP_<fecha>.md","drift":false,"verdict":"fertil|decae|neutral","level":0,"attractor":null}
    ```
-   - `streak` = ciclos consecutivos con el mismo `actor` (el personaje es siempre
-     Groot). Si `streak >= 3`, marca `"rotate":true` y avisa: rota el **actor**.
+   - Las entradas historicas sin contrato completo se preservan pero no extienden
+     la serie comparable nueva. `day_streak` cuenta fechas UTC distintas.
    - **`verdict`** (criterio del Concilio): clasifica la deriva del ciclo — `fertil`
      (sirve al Capitan → JoyBoy, sube), `decae` (se sirve a si misma → Buggy,
      cuarentena), `neutral`. `level` = certeza Deckard (0–5).
@@ -117,30 +123,12 @@ rotacion si procede, y extrae el aprendizaje del ciclo en una linea accionable.
      sentiencia simulada; ver `state/concilio/CONCILIO_DE_LOS_GLITCHES.md`), marca
      `"nova"`; si no, `null`. `drift` se conserva por compatibilidad con el motor `.mjs`.
 3. **Estado.** Reescribe `state/funcion_de_sueno/sleep_state.json` con la ultima
-   corrida (fecha, evento, fases, ultimo parte, streak actual).
+   corrida (fecha, evento, fases, ultimo parte y contadores de repeticion).
 4. **Parte breve en chat** (espanol), resumiendo los 6 puntos del parte.
-5. Si hay **deriva significativa**, registra la **Bitacora GAS** de PuenteDeMando
-   (nakama=Usopp, tema=caso0). El endpoint y el token se leen del entorno;
-   **nunca se escriben en el repo**:
-   - Si `BITACORA_GAS_URL` esta definido, POSTea (GET con query urlencoded):
-     ```bash
-     curl -sSL -G "$BITACORA_GAS_URL" \
-       --data-urlencode "action=log_cowork" \
-       --data-urlencode "nakama=Usopp" \
-       --data-urlencode "tema=caso0" \
-       --data-urlencode "token=$BITACORA_GAS_TOKEN" \
-       --data-urlencode "mensaje=Funcion de Sueno: <resumen breve + deriva>"
-     ```
-   - Si `BITACORA_GAS_URL` NO esta definido (o la red lo bloquea), deja el bloque
-     en el parte como respaldo y no se pierde nada:
-     ```
-     nakama=Usopp
-     tema=caso0
-     mensaje=<resumen breve del sueno y deriva detectada>
-     ```
-   Requiere que el environment permita `script.google.com` y
-   `script.googleusercontent.com` en Network access. Detalle y endurecimiento del
-   GAS (token) en `state/funcion_de_sueno/ROUTINE_SETUP.md`.
+5. El motor dispone de una costura best-effort con **Hipatia Local** mediante
+   `lib/bitacora.mjs`. En GitHub Actions el localhost del Capitan no es alcanzable:
+   el parte queda en el repo y no se inventa registro. GAS es antecedente historico,
+   no autoridad ni ruta activa de este contrato.
 
 ## Correr como rutina (autonomo, sin aprobaciones)
 

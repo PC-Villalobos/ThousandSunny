@@ -1,0 +1,40 @@
+{
+  "schema": "thousand-sunny.sleep-profiles.v1",
+  "code_reference": "state/funcion_de_sueno",
+  "identity_contract": {
+    "required": ["scope_id", "executor", "actor", "role"],
+    "optional": ["supervisor_model"],
+    "actor_meaning": "deterministic component that executes the sleep contract",
+    "supervisor_model_meaning": "model supervising or orchestrating the component, when one exists",
+    "rotation_authority": "captain_only"
+  },
+  "profiles": [
+    {
+      "profile_id": "repo-github-actions",
+      "scope_id": "thousandsunny-repo",
+      "root_kind": "repository_state",
+      "config": "state/funcion_de_sueno/sleep_config.repo.json",
+      "state": "state/funcion_de_sueno/sleep_state.json",
+      "ledger": "state/funcion_de_sueno/sleep_ledger.jsonl",
+      "executor": "github-actions",
+      "actor": "deterministic-sleep-engine",
+      "role": "Groot",
+      "supervisor_model": null,
+      "history": "preserve_in_place"
+    },
+    {
+      "profile_id": "groot-local-full-corpus",
+      "scope_id": "groot-local-full-corpus",
+      "root_kind": "external_local_full_corpus",
+      "config": "external-local:99_Sistema/funcion_de_sueno/sleep_config.groot.json",
+      "state": "external-local:99_Sistema/funcion_de_sueno/sleep_state.json",
+      "ledger": "external-local:99_Sistema/funcion_de_sueno/sleep_state.json#roleLedger",
+      "executor": "codex-local-cron",
+      "actor": "deterministic-sleep-engine",
+      "role": "Usopp",
+      "supervisor_model": "gpt-5.6-terra",
+      "history": "preserve_separate",
+      "deployment_status": "declared_not_verified_by_repository"
+    }
+  ]
+}
