@@ -27,7 +27,7 @@ Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este arch
 
 - **`C:\repos\thousandsunny` — CADÁVER. No usar.** Contiene 3 archivos, **cero commits**, sin remoto, rama `claude/fervent-edison-GM0NB` sin historial. Solo tiene `state/metatron/genoma/N0-SEMILLA-METATRON.md`, `PLACENTA_ROOT.md` y `PLACENTA_INTEGRATION_PLAN.md`. La auditoría de Antigravity del 2026-07-24 leyó **este** árbol y por eso concluyó, erróneamente, que "solo existe N0".  
     
-- **`D:\SunnyFranky\linux-llm-control-plane`** — `.git` vacío, sin HEAD ni índice. Workspace local no versionado, declarado `github=null`, `git_actions_allowed=false`. No es un clon de ThousandSunny.
+- **`D:\SunnyFranky\linux-llm-control-plane`** — `.git` vacío, sin HEAD ni índice. Workspace local no versionado, declarado `github=null`, `git_actions_allowed=false`. No es un clon de ThousandSunny. **Contiene además una copia de `thousand-sunny-world` bajo `apps/`** — ver la fila «Segunda copia» de la subsección siguiente.
 
 ### Árboles vivos que tampoco son el repo — nuevo el 2026-09-01
 
@@ -40,6 +40,7 @@ La distinción que faltaba. Hasta hoy §1 separaba **el repo** de **los cadáver
 | **Puerto** | `127.0.0.1:8767` — `/#/cubierta` es la Cubierta; `/api/federated-pending` devuelve las superficies |
 | **Qué aloja** | `src/` (Mesa, Cubierta, matriz de BitSIG, escena canaria) · `scripts/` (contrato de sobre, canario, pruebas) · `artifacts/` (los GO cerrados y sus informes) |
 | **Versionado** | **No versionado en esta ruta** — OBSERVADO localmente por Codex el 2026-09-02: el directorio existe, no contiene `.git`, y `git rev-parse --show-toplevel` termina con código 128. Su código operativo permanece fuera de un repositorio hasta que un GO específico defina destino, historia inicial y exclusiones. Acredita **esta ruta**, no afirma que los mismos ficheros no existan en algún otro repositorio |
+| **Segunda copia** | Existe además `D:\SunnyFranky\linux-llm-control-plane\apps\thousand-sunny-world`, divergente del árbol vivo de `C:`. Su relación y procedencia no están demostradas; **ninguna de las dos copias se declara todavía referencia** |
 | **Autoridad** | **Ninguna.** Superficie de orientación y proyección: no gobierna, no cierra, no es sumidero. Hipatia sigue siendo la autoridad operativa (§4) |
 
 **Por qué está aquí.** El 2026-09-01, un sondeo desde la nube buscó `thousand-sunny-world`, `SunnyWorkspaces` y el puerto `8767` en los 463 ficheros versionados de ThousandSunny y PuenteDeMando: **cero apariciones**, comprobado en dos pasadas separadas. Un nakama que audite leyendo los dos repos no encontrará la Cubierta y concluirá que no existe. Es el error de Antigravity del 2026-07-24 al revés: aquel leyó un árbol muerto y lo tomó por el vivo; este leería los vivos sin ver el que trabaja.
@@ -47,6 +48,8 @@ La distinción que faltaba. Hasta hoy §1 separaba **el repo** de **los cadáver
 **BitSIG vive aquí.** Sus seis tarjetas son una matriz literal en `src/MissionBoard.jsx`, sin fuente detrás. No es una proyección: es un dibujo de una, y por eso **no envejece a la vista** — una proyección caducada se nota, un literal no. Queda `lineage_incomplete` hasta que se conecte a una fuente o se rotule en la propia Mesa como matriz de ejemplo.
 
 **Consecuencia del campo `Versionado`, cerrado el 2026-09-02.** Este documento existe para separar un repo real de un workspace sin control de versiones utilizable — el caso `D:\SunnyFranky` de arriba. `thousand-sunny-world` resulta ser del segundo tipo. Eso deja abierto, en su forma peor, el asiento 3.4 de `state/recepcion/RECEPCION_CUBIERTA_20260727.md`: *«el código de la Cubierta y del bridge sigue en un árbol sin control de versiones utilizable; la durabilidad se resolvió para la pieza que no estaba en riesgo, no para la que sí»*. Desde aquella fecha ese árbol ha acumulado la Mesa, la Cubierta Viva, el adaptador de escena, dos recibos y varios artefactos de GO. **Es hoy la pieza más viva del barco y la menos durable.** Versionarlo requiere GO propio: destino, historia inicial y exclusiones son decisiones, no un `git init`.
+
+**Y ese GO queda suspendido desde el 2026-09-02**, porque apareció la segunda copia. Commitear cualquiera de las dos ahora no sería levantar acta del estado: sería **elegir referencia por accidente de cuál se tenía delante** — el mismo error que §7 documenta con las tres `00_BOVEDA_NEXUS`. Antes va un inventario de referencias que sitúe cada instancia de cada componente. Preservar lo irreemplazable es una escritura material y pide su propio GO, con exclusiones y hashes: no cabe dentro de un diagnóstico de solo lectura.
 
 **Estatuto de esta entrada.** Escrita desde una sesión cloud por GO explícito del Capitán del 2026-09-01, levantando la regla que reserva este fichero a la máquina del Capitán. Lo único `observed` por quien la escribe son las cero apariciones en los dos repos accesibles. Ruta, puerto, contenido y comportamiento de la Mesa son **testimonio relatado de actor único**, estatuto `inferred`: el que audite esta sección lo comprueba antes de apoyarse en ella, y al comprobarlo la sube a `observed` corrigiendo lo que haga falta.
 
