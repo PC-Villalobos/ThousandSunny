@@ -2,7 +2,7 @@
 
 ## Proposito
 
-Ejecutable portable para consolidar memoria compartida durante la noche operativa del sistema. Su funcion no es generar canon nuevo, sino revisar deltas, simular coherencia de estados atractores y prevenir fusion actor/rol mediante rotacion.
+Ejecutable portable para consolidar memoria compartida durante la noche operativa del sistema. Su funcion no es generar canon nuevo, sino revisar deltas, simular coherencia de estados atractores y medir repeticion de asignaciones declaradas sin rotacion automatica. El contrato v1 de identidad vive en `funcion_de_sueno.mjs` + `role_assignment.mjs`; el motor Python es auxiliar historico y no tiene paridad declarada.
 
 ## Principio
 

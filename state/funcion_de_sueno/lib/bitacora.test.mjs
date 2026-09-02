@@ -24,11 +24,15 @@ import {
 } from "./bitacora.mjs";
 
 const CONTEXT = {
+  scopeId: "thousandsunny-repo",
   executor: "cowork-sandbox",
-  actor: "claude-opus-5-nami",
+  actor: "deterministic-sleep-engine",
   role: "Nami",
-  streak: 1,
-  nextRole: "Robin",
+  supervisorModel: "claude-opus-5",
+  executionStreak: 1,
+  dayStreak: 1,
+  nextCandidateRole: "Robin",
+  rotationDecision: "human_required",
   summary: { files: 130, deltas: 8, issues: 25, coherenceScore: 0.8076923076923077 },
   reportPath: "state/funcion_de_sueno/reports/sleep_report_x.md"
 };
@@ -57,10 +61,29 @@ test("buildSleepEvent: respeta los limites de longitud del servidor", () => {
   assert.ok(event.scope.length <= 500);
 });
 
-test("buildSleepEvent: racha alta pide rotar de actor, no de nombre de rol", () => {
-  const alerted = buildSleepEvent({ ...CONTEXT, streak: 3 });
-  assert.match(alerted.next_safe_action, /rotar de actor/i);
-  assert.doesNotMatch(buildSleepEvent(CONTEXT).next_safe_action, /rotar de actor/i);
+test("buildSleepEvent: repeticion alta pide revision humana sin afirmar fusion", () => {
+  const alerted = buildSleepEvent({ ...CONTEXT, dayStreak: 3 });
+  assert.match(alerted.next_safe_action, /revision humana/i);
+  assert.doesNotMatch(JSON.stringify(alerted), /fusion/i);
+  assert.doesNotMatch(buildSleepEvent(CONTEXT).next_safe_action, /revision humana/i);
+});
+
+test("buildSleepEvent: bloquea identidades implicitas", () => {
+  assert.throws(
+    () => buildSleepEvent({ ...CONTEXT, scopeId: null }),
+    /missing_required_identity:scope_id/
+  );
+});
+
+test("buildSleepEvent: conserva scope, executor, actor, role y supervisor separados", () => {
+  const event = buildSleepEvent(CONTEXT);
+  assert.deepEqual(event.relations, [
+    "scope:thousandsunny-repo",
+    "executor:cowork-sandbox",
+    "actor:deterministic-sleep-engine",
+    "role:Nami",
+    "supervisor_model:claude-opus-5"
+  ]);
 });
 
 test("buildSleepEvent: no filtra contenido de ficheros ni marca material protegido", () => {
@@ -125,7 +148,7 @@ test("camino feliz: contrato de /api/events segun bitacora_server.py", async () 
     assert.equal(reported.writeVerified, true);
     assert.equal(reported.eventId, "BIT-20260726T103527Z-abc123def456");
     assert.equal(received.topic, "funcion_de_sueno");
-    assert.equal(received.actor, "claude-opus-5-nami");
+    assert.equal(received.actor, "deterministic-sleep-engine");
     assert.equal(received.idempotency_key, `sleep:${CONTEXT.reportPath}`);
   } finally {
     await new Promise((resolve) => server.close(resolve));

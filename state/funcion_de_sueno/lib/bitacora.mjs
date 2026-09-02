@@ -39,8 +39,10 @@
 //
 // MEMBRANA
 // Aqui solo viaja metadata del parte: contador de ficheros, deltas, incidencias,
-// score y rotacion de rol. Nunca contenido de ficheros, nunca material clinico,
+// score y repeticion declarada. Nunca contenido de ficheros, nunca material clinico,
 // nunca rutas resolubles a `_protegido`. `sensitivity` va fijada a "internal".
+
+import { normalizeRoleIdentity } from "../role_assignment.mjs";
 
 export const DEFAULT_BITACORA_URL = "http://127.0.0.1:8765";
 export const DEFAULT_TIMEOUT_MS = 2000;
@@ -67,7 +69,20 @@ export function bitacoraUrl(env = process.env) {
 }
 
 // Construye el payload del parte de sueno. Puro: no toca red, es testeable solo.
-export function buildSleepEvent({ executor, actor, role, streak, nextRole, summary, reportPath }) {
+export function buildSleepEvent({
+  scopeId,
+  executor,
+  actor,
+  role,
+  supervisorModel = null,
+  executionStreak,
+  dayStreak,
+  nextCandidateRole,
+  rotationDecision,
+  summary,
+  reportPath
+}) {
+  const identity = normalizeRoleIdentity({ scopeId, executor, actor, role, supervisorModel });
   const deltas = summary?.deltas ?? 0;
   const files = summary?.files ?? 0;
   const issues = summary?.issues ?? 0;
@@ -75,16 +90,16 @@ export function buildSleepEvent({ executor, actor, role, streak, nextRole, summa
   const scoreText = typeof score === "number" ? score.toFixed(3) : "n/d";
 
   return {
-    actor: actor || "unknown-actor",
-    role: role || "unknown-role",
+    actor: identity.actor,
+    role: identity.role,
     topic: "funcion_de_sueno",
     title: `Ciclo de sueno ${role || "?"} — ${deltas} deltas, ${issues} incidencias`,
     message: [
       `Ciclo de la Funcion de Sueno completado.`,
-      `Executor: ${executor || actor}. Actor: ${actor}. Rol: ${role}.`,
+      `Perfil: ${identity.scopeId}. Executor: ${identity.executor}. Actor: ${identity.actor}. Rol: ${identity.role}. Modelo supervisor: ${identity.supervisorModel || "ninguno"}.`,
       `Ficheros inventariados: ${files}. Deltas episodicos: ${deltas}.`,
       `Incidencias de coherencia: ${issues}. Score: ${scoreText}.`,
-      `Racha del par (actor, rol): ${streak ?? "n/d"}. Siguiente rol sugerido: ${nextRole || "n/d"}.`
+      `Repeticion: ${executionStreak ?? "n/d"} ejecuciones, ${dayStreak ?? "n/d"} fechas UTC. Rol candidato: ${nextCandidateRole || "n/d"}. Decision: ${rotationDecision || "n/d"}.`
     ].join(" "),
     scope: "metadata del parte de sueno; sin contenido de ficheros",
     sensitivity: "internal",
@@ -95,11 +110,17 @@ export function buildSleepEvent({ executor, actor, role, streak, nextRole, summa
     project: "ThousandSunny",
     phase: "funcion_de_sueno",
     change: `Parte de sueno generado en ${reportPath || "reports/"}.`,
-    after: `Rotacion registrada en roleLedger; siguiente rol sugerido ${nextRole || "n/d"}.`,
-    next_safe_action: streak >= 3
-      ? "Rotar de actor, no solo de nombre de rol: la racha alta indica fusion real."
+    after: `Asignacion declarada registrada; ninguna rotacion automatica. Rol candidato ${nextCandidateRole || "n/d"}.`,
+    next_safe_action: dayStreak >= 3
+      ? "Revision humana requerida antes de cualquier cambio de rol."
       : "Ninguna; el ciclo cerro limpio.",
-    relations: [`executor:${executor || actor}`, `role:${role}`],
+    relations: [
+      `scope:${identity.scopeId}`,
+      `executor:${identity.executor}`,
+      `actor:${identity.actor}`,
+      `role:${identity.role}`,
+      ...(identity.supervisorModel ? [`supervisor_model:${identity.supervisorModel}`] : [])
+    ],
     evidence: reportPath ? [String(reportPath)] : []
   };
 }
