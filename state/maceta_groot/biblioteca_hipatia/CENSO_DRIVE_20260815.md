@@ -419,6 +419,13 @@ Correccion honesta al titular de este censo: "la conversion no esta empezada" er
 cierto para los estantes de la Biblioteca, y **falso para `NEXUS`**. La sonda
 anterior no habia mirado ahi.
 
+**Reclasificado el 2026-09-03 (pase de correcciones, ver seccion final).** El
+titulo de este hallazgo dice "y funciono" y el cuerpo no lo sostiene: lo
+observado es que existen 14 pares Doc/markdown fechados el 2026-05-24. La calidad
+de esas 14 piezas **nunca se miro** — el propio hallazgo la deja como tarea
+pendiente dos parrafos mas arriba. Precedente **HISTORICO**; salud actual bajo
+B1.5, `NO_DEMOSTRADO`.
+
 ### Hallazgo 13 — el contrato de migracion existe, en texto, y esta localizado
 
 `OBSIDIAN_MIGRATION_PROTOCOL_v0_1.md` esta en `NEXUS` como markdown real.
@@ -664,6 +671,12 @@ Junto a WP010 (hallazgo 12), van **dos precedentes de conversion exitosa** y
 ninguno de los dos estaba localizado. B3 tiene ahora dos referencias, no una — y
 esta trae ademas el patron de manifiesto y codebook que a WP010 le falta.
 
+**Reclasificado el 2026-09-03 (pase de correcciones, ver seccion final).**
+"Exitosa" excede lo medido. Lo observado por `mimeType` es que 15 de 15 ficheros
+estan en texto plano el 2026-05-04; que sean el **resultado de una conversion** y
+no material nacido en texto no se comprobo. Precedente **HISTORICO**;
+`NO_DEMOSTRADO` como evidencia de salud actual.
+
 Matiz que conviene no perder: `vault/vault.config.json` resolvio ATLAS.ti como
 `no_live_atlas_subscription`, destino `CRESTA_NEURAL`, no tronco. El piloto mejor
 ejecutado del corpus pertenece a la via que se decidio no seguir.
@@ -876,6 +889,12 @@ Con una diferencia importante: aqui no hay una tanda unica y fechada, hay texto
 repartido por siete carpetas. Merece mirarse antes de disenar B3 — puede que el
 patron que falta ya este aqui, o puede que sea sedimento de varias tandas sin
 criterio comun. El censo no puede distinguirlo desde los metadatos.
+
+**Reclasificado el 2026-09-03 (pase de correcciones, ver seccion final).** El
+hallazgo 37 resolvio despues la duda que este parrafo dejaba abierta, y en contra:
+el texto plano de `01_SISTEMA` esta donde **escribio una maquina**, no donde se
+convirtio un documento. No es un tercer precedente de conversion; es salida nativa
+de herramientas. Se retira de la lista, no se degrada.
 
 En contraste, **`04_PERSONAL` tiene 132 entradas y cero texto plano**, igual que
 `90_ARCHIVO` y `00_INBOX`.
@@ -1117,6 +1136,12 @@ del sistema esta donde escribio una maquina, no donde se convirtio un documento.
 
 Los tres precedentes de conversion real siguen siendo WP010, ATLAS_TI y —con
 reservas— las carpetas documentales de `01_SISTEMA`. Esto no es un cuarto.
+
+**Reclasificado el 2026-09-03 (pase de correcciones, ver seccion final).** Este
+parrafo se contradice con el suyo propio: si el texto plano de `01_SISTEMA` esta
+donde escribio una maquina, `01_SISTEMA` no puede figurar en la misma lista, ni
+con reservas. Quedan **dos** precedentes, y son **HISTORICOS**: no "reales" en el
+sentido de vigentes.
 
 Decima clase de formato: `application/vnd.google-apps.presentation`.
 
@@ -1396,3 +1421,94 @@ con nombre, con la rama del hallazgo 40 fuera de la cuenta.
 
 Cero IDs de Drive, cero nombres de terceros, cero titulos sensibles, cero
 localizaciones nuevas en este anexo.
+
+---
+
+## Pase de correcciones — precedentes de conversion (claude-code, 2026-09-03)
+
+Ejecutado bajo GO explicito del Capitan. **Alcance: solo este fichero.** El cuerpo
+del PR #106 menciona los mismos precedentes y queda **congelado como historia**:
+cualquier actualizacion suya sera apendice de supersesion con fecha, nunca
+reescritura. Nada aqui toca Drive, credenciales, sutra ni pipeline.
+
+### Que se corrige
+
+El censo llamaba a estas piezas **"precedentes de conversion reales"**. Pasan a
+**HISTORICOS**. No es un matiz de redaccion: "real" se estaba leyendo como
+*vigente*, y de ahi a "el contrato ya esta demostrado, solo falta escalarlo"
+—frase literal del hallazgo 12— hay un paso que el censo no puede dar.
+
+**Prueban intentos historicos de conversion. No prueban salud actual.**
+
+### Los precedentes, con su fecha y su alcance
+
+| Precedente | Fecha observada | Alcance medido | Que prueba |
+|---|---|---|---|
+| `WP010_*` en NEXUS (hallazgo 12) | 2026-05-24, tanda unica | 14 pares Doc + markdown | Que alguien convirtio 14 piezas ese dia |
+| `NEXUS/ATLAS_TI` (hallazgo 24) | 2026-05-04 | 15 de 15 en texto plano | Que ese subarbol es integramente textual |
+| `01_SISTEMA` (hallazgo 29) | sin tanda fechada | 59 piezas en 7 carpetas | **Nada. Retirado de la lista.** |
+
+`01_SISTEMA` sale por el hallazgo 37, no por este pase: su texto plano esta donde
+escribio una maquina, no donde se convirtio un documento. Era salida de
+herramientas contada como precedente. Quedan **dos**, no tres.
+
+### Contrato vigente cuando se midio
+
+Las diez lecturas corrieron bajo **GO-MIG-001**: metadata-only, `mimeType` pieza a
+pieza, denylist local por ID, `source_mutations: 0`, y **una sola ventana de
+conector**. Fue *antes* de B1.5 y antes del contrato de seis verbos, que no
+existian hasta el 2026-08-16 (GO-CENSO-042 y GO-ESPEJO-004R2).
+
+Lo que ese contrato permitia observar era el **tipo declarado** de cada fichero.
+Nada mas. En particular no permitia —ni permite— abrir una pieza para ver como
+quedo, porque leerla es un verbo distinto de enumerarla.
+
+### Estado actual: `NO_DEMOSTRADO`
+
+Cuatro cosas siguen sin observarse, y las cuatro hacen falta antes de que un
+precedente valga como evidencia de salud:
+
+1. **La calidad de la salida.** El hallazgo 12 dejo escrito "antes de escribir
+   codigo, mirar como quedaron esas 14 piezas". Nadie las ha mirado. La condicion
+   que el propio hallazgo puso para creerse sigue sin cumplirse.
+2. **Que sean conversion y no origen.** Un `.md` junto a un Doc es un par
+   plausible; un `.txt` suelto no prueba de donde vino. Solo WP010 tiene la
+   estructura de par que sostiene la inferencia.
+3. **La sonda mecanica con Drive montado.** La regla 4 de `robin-cronos` pide dos
+   sondas independientes. El contraste estructural con Codex paso —57 entradas y
+   34 carpetas coincidieron exactamente— pero es contraste de *enumeracion*, no
+   prueba de que un pipeline corra hoy.
+4. **La cobertura actual del conector.** Cuatro meses despues, nada garantiza que
+   el conector alcance hoy lo que alcanzaba en mayo. No se ha comprobado.
+
+### Lo que levantaria el estado
+
+Una sonda mecanica bajo B1.5, con Drive montado, sobre una copia de staging ya
+autorizada: abrir un subconjunto de las 14 piezas de WP010, comparar con su Doc de
+origen y declarar si la calidad es aceptable. Eso convierte `NO_DEMOSTRADO` en
+observado —o lo refuta, que tambien vale.
+
+Hasta entonces, **ningun diseno de B3 debe citar estos precedentes como contrato
+demostrado.** Como punto de partida documental valen; como prueba, no.
+
+### Correcciones de este pase que NO viven aqui
+
+Tres correcciones acordadas el 2026-08-22 son de material fuera de este
+repositorio y **no se han hecho**, porque este pase es solo del censo:
+
+- **MOC de Caso 0** — etiqueta de particion: `PLAUD 28 + Bitacora 42 + Drive 6 = 76`.
+- **Anexo tecnico** — tres apariciones de `70 eventos` que deben decir `76`.
+- **Ficha 17** — `21` sesiones que deben decir `24`.
+
+Las tres son del carril restringido. No se nombran aqui sus rutas ni sus IDs, y
+este censo no las incorpora: el repositorio es publico.
+
+### Lo que este pase no cambia
+
+El denominador sigue en **1.688 ficheros medidos, 170 en texto plano (10,1%)** en
+las raices con nombre. Los 41 hallazgos siguen numerados igual. Ninguna afirmacion
+anterior se ha borrado: las cuatro reclasificaciones estan escritas donde ocurrio
+cada afirmacion, con fecha, y el texto original sigue legible encima.
+
+Cero IDs de Drive, cero nombres de terceros, cero titulos sensibles,
+`source_mutations: 0`.
