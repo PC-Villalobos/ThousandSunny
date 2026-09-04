@@ -8,6 +8,8 @@
 
 **Tercera actualización, 2026-09-01/02 desde sesión cloud (Nami), por GO explícito del Capitán.** Cambia §1 en dos puntos: se declara `thousand-sunny-world`, un árbol **vivo** que este documento no conocía —hasta hoy §1 solo distinguía el repo de los cadáveres, y faltaba la tercera categoría—, y se refrescan los números del tronco, que llevaban cinco semanas de retraso. Origen: la carta de corrientes del 2026-09-01.
 
+**Cuarta actualización, 2026-09-04 desde sesión cloud (Nami), por GO explícito del Capitán.** Cambia §1: donde se declaraba **un** árbol vivo ahora hay **tres** con funciones separadas —una referencia versionada y dos instancias históricas preservadas—, con el expediente de preservación cerrado el 2026-09-03 y su SHA-256. Origen: `GO_WORLD_CERRAR_PRESERVACION_Y_DURABILIZAR_CUBIERTA_V1`.
+
 **Aviso de método para sesiones en la nube, aprendido el 2026-09-02.** Antes de afirmar nada sobre ramas, commits o divergencias, comprueba `git rev-parse --is-shallow-repository`. Un clon superficial inventa divergencias que no existen: en la primera pasada de esa carta produjo tres hallazgos falsos seguidos —partes nocturnos que parecían no aterrizar en la rama canónica, una rama del Monitor que parecía no existir, y un tronco que parecía partido en dos—. Es el mismo fantasma de plataforma que el CRLF de §2 y la detección de deltas de §5, en un subsistema nuevo. Comprueba la profundidad del clon igual que compruebas este fichero: **antes**.
 
 Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este archivo **antes** de auditar, proponer o ejecutar nada. Si lo que ves en tu entorno contradice esto, tu entorno está mirando el árbol equivocado. Comprueba antes de afirmar.
@@ -27,31 +29,54 @@ Cualquier nakama —Claude, Codex, Antigravity, Copilot, Gemini— lee este arch
 
 - **`C:\repos\thousandsunny` — CADÁVER. No usar.** Contiene 3 archivos, **cero commits**, sin remoto, rama `claude/fervent-edison-GM0NB` sin historial. Solo tiene `state/metatron/genoma/N0-SEMILLA-METATRON.md`, `PLACENTA_ROOT.md` y `PLACENTA_INTEGRATION_PLAN.md`. La auditoría de Antigravity del 2026-07-24 leyó **este** árbol y por eso concluyó, erróneamente, que "solo existe N0".  
     
-- **`D:\SunnyFranky\linux-llm-control-plane`** — `.git` vacío, sin HEAD ni índice. Workspace local no versionado, declarado `github=null`, `git_actions_allowed=false`. No es un clon de ThousandSunny. **Contiene además una copia de `thousand-sunny-world` bajo `apps/`** — ver la fila «Segunda copia» de la subsección siguiente.
+- **`D:\SunnyFranky\linux-llm-control-plane`** — `.git` vacío, sin HEAD ni índice. Workspace local no versionado, declarado `github=null`, `git_actions_allowed=false`. No es un clon de ThousandSunny. **Contiene además una copia de `thousand-sunny-world` bajo `apps/`**, hoy declarada instancia histórica preservada — ver la tabla de los tres árboles en la subsección siguiente.
 
-### Árboles vivos que tampoco son el repo — nuevo el 2026-09-01
+### Árboles vivos que tampoco son el repo — nuevo el 2026-09-01, reescrito el 2026-09-04
 
-La distinción que faltaba. Hasta hoy §1 separaba **el repo** de **los cadáveres**. `thousand-sunny-world` no es ninguna de las dos cosas: está vivo, tiene rol, y no estaba escrito en ningún sitio.
+La distinción que faltaba. Hasta el 2026-09-01 §1 separaba **el repo** de **los cadáveres**, y la Cubierta no era ninguna de las dos cosas. Al cerrarse el expediente de preservación el 2026-09-03 resultó que tampoco era **un** árbol: son **tres**, con funciones distintas. Confundirlos es exactamente el error que esta subsección existe para impedir.
 
-| | |
+| Árbol | Función | Versionado | Autoridad |
+| :---- | :---- | :---- | :---- |
+| `...\SunnyWorkspaces\cubierta-world` | **Referencia versionada por componente** de la Cubierta Viva. Es la que se arranca | Sí. Commit local `fb82863fa1016028e9d79278eee65b1d2bd25192`, árbol limpio | Ninguna |
+| `...\SunnyWorkspaces\thousand-sunny-world` | **Instancia histórica preservada.** No es el *runtime* por defecto. Existía al cerrar el expediente | No versionado en su ruta (OBSERVADO el 2026-09-02). Preservado bajo `capture_id 20260903T163401Z` | Ninguna |
+| `D:\SunnyFranky\linux-llm-control-plane\apps\thousand-sunny-world` | **Instancia histórica preservada.** No es el *runtime* por defecto | Ídem. La fuente `D:` no estaba disponible durante el cierre, pero su *snapshot* verificado permanece bajo el mismo `capture_id` | Ninguna |
+
+**Ninguna instancia histórica se borra. Ninguna debe arrancarse por defecto.**
+
+Nadie eligió referencia entre las dos copias. Esa era la trampa que suspendió el GO de versionado el 2026-09-02: commitear la que se tuviera delante habría sido **elegir canon por accidente**, el mismo error que §7 documenta con las tres `00_BOVEDA_NEXUS`. Se resolvió por el otro lado —preservar ambas sin canonizar ninguna, y versionar **el componente** en un árbol nuevo—, y por eso aquel GO queda superado, no pendiente.
+
+**La referencia, en detalle.**
+
+|  |  |
 | :---- | :---- |
-| **Ruta** | `C:\Users\usuario\Documents\SunnyWorkspaces\thousand-sunny-world` |
-| **Qué es** | Mesa del Capitán y Cubierta Viva: superficie de orientación, más el adaptador de escena hacia el actor DeepSeek |
-| **Puerto** | **Observado, no contractual.** `8767` pertenecía a la invocación local que estaba ejecutándose; ninguno de los dos `vite.config.mjs` lo fija. Ambos declaran `host: "0.0.0.0"` y dejan el puerto a la invocación o al valor por defecto de Vite. La forma durable de arranque y exposición queda `lineage_incomplete` — y ojo: escuchar en `0.0.0.0` **no** equivale a estar limitado a loopback. Rutas observadas en esa invocación: `/#/cubierta` la Cubierta, `/api/federated-pending` las superficies |
-| **Qué aloja** | `src/` (Mesa, Cubierta, matriz de BitSIG, escena canaria) · `scripts/` (contrato de sobre, canario, pruebas) · `artifacts/` (los GO cerrados y sus informes) |
-| **Versionado** | **No versionado en esta ruta** — OBSERVADO localmente por Codex el 2026-09-02: el directorio existe, no contiene `.git`, y `git rev-parse --show-toplevel` termina con código 128. Su código operativo permanece fuera de un repositorio hasta que un GO específico defina destino, historia inicial y exclusiones. Acredita **esta ruta**, no afirma que los mismos ficheros no existan en algún otro repositorio |
-| **Segunda copia** | Existe además `D:\SunnyFranky\linux-llm-control-plane\apps\thousand-sunny-world`, divergente del árbol vivo de `C:`. Su relación y procedencia no están demostradas; **ninguna de las dos copias se declara todavía referencia** |
-| **Autoridad** | **Ninguna.** Superficie de orientación y proyección: no gobierna, no cierra, no es sumidero. Hipatia sigue siendo la autoridad operativa (§4) |
+| **Ruta** | `C:\Users\usuario\Documents\SunnyWorkspaces\cubierta-world` |
+| **Función** | Referencia versionada por componente de la Cubierta Viva: superficie de orientación y proyección |
+| **Arranque** | `npm run dev` |
+| **Puerto contractual** | `127.0.0.1:8768`, `strictPort: true`. **Contractual, no observado**: si el puerto está ocupado, Vite falla en vez de deslizarse a otro. Esto cierra, *para este árbol*, el `lineage_incomplete` de arranque y exposición que sigue abierto en las instancias históricas |
+| **Verificado** | `node:test` 19/19 · build de Sites correcto · Playwright 1/1 contra el servidor arrancado por contrato en `8768`, tras detener el servidor anterior: clic en Nami, Usopp y Robin, superposición corregida, misión, objeto y Rumbo modificados, persistencia después de navegar, **cero `POST`**, cero errores y cero advertencias de React |
+| **Autoridad** | **Ninguna.** Interfaz y proyección local: no gobierna, no cierra, no es sumidero. Hipatia sigue siendo la autoridad operativa (§4) |
+| **Alcance del cierre** | Sin *push*, sin remoto, sin PR, sin despliegue y sin publicación. La durabilidad conseguida es **local** |
 
-**Por qué está aquí.** El 2026-09-01, un sondeo desde la nube buscó `thousand-sunny-world`, `SunnyWorkspaces` y el puerto `8767` en los 463 ficheros versionados de ThousandSunny y PuenteDeMando: **cero apariciones**, comprobado en dos pasadas separadas. Un nakama que audite leyendo los dos repos no encontrará la Cubierta y concluirá que no existe. Es el error de Antigravity del 2026-07-24 al revés: aquel leyó un árbol muerto y lo tomó por el vivo; este leería los vivos sin ver el que trabaja.
+**El expediente de preservación, cerrado el 2026-09-03.**
 
-**BitSIG vive aquí.** Sus seis tarjetas son una matriz literal en `src/MissionBoard.jsx`, sin fuente detrás. No es una proyección: es un dibujo de una, y por eso **no envejece a la vista** — una proyección caducada se nota, un literal no. Queda `lineage_incomplete` hasta que se conecte a una fuente o se rotule en la propia Mesa como matriz de ejemplo.
+|  |  |
+| :---- | :---- |
+| **Cierre** | `...\SunnyWorkspaces\_preservation\world-instances\20260903T163401Z\WORLD_PRESERVATION_CLOSURE.json` |
+| **SHA-256 del cierre** | `dfc94b7d24f9ff3850067d3b7e2b14f1652add4b75f21ff41b5d7f467d9cfa32` |
+| **Cubierto** | `C:` 72 archivos · `D:` 35 archivos · **0 errores de lectura** · **0 discrepancias de hash** · 2 recibos incluidos y 0 excluidos |
+| **Tiempos** | Verificación a las 16:35/16:36 UTC. Cierre administrativo a las 20:04 UTC, **sin recaptura ni nuevo cálculo de hashes**: el cierre acredita la medición de las 16:3x, no una segunda |
 
-**Consecuencia del campo `Versionado`, cerrado el 2026-09-02.** Este documento existe para separar un repo real de un workspace sin control de versiones utilizable — el caso `D:\SunnyFranky` de arriba. `thousand-sunny-world` resulta ser del segundo tipo. Eso deja abierto, en su forma peor, el asiento 3.4 de `state/recepcion/RECEPCION_CUBIERTA_20260727.md`: *«el código de la Cubierta y del bridge sigue en un árbol sin control de versiones utilizable; la durabilidad se resolvió para la pieza que no estaba en riesgo, no para la que sí»*. Desde aquella fecha ese árbol ha acumulado la Mesa, la Cubierta Viva, el adaptador de escena, dos recibos y varios artefactos de GO. **Es hoy la pieza más viva del barco y la menos durable.** Versionarlo requiere GO propio: destino, historia inicial y exclusiones son decisiones, no un `git init`.
+Ese SHA-256 es lo que vuelve auditable todo lo demás: quien tenga el fichero puede comprobar que es el mismo que se cerró. Es el único dato de esta subsección que un tercero puede verificar sin acceso a la máquina del Capitán.
 
-**Y ese GO queda suspendido desde el 2026-09-02**, porque apareció la segunda copia. Commitear cualquiera de las dos ahora no sería levantar acta del estado: sería **elegir referencia por accidente de cuál se tenía delante** — el mismo error que §7 documenta con las tres `00_BOVEDA_NEXUS`. Antes va un inventario de referencias que sitúe cada instancia de cada componente. Preservar lo irreemplazable es una escritura material y pide su propio GO, con exclusiones y hashes: no cabe dentro de un diagnóstico de solo lectura.
+**NO DEMOSTRADO, dicho por quien cerró.** El rótulo «instancia histórica» no impide técnicamente que alguien arranque a mano el viejo `8767`; impide que se trate como referencia. Retirarlo físicamente requeriría otro GO.
 
-**Estatuto de esta entrada.** Escrita desde una sesión cloud por GO explícito del Capitán del 2026-09-01, levantando la regla que reserva este fichero a la máquina del Capitán. Lo único `observed` por quien la escribe son las cero apariciones en los dos repos accesibles. Ruta, puerto, contenido y comportamiento de la Mesa son **testimonio relatado de actor único**, estatuto `inferred`: el que audite esta sección lo comprueba antes de apoyarse en ella, y al comprobarlo la sube a `observed` corrigiendo lo que haga falta.
+**Por qué está aquí.** El 2026-09-01, un sondeo desde la nube buscó `thousand-sunny-world`, `SunnyWorkspaces` y el puerto `8767` en los 463 ficheros versionados de ThousandSunny y PuenteDeMando: **cero apariciones**, comprobado en dos pasadas separadas. Un nakama que audite leyendo los dos repos no encontrará la Cubierta y concluirá que no existe. Es el error de Antigravity del 2026-07-24 al revés: aquel leyó un árbol muerto y lo tomó por el vivo; este leería los vivos sin ver el que trabaja. `cubierta-world` nace igual de invisible —vive fuera de estos dos repos—, y por eso queda declarado aquí y no solo en su propio `git log`.
+
+**BitSIG.** Sus seis tarjetas eran una matriz literal en `src/MissionBoard.jsx` de la instancia histórica de `C:`, sin fuente detrás. No es una proyección: es un dibujo de una, y por eso **no envejece a la vista** — una proyección caducada se nota, un literal no. Si la referencia hereda ese literal, hereda el defecto; que lo haya heredado, corregido o sustituido **no está demostrado aquí**. Queda `lineage_incomplete` hasta que se conecte a una fuente o se rotule en la propia Mesa como matriz de ejemplo.
+
+**El asiento 3.4, rebajado y no cerrado — 2026-09-04.** Este documento existe para separar un repo real de un workspace sin control de versiones utilizable, el caso `D:\SunnyFranky` de arriba. La Cubierta era del segundo tipo, y eso dejaba abierto en su forma peor el asiento 3.4 de `state/recepcion/RECEPCION_CUBIERTA_20260727.md`: *«el código de la Cubierta y del bridge sigue en un árbol sin control de versiones utilizable; la durabilidad se resolvió para la pieza que no estaba en riesgo, no para la que sí»*. Con `cubierta-world` el asiento **baja de grado**: ya hay historia, árbol limpio y pruebas ejecutables. No se cierra, porque el commit es **local y sin remoto**: un fallo de esa máquina sigue llevándoselo todo, y el expediente de preservación cubre las instancias históricas, no los commits futuros de la referencia. Cerrarlo del todo pide un GO propio con destino, exclusiones y remoto — decisiones, no un `git push`.
+
+**Estatuto de esta entrada.** Escrita desde una sesión cloud por GO explícito del Capitán, levantando la regla que reserva este fichero a su máquina. Lo único `observed` por quien la escribe son las cero apariciones en los dos repos accesibles. Rutas, commit, puerto, conteos de la preservación, resultados de pruebas y comportamiento de la Mesa son **testimonio relatado de actor único**, estatuto `inferred`; el SHA-256 del cierre es el asidero que permite subirlos a `observed` sin repetir la medición. Quien audite esta sección lo comprueba antes de apoyarse en ella, y al comprobarlo corrige lo que haga falta.
 
 ---
 
