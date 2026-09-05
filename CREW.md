@@ -76,6 +76,14 @@ Navega la www de forma autónoma y lee el clima operativo. Cartografía accesos:
 - guardraíl: **capacidades sensibles** (ver abajo) — alcance defensivo/autorizado; terceros solo bajo *debugging ético*
 - estado: nakama canónico (bridge-linux); skills por materializar
 
+### 🩺 Chopper — Médico · *salud operativa / cámara clínica*
+Responde de **cómo está la tripulación**, en dos planos que no se mezclan: la **salud operativa** de la crew (latido, presencia, vitales, fatiga — lo que la Cubierta ya mide) y, aparte y bajo llave, la **cámara clínica**. La cámara es suya, pero **no la abre solo**.
+- skills de rol: (por materializar) `chopper-salud` (constantes y presencia de la tripulación) · `chopper-camara` (consulta clínica con citas y nivel Deckard, solo en local)
+- skills crew que usa: `crew-cerrar-bitacora`
+- substrato típico: **Claude Code** para la salud operativa · **Ollama local** para la cámara (nube = `DENY`, plano §4)
+- guardraíl: **compartimento sellado** — el material clínico no cruza la puerta. Llave del Capitán por consulta; hacia fuera solo identificadores opacos, nunca contenido. Plano: `docs/architecture/CAMARA_DE_CHOPPER.md` (v0.2). C1 exige GO independiente del Capitán **con Vivi** (separación de pilares, consentimiento, doble rol).
+- estado: nakama canónico (embarca por la Cubierta); skills por materializar; la cámara sigue **antes de C0**
+
 ---
 
 ## Capacidades sensibles — debugging ético
