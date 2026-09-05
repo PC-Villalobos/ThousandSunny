@@ -102,7 +102,7 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 |---|---|---|
 | 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. |
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
-| 1.c | **Cerrar la cuarta suite**: traer `cubierta-ui` de PR #98 o retirar su expectativa del agregador. | El agregador dice `4 de 4`, o deja de nombrar una ausencia que nadie va a cubrir. |
+| 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
 | 1.d | **Fijar el arranque en un sitio**: puerto, comando y variable, donde se lea antes de sondar. | Un tercero levanta la Cubierta leyendo solo el repo. |
 | 1.e | **Senal de Hipatia sin acoplamiento**: la Cubierta declara si `8765` responde, y degrada sin bloquear. | A3. Existe ya el precedente de `state/funcion_de_sueno/lib/bitacora.mjs`: degradacion, no fallo. |
 
@@ -130,8 +130,45 @@ detras (1.6): verde en la rama no dice nada sobre verde en el tronco.
 **Commit de fusion:** `a78cfa4`.
 
 **Lo que la fusion NO arregla:** el agregador sigue diciendo `suites ejecutadas: 3 de 4` y
-nombrando la ausente. Eso es 1.c, y sigue abierto. La Cubierta esta en el tronco; su cuarta
-superficie no.
+nombrando la ausente. Eso es 1.c — cerrado poco despues, en el acta siguiente.
+
+#### Acta de 1.c — la cuarta suite, el mismo dia
+
+**El apilamiento se repite.** #98 estaba montado sobre #96, igual que #104 sobre #101. Otra vez
+una sola fusion aterriza las dos, tras reapuntar la base al tronco. **Deja de ser casualidad: es
+como trabaja esta flota**, y conviene comprobar la base de un PR antes de suponer que apunta al
+tronco. Lo que el reparto del §5 llamaba «verificar solape entre #96 y #98» no era solape: era
+una pila.
+
+**El conflicto era el nudo, no un estorbo.** Un unico fichero en conflicto, `package.json`, y
+justo en `test:cubierta`: la rama de #98 lo apuntaba a las suites de `state/cubierta_ui`, el
+tronco al agregador. **Ese choque era el problema que 1.c existe para resolver**, escrito en el
+unico sitio donde se veia.
+
+Resuelto a favor del agregador. No es preferencia: `scripts/test-cubierta.mjs` ya tenia definida
+la suite `cubierta-ui` contra los tres mismos globs, y solo esperaba a que el directorio
+existiera. Quedarse con la definicion de #98 habria dejado las suites del barco isometrico sin
+correr **con `npm test` en verde** — la regresion silenciosa que el propio agregador dice en su
+cabecera que existe para impedir. Se conserva `preview:cubierta`, que solo vivia en #98.
+
+| Comprobacion | Resultado |
+|---|---|
+| Conflictos al fusionar el tronco en la rama | 1, `package.json`, resuelto |
+| Agregador sobre el tronco fusionado (`9c33576`) | **`suites ejecutadas: 4 de 4`**, ninguna ausencia |
+| Reparto de las cuatro suites | epistemico 13 · barco 24 · pulso 38 · **cubierta-ui 58** |
+| `npm test` completo sobre el tronco | exit 0, mas las 81 de la Funcion de Sueno |
+| PR #96 | cerrado solo, su head es ancestro del tronco |
+
+**Commit de fusion:** `9c33576`.
+
+**Como se resolvio el conflicto, y donde consta:** el merge del tronco se empujo a la rama de
+#98 como **commit de fusion**, sin rebase ni force-push, de modo que el checkout de su autor
+sigue siendo valido y la resolucion queda a la vista en su propio PR.
+
+**Lo que sigue sin estar verde, y no lo tapa esta fusion:** el propio #98 declaraba un limite
+vivo —la vista previa esta construida pero nadie leyo el endpoint en marcha, por falta de un
+`initData` efimero—. Ese limite entra en el tronco tal cual: **construido, no observado**. No
+cuenta como A4.
 
 ### Frente 2 — Uso
 
@@ -154,8 +191,6 @@ donde caen respecto de **la entrega del §3**.
 
 | PR | Que aporta | Nota |
 |---|---|---|
-| #98 | La suite `cubierta-ui` que el agregador declara ausente | **Ahora el primero.** Cierra el `3 de 4`. |
-| #96 | Contrato pedagogico ejecutable y superficie de referencia | Verificar solape con #98 antes de tocarlo. |
 | #114 | `POSICION.md`: los tres arboles del World y §1 al dia | El mas barato: un fichero, 4 commits por detras. Es el ancla que toda sesion lee al arrancar. |
 
 ### Aterrizados
@@ -164,6 +199,8 @@ donde caen respecto de **la entrega del §3**.
 |---|---|
 | #104 | **Fusionado el 2026-09-05** en `a78cfa4`. Trajo `cubierta/` entera y el nucleo epistemico. |
 | #101 | **Cerrado solo** al fusionar #104: su head quedo como ancestro del tronco. |
+| #98 | **Fusionado el 2026-09-05** en `9c33576`. Trajo `state/cubierta_ui` y cerro el `3 de 4`. |
+| #96 | **Cerrado solo** al fusionar #98: no habia solape con el, habia una pila. |
 
 ### Cerrar por haber aterrizado o por redundancia
 
