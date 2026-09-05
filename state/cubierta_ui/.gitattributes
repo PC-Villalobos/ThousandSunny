@@ -1,0 +1,9 @@
+baseline/**/*.html text eol=lf
+baseline/**/*.mjs text eol=lf
+*.mjs text eol=lf
+fixtures/*.json text eol=lf
+reconciliation-manifest.json text eol=lf
+runtime_candidate/**/*.html text eol=lf
+runtime_candidate/**/*.mjs text eol=lf
+preview/**/*.html text eol=lf
+preview/**/*.mjs text eol=lf
