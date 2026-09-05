@@ -20,14 +20,18 @@ aquel dice donde esta el barco, este dice hacia donde va este ciclo.
 Todo lo de esta seccion es **OBSERVADO** desde el contenedor cloud del 2026-09-05, salvo lo
 marcado. Corrige tres puntos del diagnostico de partida.
 
+**Supersedido en parte el 2026-09-05 por el GO al frente 1.** Los hallazgos 1.1, 1.5 y 1.6
+describian el estado *antes* de aterrizar #104. No se borran —eran ciertos cuando se
+levantaron, y la fusion existe porque lo eran—; se marcan en su fila. El resto sigue vigente.
+
 | # | Hallazgo | Como se comprobo |
 |---|---|---|
-| 1.1 | **`cubierta/` no esta en la rama por defecto.** El tronco (`claude/franky-feature-O1BkB`) no contiene un solo fichero de `cubierta/`. La superficie visible del barco vive unicamente en ramas sin fusionar. | `git ls-tree -r origin/claude/franky-feature-O1BkB` |
+| 1.1 | *(superado el 2026-09-05: aterrizado, ver §4)* **`cubierta/` no esta en la rama por defecto.** El tronco (`claude/franky-feature-O1BkB`) no contiene un solo fichero de `cubierta/`. La superficie visible del barco vive unicamente en ramas sin fusionar. | `git ls-tree -r origin/claude/franky-feature-O1BkB` |
 | 1.2 | **La Cubierta arranca y responde.** `node cubierta/server/server.mjs` levanta en un contenedor limpio y `GET /api/salud` devuelve el parte completo: toda la tripulacion `en_puerto`, todos los ejes `no_observable`. Sin senal, sin movimiento: la regla dura se cumple. | Arranque real + `curl 127.0.0.1:8788/api/salud` |
 | 1.3 | **Las pruebas de la Cubierta pasan.** `npm run test:cubierta` sobre la rama de PR #104: **38 pasadas, 0 fallidas**. | Ejecutado |
 | 1.4 | **La propia suite denuncia la fragmentacion.** El agregador cierra con `suites ejecutadas: 3 de 4` y nombra la ausente: `cubierta-ui: no existe state/cubierta_ui en este arbol — el contrato pedagogico vive en agent/cubierta-not-recorded-preview` (PR #98). El producto esta partido en ramas y su propio test lo dice. | Salida del agregador |
-| 1.5 | **PR #104 contiene estrictamente a PR #101.** `#101` es ancestro de `#104`: fusionar #104 aterriza las dos. #101 es ademas el unico PR **no draft** de los 23 abiertos, es decir, el unico marcado como listo es tambien el redundante. | `git merge-base --is-ancestor` |
-| 1.6 | **Las dos ramas de Cubierta van 24 commits por detras del tronco.** Todos partes nocturnos. Cualquier fusion pasa antes por traer la base. | `git rev-list --count` |
+| 1.5 | *(resuelto el 2026-09-05 al fusionar #104)* **PR #104 contiene estrictamente a PR #101.** `#101` es ancestro de `#104`: fusionar #104 aterriza las dos. #101 es ademas el unico PR **no draft** de los 23 abiertos, es decir, el unico marcado como listo es tambien el redundante. | `git merge-base --is-ancestor` |
+| 1.6 | *(resuelto el 2026-09-05: la fusion se probo sobre el resultado real, no sobre la rama)* **Las dos ramas de Cubierta van 24 commits por detras del tronco.** Todos partes nocturnos. Cualquier fusion pasa antes por traer la base. | `git rev-list --count` |
 | 1.7 | **23 PR abiertos en ThousandSunny (22 en draft) y 2 en PuenteDeMando (ambos draft).** El mas antiguo lleva abierto desde el 2026-07-22. | Listado de PR abiertos |
 | 1.8 | **La rectificacion de PR #88 ya esta en el tronco.** El §5 de `POSICION.md` en la rama por defecto ya dice lo que ese PR proponia. El PR sigue abierto sin aportar nada. | `git show ...:POSICION.md` |
 
@@ -97,10 +101,37 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 | Orden | Accion | Prueba |
 |---|---|---|
 | 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. |
-| 1.b | **Aterrizar PR #104** en el tronco, trayendo antes la base (24 commits). Cierra #101 por contencion. | `cubierta/` existe en la rama por defecto y `npm run test:cubierta` pasa alli. |
+| 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | **Cerrar la cuarta suite**: traer `cubierta-ui` de PR #98 o retirar su expectativa del agregador. | El agregador dice `4 de 4`, o deja de nombrar una ausencia que nadie va a cubrir. |
 | 1.d | **Fijar el arranque en un sitio**: puerto, comando y variable, donde se lea antes de sondar. | Un tercero levanta la Cubierta leyendo solo el repo. |
 | 1.e | **Senal de Hipatia sin acoplamiento**: la Cubierta declara si `8765` responde, y degrada sin bloquear. | A3. Existe ya el precedente de `state/funcion_de_sueno/lib/bitacora.mjs`: degradacion, no fallo. |
+
+#### Acta de 1.b — la fusion del 2026-09-05
+
+**Lo que no estaba previsto:** #104 no apuntaba al tronco. Su base era la rama de #101 — estaban
+**apilados**, no en paralelo. Fusionar #104 tal cual lo habria metido en #101, no en el tronco.
+Se reapunto la base de #104 a `claude/franky-feature-O1BkB` para que una sola fusion aterrizara
+las dos, que es lo que 1.5 predecia y lo que el diff confirmo: **29 ficheros**, los 24 de #101
+mas los 5 del nucleo epistemico.
+
+**Como se verifico, y por que asi:** las pruebas se corrieron sobre el **resultado real de la
+fusion**, construido en un arbol aparte, no sobre la rama de #104 aislada. Iba 24 commits por
+detras (1.6): verde en la rama no dice nada sobre verde en el tronco.
+
+| Comprobacion | Resultado |
+|---|---|
+| `git merge-tree` tronco + #104 | limpio, sin conflictos |
+| `npm test` completo sobre la fusion | exit 0 |
+| `npm run test:cubierta` sobre el tronco ya fusionado (`a78cfa4`) | 38 pasadas, 0 fallidas |
+| Suite de la Funcion de Sueno | 81 pruebas, OK |
+| `cubierta/`, `shared/` y `scripts/test-cubierta.mjs` en la rama por defecto | presentes |
+| PR #101 | cerrado solo: su head es ahora ancestro del tronco |
+
+**Commit de fusion:** `a78cfa4`.
+
+**Lo que la fusion NO arregla:** el agregador sigue diciendo `suites ejecutadas: 3 de 4` y
+nombrando la ausente. Eso es 1.c, y sigue abierto. La Cubierta esta en el tronco; su cuarta
+superficie no.
 
 ### Frente 2 — Uso
 
@@ -123,16 +154,21 @@ donde caen respecto de **la entrega del §3**.
 
 | PR | Que aporta | Nota |
 |---|---|---|
-| #104 | `cubierta/` convergido con el nucleo canonico del contrato | **Principal.** Contiene #101. Traer base primero. |
-| #98 | La suite `cubierta-ui` que #104 declara ausente | Segundo. Cierra el `3 de 4`. |
+| #98 | La suite `cubierta-ui` que el agregador declara ausente | **Ahora el primero.** Cierra el `3 de 4`. |
 | #96 | Contrato pedagogico ejecutable y superficie de referencia | Verificar solape con #98 antes de tocarlo. |
 | #114 | `POSICION.md`: los tres arboles del World y §1 al dia | El mas barato: un fichero, 4 commits por detras. Es el ancla que toda sesion lee al arrancar. |
+
+### Aterrizados
+
+| PR | Estado |
+|---|---|
+| #104 | **Fusionado el 2026-09-05** en `a78cfa4`. Trajo `cubierta/` entera y el nucleo epistemico. |
+| #101 | **Cerrado solo** al fusionar #104: su head quedo como ancestro del tronco. |
 
 ### Cerrar por haber aterrizado o por redundancia
 
 | PR | Motivo |
 |---|---|
-| #101 | Ancestro estricto de #104. Fusionar #104 lo aterriza entero. |
 | #88 | Su rectificacion del §5 ya esta en el tronco (1.8). |
 
 ### Conservados fuera del camino critico
