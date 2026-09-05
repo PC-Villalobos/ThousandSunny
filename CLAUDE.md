@@ -178,6 +178,12 @@ Never author `POSICION.md` from a cloud session, and never leave a placeholder i
 Its content comes from the captain's machine. A stub satisfies the auditor's search while
 carrying no position, which is the exact failure this anchor exists to prevent.
 
+**Then read the current heading.** `docs/RUMBO_INTEGRACION.md` is the rumbo of record for the
+current cycle: the single deliverable, its acceptance test, the two fronts, and which open PRs
+are on the critical path versus conserved outside it. `POSICION.md` says where the ship is;
+the rumbo says where this cycle is taking it. Unlike the position anchor, a cloud session may
+update it — it is levantado from branches and test runs, not from the captain's disk.
+
 ## House rules
 
 - No emoji in generated code or committed files unless the captain asks.
