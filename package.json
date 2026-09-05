@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "test": "npm run test:security && npm run test:hub-utils && npm run test:cubierta && npm run test:sueno",
-    "test:cubierta": "node --test state/cubierta_ui/*.test.mjs state/cubierta_ui/runtime_candidate/server/*.test.mjs state/cubierta_ui/preview/*.test.mjs",
+    "cubierta": "node cubierta/server/server.mjs",
+    "cubierta:replay": "node cubierta/server/server.mjs --replay cubierta/fixtures/travesia-demo.jsonl",
     "preview:cubierta": "node state/cubierta_ui/preview/server.mjs",
+    "test:cubierta": "node scripts/test-cubierta.mjs",
     "test:security": "node state/usopp/odysseus-extraction/phase0-local-test/test_phase0_security_kernel.js",
     "test:hub-utils": "node state/usopp/odysseus-extraction/phase0-local-test/test_hub_utils.js",
-    "test:sueno": "python3 -m unittest discover -s state/funcion_de_sueno -p 'test_*.py' -v"
+    "test:sueno": "python3 -m unittest discover -s state/funcion_de_sueno -p 'test_*.py' -v",
+    "test:pulso": "node cubierta/test/test_pulso.mjs",
+    "test:cubierta-barco": "node cubierta/test/test_cubierta.mjs"
   }
 }
