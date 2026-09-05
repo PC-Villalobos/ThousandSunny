@@ -35,9 +35,11 @@ function presenciaDe(senal, opciones = {}) {
   return evaluarPresencia({ senal, ejes: ejesConEscritura(), ...opciones });
 }
 import { extraerRecado, hablar } from "../server/hablar.mjs";
+import { leerBitacora, leerFuentes, ESTADO_SIN_SENAL } from "../server/adaptadores.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
+const RAIZ_REPO = path.resolve(CUBIERTA, "..");
 
 const barco = JSON.parse(await readFile(path.join(CUBIERTA, "world", "barco.json"), "utf8"));
 const tripulacion = JSON.parse(await readFile(path.join(CUBIERTA, "world", "tripulacion.json"), "utf8"));
@@ -339,6 +341,35 @@ await prueba("se extrae el recado que el nakama propone al final de su mensaje",
   assert.equal(limpio, "Voy a mirarlo.");
   assert.deepEqual(recado.recursos, ["contexto_indexado", "archivo_frio"]);
   assert.equal(recado.objetivo, "fechar la ola de ingesta");
+});
+
+// --- Hipatia declarada, nunca acoplada -------------------------------------
+//
+// La Bitacora de Hipatia (127.0.0.1:8765) es la autoridad operativa desde el
+// 2026-07-24. Autoridad no es dependencia: si esta callada, la Cubierta lo dice
+// y sigue navegable. Estas dos pruebas fijan esa mitad, que es la que se puede
+// romper sin que nadie lo note -- un `await` mal puesto en el arranque basta.
+
+await prueba("con la bitacora caida la fuente sale sin_senal y con motivo, nunca ok", async () => {
+  const r = await leerBitacora({ raiz: RAIZ_REPO, url: "http://127.0.0.1:9", timeoutMs: 800 });
+  assert.equal(r.estado, ESTADO_SIN_SENAL, "una bitacora inalcanzable jamas se declara ok");
+  assert.equal(r.datos, null, "sin dato no se inventa un contador de eventos");
+  assert.ok(r.motivo.includes("127.0.0.1:9"), "el motivo dice donde se intento, no solo que fallo");
+});
+
+await prueba("la bitacora caida no se lleva por delante a las demas fuentes", async () => {
+  const fuentes = await leerFuentes({
+    raiz: RAIZ_REPO,
+    ficheroSenales: path.join(CUBIERTA, "state", "senales.jsonl"),
+    bitacoraUrl: "http://127.0.0.1:9",
+  });
+  assert.equal(fuentes.length, 4, "siguen llegando las cuatro fuentes");
+  const ids = fuentes.map((f) => f.id);
+  assert.deepEqual(ids, ["ollama", "bitacora", "sueno", "agentes"]);
+  assert.equal(fuentes.find((f) => f.id === "bitacora").estado, ESTADO_SIN_SENAL);
+  // Ninguna fuente puede quedar sin declarar por culpa de otra: cada una trae
+  // su estado, y ninguna lanza. Es lo que permite abrir con Hipatia callada.
+  for (const f of fuentes) assert.ok(f.estado && f.ts, `la fuente ${f.id} llega sin declarar estado`);
 });
 
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);

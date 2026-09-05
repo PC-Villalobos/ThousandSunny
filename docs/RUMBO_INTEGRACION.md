@@ -103,8 +103,8 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 | 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. |
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
-| 1.d | **Fijar el arranque en un sitio**: puerto, comando y variable, donde se lea antes de sondar. | Un tercero levanta la Cubierta leyendo solo el repo. |
-| 1.e | **Senal de Hipatia sin acoplamiento**: la Cubierta declara si `8765` responde, y degrada sin bloquear. | A3. Existe ya el precedente de `state/funcion_de_sueno/lib/bitacora.mjs`: degradacion, no fallo. |
+| 1.d | ~~**Fijar el arranque en un sitio**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** un tercero la levanto desde un arbol limpio leyendo solo el repo. Ver el acta abajo. |
+| 1.e | ~~**Senal de Hipatia sin acoplamiento**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** A3 verificada en vivo y fijada con pruebas. Ver el acta abajo. |
 
 #### Acta de 1.b — la fusion del 2026-09-05
 
@@ -169,6 +169,45 @@ sigue siendo valido y la resolucion queda a la vista en su propio PR.
 vivo —la vista previa esta construida pero nadie leyo el endpoint en marcha, por falta de un
 `initData` efimero—. Ese limite entra en el tronco tal cual: **construido, no observado**. No
 cuenta como A4.
+
+#### Acta de 1.d y 1.e — el arranque y la senal
+
+**1.e estaba medio hecho, y esa mitad no era la peligrosa.** `leerBitacora` ya
+degradaba a `sin_senal` con motivo, y el HUD ya pintaba las fuentes con su estado: la Cubierta
+**si** declaraba. Lo que faltaba era lo que se rompe sin que nadie lo note.
+
+Lo que se encontro y se arreglo:
+
+- **Acoplamiento latente en el arranque.** El sondeo inicial era un `await sondear()` sin guarda.
+  Hoy ningun adaptador lanza —los cuatro capturan—, asi que no fallaba; pero el dia que uno lo
+  hiciera, **la Cubierta no abriria por tener una fuente caida**, que es exactamente lo que A3
+  prohibe. Ahora el sondeo inicial que falle se declara por `stderr` y el barco abre igual.
+- **La mitad que faltaba, fijada con pruebas.** Dos casos nuevos en
+  `cubierta/test/test_cubierta.mjs` (de 24 a 26): una bitacora inalcanzable sale `sin_senal` con
+  el motivo nombrando la URL y `datos: null` —nunca `ok`, nunca un contador inventado—, y una
+  bitacora caida no se lleva por delante a las otras tres fuentes.
+
+**1.d era un defecto real, no un hueco de documentacion.** Con el puerto ocupado, la Cubierta
+moria con `Unhandled 'error' event` y una traza cruda de Node. Es el segundo arranque de
+cualquiera. Ahora dice que puerto esta ocupado, si es que ya la tenias abierta, y **nombra la
+variable** con la que se cambia; sale con codigo 1, sin traza.
+
+Ademas, el arranque se escribio donde se lee **antes** de sondar: `README.md` en la raiz y una
+seccion propia en `CLAUDE.md`, que es lo que carga toda sesion. Las dos dicen lo mismo y las dos
+dicen lo que costo el ciclo: **`8765` no es la Cubierta**.
+
+| Comprobacion | Resultado |
+|---|---|
+| Arranque limpio en puerto libre | `Cubierta escuchando en http://127.0.0.1:8802` |
+| Puerto ocupado | mensaje que nombra `CUBIERTA_PUERTO`, exit 1, **sin traza** |
+| Con Hipatia caida: abre y declara | `bitacora -> sin_senal \| bitacora no alcanzable en http://127.0.0.1:8765` |
+| Prueba del tercero (arbol limpio, solo el repo, `npm run cubierta`) | responde en 8788, `/api/salud` sirve la tripulacion |
+| `npm test` completo | exit 0 — 26 + 38 + 13 + 58, `4 de 4`, y 81 de Sueno |
+
+**Lo que sigue sin estar verde:** A3 se ha verificado con Hipatia **caida**, que es el caso que
+importa para el desacoplamiento. La otra mitad —«con Hipatia viva, lo indica sin comprobarlo por
+fuera»— **no se ha observado**: desde una sesion cloud no hay un `8765` vivo al que llamar. Queda
+**construido y no observado**, como la vista previa de #98.
 
 ### Frente 2 — Uso
 

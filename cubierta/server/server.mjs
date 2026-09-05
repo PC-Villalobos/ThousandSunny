@@ -250,7 +250,14 @@ setInterval(() => {
 }, 250);
 
 setInterval(() => { sondear().catch(() => {}); }, 3000);
-await sondear();
+// Un sondeo inicial que falle no puede impedir el arranque. Si una fuente cae
+// -- la bitacora de Hipatia entre ellas --, la Cubierta abre igual y lo declara
+// en /api/snapshot. Morir aqui seria justo el acoplamiento que no se permite:
+// la autoridad operativa puede estar callada sin llevarse la navegacion por
+// delante.
+await sondear().catch((err) => {
+  process.stderr.write(`Sondeo inicial incompleto: ${err.message}. La Cubierta abre igual.\n`);
+});
 
 setInterval(() => {
   if (!clientes.size) return;
@@ -507,6 +514,27 @@ const servidor = createServer(async (req, res) => {
   } catch (err) {
     return json(res, 500, { ok: false, motivo: err.message });
   }
+});
+
+// Si el puerto no se puede tomar, el fallo se explica y se nombra la variable
+// con la que se cambia. Sin esto Node tira un 'error' sin manejar y el Capitan
+// ve una traza cruda en vez de saber que hacer.
+servidor.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    process.stderr.write(
+      `El puerto ${puerto} de ${host} ya esta ocupado.\n` +
+      `Si es otra Cubierta, ya la tienes abierta en http://${host}:${puerto}\n` +
+      `Si es otro proceso, arranca en otro puerto:  CUBIERTA_PUERTO=8789 npm run cubierta\n`
+    );
+  } else if (err.code === "EACCES") {
+    process.stderr.write(
+      `Sin permiso para escuchar en ${host}:${puerto}.\n` +
+      `Elige un puerto por encima de 1024 con CUBIERTA_PUERTO.\n`
+    );
+  } else {
+    process.stderr.write(`La Cubierta no pudo escuchar en ${host}:${puerto}: ${err.message}\n`);
+  }
+  process.exit(1);
 });
 
 servidor.listen(puerto, host, () => {

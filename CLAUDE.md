@@ -156,6 +156,30 @@ The sleep function runs a four-phase audit over `state/`:
 
 If `BITACORA_GAS_URL` is unset, the GAS block is left in the report as a fallback.
 
+## Cubierta (the visible layer)
+
+Landed on the trunk on 2026-09-05 (PRs #104 and #98). One Node process, no
+dependencies, bound to loopback.
+
+```bash
+npm run cubierta          # -> http://127.0.0.1:8788
+npm run test:cubierta     # the aggregator: all four suites, or it names the missing one
+```
+
+- **Port `8788`**, override with `CUBIERTA_PUERTO`; host `127.0.0.1`, override
+  with `CUBIERTA_HOST`. If the port is taken the process says so and names the
+  variable — it does not die with a stack trace.
+- **`8765` is the Bitacora de Hipatia, not the Cubierta.** Probing 8765 tells you
+  nothing about whether the Cubierta is up. Do not confuse the two.
+- **Hipatia is authority, not dependency.** The Cubierta reads the Bitacora and
+  declares in `/api/snapshot` whether it answers, naming the URL when it does
+  not. With Hipatia down the ship still opens. Pinned by tests in
+  `cubierta/test/test_cubierta.mjs`; do not couple them.
+- Two surfaces carry the name Cubierta: `cubierta/` (the isometric ship) and
+  `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
+  on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script
+  definition shadow the other.
+
 ## State directory (this repo)
 
 `state/` holds the in-repo shared memory — the only copy the cloud can read:
