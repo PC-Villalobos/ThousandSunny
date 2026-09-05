@@ -1,0 +1,122 @@
+{
+  "version": "0.1",
+  "nombre": "Thousand Sunny",
+  "tile": { "w": 64, "h": 32, "alto_muro": 26 },
+  "cubiertas": [
+    {
+      "id": "cubierta",
+      "nombre": "Cubierta",
+      "orden": 0,
+      "descripcion": "Aire libre. Aqui estan los nakamas de cara al exterior y el puente donde el Capitan decide.",
+      "grid": { "w": 24, "h": 18 },
+      "casco": [1, 1, 22, 16],
+      "salas": [
+        {
+          "id": "puente",
+          "nombre": "Puente",
+          "rect": [8, 1, 9, 6],
+          "acento": "#c9a227",
+          "proposito": "decisiones, rumbo y GO del Capitan",
+          "puertas": [[12, 6]]
+        }
+      ],
+      "escaleras": [
+        { "id": "esc_cubierta_abajo", "tile": [12, 14], "destino_cubierta": "entrepuente", "destino_tile": [12, 3], "sentido": "abajo" }
+      ]
+    },
+    {
+      "id": "entrepuente",
+      "nombre": "Entrepuente",
+      "orden": 1,
+      "descripcion": "Los departamentos de trabajo. Cada sala es una funcion real del sistema.",
+      "grid": { "w": 24, "h": 18 },
+      "casco": [1, 1, 22, 16],
+      "salas": [
+        {
+          "id": "biblioteca",
+          "nombre": "Biblioteca de Hipatia",
+          "rect": [1, 1, 10, 7],
+          "acento": "#6f9dc4",
+          "proposito": "contexto indexado y conocimiento operativo",
+          "puertas": [[10, 4]]
+        },
+        {
+          "id": "taller",
+          "nombre": "Taller",
+          "rect": [13, 1, 10, 7],
+          "acento": "#c4784a",
+          "proposito": "codigo, pruebas y herramientas",
+          "puertas": [[13, 4]]
+        },
+        {
+          "id": "enfermeria",
+          "nombre": "Enfermeria",
+          "rect": [1, 9, 10, 7],
+          "acento": "#8fbf7f",
+          "proposito": "diagnostico y salud operativa de la tripulacion",
+          "puertas": [[10, 12]]
+        },
+        {
+          "id": "radio",
+          "nombre": "Radio",
+          "rect": [13, 9, 10, 7],
+          "acento": "#9b87c4",
+          "proposito": "conectores externos: web, Drive, GitHub, VPS",
+          "puertas": [[13, 12]]
+        }
+      ],
+      "escaleras": [
+        { "id": "esc_entrepuente_arriba", "tile": [11, 2], "destino_cubierta": "cubierta", "destino_tile": [12, 13], "sentido": "arriba" },
+        { "id": "esc_entrepuente_abajo", "tile": [12, 15], "destino_cubierta": "bodega", "destino_tile": [12, 3], "sentido": "abajo" }
+      ]
+    },
+    {
+      "id": "bodega",
+      "nombre": "Bodega",
+      "orden": 2,
+      "descripcion": "Lo que no se esta usando vive aqui. Incluye el compartimento sellado, que no se renderiza por dentro.",
+      "grid": { "w": 24, "h": 18 },
+      "casco": [1, 1, 22, 16],
+      "salas": [
+        {
+          "id": "archivo",
+          "nombre": "Archivo",
+          "rect": [1, 1, 10, 7],
+          "acento": "#a89070",
+          "proposito": "documentos y artefactos fuera de uso",
+          "puertas": [[10, 4]]
+        },
+        {
+          "id": "camara_sellada",
+          "nombre": "Camara de Chopper",
+          "rect": [13, 1, 10, 7],
+          "acento": "#7a4a4a",
+          "proposito": "material clinico protegido",
+          "puertas": [[13, 4]],
+          "sellada": true,
+          "regla": "metadata-only. El interior no se dibuja, el contenido no cruza esta puerta y ningun NPC entra sin llave del Capitan.",
+          "plano": "docs/architecture/CAMARA_DE_CHOPPER.md"
+        },
+        {
+          "id": "maquinas",
+          "nombre": "Sala de Maquinas",
+          "rect": [1, 9, 10, 7],
+          "acento": "#8a8a8a",
+          "proposito": "modelos locales, servicios persistentes, rutinas",
+          "puertas": [[10, 12]]
+        },
+        {
+          "id": "despensa",
+          "nombre": "Despensa",
+          "rect": [13, 9, 10, 7],
+          "acento": "#b09a5c",
+          "proposito": "plantillas, pesos de modelos, recursos reutilizables",
+          "puertas": [[13, 12]]
+        }
+      ],
+      "escaleras": [
+        { "id": "esc_bodega_arriba", "tile": [12, 2], "destino_cubierta": "entrepuente", "destino_tile": [12, 14], "sentido": "arriba" }
+      ]
+    }
+  ]
+}

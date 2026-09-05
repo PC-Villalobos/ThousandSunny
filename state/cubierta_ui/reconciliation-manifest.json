@@ -1,0 +1,71 @@
+{
+  "schema": "sunny.cubierta-ui-reconciliation.v1",
+  "observed_at": "2026-07-27T23:01:36.7277095Z",
+  "source": {
+    "windows_root": "D:\\SunnyFranky\\linux-llm-control-plane\\apps\\sunny-control-bridge",
+    "vm_root": "/home/ascuas/sunny-flota-bridge",
+    "relationship": "Los cuatro artefactos observados eran identicos byte a byte en D y en la VM."
+  },
+  "baseline": [
+    {
+      "path": "public/cubierta.html",
+      "sha256": "d7e6ff30322da19d392246a5ea3bc49fd0238c8275ab3acfcebbba06548dbbde"
+    },
+    {
+      "path": "server/control-plane-snapshot.mjs",
+      "sha256": "b9984be0c78327673e754ae8b8cb06e71f0f7571e7ff5e96c943702ad0e82bce"
+    },
+    {
+      "path": "server/control-plane-snapshot.test.mjs",
+      "sha256": "15cb753b9055eee0312662437b6aa4e87ff96ce1463f7aa9db6991984254b191"
+    },
+    {
+      "path": "server/cubierta-contract.test.mjs",
+      "sha256": "9c2cf6c4a5354aa2dc3fe360e5f3b2e00885b0fc649c65ff0e94491fc2edadaa"
+    }
+  ],
+  "observations": [
+    {
+      "claim": "La ejecucion ya es hermana de agent-grid en el DOM vivo y pertenece a la orden.",
+      "epistemic_status": "observed",
+      "evidence_ref": "baseline/public/cubierta.html"
+    },
+    {
+      "claim": "La jerarquia visual puede atribuir la ejecucion al ultimo agente, especialmente en movil.",
+      "epistemic_status": "evaluated",
+      "evidence_ref": "baseline/public/cubierta.html"
+    },
+    {
+      "claim": "ORD-TG-567384347 alcanzo execution_executed mediante sunny-control-bridge:typed-executor.",
+      "epistemic_status": "observed",
+      "evidence_ref": "ledger local observado durante la reconciliacion; no copiado al repositorio"
+    },
+    {
+      "claim": "proposed_at esta disponible en el snapshot vivo.",
+      "epistemic_status": "observed",
+      "evidence_ref": "baseline/server/control-plane-snapshot.mjs"
+    }
+  ],
+  "integration_gaps": [
+    "El snapshot vivo no transporta contract_version; no permite marcar historia de forma fiable.",
+    "El snapshot vivo no proyecta actor ni executed_at de la ejecucion.",
+    "La superficie de referencia de este directorio no es el artefacto desplegable."
+  ],
+  "candidate": {
+    "path": "runtime_candidate",
+    "status": "tested_not_deployed",
+    "base": "baseline",
+    "changes": [
+      "Preserva not_recorded frente a unknown desde la reconstruccion del ledger.",
+      "Proyecta contract_version desde event.schema sin inferencia retrospectiva.",
+      "Muestra proposed_at y separa visualmente la ejecucion de los agentes."
+    ],
+    "preview": {
+      "path": "preview",
+      "persistence": "none",
+      "bind": "127.0.0.1",
+      "writes": false,
+      "live_human_reading": "blocked_missing_ephemeral_init_data"
+    }
+  }
+}
