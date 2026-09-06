@@ -210,6 +210,41 @@ export class Mundo {
     return { cargados: this.recados.length, descartados };
   }
 
+  /**
+   * Rehidrata artefactos desde entradas ya leidas del log. Como en los recados,
+   * la IO es del servidor: aqui no se toca disco.
+   *
+   * Un artefacto no muta despues de nacer -- es el registro de algo que ya
+   * ocurrio --, asi que no hay "ultima version gana": hay deduplicacion por id.
+   * Se conserva el orden del mundo, el mas reciente primero.
+   *
+   * Lo que no se puede cargar vuelve declarado, nunca en silencio.
+   */
+  rehidratarArtefactos(entradas = []) {
+    const porId = new Map();
+    const descartados = [];
+    for (const a of entradas) {
+      if (!a || typeof a !== "object") {
+        descartados.push({ id: null, motivo: "entrada que no es un objeto" });
+        continue;
+      }
+      if (!a.id) {
+        descartados.push({ id: null, motivo: "artefacto sin id" });
+        continue;
+      }
+      if (!a.recado) {
+        descartados.push({ id: a.id, motivo: "artefacto sin recado de origen" });
+        continue;
+      }
+      porId.set(a.id, a);
+    }
+    const artefactos = [...porId.values()]
+      .sort((x, y) => String(y.ts).localeCompare(String(x.ts)))
+      .slice(0, 40);
+    this.artefactos = artefactos;
+    return { cargados: this.artefactos.length, descartados };
+  }
+
   /** Decision del Capitan sobre una puerta sellada. Solo el Capitan llama aqui. */
   resolverLlave(recadoId, decision, nota = null) {
     const recado = this.recados.find((r) => r.id === recadoId);

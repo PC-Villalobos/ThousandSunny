@@ -27,6 +27,7 @@ const RAIZ = path.resolve(CUBIERTA, "..");
 const FICHERO_SENALES = path.join(CUBIERTA, "state", "senales.jsonl");
 const FICHERO_VEREDICTOS = path.join(CUBIERTA, "state", "veredictos.jsonl");
 const FICHERO_RECADOS = path.join(CUBIERTA, "state", "recados.jsonl");
+const FICHERO_ARTEFACTOS = path.join(CUBIERTA, "state", "artefactos.jsonl");
 
 const args = process.argv.slice(2);
 const puerto = Number(process.env.CUBIERTA_PUERTO || 8788);
@@ -258,6 +259,39 @@ function construirSnapshot() {
 //
 // Lo que NO se persiste, a proposito: la coreografia. Posiciones, rumbo y ruta
 // se vuelven a derivar. Ver `Mundo.rehidratarRecados`.
+// El replay NO toca el log soberano, ni para leer ni para escribir. Un fixture
+// escrito en `recados.jsonl` seria indistinguible de trabajo real en el
+// siguiente arranque: exactamente la confusion entre el ensayo y el barco que
+// toda respuesta declara con `modo: "replay"`.
+const persistenciaViva = () => !ficheroReplay;
+
+async function lineasDe(fichero) {
+  let texto;
+  try {
+    texto = await readFile(fichero, "utf8");
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      process.stderr.write(`No se pudo leer ${fichero}: ${err.message}. La Cubierta arranca sin ese registro.\n`);
+    }
+    return null;
+  }
+  const entradas = [];
+  let ilegibles = 0;
+  for (const linea of texto.split("\n")) {
+    if (!linea.trim()) continue;
+    try { entradas.push(JSON.parse(linea)); } catch { ilegibles += 1; }
+  }
+  return { entradas, ilegibles };
+}
+
+function declararPerdidas(nombre, ilegibles, descartados) {
+  // Una perdida se declara, nunca se traga.
+  if (ilegibles) process.stdout.write(`  ${nombre}: ${ilegibles} linea(s) ilegibles, saltadas\n`);
+  for (const d of descartados) {
+    process.stdout.write(`  ${nombre} descartado ${d.id || "(sin id)"}: ${d.motivo}\n`);
+  }
+}
+
 async function cargarRecados() {
   let texto;
   try {
@@ -295,8 +329,52 @@ async function persistirRecados(recados) {
   await appendFile(FICHERO_RECADOS, recados.map((r) => `${JSON.stringify(r)}\n`).join(""), "utf8");
 }
 
-// Antes del primer tick: al volver, el barco tiene que saber que estaba haciendo.
-await cargarRecados();
+// Ids de artefacto ya escritos: un artefacto no muta, asi que se escribe una vez.
+const artefactosEscritos = new Set();
+
+async function cargarArtefactos() {
+  const leido = await lineasDe(FICHERO_ARTEFACTOS);
+  if (!leido) return;
+  const { cargados, descartados } = mundo.rehidratarArtefactos(leido.entradas);
+  process.stdout.write(`Artefactos recuperados del disco: ${cargados}\n`);
+  declararPerdidas("artefactos", leido.ilegibles, descartados);
+  for (const a of mundo.artefactos) artefactosEscritos.add(a.id);
+  await mkdir(path.dirname(FICHERO_ARTEFACTOS), { recursive: true });
+  await writeFile(FICHERO_ARTEFACTOS, mundo.artefactos.map((a) => `${JSON.stringify(a)}\n`).join(""), "utf8");
+}
+
+async function persistirArtefactosNuevos() {
+  const nuevos = mundo.artefactos.filter((a) => !artefactosEscritos.has(a.id));
+  if (!nuevos.length) return;
+  for (const a of nuevos) artefactosEscritos.add(a.id);
+  await mkdir(path.dirname(FICHERO_ARTEFACTOS), { recursive: true });
+  await appendFile(FICHERO_ARTEFACTOS, nuevos.map((a) => `${JSON.stringify(a)}\n`).join(""), "utf8");
+}
+
+// Los veredictos del Capitan YA se escribian a disco; lo que no se hacia era
+// volver a leerlos. Estaban en el fichero y desaparecian de la pantalla en cada
+// reinicio: un registro que existe y no se ve es peor que no tenerlo.
+async function cargarVeredictos() {
+  const leido = await lineasDe(FICHERO_VEREDICTOS);
+  if (!leido) return;
+  const validos = leido.entradas.filter((v) => v && typeof v === "object" && v.veredicto);
+  const descartados = leido.entradas.length - validos.length;
+  validos.sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  veredictos.push(...validos.slice(0, 40));
+  process.stdout.write(`Veredictos del Capitan recuperados del disco: ${veredictos.length}\n`);
+  if (descartados) process.stdout.write(`  veredictos: ${descartados} entrada(s) sin veredicto, saltadas\n`);
+  declararPerdidas("veredictos", leido.ilegibles, []);
+}
+
+// Antes del primer tick: al volver, el barco tiene que saber que estaba haciendo
+// -- y con que volvio. En replay no se lee nada: el ensayo arranca limpio.
+if (persistenciaViva()) {
+  await cargarRecados();
+  await cargarArtefactos();
+  await cargarVeredictos();
+} else {
+  process.stdout.write("MODO REPLAY: no se lee ni se escribe el estado real.\n");
+}
 
 // --- Bucle -------------------------------------------------------------------
 const clientes = new Set();
@@ -307,12 +385,18 @@ setInterval(() => {
   const antes = new Map(mundo.recados.map((r) => [r.id, `${r.estado}|${r.indice}`]));
   mundo.tick(encarnadosVerificados());
   almacen.podar();
+  if (!persistenciaViva()) return;
   const cambiados = mundo.recados.filter((r) => antes.get(r.id) !== `${r.estado}|${r.indice}`);
   if (cambiados.length) {
     persistirRecados(cambiados).catch((err) => {
       process.stderr.write(`No se pudo persistir el recado: ${err.message}\n`);
     });
   }
+  // La evidencia de lo ya cerrado tambien sobrevive: sin esto un reinicio
+  // conservaba el recado y se llevaba lo que el nakama trajo de vuelta.
+  persistirArtefactosNuevos().catch((err) => {
+    process.stderr.write(`No se pudo persistir el artefacto: ${err.message}\n`);
+  });
 }, 250);
 
 setInterval(() => { sondear().catch(() => {}); }, 3000);
@@ -478,7 +562,7 @@ const servidor = createServer(async (req, res) => {
         if (recado && senal.evidencia) {
           recado.evidencia = senal.evidencia;
           recado.actualizado = new Date().toISOString();
-          persistirRecados([recado]).catch((err) => {
+          if (persistenciaViva()) persistirRecados([recado]).catch((err) => {
             process.stderr.write(`No se pudo persistir la evidencia del recado: ${err.message}\n`);
           });
         }

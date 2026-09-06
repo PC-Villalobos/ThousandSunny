@@ -510,5 +510,58 @@ await prueba("una propuesta declarada como tal sigue siendo propuesta, no observ
   assert.equal(a.estatuto.clave, "proposed", "dos referencias no ascienden una propuesta a observado");
 });
 
+// --- La evidencia tambien sobrevive al reinicio ------------------------------
+//
+// 2.a devolvio los recados, pero el artefacto --lo que el nakama trajo de
+// vuelta, con su evidencia-- seguia solo en memoria. Un reinicio conservaba el
+// trabajo abierto y se llevaba la prueba del cerrado.
+
+process.stdout.write("\nRehidratacion de artefactos\n");
+
+await prueba("un artefacto vuelve del log con su evidencia y su estatuto", () => {
+  const previo = nuevoMundo();
+  const r = previo.crearRecado({
+    nakama: "robin", objetivo: "fechar la ola", recursos: ["archivo_frio"],
+    evidencia: { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "a.md" }, { tipo: "hash", ref: "sha256:x" }] },
+  });
+  previo.cerrarRecado(r);
+  const log = JSON.parse(JSON.stringify(previo.artefactos));
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarArtefactos(log);
+  assert.equal(cargados, 1);
+  assert.deepEqual(descartados, []);
+  assert.equal(tras.artefactos[0].estatuto.clave, "observed");
+  assert.equal(tras.artefactos[0].evidencia.referencias.length, 2);
+});
+
+await prueba("un artefacto no muta: se deduplica por id, no se sobrescribe", () => {
+  const mundo = nuevoMundo();
+  const a = { id: "artefacto-1", recado: "recado-1", titulo: "uno", ts: "2026-09-06T10:00:00.000Z" };
+  const { cargados } = mundo.rehidratarArtefactos([a, { ...a }]);
+  assert.equal(cargados, 1);
+});
+
+await prueba("los artefactos vuelven con el mas reciente primero", () => {
+  const mundo = nuevoMundo();
+  mundo.rehidratarArtefactos([
+    { id: "a1", recado: "r1", titulo: "viejo", ts: "2026-09-06T10:00:00.000Z" },
+    { id: "a2", recado: "r2", titulo: "nuevo", ts: "2026-09-06T12:00:00.000Z" },
+  ]);
+  assert.equal(mundo.artefactos[0].titulo, "nuevo");
+});
+
+await prueba("un artefacto sin recado de origen se declara, no se cuela", () => {
+  const mundo = nuevoMundo();
+  const { cargados, descartados } = mundo.rehidratarArtefactos([
+    { id: "a1", recado: "r1", titulo: "bueno", ts: "2026-09-06T10:00:00.000Z" },
+    { id: "huerfano", titulo: "sin origen" },
+    { titulo: "sin id" },
+  ]);
+  assert.equal(cargados, 1);
+  assert.equal(descartados.length, 2);
+  assert.ok(descartados.some((d) => d.motivo.includes("recado de origen")));
+});
+
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
 process.exit(fallos ? 1 : 0);

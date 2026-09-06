@@ -86,6 +86,17 @@ Una sola. Escrita como prueba de aceptacion, para que se sepa si se ha cumplido 
 | A5 | Sin transporte humano | El recorrido A1-A4 se completa sin copiar un solo mensaje entre Claude y Codex. |
 | A6 | Preservacion | Nada de A1-A4 se pierde al cerrar y volver a abrir. |
 
+### Estado de la entrega, al 2026-09-06
+
+| # | Estado | Sostenido por |
+|---|---|---|
+| A1 | **Cumplida** | 1.d. Prueba del tercero: arbol limpio, solo el repo, `npm run cubierta` responde en 8788 |
+| A2 | **Cumplida** | 2.a. Reinicio con y sin actor; lo mostrado coincide con el disco |
+| A3 | **A medias** | 1.e. Con Hipatia **caida**, verificado. Con Hipatia **viva**, no observado: desde cloud no hay un `8765` al que llamar |
+| A4 | **Cumplida y observada** | 2.b. Navegador real contra el `#artefactos` renderizado, en los dos casos del umbral |
+| A5 | **Del Capitan** | El recorrido A1-A4 se completo aqui por HTTP sin transporte humano, pero A5 se mide en **su** uso, no en el mio |
+| A6 | **Cumplida y observada** | 2.c. Recorrido completo, cerrar y reabrir: nada se perdio, y se ve |
+
 **Fuera de la entrega, explicitamente:** DeepSeek aporta dialogo cuando este autorizado;
 movimiento, botones y persistencia no gastan tokens. Las acciones operacionales conservan su
 autorizacion especifica: esta entrega no relaja ningun GO.
@@ -217,7 +228,50 @@ Terminar un recorrido completo en la interfaz que ya existe. No una interfaz nue
 |---|---|---|
 | 2.a | ~~Retomar una mision abierta desde la Cubierta.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A2 cumplida.** Ver el acta abajo. |
 | 2.b | ~~Completar una accion local desde Nami y renderizar resultado + evidencia.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A4 cumplida, y observada en pantalla.** Ver el acta abajo. |
-| 2.c | Persistencia del recorrido entre sesiones. | A6. Los recados ya persisten (2.a); faltan los **artefactos**, que son la evidencia del trabajo cerrado. |
+| 2.c | ~~Persistencia del recorrido entre sesiones.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A6 cumplida, observada en pantalla tras reabrir.** Ver el acta abajo. |
+
+#### Acta de 2.c — nada se pierde al cerrar y volver a abrir
+
+**Otra vez dos perdidas, no una.**
+
+1. **Los artefactos no se persistian.** 2.a devolvia el trabajo abierto; la **evidencia del
+   cerrado** —justo lo que 2.b acababa de hacer visible— seguia solo en memoria.
+2. **Los veredictos del Capitan se escribian y no se releian.** `veredictos.jsonl` existia desde
+   antes, pero el arranque hacia `const veredictos = []` y nunca lo miraba. Estaban en el fichero
+   y desaparecian de la pantalla en cada reinicio. **Un registro que existe y no se ve es peor
+   que no tenerlo**: parece que se perdio algo que en realidad esta ahi.
+
+**Y una fuga que abri yo en 2.a.** La persistencia de recados corria **tambien en modo replay**:
+un fixture se escribia en `recados.jsonl` y en el siguiente arranque era indistinguible de
+trabajo real. Es exactamente la confusion entre el ensayo y el barco que toda respuesta declara
+con `modo: "replay"`. Ahora el replay ni lee ni escribe el estado real, y lo dice al arrancar.
+
+**Verificado con el recorrido entero**, no por piezas. Estado antes de cerrar: un recado abierto
+esperando la llave del Capitan, dos artefactos (uno `Observado` con dos referencias, otro `No
+registrado`) y un veredicto. Se mato el proceso y se volvio a abrir:
+
+```
+Recados recuperados del disco: 3
+Artefactos recuperados del disco: 2
+Veredictos del Capitan recuperados del disco: 1
+```
+
+| Comprobacion | Resultado |
+|---|---|
+| Recados abiertos, antes vs. despues | intacto |
+| Artefactos, con estatuto y numero de referencias | intacto |
+| Veredictos del Capitan | intacto |
+| En pantalla tras reabrir (navegador real) | los dos artefactos con su evidencia, y el recado *«chopper esta en la puerta de camara_sellada esperando la llave del Capitan»* |
+| Replay con 4 nakamas encarnados | el log soberano queda **byte a byte identico** |
+| Suite | 41 pasadas (37 antes) |
+| `npm test` completo | exit 0, `4 de 4` |
+
+**Un aviso sobre el metodo, porque casi me lleva a mentir.** La primera prueba del replay dio
+*«el replay escribio en el log»*. Era falso: habia quedado **un servidor anterior vivo**, y lo
+que se anadio fue un cambio real suyo —la senal de chopper envejecio mas de 15 minutos y su
+recado paso de `esperando_llave` a `pendiente_encarnacion`—. El sello estaba bien desde el
+principio. Antes de declarar un fallo hay que comprobar **quien** escribio, no solo **que** algo
+cambio; si no, se reporta como defecto lo que era el sistema funcionando.
 
 #### Acta de 2.b — el resultado con su evidencia al lado
 
