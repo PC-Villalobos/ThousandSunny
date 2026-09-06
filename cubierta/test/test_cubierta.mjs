@@ -19,6 +19,7 @@ import {
   FANTASMA, AMARRADO, EN_PUERTO, A_BORDO,
 } from "../server/latido.mjs";
 import { NO_OBSERVABLE, SIN_DATO, OBSERVADO, EJES } from "../server/sondas.mjs";
+import { PASO_PENDIENTE, PASO_EN_RUTA, PASO_EN_SITIO, PASO_ESPERANDO_LLAVE } from "../server/mundo.mjs";
 
 // El vigia ahora exige sondas. Estas pruebas son del corte anterior (presencia
 // declarada), asi que corren con el barco a ciegas: sin ningun eje observado,
@@ -35,9 +36,11 @@ function presenciaDe(senal, opciones = {}) {
   return evaluarPresencia({ senal, ejes: ejesConEscritura(), ...opciones });
 }
 import { extraerRecado, hablar } from "../server/hablar.mjs";
+import { leerBitacora, leerFuentes, ESTADO_SIN_SENAL } from "../server/adaptadores.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
+const RAIZ_REPO = path.resolve(CUBIERTA, "..");
 
 const barco = JSON.parse(await readFile(path.join(CUBIERTA, "world", "barco.json"), "utf8"));
 const tripulacion = JSON.parse(await readFile(path.join(CUBIERTA, "world", "tripulacion.json"), "utf8"));
@@ -339,6 +342,225 @@ await prueba("se extrae el recado que el nakama propone al final de su mensaje",
   assert.equal(limpio, "Voy a mirarlo.");
   assert.deepEqual(recado.recursos, ["contexto_indexado", "archivo_frio"]);
   assert.equal(recado.objetivo, "fechar la ola de ingesta");
+});
+
+// --- Hipatia declarada, nunca acoplada -------------------------------------
+//
+// La Bitacora de Hipatia (127.0.0.1:8765) es la autoridad operativa desde el
+// 2026-07-24. Autoridad no es dependencia: si esta callada, la Cubierta lo dice
+// y sigue navegable. Estas dos pruebas fijan esa mitad, que es la que se puede
+// romper sin que nadie lo note -- un `await` mal puesto en el arranque basta.
+
+await prueba("con la bitacora caida la fuente sale sin_senal y con motivo, nunca ok", async () => {
+  const r = await leerBitacora({ raiz: RAIZ_REPO, url: "http://127.0.0.1:9", timeoutMs: 800 });
+  assert.equal(r.estado, ESTADO_SIN_SENAL, "una bitacora inalcanzable jamas se declara ok");
+  assert.equal(r.datos, null, "sin dato no se inventa un contador de eventos");
+  assert.ok(r.motivo.includes("127.0.0.1:9"), "el motivo dice donde se intento, no solo que fallo");
+});
+
+await prueba("la bitacora caida no se lleva por delante a las demas fuentes", async () => {
+  const fuentes = await leerFuentes({
+    raiz: RAIZ_REPO,
+    ficheroSenales: path.join(CUBIERTA, "state", "senales.jsonl"),
+    bitacoraUrl: "http://127.0.0.1:9",
+  });
+  assert.equal(fuentes.length, 4, "siguen llegando las cuatro fuentes");
+  const ids = fuentes.map((f) => f.id);
+  assert.deepEqual(ids, ["ollama", "bitacora", "sueno", "agentes"]);
+  assert.equal(fuentes.find((f) => f.id === "bitacora").estado, ESTADO_SIN_SENAL);
+  // Ninguna fuente puede quedar sin declarar por culpa de otra: cada una trae
+  // su estado, y ninguna lanza. Es lo que permite abrir con Hipatia callada.
+  for (const f of fuentes) assert.ok(f.estado && f.ts, `la fuente ${f.id} llega sin declarar estado`);
+});
+
+// --- Lo abierto sobrevive al reinicio ---------------------------------------
+//
+// Los recados vivian solo en memoria: un reinicio se llevaba por delante todo
+// el trabajo abierto. Estas pruebas fijan que vuelva -- y, sobre todo, que
+// vuelva sin mentir sobre lo que llego a pasar.
+
+process.stdout.write("\nRehidratacion de recados\n");
+
+function instantaneaDe(mundo, nakama, objetivo, recursos) {
+  const r = mundo.crearRecado({ nakama, objetivo, recursos });
+  return JSON.parse(JSON.stringify(r));
+}
+
+await prueba("un recado abierto vuelve del log tras el reinicio", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarRecados([snap]);
+  assert.equal(cargados, 1);
+  assert.deepEqual(descartados, []);
+  assert.equal(tras.recados[0].id, snap.id);
+  assert.equal(tras.recados[0].objetivo, "leer poneglifos");
+});
+
+await prueba("la ultima instantanea de un recado gana", () => {
+  const previo = nuevoMundo();
+  const a = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  const b = { ...a, estado: "en_curso", indice: 1 };
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([a, b]);
+  assert.equal(tras.recados.length, 1, "una sola entrada por id");
+  assert.equal(tras.recados[0].estado, "en_curso");
+  assert.equal(tras.recados[0].indice, 1);
+});
+
+await prueba("un paso que quedo en ruta vuelve a pendiente: el viaje no se da por hecho", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  snap.pasos[0].estado = PASO_EN_RUTA;
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  // Si se restaurase `en_ruta`, `avanzar()` con la ruta vacia devuelve true al
+  // instante: el personaje "llegaria" sin haber andado.
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_PENDIENTE);
+});
+
+await prueba("un paso que quedo en sitio tampoco se da por trabajado", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  snap.pasos[0].estado = PASO_EN_SITIO;
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_PENDIENTE);
+});
+
+await prueba("una llave pendiente del Capitan SI sobrevive: es hecho durable, no coreografia", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "chopper", "mirar la camara", ["decision_capitan"]);
+  snap.pasos[0].estado = PASO_ESPERANDO_LLAVE;
+  snap.estado = "esperando_llave";
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_ESPERANDO_LLAVE);
+  assert.equal(tras.recados[0].estado, "esperando_llave");
+});
+
+await prueba("lo que no se puede cargar se declara con su motivo, no se traga", () => {
+  const previo = nuevoMundo();
+  const bueno = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarRecados([
+    bueno,
+    { ...bueno, id: "recado-x", nakama: "barbanegra" },
+    { objetivo: "sin id" },
+    null,
+  ]);
+  assert.equal(cargados, 1, "solo entra el que se puede cargar");
+  assert.equal(descartados.length, 3, "los otros tres se declaran, no desaparecen");
+  assert.ok(descartados.every((d) => d.motivo && d.motivo.length > 0));
+  assert.ok(descartados.some((d) => d.motivo.includes("barbanegra")), "el motivo nombra el nakama desconocido");
+});
+
+// --- Resultado con su evidencia ---------------------------------------------
+//
+// Un artefacto es lo que el nakama trae de vuelta. Antes llevaba una `tinta`
+// propia con dos valores: `medido` si habia evidencia y `propuesto` si no.
+// `medido` es justo el termino que el canon retiro por no decir quien midio, y
+// `propuesto` convertia una ausencia en un juicio del agente. Ahora el estatuto
+// sale del nucleo compartido y respeta su umbral.
+
+process.stdout.write("\nArtefacto: resultado y evidencia\n");
+
+function artefactoDe(mundo, evidencia) {
+  const r = mundo.crearRecado({ nakama: "robin", objetivo: "fechar la ola", recursos: ["archivo_frio"], evidencia });
+  mundo.cerrarRecado(r);
+  return mundo.artefactos.find((a) => a.recado === r.id);
+}
+
+await prueba("sin evidencia el artefacto dice que no se registro, no que sea una propuesta", () => {
+  const a = artefactoDe(nuevoMundo(), null);
+  assert.equal(a.estatuto.clave, "not_recorded");
+  assert.equal(a.tinta, undefined, "la tinta propia del artefacto ya no existe");
+});
+
+await prueba("una sola referencia NO afirma observado ni se rebaja a otro valor", () => {
+  const a = artefactoDe(nuevoMundo(), { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "ola_01.md" }] });
+  assert.equal(a.estatuto.clave, null, "no se afirma ningun estatuto");
+  assert.equal(a.estatuto.reconocido, false);
+  assert.match(a.estatuto.motivo, /dos/, "el motivo explica el umbral");
+});
+
+await prueba("con dos referencias el artefacto si sale observado", () => {
+  const a = artefactoDe(nuevoMundo(), {
+    naturaleza: "directa",
+    referencias: [{ tipo: "fichero", ref: "ola_01.md" }, { tipo: "hash", ref: "sha256:abc" }],
+  });
+  assert.equal(a.estatuto.clave, "observed");
+  assert.equal(a.estatuto.referencias.length, 2);
+});
+
+await prueba("la evidencia viaja al artefacto: el resultado no se queda sin con que comprobarlo", () => {
+  const evidencia = { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "ola_01.md" }, { tipo: "hash", ref: "sha256:abc" }] };
+  const a = artefactoDe(nuevoMundo(), evidencia);
+  assert.deepEqual(a.evidencia, evidencia);
+});
+
+await prueba("una propuesta declarada como tal sigue siendo propuesta, no observado", () => {
+  const a = artefactoDe(nuevoMundo(), { naturaleza: "propuesta", referencias: [{ tipo: "idea" }, { tipo: "idea" }] });
+  assert.equal(a.estatuto.clave, "proposed", "dos referencias no ascienden una propuesta a observado");
+});
+
+// --- La evidencia tambien sobrevive al reinicio ------------------------------
+//
+// 2.a devolvio los recados, pero el artefacto --lo que el nakama trajo de
+// vuelta, con su evidencia-- seguia solo en memoria. Un reinicio conservaba el
+// trabajo abierto y se llevaba la prueba del cerrado.
+
+process.stdout.write("\nRehidratacion de artefactos\n");
+
+await prueba("un artefacto vuelve del log con su evidencia y su estatuto", () => {
+  const previo = nuevoMundo();
+  const r = previo.crearRecado({
+    nakama: "robin", objetivo: "fechar la ola", recursos: ["archivo_frio"],
+    evidencia: { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "a.md" }, { tipo: "hash", ref: "sha256:x" }] },
+  });
+  previo.cerrarRecado(r);
+  const log = JSON.parse(JSON.stringify(previo.artefactos));
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarArtefactos(log);
+  assert.equal(cargados, 1);
+  assert.deepEqual(descartados, []);
+  assert.equal(tras.artefactos[0].estatuto.clave, "observed");
+  assert.equal(tras.artefactos[0].evidencia.referencias.length, 2);
+});
+
+await prueba("un artefacto no muta: se deduplica por id, no se sobrescribe", () => {
+  const mundo = nuevoMundo();
+  const a = { id: "artefacto-1", recado: "recado-1", titulo: "uno", ts: "2026-09-06T10:00:00.000Z" };
+  const { cargados } = mundo.rehidratarArtefactos([a, { ...a }]);
+  assert.equal(cargados, 1);
+});
+
+await prueba("los artefactos vuelven con el mas reciente primero", () => {
+  const mundo = nuevoMundo();
+  mundo.rehidratarArtefactos([
+    { id: "a1", recado: "r1", titulo: "viejo", ts: "2026-09-06T10:00:00.000Z" },
+    { id: "a2", recado: "r2", titulo: "nuevo", ts: "2026-09-06T12:00:00.000Z" },
+  ]);
+  assert.equal(mundo.artefactos[0].titulo, "nuevo");
+});
+
+await prueba("un artefacto sin recado de origen se declara, no se cuela", () => {
+  const mundo = nuevoMundo();
+  const { cargados, descartados } = mundo.rehidratarArtefactos([
+    { id: "a1", recado: "r1", titulo: "bueno", ts: "2026-09-06T10:00:00.000Z" },
+    { id: "huerfano", titulo: "sin origen" },
+    { titulo: "sin id" },
+  ]);
+  assert.equal(cargados, 1);
+  assert.equal(descartados.length, 2);
+  assert.ok(descartados.some((d) => d.motivo.includes("recado de origen")));
 });
 
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
