@@ -461,5 +461,54 @@ await prueba("lo que no se puede cargar se declara con su motivo, no se traga", 
   assert.ok(descartados.some((d) => d.motivo.includes("barbanegra")), "el motivo nombra el nakama desconocido");
 });
 
+// --- Resultado con su evidencia ---------------------------------------------
+//
+// Un artefacto es lo que el nakama trae de vuelta. Antes llevaba una `tinta`
+// propia con dos valores: `medido` si habia evidencia y `propuesto` si no.
+// `medido` es justo el termino que el canon retiro por no decir quien midio, y
+// `propuesto` convertia una ausencia en un juicio del agente. Ahora el estatuto
+// sale del nucleo compartido y respeta su umbral.
+
+process.stdout.write("\nArtefacto: resultado y evidencia\n");
+
+function artefactoDe(mundo, evidencia) {
+  const r = mundo.crearRecado({ nakama: "robin", objetivo: "fechar la ola", recursos: ["archivo_frio"], evidencia });
+  mundo.cerrarRecado(r);
+  return mundo.artefactos.find((a) => a.recado === r.id);
+}
+
+await prueba("sin evidencia el artefacto dice que no se registro, no que sea una propuesta", () => {
+  const a = artefactoDe(nuevoMundo(), null);
+  assert.equal(a.estatuto.clave, "not_recorded");
+  assert.equal(a.tinta, undefined, "la tinta propia del artefacto ya no existe");
+});
+
+await prueba("una sola referencia NO afirma observado ni se rebaja a otro valor", () => {
+  const a = artefactoDe(nuevoMundo(), { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "ola_01.md" }] });
+  assert.equal(a.estatuto.clave, null, "no se afirma ningun estatuto");
+  assert.equal(a.estatuto.reconocido, false);
+  assert.match(a.estatuto.motivo, /dos/, "el motivo explica el umbral");
+});
+
+await prueba("con dos referencias el artefacto si sale observado", () => {
+  const a = artefactoDe(nuevoMundo(), {
+    naturaleza: "directa",
+    referencias: [{ tipo: "fichero", ref: "ola_01.md" }, { tipo: "hash", ref: "sha256:abc" }],
+  });
+  assert.equal(a.estatuto.clave, "observed");
+  assert.equal(a.estatuto.referencias.length, 2);
+});
+
+await prueba("la evidencia viaja al artefacto: el resultado no se queda sin con que comprobarlo", () => {
+  const evidencia = { naturaleza: "directa", referencias: [{ tipo: "fichero", ref: "ola_01.md" }, { tipo: "hash", ref: "sha256:abc" }] };
+  const a = artefactoDe(nuevoMundo(), evidencia);
+  assert.deepEqual(a.evidencia, evidencia);
+});
+
+await prueba("una propuesta declarada como tal sigue siendo propuesta, no observado", () => {
+  const a = artefactoDe(nuevoMundo(), { naturaleza: "propuesta", referencias: [{ tipo: "idea" }, { tipo: "idea" }] });
+  assert.equal(a.estatuto.clave, "proposed", "dos referencias no ascienden una propuesta a observado");
+});
+
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
 process.exit(fallos ? 1 : 0);

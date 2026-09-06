@@ -301,13 +301,38 @@ function pintarHud() {
     : '<div class="silencio">ningun recado en curso</div>';
 
   $("artefactos").innerHTML = snapshot.artefactos.length
-    ? snapshot.artefactos.map((a) => `
+    ? snapshot.artefactos.map((a) => {
+      // Resultado Y evidencia en la misma fila. Un resultado sin su evidencia
+      // al lado es una afirmacion que el lector no puede comprobar, y esta
+      // Cubierta no pinta afirmaciones que no se puedan comprobar.
+      const est = a.estatuto || {};
+      const refs = est.referencias || [];
+      return `
       <div class="fila">
         <span style="flex:1"><b>${esc(a.titulo)}</b>
-          <span class="motivo"><br>${esc(a.nakama)} · ${esc(new Date(a.ts).toLocaleTimeString())}</span></span>
-        <span class="tinta ${esc(a.tinta)}">${esc(a.tinta)}</span>
-      </div>`).join("")
+          <span class="motivo"><br>${esc(a.nakama)} · ${esc(new Date(a.ts).toLocaleTimeString())}</span>
+          ${refs.length
+            ? `<span class="evidencia">Evidencia (${refs.length}):<br>${refs.map((r) => `· ${esc(textoDeReferencia(r))}`).join("<br>")}</span>`
+            : '<span class="evidencia sin">Sin evidencia registrada.</span>'}
+          ${est.reconocido === false && est.detalle
+            ? `<span class="evidencia aviso">${esc(est.detalle)}</span>`
+            : ""}
+        </span>
+        <span class="tinta ${esc(est.clave || "sin_estatuto")}" title="${esc(est.detalle || "")}">${esc(est.titulo || "Sin estatuto")}</span>
+      </div>`;
+    }).join("")
     : '<div class="silencio">todavia no ha vuelto nadie con nada</div>';
+}
+
+/**
+ * Una referencia de evidencia, legible. Nunca se pinta el objeto crudo ni se
+ * inventa un texto: si no se reconoce ningun campo, se muestra tal cual venga.
+ */
+function textoDeReferencia(r) {
+  if (r === null || r === undefined) return "referencia vacia";
+  if (typeof r === "string") return r;
+  const partes = [r.tipo, r.fuente, r.eje, r.ref, r.detalle].filter(Boolean);
+  return partes.length ? partes.join(" · ") : JSON.stringify(r);
 }
 
 document.addEventListener("click", async (ev) => {

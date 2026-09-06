@@ -18,6 +18,7 @@ import { vigia, A_BORDO, DECLARADO_V } from "./latido.mjs";
 import { AlmacenMedido } from "./almacen.mjs";
 import { observarEjes } from "./sondas.mjs";
 import { informeSalud } from "./salud.mjs";
+import { presentarEstatuto } from "../../shared/epistemico.mjs";
 import { hablar, backendConfigurado } from "./hablar.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
@@ -228,7 +229,9 @@ function construirSnapshot() {
     encarnaciones: encarnaciones.map((e) => ({ nakama: e.nakama, actor: e.actor, desde: e.desde, tarea: e.tarea, estado: e.estado })),
     nakamas,
     recados: mundo.recados.slice(-12),
-    artefactos: mundo.artefactos.slice(0, 12),
+    // Invariante 2: ningun enum crudo llega al lector. El estatuto del artefacto
+    // sale traducido, con titulo y detalle, igual que el de los ejes.
+    artefactos: mundo.artefactos.slice(0, 12).map((a) => ({ ...a, estatuto: presentarEstatuto(a.estatuto) })),
     clima: calcularClima({
       fuentes,
       encarnaciones,
@@ -468,6 +471,17 @@ const servidor = createServer(async (req, res) => {
         // Un latido que repite la misma tarea no abre un recado nuevo.
         recado = mundo.recadoEquivalente({ nakama: senal.nakama, objetivo, recursos: senal.recursos });
         reutilizado = Boolean(recado);
+        // El agente vuelve con algo. La evidencia se adjunta al recado VIVO, para
+        // que el artefacto que salga al cerrarlo la lleve: sin esto la evidencia
+        // solo podia declararse al abrir el recado -- es decir, antes de existir --
+        // y todo artefacto nacia sin ella.
+        if (recado && senal.evidencia) {
+          recado.evidencia = senal.evidencia;
+          recado.actualizado = new Date().toISOString();
+          persistirRecados([recado]).catch((err) => {
+            process.stderr.write(`No se pudo persistir la evidencia del recado: ${err.message}\n`);
+          });
+        }
         if (!recado) {
           recado = mundo.crearRecado({
             nakama: senal.nakama,

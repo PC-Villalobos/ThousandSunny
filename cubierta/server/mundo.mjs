@@ -5,6 +5,7 @@
 // no hay animacion decorativa. Todo desplazamiento de un NPC es la ejecucion de
 // un paso de un recado, y todo recado nace de una senal real de un agente.
 
+import { estatuto } from "../../shared/epistemico.mjs";
 import {
   construirMapas,
   buscarRutaEntreCubiertas,
@@ -412,7 +413,17 @@ export class Mundo {
         evidencia: recado.evidencia,
         recursos: recado.pasos.map((p) => p.recurso),
         ts: new Date().toISOString(),
-        tinta: recado.evidencia ? "medido" : "propuesto",
+        // El estatuto sale del nucleo canonico, no de una tinta propia. `medido`
+        // era justo el termino que no dice quien midio, y el canon lo retiro.
+        // Sin evidencia el artefacto no dice "propuesto" como si fuera un juicio
+        // del agente: dice que la evidencia NO SE REGISTRO, que es lo cierto.
+        // Con una sola referencia no se afirma `observed` ni se rebaja a otra
+        // cosa: se declara el hueco.
+        estatuto: estatuto({
+          ausente: !recado.evidencia,
+          naturaleza: recado.evidencia?.naturaleza || "directa",
+          referencias: Array.isArray(recado.evidencia?.referencias) ? recado.evidencia.referencias : [],
+        }),
       });
       this.artefactos = this.artefactos.slice(0, 40);
     }

@@ -216,8 +216,72 @@ Terminar un recorrido completo en la interfaz que ya existe. No una interfaz nue
 | Orden | Accion | Prueba |
 |---|---|---|
 | 2.a | ~~Retomar una mision abierta desde la Cubierta.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A2 cumplida.** Ver el acta abajo. |
-| 2.b | Completar una accion local desde Nami y renderizar resultado + evidencia. | A4. |
+| 2.b | ~~Completar una accion local desde Nami y renderizar resultado + evidencia.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A4 cumplida, y observada en pantalla.** Ver el acta abajo. |
 | 2.c | Persistencia del recorrido entre sesiones. | A6. Los recados ya persisten (2.a); faltan los **artefactos**, que son la evidencia del trabajo cerrado. |
+
+#### Acta de 2.b — el resultado con su evidencia al lado
+
+**Tres huecos, no uno.** El artefacto —lo que el nakama trae de vuelta— existia, pero:
+
+1. **La evidencia no se podia adjuntar nunca.** `evidencia` solo se aceptaba al *abrir* el
+   recado, es decir **antes de que existiera nada que evidenciar**. Todo artefacto nacia sin
+   ella, siempre.
+2. **El HUD la tiraba.** El artefacto llevaba `evidencia` y `recursos`; el panel pintaba solo
+   titulo, nakama y hora.
+3. **El estatuto hablaba un vocabulario muerto.** `tinta: medido | propuesto` — `medido` es
+   justo el termino que el canon retiro por no decir quien midio, y `propuesto` convertia una
+   ausencia en un juicio del agente. Mismo tipo de deuda que #104 corrigio en los ejes, viva
+   todavia aqui. Y un cuarto sitio: el **prompt** de `hablar.mjs` seguia enseñandole al nakama
+   ese vocabulario retirado, sin `no registrado`.
+
+**Lo que se hizo.** La evidencia se adjunta al recado **vivo** cuando el agente vuelve con
+algo, y el artefacto que sale al cerrarlo la lleva. El estatuto sale del nucleo canonico
+(`shared/epistemico.mjs`), presentado en el servidor para que ningun enum crudo llegue al
+lector (invariante 2). El prompt habla ya el canon.
+
+**El umbral se respeta, y eso se ve.** Sin evidencia el artefacto dice `not_recorded` —la
+ausencia, no un juicio—. Con **una** referencia **no se afirma** `observed` y **tampoco se
+rebaja** a otro valor: se declara el hueco, en naranja y con su aviso. Con **dos**, `observed`.
+
+**Verificado con un navegador de verdad**, no leyendo el codigo: Chromium por CDP contra el
+`#artefactos` renderizado. Sin dependencias nuevas — el guion vivio fuera del repo.
+
+Dos referencias:
+
+```
+fechar la ola de ingesta
+nami · 12:13:32
+Evidencia (2):
+· fichero · olas/ola_01.md · 42 documentos fechados
+· hash · biblioteca de Hipatia · sha256:9f2c...e11
+OBSERVADO
+```
+
+Una sola:
+
+```
+cotejar el censo
+robin · 12:15:17
+Evidencia (1):
+· fichero · censo.md
+Lectura directa con una sola referencia de evidencia. El vocabulario exige dos para
+`observed`, asi que el estatuto no se afirma en vez de rebajarse a otro valor.
+SIN ESTATUTO AFIRMADO
+```
+
+| Comprobacion | Resultado |
+|---|---|
+| Badges en el DOM | `tinta observed => Observado` · `tinta sin_estatuto => Sin estatuto afirmado` |
+| Tooltip del badge | el detalle canonico, literal |
+| Suite | 37 pasadas (32 antes) — 5 casos nuevos de estatuto y evidencia |
+| `npm test` completo | exit 0, `4 de 4` |
+
+**Diferencia con lo anterior:** #98 dejo su vista previa *construida y no observada*, y 1.e dejo
+la mitad de A3 igual. A4 **si** esta observada: alguien —un navegador— miro la pantalla.
+
+**Lo que sigue sin cerrar:** los artefactos **siguen sin persistir**. Un reinicio conserva el
+recado (2.a) pero se lleva la evidencia que dejo. Es 2.c (A6) y es ahora lo unico que le falta
+al recorrido completo.
 
 #### Acta de 2.a — lo abierto sobrevive al reinicio
 
