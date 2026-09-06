@@ -151,6 +151,64 @@ export class Mundo {
     return recado;
   }
 
+  /**
+   * Rehidrata recados desde instantaneas ya leidas del log. No toca disco: la
+   * IO es del servidor, este modulo sigue siendo puro.
+   *
+   * Lo que sobrevive a un reinicio es el ESTADO DEL RECADO, nunca la
+   * coreografia. Las posiciones no se persisten: se vuelven a derivar, y sin
+   * ningun actor encarnando el barco arranca quieto (regla dura). Por eso un
+   * paso que quedo `en_ruta` o `en_sitio` vuelve a `pendiente`: el viaje no
+   * llego a ocurrir, y darlo por hecho seria justo la mentira que este mundo no
+   * se permite. No es defensa teorica -- `avanzar()` con la ruta vacia devuelve
+   * true al instante, asi que un paso restaurado en ruta "llegaria" sin haber
+   * andado, y uno en sitio terminaria su trabajo sin estar alli.
+   *
+   * `esperando_llave` SI se conserva: una decision pendiente del Capitan es un
+   * hecho durable, no coreografia, y perderla seria peor que restaurarla.
+   *
+   * Ultima entrada por id gana. Lo que no se puede cargar no se ignora en
+   * silencio: vuelve en `descartados` con su motivo, para que quien llama lo
+   * declare.
+   */
+  rehidratarRecados(instantaneas = []) {
+    const porId = new Map();
+    const descartados = [];
+    for (const snap of instantaneas) {
+      if (!snap || typeof snap !== "object") {
+        descartados.push({ id: null, motivo: "entrada que no es un objeto" });
+        continue;
+      }
+      if (!snap.id) {
+        descartados.push({ id: null, motivo: "recado sin id" });
+        continue;
+      }
+      if (!this.nakama(snap.nakama)) {
+        descartados.push({ id: snap.id, motivo: `nakama desconocido: ${snap.nakama}` });
+        continue;
+      }
+      if (!Array.isArray(snap.pasos)) {
+        descartados.push({ id: snap.id, motivo: "recado sin pasos" });
+        continue;
+      }
+      porId.set(snap.id, snap);
+    }
+
+    const recados = [...porId.values()].map((snap) => ({
+      ...snap,
+      pasos: snap.pasos.map((paso) => (
+        paso.estado === PASO_EN_RUTA || paso.estado === PASO_EN_SITIO
+          ? { ...paso, estado: PASO_PENDIENTE }
+          : { ...paso }
+      )),
+    }));
+    recados.sort((a, b) => String(a.creado).localeCompare(String(b.creado)));
+
+    this.recados = recados;
+    this.podarRecados();
+    return { cargados: this.recados.length, descartados };
+  }
+
   /** Decision del Capitan sobre una puerta sellada. Solo el Capitan llama aqui. */
   resolverLlave(recadoId, decision, nota = null) {
     const recado = this.recados.find((r) => r.id === recadoId);

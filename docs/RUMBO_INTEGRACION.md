@@ -215,9 +215,57 @@ Terminar un recorrido completo en la interfaz que ya existe. No una interfaz nue
 
 | Orden | Accion | Prueba |
 |---|---|---|
-| 2.a | Retomar una mision abierta desde la Cubierta. | A2. |
+| 2.a | ~~Retomar una mision abierta desde la Cubierta.~~ — **HECHO el 2026-09-06** con GO del Capitan. | **A2 cumplida.** Ver el acta abajo. |
 | 2.b | Completar una accion local desde Nami y renderizar resultado + evidencia. | A4. |
-| 2.c | Persistencia del recorrido entre sesiones. | A6. |
+| 2.c | Persistencia del recorrido entre sesiones. | A6. Los recados ya persisten (2.a); faltan los **artefactos**, que son la evidencia del trabajo cerrado. |
+
+#### Acta de 2.a — lo abierto sobrevive al reinicio
+
+**El hueco era literal:** `this.recados = []`. La Cubierta persistia `senales.jsonl` y
+`veredictos.jsonl`, pero los recados vivian **solo en memoria**. Cualquier reinicio se llevaba por
+delante todo el trabajo abierto: al volver, el barco no sabia que estaba haciendo. No habia nada
+que «retomar».
+
+Ahora hay `cubierta/state/recados.jsonl`, JSONL append-only como el resto del circuito soberano:
+una instantanea del recado cada vez que cambia su **estado logico** —su estado o el paso en que
+va—, nunca en cada tick. Al arrancar se reproduce (ultima entrada por id gana) y se compacta.
+
+**La regla que salio de aqui, y que vale para todo lo que venga:**
+
+> **Se persiste el estado; nunca la coreografia.**
+
+Las posiciones, el rumbo y la ruta **no** se guardan: se vuelven a derivar. Y no es preferencia
+estetica. `avanzar()` con la ruta vacia devuelve `true` al instante, asi que un paso restaurado
+como `en_ruta` **habria "llegado" sin haber andado**, y uno `en_sitio` habria terminado su trabajo
+sin estar alli. Restaurar la coreografia era, literalmente, programar la mentira que este mundo
+existe para no contar. Por eso ambos vuelven a `pendiente` y el viaje se replanifica de verdad.
+
+`esperando_llave` **si** sobrevive: una decision pendiente del Capitan es un hecho durable, no
+coreografia, y perderla seria peor que restaurarla.
+
+**Verificado ejecutando dos escenarios, no uno:**
+
+| Escenario | Resultado |
+|---|---|
+| Reinicio **con el actor aun emitiendo senal** | el recado vuelve y **se reanuda hasta completarse** |
+| Reinicio **sin ningun actor** | vuelve visible y **quieto**: `pendiente_encarnacion`, *«robin no tiene actor encarnandolo: el recado espera, y el personaje no se mueve»* |
+| El paso que quedo `en_ruta` en disco | vuelve como `pendiente`: el viaje no se da por hecho |
+| Lo que muestra la Cubierta contra el log en disco | **COINCIDE** en nakama, objetivo, estado, indice y pasos |
+| Suite | 32 pasadas (26 antes) — 6 casos nuevos de rehidratacion |
+| `npm test` completo | exit 0, `4 de 4` |
+
+El segundo escenario es el que prueba A2 de verdad: sin actor no hay blanco movil, y lo que se ve
+es exactamente lo que hay en disco.
+
+**Lo que NO entra en 2.a, y hace falta decirlo:** los **artefactos** —el registro de lo ya
+cerrado, que es la evidencia— siguen viviendo solo en memoria. Un recado cerrado vuelve del log,
+pero el artefacto que dejo no. Eso es 2.c (A6), no esto, y se anota alli para que no se pierda de
+vista.
+
+**Limite heredado:** el hub tiene su propio `state/misiones/` fuera de este repo. Esta acta habla
+de la unidad de trabajo **de la Cubierta** —el recado—, que es la unica observable desde una
+sesion cloud y la unica que la prueba de A2 puede medir. Coser recado y mision del hub es trabajo
+aparte, y no esta hecho.
 
 ---
 

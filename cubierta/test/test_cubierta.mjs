@@ -19,6 +19,7 @@ import {
   FANTASMA, AMARRADO, EN_PUERTO, A_BORDO,
 } from "../server/latido.mjs";
 import { NO_OBSERVABLE, SIN_DATO, OBSERVADO, EJES } from "../server/sondas.mjs";
+import { PASO_PENDIENTE, PASO_EN_RUTA, PASO_EN_SITIO, PASO_ESPERANDO_LLAVE } from "../server/mundo.mjs";
 
 // El vigia ahora exige sondas. Estas pruebas son del corte anterior (presencia
 // declarada), asi que corren con el barco a ciegas: sin ningun eje observado,
@@ -370,6 +371,94 @@ await prueba("la bitacora caida no se lleva por delante a las demas fuentes", as
   // Ninguna fuente puede quedar sin declarar por culpa de otra: cada una trae
   // su estado, y ninguna lanza. Es lo que permite abrir con Hipatia callada.
   for (const f of fuentes) assert.ok(f.estado && f.ts, `la fuente ${f.id} llega sin declarar estado`);
+});
+
+// --- Lo abierto sobrevive al reinicio ---------------------------------------
+//
+// Los recados vivian solo en memoria: un reinicio se llevaba por delante todo
+// el trabajo abierto. Estas pruebas fijan que vuelva -- y, sobre todo, que
+// vuelva sin mentir sobre lo que llego a pasar.
+
+process.stdout.write("\nRehidratacion de recados\n");
+
+function instantaneaDe(mundo, nakama, objetivo, recursos) {
+  const r = mundo.crearRecado({ nakama, objetivo, recursos });
+  return JSON.parse(JSON.stringify(r));
+}
+
+await prueba("un recado abierto vuelve del log tras el reinicio", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarRecados([snap]);
+  assert.equal(cargados, 1);
+  assert.deepEqual(descartados, []);
+  assert.equal(tras.recados[0].id, snap.id);
+  assert.equal(tras.recados[0].objetivo, "leer poneglifos");
+});
+
+await prueba("la ultima instantanea de un recado gana", () => {
+  const previo = nuevoMundo();
+  const a = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  const b = { ...a, estado: "en_curso", indice: 1 };
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([a, b]);
+  assert.equal(tras.recados.length, 1, "una sola entrada por id");
+  assert.equal(tras.recados[0].estado, "en_curso");
+  assert.equal(tras.recados[0].indice, 1);
+});
+
+await prueba("un paso que quedo en ruta vuelve a pendiente: el viaje no se da por hecho", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  snap.pasos[0].estado = PASO_EN_RUTA;
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  // Si se restaurase `en_ruta`, `avanzar()` con la ruta vacia devuelve true al
+  // instante: el personaje "llegaria" sin haber andado.
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_PENDIENTE);
+});
+
+await prueba("un paso que quedo en sitio tampoco se da por trabajado", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+  snap.pasos[0].estado = PASO_EN_SITIO;
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_PENDIENTE);
+});
+
+await prueba("una llave pendiente del Capitan SI sobrevive: es hecho durable, no coreografia", () => {
+  const previo = nuevoMundo();
+  const snap = instantaneaDe(previo, "chopper", "mirar la camara", ["decision_capitan"]);
+  snap.pasos[0].estado = PASO_ESPERANDO_LLAVE;
+  snap.estado = "esperando_llave";
+
+  const tras = nuevoMundo();
+  tras.rehidratarRecados([snap]);
+  assert.equal(tras.recados[0].pasos[0].estado, PASO_ESPERANDO_LLAVE);
+  assert.equal(tras.recados[0].estado, "esperando_llave");
+});
+
+await prueba("lo que no se puede cargar se declara con su motivo, no se traga", () => {
+  const previo = nuevoMundo();
+  const bueno = instantaneaDe(previo, "robin", "leer poneglifos", ["archivo_frio"]);
+
+  const tras = nuevoMundo();
+  const { cargados, descartados } = tras.rehidratarRecados([
+    bueno,
+    { ...bueno, id: "recado-x", nakama: "barbanegra" },
+    { objetivo: "sin id" },
+    null,
+  ]);
+  assert.equal(cargados, 1, "solo entra el que se puede cargar");
+  assert.equal(descartados.length, 3, "los otros tres se declaran, no desaparecen");
+  assert.ok(descartados.every((d) => d.motivo && d.motivo.length > 0));
+  assert.ok(descartados.some((d) => d.motivo.includes("barbanegra")), "el motivo nombra el nakama desconocido");
 });
 
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);

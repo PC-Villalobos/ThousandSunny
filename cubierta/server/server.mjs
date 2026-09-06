@@ -7,7 +7,7 @@
 // declara (`modo: "replay"`), para que nadie confunda un ensayo con el barco.
 
 import { createServer } from "node:http";
-import { readFile, appendFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -25,6 +25,7 @@ const CUBIERTA = path.resolve(AQUI, "..");
 const RAIZ = path.resolve(CUBIERTA, "..");
 const FICHERO_SENALES = path.join(CUBIERTA, "state", "senales.jsonl");
 const FICHERO_VEREDICTOS = path.join(CUBIERTA, "state", "veredictos.jsonl");
+const FICHERO_RECADOS = path.join(CUBIERTA, "state", "recados.jsonl");
 
 const args = process.argv.slice(2);
 const puerto = Number(process.env.CUBIERTA_PUERTO || 8788);
@@ -241,12 +242,74 @@ function construirSnapshot() {
   };
 }
 
+// --- Recados: lo abierto sobrevive al reinicio --------------------------------
+//
+// `senales.jsonl` y `veredictos.jsonl` ya se persistian; los recados no. Vivian
+// en memoria, asi que cualquier reinicio se llevaba por delante TODO el trabajo
+// abierto: al volver, el barco no sabia que estaba haciendo.
+//
+// El log es JSONL append-only, como el resto del circuito soberano: una
+// instantanea del recado cada vez que cambia su estado logico. Al arrancar se
+// reproduce -- ultima entrada por id gana -- y se compacta, para que no crezca
+// sin fin.
+//
+// Lo que NO se persiste, a proposito: la coreografia. Posiciones, rumbo y ruta
+// se vuelven a derivar. Ver `Mundo.rehidratarRecados`.
+async function cargarRecados() {
+  let texto;
+  try {
+    texto = await readFile(FICHERO_RECADOS, "utf8");
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      process.stderr.write(`No se pudo leer ${FICHERO_RECADOS}: ${err.message}. La Cubierta arranca sin recados previos.\n`);
+    }
+    return;
+  }
+
+  const instantaneas = [];
+  let ilegibles = 0;
+  for (const linea of texto.split("\n")) {
+    if (!linea.trim()) continue;
+    try { instantaneas.push(JSON.parse(linea)); } catch { ilegibles += 1; }
+  }
+
+  const { cargados, descartados } = mundo.rehidratarRecados(instantaneas);
+  process.stdout.write(`Recados recuperados del disco: ${cargados}\n`);
+  // Una perdida se declara, nunca se traga: si el log traia algo que no se pudo
+  // cargar, aqui se dice cual y por que.
+  if (ilegibles) process.stdout.write(`  ${ilegibles} linea(s) ilegibles en el log, saltadas\n`);
+  for (const d of descartados) {
+    process.stdout.write(`  descartado ${d.id || "(sin id)"}: ${d.motivo}\n`);
+  }
+
+  await mkdir(path.dirname(FICHERO_RECADOS), { recursive: true });
+  await writeFile(FICHERO_RECADOS, mundo.recados.map((r) => `${JSON.stringify(r)}\n`).join(""), "utf8");
+}
+
+async function persistirRecados(recados) {
+  if (!recados.length) return;
+  await mkdir(path.dirname(FICHERO_RECADOS), { recursive: true });
+  await appendFile(FICHERO_RECADOS, recados.map((r) => `${JSON.stringify(r)}\n`).join(""), "utf8");
+}
+
+// Antes del primer tick: al volver, el barco tiene que saber que estaba haciendo.
+await cargarRecados();
+
 // --- Bucle -------------------------------------------------------------------
 const clientes = new Set();
 
 setInterval(() => {
+  // Solo se escribe cuando cambia el estado logico de un recado -- su estado o
+  // el paso en que va --, no en cada tick: la coreografia no se persiste.
+  const antes = new Map(mundo.recados.map((r) => [r.id, `${r.estado}|${r.indice}`]));
   mundo.tick(encarnadosVerificados());
   almacen.podar();
+  const cambiados = mundo.recados.filter((r) => antes.get(r.id) !== `${r.estado}|${r.indice}`);
+  if (cambiados.length) {
+    persistirRecados(cambiados).catch((err) => {
+      process.stderr.write(`No se pudo persistir el recado: ${err.message}\n`);
+    });
+  }
 }, 250);
 
 setInterval(() => { sondear().catch(() => {}); }, 3000);
