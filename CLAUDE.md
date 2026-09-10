@@ -156,6 +156,23 @@ The sleep function runs a four-phase audit over `state/`:
 
 If `BITACORA_GAS_URL` is unset, the GAS block is left in the report as a fallback.
 
+## Tests and CI
+
+`npm test` runs everything a crew member would run locally: security kernel,
+hub-utils, the Cubierta aggregator (`scripts/test-cubierta.mjs` — epistemic core,
+ship, pulse, encargos, cubierta_ui) and the sleep function's Python suite.
+
+`.github/workflows/pruebas.yml` runs that same `npm test` on every pull request
+(any base branch, drafts included) and on pushes to the trunk. Before it existed,
+the only workflow here was the nightly sleep cron, which does not fire on PRs —
+so nothing checked a branch before it landed.
+
+**Never split `npm test` into per-suite CI jobs.** The job list and `package.json`
+would drift, and suites nobody runs is the exact failure `scripts/test-cubierta.mjs`
+was written to close: two surfaces claimed the `test:cubierta` script, one
+definition overwrote the other, and `npm test` stayed green with half the tests
+unexecuted.
+
 ## State directory (this repo)
 
 `state/` holds the in-repo shared memory — the only copy the cloud can read:

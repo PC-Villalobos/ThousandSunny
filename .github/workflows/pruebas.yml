@@ -1,0 +1,69 @@
+# Las pruebas del tronco, en cada pull request.
+#
+# POR QUE EXISTE
+# Hasta hoy este repo solo tenia el cron nocturno de la Funcion de Sueno, que no
+# se dispara en pull requests. Es decir: cualquier rama podia entrar al tronco
+# sin que nada comprobase las suites, y la unica barrera era que alguien se
+# acordara de correr `npm test` a mano.
+#
+# Eso ya costo una vez. Dos superficies distintas reclamaban el script
+# `test:cubierta`; al fusionar, una definicion piso a la otra y `npm test` seguia
+# en verde con la mitad de las pruebas sin ejecutar (ver la cabecera de
+# `scripts/test-cubierta.mjs`). Una regresion puede esconderse ahi sin hacer
+# ruido, que es justo lo que ninguna parte de este sistema se permite en su
+# propio dominio.
+#
+# QUE CORRE
+# `npm test` entero, tal cual lo corre un tripulante en su maquina: seguridad,
+# hub-utils, el agregador de Cubierta (epistemico, barco, pulso, encargos, ui) y
+# las pruebas de la Funcion de Sueno en Python. No se parte en jobs por suite: si
+# se parte, la lista de aqui y la de `package.json` divergen, y volvemos a tener
+# suites que nadie ejecuta.
+
+name: pruebas
+
+on:
+  pull_request:
+    # Sin filtro de ramas a proposito. El tronco de este repo no es `main`
+    # (hoy es `claude/franky-feature-O1BkB`) y ha cambiado antes. Un filtro
+    # que se quede viejo no da error: deja de correr en silencio, que es
+    # exactamente el fallo que este workflow viene a cerrar.
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - claude/franky-feature-O1BkB
+  workflow_dispatch: {}
+
+# Solo leer. La bitacora, los partes y los commits son de otros workflows.
+permissions:
+  contents: read
+
+# Un empujon nuevo cancela la comprobacion del anterior: lo que importa es si la
+# cabeza actual esta sana, no si lo estuvo hace tres commits.
+concurrency:
+  group: pruebas-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    # Un borrador tambien se comprueba. Saberlo antes de pedir revision es la
+    # mitad del valor de tener esto.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # `test:sueno` es unittest de la biblioteca estandar. Se fija la version
+      # igual que la de Node para que un cambio del runner no mueva el suelo.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # No hay `npm ci` ni `npm install`: este repo no tiene dependencias ni
+      # lockfile, y quiere seguir asi. Si algun dia aparece un `package-lock.json`
+      # hay que anadir el paso, no antes.
+      - name: npm test
+        run: npm test
