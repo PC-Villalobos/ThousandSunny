@@ -251,10 +251,51 @@ export function autorizar(encargo, accion) {
 }
 
 function anotarDesvio(encargo, accion, motivo) {
-  const desvio = { ts: new Date().toISOString(), accion, motivo, veredicto: "pendiente" };
+  // `n` es la posicion, 1-based, y no se reordena nunca: es lo que da al desvio una
+  // identidad estable para la clave de idempotencia y para la sentencia posterior.
+  // `registrado` arranca en false porque anotar es sincrono y cerrar en el spine no:
+  // el Registro vacia los pendientes en su siguiente momento asincrono.
+  const desvio = {
+    n: encargo.desvios.length + 1,
+    ts: new Date().toISOString(),
+    accion,
+    motivo,
+    veredicto: "pendiente",
+    nivel: null,
+    nota: null,
+    sentenciado: null,
+    registrado: false,
+  };
   encargo.desvios.push(desvio);
   encargo.actualizado = desvio.ts;
   return desvio;
+}
+
+/** Veredictos del canon (`TEATRO.md`, El glitch). No hay un tercero. */
+export const VEREDICTOS = Object.freeze(["fertil", "decae"]);
+
+/**
+ * Sentencia de un desvio. La emite el Capitan y solo el Capitan.
+ *
+ * Un veredicto NO amplia la autonomia: juzga el error, no concede el permiso. Si esa
+ * accion debe existir, se concede abriendo un encargo que la declare. Confundir las
+ * dos cosas convertiria la alarma en una puerta.
+ */
+export function sentenciar(encargo, { n, veredicto, nivel = null, nota = null } = {}) {
+  if (!VEREDICTOS.includes(veredicto)) {
+    return { ok: false, motivo: "veredicto debe ser 'fertil' o 'decae' (TEATRO.md, El glitch)" };
+  }
+  const desvio = encargo.desvios.find((d) => d.n === n);
+  if (!desvio) return { ok: false, motivo: `este encargo no tiene un desvio ${n}` };
+  if (desvio.veredicto !== "pendiente") {
+    return { ok: false, motivo: `el desvio ${n} ya se sentencio como ${desvio.veredicto}` };
+  }
+  desvio.veredicto = veredicto;
+  desvio.nivel = Number.isInteger(nivel) && nivel >= 0 && nivel <= 5 ? nivel : null;
+  desvio.nota = nota || null;
+  desvio.sentenciado = new Date().toISOString();
+  encargo.actualizado = desvio.sentenciado;
+  return { ok: true, desvio, encargo };
 }
 
 /**
@@ -455,7 +496,8 @@ export function revisar(encargo, { decision, nota = null } = {}) {
 // --- El diario: estado vivo como proyeccion de una linea append-only ---------
 
 export const TIPOS_EVENTO = Object.freeze([
-  "crear", "turno_capitan", "ejecutar", "intento", "conexion", "revision", "desvio", "bitacora",
+  "crear", "turno_capitan", "ejecutar", "intento", "conexion", "revision", "desvio",
+  "sentencia", "bitacora",
 ]);
 
 /**
@@ -504,6 +546,25 @@ export class RegistroEncargos {
     return evento;
   }
 
+  /**
+   * Cierra en el spine los desvios que aun no se registraron. Se llama despues de
+   * cada momento asincrono del encargo, porque anotar un desvio es sincrono y hablar
+   * con la bitacora no lo es. Un desvio sin registrar no se pierde: espera aqui.
+   */
+  async cerrarDesviosNuevos(encargo) {
+    for (const d of encargo.desvios) {
+      if (d.registrado) continue;
+      // Se marca antes de escribir: "registrado" significa atendido una vez, no
+      // "cerro en el spine". Reintentar en bucle cada tick seria ruido, y el recibo
+      // ya dice si cerro o no.
+      d.registrado = true;
+      // El diario primero: es lo que sobrevive aunque la autoridad no escuche. Un
+      // desvio que solo existiera si la bitacora responde seria peor que ninguno.
+      await this.emitir("desvio", encargo, d);
+      await this.cerrarMomento("desvio", encargo, d);
+    }
+  }
+
   lista() {
     return [...this.encargos.values()].sort((a, b) => (a.creado < b.creado ? 1 : -1));
   }
@@ -536,6 +597,21 @@ export class RegistroEncargos {
       await this.emitir("intento", encargo, {
         motivo: r.motivo, estado: encargo.estado, presupuesto_agotado: encargo.presupuesto_agotado,
       });
+    }
+    // Ejecutar es donde `autorizar` puede denegar y anotar desvios.
+    await this.cerrarDesviosNuevos(encargo);
+    return r;
+  }
+
+  async sentenciar(id, fallo) {
+    const encargo = this.exigir(id);
+    const r = sentenciar(encargo, fallo);
+    if (r.ok) {
+      await this.emitir("sentencia", encargo, {
+        n: r.desvio.n, veredicto: r.desvio.veredicto, nivel: r.desvio.nivel,
+        nota: r.desvio.nota, sentenciado: r.desvio.sentenciado,
+      });
+      await this.cerrarMomento("sentencia", encargo, r.desvio);
     }
     return r;
   }
@@ -605,6 +681,14 @@ export class RegistroEncargos {
         encargo.estado = ev.datos.estado || ABIERTO;
         encargo.motivo = ev.datos.motivo;
         if (ev.datos.presupuesto_agotado) encargo.presupuesto_agotado = true;
+      } else if (ev.tipo === "desvio") {
+        encargo.desvios.push(ev.datos);
+      } else if (ev.tipo === "sentencia") {
+        const d = encargo.desvios.find((x) => x.n === ev.datos.n);
+        if (d) Object.assign(d, {
+          veredicto: ev.datos.veredicto, nivel: ev.datos.nivel,
+          nota: ev.datos.nota, sentenciado: ev.datos.sentenciado,
+        });
       } else if (ev.tipo === "bitacora") {
         encargo.bitacora.push(ev.datos);
       } else if (ev.tipo === "conexion") {

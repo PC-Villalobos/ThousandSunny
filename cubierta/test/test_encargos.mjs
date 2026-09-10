@@ -11,14 +11,15 @@ import assert from "node:assert/strict";
 
 import {
   crearEncargo, admitirFuente, dossier, autorizar, puedeEjecutar,
-  anotarTurnoDelCapitan, ejecutar, cambiarConexion, revisar,
+  anotarTurnoDelCapitan, ejecutar, cambiarConexion, revisar, sentenciar, VEREDICTOS,
   RegistroEncargos, opacoDe,
   ABIERTO, EN_CURSO, ESPERANDO_REVISION, ACEPTADO, DEVUELTO, AGOTADO, BLOQUEADO,
 } from "../server/encargos.mjs";
 import {
-  construirEventoApertura, construirEventoRevision, cerrarEnBitacora,
-  tocaMaterialProtegido, opacosDe,
+  construirEventoApertura, construirEventoRevision, construirEventoDesvio,
+  construirEventoSentencia, cerrarEnBitacora, tocaMaterialProtegido, opacosDe,
 } from "../server/bitacora_encargo.mjs";
+import { construirEventoVeredicto, cerrarVeredictoEnBitacora } from "../server/bitacora_vigia.mjs";
 import {
   ALLOWED_EVENT_KIND, ALLOWED_EPISTEMIC_STATUS, ALLOWED_SOURCE,
   ALLOWED_SENSITIVITY, ALLOWED_STATUS,
@@ -610,6 +611,165 @@ await prueba("sin cerrador inyectado el encargo funciona igual, sin recibos", as
   const reg = new RegistroEncargos({});
   const e = await reg.abrir(encargoCrudoMinimo());
   assert.deepEqual(e.bitacora, []);
+});
+
+
+process.stdout.write("\nDesvios: anotar, sentenciar, registrar\n");
+
+/** Encargo que pedira una accion que no tiene concedida. */
+function encargoQueSeDesvia() {
+  return crearEncargo({
+    objetivo: "Redactar y mandar el bloque de tarifas",
+    responsable: { nakama: "nami" },
+    autonomia: { acciones: ["leer", "redactar"] },   // sin enviar_fuera
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b" },
+  });
+}
+
+await prueba("un desvio nace con indice estable, pendiente y sin registrar", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  autorizar(e, "escribir_disco");
+  assert.deepEqual(e.desvios.map((d) => d.n), [1, 2]);
+  assert.ok(e.desvios.every((d) => d.veredicto === "pendiente" && d.registrado === false));
+});
+
+await prueba("el evento de desvio dice que la accion NO se ejecuto", () => {
+  const e = encargoQueSeDesvia();
+  const d = (autorizar(e, "enviar_fuera"), e.desvios[0]);
+  const ev = construirEventoDesvio(e, d);
+  assert.equal(ev.status, "blocked");
+  assert.equal(ev.event_kind, "observation");
+  assert.ok(ev.message.includes("NO se ejecuto"));
+  assert.ok(ev.relations.includes("accion_denegada:enviar_fuera"));
+  assert.ok(ev.next_safe_action.includes("Sentencia el Capitan"));
+});
+
+await prueba("el desvio entra al diario aunque la bitacora no escuche", async () => {
+  const diario = [];
+  const inalcanzable = async () => ({ reachable: false, ok: false, reason: "ECONNREFUSED" });
+  const reg = new RegistroEncargos({
+    escribir: async (ev) => { diario.push(ev); },
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent: inalcanzable }),
+  });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });  // sin "redactar": desvio
+  assert.equal(e.desvios.length, 1);
+  const enDiario = diario.filter((ev) => ev.tipo === "desvio");
+  assert.equal(enDiario.length, 1, "el diario es lo que sobrevive sin autoridad");
+  assert.equal(e.desvios[0].registrado, true);
+});
+
+await prueba("un desvio ya atendido no se reintenta en bucle", async () => {
+  const { appendEvent, enviados } = bitacoraFalsa();
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }) });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  const desvios = enviados.filter((x) => x.payload.status === "blocked");
+  assert.equal(desvios.length, 2, "cada intento denegado es un desvio nuevo, no un reenvio");
+  assert.deepEqual(desvios.map((x) => x.clave), [
+    `encargo:desvio:${e.id}:1`, `encargo:desvio:${e.id}:2`,
+  ]);
+});
+
+await prueba("solo el Capitan sentencia, y solo con el vocabulario del canon", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  assert.deepEqual(VEREDICTOS, ["fertil", "decae"]);
+  assert.equal(sentenciar(e, { n: 1, veredicto: "regular" }).ok, false);
+  assert.equal(sentenciar(e, { n: 9, veredicto: "fertil" }).ok, false);
+  assert.equal(sentenciar(e, { n: 1, veredicto: "fertil", nivel: 3 }).ok, true);
+  assert.equal(e.desvios[0].veredicto, "fertil");
+  assert.equal(e.desvios[0].nivel, 3);
+});
+
+await prueba("un desvio no se sentencia dos veces", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "decae" });
+  const r = sentenciar(e, { n: 1, veredicto: "fertil" });
+  assert.equal(r.ok, false);
+  assert.ok(r.motivo.includes("ya se sentencio"));
+  assert.equal(e.desvios[0].veredicto, "decae", "la primera sentencia manda");
+});
+
+await prueba("un nivel fuera de N0-N5 no se guarda como si fuera valido", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "fertil", nivel: 9 });
+  assert.equal(e.desvios[0].nivel, null, "sin graduar es mejor que graduado mal");
+});
+
+await prueba("el veredicto juzga el error: NO amplia la autonomia", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "fertil" });
+  assert.equal(autorizar(e, "enviar_fuera").ok, false, "declararlo fertil no lo concede");
+  assert.equal(e.desvios.length, 2, "y vuelve a anotarse como desvio");
+  const ev = construirEventoSentencia(e, e.desvios[0]);
+  assert.ok(ev.after.includes("no amplia la autonomia"));
+});
+
+await prueba("la sentencia responde ante el spine como del Capitan, no del sistema", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "decae", nivel: 1, nota: "se sirve a si misma" });
+  const ev = construirEventoSentencia(e, e.desvios[0]);
+  assert.equal(ev.source, "captain");
+  assert.equal(ev.event_kind, "decision");
+  assert.equal(ev.epistemic_status, "evaluated");
+  assert.ok(ev.message.includes("Buggy"));
+  assert.ok(ev.message.includes("se sirve a si misma"));
+});
+
+await prueba("desvio y sentencia sobreviven a la reconstruccion", async () => {
+  const diario = [];
+  const { appendEvent } = bitacoraFalsa();
+  const reg = new RegistroEncargos({
+    escribir: async (ev) => { diario.push(ev); },
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }),
+  });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.sentenciar(e.id, { n: 1, veredicto: "fertil", nivel: 2, nota: "sirve" });
+
+  const rec = RegistroEncargos.reconstruir(diario).obtener(e.id);
+  assert.equal(rec.desvios.length, 1);
+  assert.equal(rec.desvios[0].veredicto, "fertil");
+  assert.equal(rec.desvios[0].nivel, 2);
+  assert.equal(rec.desvios[0].nota, "sirve");
+  assert.equal(rec.desvios[0].registrado, true, "no se re-registra al abrir la Cubierta");
+});
+
+process.stdout.write("\nDesvios del Vigia\n");
+
+await prueba("el veredicto del Vigia habla la misma gramatica del canon", () => {
+  const ev = construirEventoVeredicto({
+    ts: "2026-09-10T00:00:00Z", nakama: "jimbe", clase: "capacidad_sensible",
+    veredicto: "fertil", nivel: 2, nota: "cartografio un acceso util",
+  });
+  assert.equal(ev.source, "captain");
+  assert.equal(ev.status, "decided");
+  assert.equal(ev.topic, "cubierta_vigia", "el desvio del barco no es el del encargo");
+  assert.ok(ev.message.includes("JoyBoy"));
+  assert.ok(ev.next_safe_action.includes("Ninguna"));
+});
+
+await prueba("sin bitacora el veredicto se emitio igual y el recibo lo dice", async () => {
+  const r = await cerrarVeredictoEnBitacora(
+    { ts: "2026-09-10T00:00:00Z", nakama: "zoro", veredicto: "decae" },
+    { appendEvent: async () => ({ reachable: false, ok: false, reason: "ECONNREFUSED" }) },
+  );
+  assert.equal(r.cerro, false);
+  assert.equal(r.alcanzable, false);
+  assert.ok(r.motivo.includes("no alcanzable"));
 });
 
 function encargoCrudoMinimo() {

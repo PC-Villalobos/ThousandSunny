@@ -258,7 +258,7 @@ buscarlo y lo ves cruzar el barco.
 | `POST /api/senal` | un agente declara actividad (y genera recado) |
 | `POST /api/recado` | crear un recado a mano |
 | `POST /api/llave` | el Capitan concede o deniega la camara sellada |
-| `POST /api/veredicto` | el Capitan sentencia un desvio: fertil o decae |
+| `POST /api/veredicto` | el Capitan sentencia un desvio del Vigia; cierra en la bitacora |
 | `POST /api/hablar` | conversar con un nakama (y cosechar sus tiempos reales) |
 | `GET /api/salud` | parte de chopper-salud: solo lo medido, por eje |
 
@@ -276,7 +276,7 @@ node cubierta/test/test_pulso.mjs
 node cubierta/test/test_encargos.mjs
 ```
 
-112 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
+124 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
 mundo no pueda mentir: que nadie se mueva sin actor, que nadie entre en la camara
 sellada, y que un dato ausente salga como `desconocido` y no como un numero.
 
@@ -305,7 +305,7 @@ interfaz.
 
 ### Las seis reglas duras
 
-Estan en `server/encargos.mjs`, no solo aqui, y hay 50 pruebas sobre ellas
+Estan en `server/encargos.mjs`, no solo aqui, y hay 62 pruebas sobre ellas
 (`node cubierta/test/test_encargos.mjs`).
 
 1. **Lo que se ve es lo que se manda.** `dossier()` es la unica construccion del
@@ -357,10 +357,11 @@ La costura vive en `server/bitacora_encargo.mjs` y usa **la puerta canonica**,
 `state/funcion_de_sueno/lib/bitacora.mjs`. No hay un segundo cliente: escribir otro
 seria lo contrario de coser.
 
-**Solo cierran abrir y revisar.** No cada turno. Es la misma regla que ya gobierna la
-capa visible del barco —al feed de cubierta solo llegan START y CLOSE—: los turnos
-intermedios son el trabajo, y su sitio es el diario. Al spine llega lo que abre
-responsabilidad y lo que la cierra.
+**Cierran cuatro momentos, no los turnos:** abrir, revisar, y los dos del desvio
+—anotarlo y sentenciarlo—. Es la misma regla que ya gobierna la capa visible del
+barco: al feed de cubierta solo llegan START y CLOSE. Los turnos intermedios son el
+trabajo, y su sitio es el diario. Al spine llega lo que **abre** responsabilidad y lo
+que la **cierra**.
 
 **La membrana, dos reglas duras.**
 
@@ -385,6 +386,54 @@ los turnos.
 
 En modo replay no se cierra nada en el spine: un ensayo no ensucia la autoridad.
 
+### El desvio y su sentencia
+
+Un desvio es que alguien pidio una autonomia que el encargo no le concedia. La accion
+**no se ejecuta**; se anota. Eso abre responsabilidad, y por eso cierra en el spine
+como `blocked`: dice literalmente que la accion no llego a correr y que el asunto
+queda detenido.
+
+Un desvio que solo viviera en memoria seria una alarma que nadie puede auditar
+despues. Y un veredicto pendiente sin forma de emitirlo seria teatro, asi que el
+Capitan lo sentencia: `POST /api/encargo/sentenciar`, o los dos botones de la ficha.
+
+La gramatica es la del canon (`TEATRO.md`, El glitch), no una propia:
+
+| Veredicto | Que dice | Que pasa |
+|---|---|---|
+| **fertil** (JoyBoy) | la desviacion sirve al Capitan | es creatividad; sube por la membrana Deckard |
+| **decae** (Buggy) | se sirve a su propia inercia | cuarentena restaurativa, no basura |
+
+Lleva **nivel N0-N5**; un nivel fuera de rango se guarda como `null`, porque sin
+graduar es mejor que graduado mal. La sentencia va al spine con `source: captain`,
+que ahi no es un adorno: dice de quien es la responsabilidad.
+
+**Un veredicto juzga el error, NO amplia la autonomia.** Declarar algo fertil no
+concede el permiso: la siguiente vez vuelve a denegarse y a anotarse. Si esa
+autonomia debe existir, se concede abriendo un encargo que la declare. Confundir las
+dos cosas convertiria la alarma en una puerta, y hay una prueba que lo fija.
+
+El desvio entra **primero al diario y despues al spine**: es lo que sobrevive aunque
+la autoridad no escuche. Y se atiende una sola vez — un recibo negativo tambien
+cuenta como atendido, porque reintentarlo en cada tick seria ruido.
+
+El desvio del **Vigia** —una senal que declara algo que la constitucion de ese nakama
+no contempla— es otra cosa: cambia el sujeto y el alcance, asi que vive en
+`server/bitacora_vigia.mjs` y cierra bajo `topic: cubierta_vigia`. De el solo cierra
+**el veredicto**, no la deteccion: `detectarDesvios` recalcula cada tick, y un desvio
+detectado es un estado, no un suceso. El suceso es la sentencia.
+
+### El limite de la membrana, dicho claro
+
+El objetivo se retiene cuando alguna fuente es clinica. **La membrana mira las
+fuentes, no el texto del objetivo.** Un encargo sin ninguna fuente clinica cuyo
+objetivo diga "mandar el catalogo a los pacientes" manda esa frase al spine, porque
+para el sistema no hay nada protegido en juego.
+
+Es deliberado —retener siempre el objetivo dejaria el spine sin valor para
+trazabilidad— y es tambien el borde exacto donde la regla deja de proteger. Queda
+dicho aqui para que sea una decision y no una sorpresa.
+
 ### Endpoints del encargo
 
 | Ruta | Que hace |
@@ -397,6 +446,7 @@ En modo replay no se cierra nada en el spine: un ensayo no ensucia la autoridad.
 | `POST /api/encargo/ejecutar` | un turno contra el actor, dentro de limites |
 | `POST /api/encargo/conexion` | cambiar de proveedor conservando el hilo |
 | `POST /api/encargo/revisar` | `aceptar` o `devolver`. Es el unico cierre |
+| `POST /api/encargo/sentenciar` | el Capitan juzga un desvio: `fertil` o `decae`, con nivel |
 
 Un encargo que nadie reviso no esta hecho: esta esperando.
 
@@ -412,7 +462,7 @@ Un encargo que nadie reviso no esta hecho: esta esperando.
 - **El coste no se calcula, se recibe.** Si el proveedor no informa de tokens ni
   de coste, el encargo lo declara `no informado` y no estima nada. Un tarifario
   por modelo daria cifras reales; hoy no existe.
-- **La capa de observacion sigue sin escribir.** Senales, recados, veredictos y
-  desvios no cierran en la bitacora; solo el Encargo lo hace, y solo al abrir y al
-  revisar. Un desvio pendiente de sentencia es un evento de gobierno y hoy vive
-  unicamente en memoria: cuando escriba, sera por la misma puerta canonica.
+- **De la capa de observacion solo escribe el veredicto.** Senales, recados y
+  cambios de presencia no cierran en la bitacora: un fantasma o un `discordante` son
+  estados que se recalculan, no sucesos. Cuando alguno merezca registro, sera por la
+  misma puerta canonica.

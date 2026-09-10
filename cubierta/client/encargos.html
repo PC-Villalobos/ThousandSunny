@@ -264,8 +264,22 @@ async function pintarDetalle() {
     ${e.costuras.length ? `<h2 style="margin-top:16px">Costuras de proveedor</h2>` +
       e.costuras.map((c) => `<div class="meta">tras el turno ${c.tras_turno}: ${c.de.proveedor} &rarr; ${c.a.proveedor}</div>`).join("") : ""}
 
-    ${e.desvios.length ? `<h2 style="margin-top:16px">Desvios pendientes de sentencia</h2>` +
-      e.desvios.map((x) => `<div class="omitida">${escapar(x.accion)}: ${escapar(x.motivo)}</div>`).join("") : ""}
+    ${e.desvios.length ? `<h2 style="margin-top:16px">Desvios</h2>
+      <p class="nota" style="margin-top:0">La accion no se ejecuto. Un veredicto juzga el error, no concede el permiso:
+        si esa autonomia debe existir, se concede abriendo un encargo que la declare.</p>` +
+      e.desvios.map((x) => `<div class="omitida">
+        <b>${escapar(x.accion)}</b> &middot; ${escapar(x.motivo)}
+        ${x.veredicto === "pendiente"
+          ? `<div class="acciones" style="margin-top:7px">
+               <input type="number" min="0" max="5" placeholder="nivel N0-N5" id="niv-${x.n}"
+                 style="width:120px;margin:0">
+               <button data-desvio="${x.n}" data-v="fertil">Fertil (JoyBoy)</button>
+               <button data-desvio="${x.n}" data-v="decae" class="grave">Decae (Buggy)</button>
+             </div>`
+          : `<div class="meta" style="margin-top:4px">sentenciado <b>${x.veredicto}</b>${
+               x.nivel !== null && x.nivel !== undefined ? ` &middot; nivel N${x.nivel}` : " &middot; sin graduar"}${
+               x.nota ? ` &middot; ${escapar(x.nota)}` : ""}</div>`}
+      </div>`).join("") : ""}
 
     <h2 style="margin-top:16px">Hilo (${e.continuidad.length} turnos, ${d.sello.actores_en_continuidad.length} actor(es))</h2>
     ${e.continuidad.length
@@ -301,6 +315,21 @@ async function pintarDetalle() {
       <pre>${escapar(e.resultado_aceptado.texto || "")}</pre>
       <p class="nota">Turno ${e.resultado_aceptado.turno}, producido por ${escapar(e.resultado_aceptado.actor || "actor desconocido")}.</p>` : ""}
   `;
+
+  for (const boton of $("detalle").querySelectorAll("button[data-desvio]")) {
+    boton.addEventListener("click", async () => {
+      const n = Number(boton.dataset.desvio);
+      const bruto = $(`niv-${n}`)?.value;
+      const nivel = bruto === "" || bruto === undefined ? null : Number(bruto);
+      const nota = prompt(`Nota de la sentencia (${boton.dataset.v}):`, "");
+      if (nota === null) return;
+      const r2 = await pedir("/api/encargo/sentenciar", {
+        id: e.id, n, veredicto: boton.dataset.v, nivel, nota,
+      });
+      if (!r2.ok) alert(r2.motivo);
+      await refrescar();
+    });
+  }
 
   $("b-decir").addEventListener("click", async () => {
     const texto = $("decir").value.trim();

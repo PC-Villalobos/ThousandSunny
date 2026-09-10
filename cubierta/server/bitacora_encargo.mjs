@@ -14,7 +14,8 @@
 // contrario de coser.
 //
 // QUE CIERRA, Y QUE NO
-// Solo abrir y revisar. No cada turno.
+// Abrir, revisar, y los dos momentos del desvio: cuando se anota y cuando se
+// sentencia. No cada turno.
 //
 // No es una decision de volumen: es la misma regla que ya gobierna la capa visible
 // del barco (`CLAUDE.md`: al feed de cubierta solo llegan START y CLOSE). Los turnos
@@ -159,6 +160,99 @@ export function construirEventoRevision(encargo, revision, { actor = "claude-cod
   };
 }
 
+
+/**
+ * Evento de desvio: alguien pidio una accion que su encargo no concedia.
+ *
+ * `blocked` porque eso es exactamente lo que paso: la accion no se ejecuto y el
+ * asunto queda detenido hasta que el Capitan lo sentencie. No se juzga aqui.
+ */
+export function construirEventoDesvio(encargo, desvio, { actor = "claude-code", role = "Nami" } = {}) {
+  return {
+    actor,
+    role,
+    topic: "cubierta_encargos",
+    title: tituloSeguro(encargo, `con desvio: ${desvio.accion}`),
+    message: [
+      `Desvio en el encargo ${encargo.id}.`,
+      `Accion pedida y no concedida: ${desvio.accion}.`,
+      `Motivo: ${desvio.motivo}`,
+      `Autonomia que si tenia: ${(encargo.autonomia.acciones || []).join(", ") || "ninguna"}.`,
+      `Responsable: ${encargo.responsable.nakama}.`,
+      "La accion NO se ejecuto. Queda pendiente de sentencia del Capitan.",
+    ].join(" "),
+    scope: "metadata del desvio; sin contenido de fuentes ni de turnos",
+    sensitivity: "internal",
+    status: "blocked",
+    source: "local_runtime",
+    event_kind: "observation",
+    epistemic_status: "observed",
+    project: "ThousandSunny",
+    phase: "cubierta_encargos",
+    change: `Se denego "${desvio.accion}" y se anoto como desvio pendiente.`,
+    after: "El desvio espera veredicto: fertil (JoyBoy) o decae (Buggy).",
+    next_safe_action: "Ninguna automatica: ninguna consecuencia se aplica sola. Sentencia el Capitan.",
+    relations: [
+      `encargo:${encargo.id}`,
+      `nakama:${encargo.responsable.nakama}`,
+      `accion_denegada:${desvio.accion}`,
+      ...opacosDe(encargo).map((o) => `fuente_opaca:${o}`),
+    ],
+    evidence: [`cubierta/state/encargos.jsonl#${encargo.id}`],
+  };
+}
+
+/**
+ * Evento de sentencia: el Capitan juzga un desvio.
+ *
+ * La gramatica es la del canon (`TEATRO.md`, El glitch): un glitch no se borra, se
+ * sentencia por a quien sirve. **fertil** (JoyBoy) cuando la desviacion sirve al
+ * Capitan —eso es creatividad—; **decae** (Buggy) cuando se sirve a su propia
+ * inercia. Lleva veredicto y nivel N0-N5. La fuente del evento es `captain` porque
+ * el juez es el, y aqui eso no es un adorno: es de quien es la responsabilidad.
+ */
+export function construirEventoSentencia(encargo, desvio, { actor = "claude-code", role = "Nami" } = {}) {
+  const fertil = desvio.veredicto === "fertil";
+  return {
+    actor,
+    role,
+    topic: "cubierta_encargos",
+    title: tituloSeguro(encargo, `con desvio ${fertil ? "fertil" : "decaido"}: ${desvio.accion}`),
+    message: [
+      `El Capitan sentencio un desvio del encargo ${encargo.id}.`,
+      `Accion: ${desvio.accion}. Veredicto: ${desvio.veredicto}.`,
+      `Nivel: ${desvio.nivel ?? "sin graduar"}.`,
+      desvio.nota ? `Nota del Capitan: ${desvio.nota}` : "Sin nota.",
+      fertil
+        ? "Fertil (JoyBoy): la desviacion sirve al Capitan; sube por la membrana Deckard."
+        : "Decae (Buggy): inercia que se sirve a si misma; cuarentena restaurativa, no basura.",
+    ].join(" "),
+    scope: "sentencia de un desvio; sin contenido de fuentes ni de turnos",
+    sensitivity: "internal",
+    status: "decided",
+    source: "captain",
+    event_kind: "decision",
+    epistemic_status: "evaluated",
+    project: "ThousandSunny",
+    phase: "cubierta_encargos",
+    change: `Desvio "${desvio.accion}" sentenciado como ${desvio.veredicto}.`,
+    after: fertil
+      ? "La accion sigue sin concederse: el veredicto juzga el error, no amplia la autonomia."
+      : "El desvio queda en cuarentena restaurativa; hasta el fracaso ensena donde estaba la trampa.",
+    next_safe_action: fertil
+      ? "Si esa autonomia debe existir, se concede abriendo un encargo que la declare."
+      : "Ninguna; el desvio queda juzgado.",
+    relations: [
+      `encargo:${encargo.id}`,
+      `nakama:${encargo.responsable.nakama}`,
+      `accion_denegada:${desvio.accion}`,
+      `veredicto:${desvio.veredicto}`,
+      ...opacosDe(encargo).map((o) => `fuente_opaca:${o}`),
+    ],
+    evidence: [`cubierta/state/encargos.jsonl#${encargo.id}`],
+  };
+}
+
 /**
  * Cierra un momento del encargo en el spine. Nunca lanza.
  *
@@ -167,13 +261,24 @@ export function construirEventoRevision(encargo, revision, { actor = "claude-cod
  * dice que ese momento existe en el diario y no en la autoridad.
  */
 export async function cerrarEnBitacora(momento, encargo, extra = {}, opciones = {}) {
-  const payload = momento === "abrir"
-    ? construirEventoApertura(encargo, opciones)
-    : construirEventoRevision(encargo, extra, opciones);
+  const constructores = {
+    abrir: () => construirEventoApertura(encargo, opciones),
+    revisar: () => construirEventoRevision(encargo, extra, opciones),
+    desvio: () => construirEventoDesvio(encargo, extra, opciones),
+    sentencia: () => construirEventoSentencia(encargo, extra, opciones),
+  };
+  if (!constructores[momento]) throw new Error(`momento desconocido: ${momento}`);
+  const payload = constructores[momento]();
 
-  const clave = momento === "abrir"
-    ? `encargo:abrir:${encargo.id}`
-    : `encargo:revisar:${encargo.id}:${encargo.revisiones.length}`;
+  // La clave identifica el momento, no la llamada: reintentar reproduce, no duplica.
+  // Los desvios se indexan por su posicion en la lista, que no se reordena nunca.
+  const claves = {
+    abrir: () => `encargo:abrir:${encargo.id}`,
+    revisar: () => `encargo:revisar:${encargo.id}:${encargo.revisiones.length}`,
+    desvio: () => `encargo:desvio:${encargo.id}:${extra.n}`,
+    sentencia: () => `encargo:sentencia:${encargo.id}:${extra.n}`,
+  };
+  const clave = claves[momento]();
 
   const enviar = opciones.appendEvent || appendEvent;
   const r = await enviar(payload, {

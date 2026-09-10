@@ -21,6 +21,7 @@ import { informeSalud } from "./salud.mjs";
 import { hablar, backendConfigurado, pedirAlActor, construirSistemaDeEncargo } from "./hablar.mjs";
 import { RegistroEncargos, dossier as dossierDe, ACCIONES } from "./encargos.mjs";
 import { cerrarEnBitacora } from "./bitacora_encargo.mjs";
+import { cerrarVeredictoEnBitacora } from "./bitacora_vigia.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
@@ -549,7 +550,15 @@ const servidor = createServer(async (req, res) => {
       veredictos.unshift(fallo);
       await mkdir(path.dirname(FICHERO_VEREDICTOS), { recursive: true });
       await appendFile(FICHERO_VEREDICTOS, `${JSON.stringify(fallo)}\n`, "utf8");
-      return json(res, 200, { ok: true, veredicto: fallo });
+      // El fichero primero, la autoridad despues: la sentencia existe aunque la
+      // bitacora no escuche, y el recibo dice si llego. Nunca lanza.
+      const recibo = ficheroReplay
+        ? { cerro: false, alcanzable: false, motivo: "modo replay: un ensayo no ensucia la autoridad" }
+        : await cerrarVeredictoEnBitacora(fallo).catch((err) => ({
+            cerro: false, alcanzable: false, motivo: `la costura fallo: ${err.message}`,
+          }));
+      fallo.bitacora = recibo;
+      return json(res, 200, { ok: true, veredicto: fallo, bitacora: recibo });
     }
 
     if (ruta === "/api/hablar" && req.method === "POST") {
@@ -662,6 +671,20 @@ const servidor = createServer(async (req, res) => {
       try {
         const r = await encargos.ejecutar(id, { llamar: actorDelEncargo(encargo, nakama) });
         return json(res, r.ok ? 200 : 409, { ...r, dossier: dossierDe(encargo) });
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
+    }
+
+    // La sentencia de un desvio del encargo. Misma gramatica que el veredicto del
+    // Vigia (TEATRO.md, El glitch) y mismo juez: el Capitan. Un veredicto juzga el
+    // error, NO amplia la autonomia: si esa accion debe existir, se concede abriendo
+    // un encargo que la declare.
+    if (ruta === "/api/encargo/sentenciar" && req.method === "POST") {
+      const { id, n, veredicto, nivel, nota } = await leerCuerpo(req);
+      try {
+        const r = await encargos.sentenciar(id, { n, veredicto, nivel, nota: nota || null });
+        return json(res, r.ok ? 200 : 400, r);
       } catch (err) {
         return json(res, 400, { ok: false, motivo: err.message });
       }
