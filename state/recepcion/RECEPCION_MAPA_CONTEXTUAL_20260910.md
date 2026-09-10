@@ -78,6 +78,20 @@ tarea— completo. El contexto común y el de dominio no existen todavía.
 
 ---
 
+## Actualización del transporte — tres archivos compañeros
+
+El 10 de septiembre, Codex en rol Usopp incorpora los tres archivos por petición de Antonio:
+
+- [Índice legible](fuentes-y-cobertura.md).
+- [Índice estructurado](fuentes-y-cobertura.json).
+- [Contexto portátil](contexto-portatil-para-modelos.md).
+
+Son versiones derivadas para este repositorio público; los originales privados conservan su finalidad y sus localizadores fuera de este árbol. Las 51 referencias del índice inicial tienen ficha, seis con original público enlazado y 45 sin localizador privado. Las referencias ya resuelven a fichas; las fuentes privadas siguen sin estar accesibles desde la nube. Esto no equivale a admitirlas ni a ratificar su contenido.
+
+El cuerpo recibido del mapa se conserva exactamente como estaba en este commit. Los apartados anteriores describen el momento de la recepción original. El contexto portátil añade la lectura posterior de POSICION.md y el estado de revisión del PR; estar publicado no le otorga autoridad canónica.
+
+---
+
 # Mapa contextual de la obra de Antonio
 
 Corte de lectura: 9–10 de septiembre de 2026. Versión de trabajo 0.1, elaborada por Codex/Usopp. Uso privado. Síntesis interpretativa pendiente de revisión autoral; no sustituye las fuentes, no cambia su autoridad y no constituye una autorización para operar sobre ellas.
