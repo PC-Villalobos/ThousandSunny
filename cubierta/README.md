@@ -276,7 +276,7 @@ node cubierta/test/test_pulso.mjs
 node cubierta/test/test_encargos.mjs
 ```
 
-97 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
+112 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
 mundo no pueda mentir: que nadie se mueva sin actor, que nadie entre en la camara
 sellada, y que un dato ausente salga como `desconocido` y no como un numero.
 
@@ -305,7 +305,7 @@ interfaz.
 
 ### Las seis reglas duras
 
-Estan en `server/encargos.mjs`, no solo aqui, y hay 35 pruebas sobre ellas
+Estan en `server/encargos.mjs`, no solo aqui, y hay 50 pruebas sobre ellas
 (`node cubierta/test/test_encargos.mjs`).
 
 1. **Lo que se ve es lo que se manda.** `dossier()` es la unica construccion del
@@ -346,6 +346,45 @@ un vistazo si esta continuidad es de un actor o de varios.
 La clave del proveedor **nunca viaja dentro del encargo**: sigue viviendo en el
 entorno del proceso. Un encargo dice con quien hablar, no lleva credenciales.
 
+### Cierre en la Bitacora
+
+`RUTINAS.md` fija una invariante del barco: **«toda rutina cierra en la Bitacora
+(spine). Si una rutina no escribe al spine, no ha cerrado.»** El Encargo nacio sin
+cumplirla: abria y cerraba trabajo dejando rastro solo en su diario. Dos registros y
+una sola autoridad declarada es la grieta por la que se escapa la responsabilidad.
+
+La costura vive en `server/bitacora_encargo.mjs` y usa **la puerta canonica**,
+`state/funcion_de_sueno/lib/bitacora.mjs`. No hay un segundo cliente: escribir otro
+seria lo contrario de coser.
+
+**Solo cierran abrir y revisar.** No cada turno. Es la misma regla que ya gobierna la
+capa visible del barco —al feed de cubierta solo llegan START y CLOSE—: los turnos
+intermedios son el trabajo, y su sitio es el diario. Al spine llega lo que abre
+responsabilidad y lo que la cierra.
+
+**La membrana, dos reglas duras.**
+
+1. **El contenido nunca viaja.** Ni el texto de las fuentes, ni el de los turnos, ni
+   el resultado aceptado. Al spine van recuentos, clases y decisiones.
+2. **El objetivo viaja solo si ninguna fuente es clinica.** Basta con que una lo sea
+   para que el titulo degrade a recuentos y opacos: un objetivo lo escribe el Capitan
+   en lenguaje natural y puede nombrar un caso sin proponerselo. Es la Camara de
+   Chopper aplicada tambien a la frase que la nombra.
+
+**Degradacion identica a la del sueno.** La Cubierta puede correr donde la bitacora
+no escucha. Nada de esto lanza y nada bloquea un encargo: si la autoridad no esta, el
+encargo abre y cierra igual, y el **recibo** dice por que no cerro en el spine. Ese
+recibo se guarda en el encargo y en el diario, positivo o negativo, porque un momento
+sin cerrar no esta mal hecho: esta **sin registrar**, y son cosas distintas. La
+pantalla los ensena por encargo, y la lista resume cuantos cerraron.
+
+La clave de idempotencia es estable (`encargo:abrir:<id>`, `encargo:revisar:<id>:<n>`),
+asi que un cierre reintentado reproduce en vez de duplicar. Reconstruir el registro
+desde el diario **no reenvia nada**: los recibos se reaplican como hechos, igual que
+los turnos.
+
+En modo replay no se cierra nada en el spine: un ensayo no ensucia la autoridad.
+
 ### Endpoints del encargo
 
 | Ruta | Que hace |
@@ -373,5 +412,7 @@ Un encargo que nadie reviso no esta hecho: esta esperando.
 - **El coste no se calcula, se recibe.** Si el proveedor no informa de tokens ni
   de coste, el encargo lo declara `no informado` y no estima nada. Un tarifario
   por modelo daria cifras reales; hoy no existe.
-- **La bitacora se lee, no se escribe.** La Cubierta observa; cuando escriba,
-  sera por la puerta canonica (`state/funcion_de_sueno/lib/bitacora.mjs`).
+- **La capa de observacion sigue sin escribir.** Senales, recados, veredictos y
+  desvios no cierran en la bitacora; solo el Encargo lo hace, y solo al abrir y al
+  revisar. Un desvio pendiente de sentencia es un evento de gobierno y hoy vive
+  unicamente en memoria: cuando escriba, sera por la misma puerta canonica.

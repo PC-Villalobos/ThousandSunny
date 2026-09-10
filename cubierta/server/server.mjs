@@ -20,6 +20,7 @@ import { observarEjes } from "./sondas.mjs";
 import { informeSalud } from "./salud.mjs";
 import { hablar, backendConfigurado, pedirAlActor, construirSistemaDeEncargo } from "./hablar.mjs";
 import { RegistroEncargos, dossier as dossierDe, ACCIONES } from "./encargos.mjs";
+import { cerrarEnBitacora } from "./bitacora_encargo.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
@@ -52,14 +53,23 @@ async function escribirEnDiario(evento) {
   await appendFile(FICHERO_ENCARGOS, `${JSON.stringify(evento)}\n`, "utf8");
 }
 
+// La costura con la autoridad. Abrir y cerrar un encargo se registran en la
+// Bitacora de Hipatia, que el Capitan declaro autoridad operativa el 2026-07-24.
+// El actor y el rol son los de ESTE proceso, no los del nakama responsable: quien
+// responde ante el spine es la Cubierta, no el personaje que interpreta el trabajo.
+function cerrarEnSpine(momento, encargo, extra) {
+  return cerrarEnBitacora(momento, encargo, extra, { actor: "cubierta", role: "Nami" });
+}
+
 const encargos = await (async () => {
-  if (ficheroReplay) return new RegistroEncargos({ escribir: null });
+  // En replay no se cierra nada en el spine: un ensayo no ensucia la autoridad.
+  if (ficheroReplay) return new RegistroEncargos({ escribir: null, cerrar: null });
   try {
     const texto = await readFile(FICHERO_ENCARGOS, "utf8");
     const eventos = texto.split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
-    return RegistroEncargos.reconstruir(eventos, { escribir: escribirEnDiario });
+    return RegistroEncargos.reconstruir(eventos, { escribir: escribirEnDiario, cerrar: cerrarEnSpine });
   } catch {
-    return new RegistroEncargos({ escribir: escribirEnDiario });
+    return new RegistroEncargos({ escribir: escribirEnDiario, cerrar: cerrarEnSpine });
   }
 })();
 
@@ -335,6 +345,14 @@ function resumirEncargo(e) {
     fuentes: e.contexto.fuentes.length,
     omitidas: e.contexto.fuentes.filter((f) => f.clase === "clinico_protegido" || f.contenido === null).length,
     desvios_pendientes: e.desvios.filter((d) => d.veredicto === "pendiente").length,
+    // Trazabilidad de un vistazo: cuantos momentos cerraron en la autoridad y
+    // cuantos se quedaron solo en el diario. Un encargo con momentos sin cerrar no
+    // esta mal hecho; esta sin registrar, y son cosas distintas.
+    bitacora: {
+      momentos: e.bitacora.length,
+      cerrados: e.bitacora.filter((b) => b.cerro).length,
+      ultimo_motivo: [...e.bitacora].reverse().find((b) => !b.cerro)?.motivo || null,
+    },
     actualizado: e.actualizado,
   };
 }

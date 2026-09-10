@@ -78,6 +78,9 @@
   .barra.lleno i { background: var(--malo); }
   .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .vacio { color: var(--tinta-suave); font-size: 12px; }
+  .recibo { font-size: 12px; padding: 6px 9px; border-radius: 7px; margin-bottom: 5px; }
+  .recibo.si { background: rgba(143, 211, 106, 0.12); border: 1px solid rgba(143, 211, 106, 0.42); }
+  .recibo.no { background: rgba(224, 160, 74, 0.12); border: 1px solid rgba(224, 160, 74, 0.45); color: #f2c483; }
 </style>
 </head>
 <body>
@@ -211,6 +214,8 @@ async function refrescar() {
         <div class="estado ${e.estado}">${e.estado.replace(/_/g, " ")}</div>
         <div class="meta">${e.responsable} &middot; ${e.proveedor}${e.modelo ? ":" + escapar(e.modelo) : ""}
           &middot; ${e.turnos} turno(s) &middot; ${e.consumo.llamadas}/${e.presupuesto.llamadas_max} llamadas</div>
+        <div class="meta">bitacora: ${e.bitacora.cerrados}/${e.bitacora.momentos} momento(s) cerrado(s)${
+          e.bitacora.cerrados < e.bitacora.momentos ? " &middot; solo en el diario" : ""}</div>
       </li>`).join("")
     : '<li class="vacio">Ningun encargo abierto. El barco no finge trabajo que no existe.</li>';
   for (const li of $("lista").querySelectorAll("li.encargo")) {
@@ -271,6 +276,17 @@ async function pintarDetalle() {
         </div>`).join("")
       : '<p class="vacio">Todavia no ha hablado nadie.</p>'}
     ${e.intentos.length ? e.intentos.map((i) => `<div class="omitida">intento fallido: ${escapar(i.motivo)}</div>`).join("") : ""}
+
+    <h2 style="margin-top:16px">Cierre en la Bitacora</h2>
+    <p class="nota" style="margin-top:0">Solo abrir y revisar cierran en la autoridad; los turnos viven en el diario.
+      Al spine van recuentos y decisiones: ni el contenido de las fuentes ni el texto del resultado salen de aqui.</p>
+    ${e.bitacora.length
+      ? e.bitacora.map((b) => `<div class="recibo ${b.cerro ? "si" : "no"}">
+          <b>${b.momento}</b> &middot; ${b.cerro
+            ? `registrado como ${escapar(b.evento || "?")} &middot; write_verified: ${b.write_verified}`
+            : `sin cerrar &middot; ${escapar(b.motivo || "sin motivo")}`}
+        </div>`).join("")
+      : '<p class="vacio">Ningun momento registrado todavia.</p>'}
 
     <h2 style="margin-top:16px">Turno del Capitan</h2>
     <textarea id="decir" rows="3" placeholder="Que le pides ahora"></textarea>

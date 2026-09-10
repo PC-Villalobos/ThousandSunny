@@ -27,6 +27,12 @@
 //      Se anota por que no se pudo, y ahi se queda.
 //   6. Todo se reconstruye del diario. El estado vivo es una proyeccion de una
 //      linea de eventos append-only: cerrar la Cubierta y abrirla no pierde nada.
+//   7. Abrir y cerrar se registran en la Bitacora. `RUTINAS.md`: «toda rutina
+//      cierra en la Bitacora (spine); si no escribe al spine, no ha cerrado». El
+//      recibo se guarda en el encargo, positivo o negativo, para que despues se
+//      pueda responder de si cerro. Si la autoridad no escucha, el encargo abre y
+//      cierra igual: la ausencia de la bitacora no invalida el trabajo, pero
+//      tampoco se disimula. La costura vive en `bitacora_encargo.mjs`.
 
 export const ABIERTO = "abierto";
 export const EN_CURSO = "en_curso";
@@ -173,6 +179,9 @@ export function crearEncargo(cruda = {}) {
     desvios: [],    // acciones pedidas y no autorizadas, pendientes de sentencia
     intentos: [],   // llamadas que no llegaron a producir resultado, con su motivo
     revisiones: [],
+    // Recibos de cierre en la Bitacora. Un recibo negativo tambien se guarda: dice
+    // que ese momento existe en el diario y no en la autoridad, y eso es un dato.
+    bitacora: [],
     resultado_aceptado: null,
     estado: ABIERTO,
     motivo: null,
@@ -446,7 +455,7 @@ export function revisar(encargo, { decision, nota = null } = {}) {
 // --- El diario: estado vivo como proyeccion de una linea append-only ---------
 
 export const TIPOS_EVENTO = Object.freeze([
-  "crear", "turno_capitan", "ejecutar", "intento", "conexion", "revision", "desvio",
+  "crear", "turno_capitan", "ejecutar", "intento", "conexion", "revision", "desvio", "bitacora",
 ]);
 
 /**
@@ -456,9 +465,37 @@ export const TIPOS_EVENTO = Object.freeze([
  * disco y se puede probar entero en memoria. El servidor le pasa un appendFile.
  */
 export class RegistroEncargos {
-  constructor({ escribir = null } = {}) {
+  /**
+   * `escribir` persiste el diario; `cerrar` cierra en la Bitacora. Los dos se
+   * inyectan, asi que este modulo no toca ni disco ni red y se prueba entero en
+   * memoria. El servidor les pasa el appendFile y la puerta canonica.
+   */
+  constructor({ escribir = null, cerrar = null } = {}) {
     this.encargos = new Map();
     this.escribir = escribir;
+    this.cerrar = cerrar;
+  }
+
+  /**
+   * Cierra un momento en el spine y guarda el recibo. Nunca lanza y nunca bloquea:
+   * un encargo no depende de que la autoridad este escuchando.
+   */
+  async cerrarMomento(momento, encargo, extra = {}) {
+    if (!this.cerrar) return null;
+    let recibo;
+    try {
+      recibo = await this.cerrar(momento, encargo, extra);
+    } catch (err) {
+      recibo = {
+        ts: new Date().toISOString(), momento, clave: null,
+        cerro: false, alcanzable: false,
+        motivo: `la costura con la bitacora fallo: ${err.message}`,
+      };
+    }
+    if (!recibo) return null;
+    encargo.bitacora.push(recibo);
+    await this.emitir("bitacora", encargo, recibo);
+    return recibo;
   }
 
   async emitir(tipo, encargo, datos = {}) {
@@ -479,6 +516,7 @@ export class RegistroEncargos {
     const encargo = crearEncargo(cruda);
     this.encargos.set(encargo.id, encargo);
     await this.emitir("crear", encargo, { cruda: sinContenidoClinico(cruda) });
+    await this.cerrarMomento("abrir", encargo);
     return encargo;
   }
 
@@ -512,7 +550,12 @@ export class RegistroEncargos {
   async revisar(id, decision) {
     const encargo = this.exigir(id);
     const r = revisar(encargo, decision);
-    if (r.ok) await this.emitir("revision", encargo, r.revision);
+    if (r.ok) {
+      await this.emitir("revision", encargo, r.revision);
+      // Despues de anotar la revision, no antes: la clave de idempotencia cuenta
+      // las revisiones ya hechas, y asi el mismo cierre reintentado no duplica.
+      await this.cerrarMomento("revisar", encargo, r.revision);
+    }
     return r;
   }
 
@@ -528,8 +571,12 @@ export class RegistroEncargos {
    * No re-ejecuta nada: reaplica hechos. Un turno que costo dinero no se vuelve
    * a pagar al abrir la Cubierta.
    */
-  static reconstruir(eventos, { escribir = null } = {}) {
-    const reg = new RegistroEncargos({ escribir });
+  static reconstruir(eventos, { escribir = null, cerrar = null } = {}) {
+    // `cerrar` se acepta para que el registro reconstruido pueda cerrar momentos
+    // FUTUROS, pero reaplicar el diario nunca reenvia nada al spine: los recibos se
+    // reaplican como hechos, igual que los turnos. Un evento ya registrado no se
+    // vuelve a registrar al abrir la Cubierta.
+    const reg = new RegistroEncargos({ escribir, cerrar });
     for (const ev of eventos) {
       if (!ev || !ev.tipo) continue;
       if (ev.tipo === "crear") {
@@ -558,6 +605,8 @@ export class RegistroEncargos {
         encargo.estado = ev.datos.estado || ABIERTO;
         encargo.motivo = ev.datos.motivo;
         if (ev.datos.presupuesto_agotado) encargo.presupuesto_agotado = true;
+      } else if (ev.tipo === "bitacora") {
+        encargo.bitacora.push(ev.datos);
       } else if (ev.tipo === "conexion") {
         encargo.conexion.proveedor = ev.datos.a.proveedor;
         encargo.conexion.modelo = ev.datos.a.modelo;
