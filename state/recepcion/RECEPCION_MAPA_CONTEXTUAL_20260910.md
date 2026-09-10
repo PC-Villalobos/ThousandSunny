@@ -59,9 +59,15 @@ máquina del Capitán:
 - `contexto-portatil-para-modelos.md`
 
 Por tanto **todas las referencias entre corchetes** del cuerpo (`[H01]`, `[R01]`, `[C13]`, `[L01]`,
-`[D04]`, `[G02]`, `[U01]`…) quedan colgando en este árbol: nombran entradas de un índice que aquí no
-existe. Se deja constancia expresa para que la auditoría N3 de la Función de Sueño las cuente como
-huérfanas conocidas y declaradas, no como un hallazgo nuevo cada noche.
+`[D04]`, `[G02]`, `[U01]`…) quedaban colgando en este árbol: nombraban entradas de un índice que aquí
+no existía.
+
+> **RESUELTO el 2026-09-10 por `6da1639`.** Codex, en rol Usopp, aterrizó una proyección pública de
+> los tres compañeros (ver la sección siguiente). Comprobado por esta sesión sobre el árbol resultante:
+> las **47 citas distintas** del cuerpo del mapa resuelven todas a una ficha del índice —**cero
+> colgando**—, y quedan 4 fichas (`C09`, `H05`, `L03`, `R09`) que el índice conserva y la prosa no
+> llega a citar. Este párrafo se conserva porque describe el estado en que llegó el mapa; el aviso ya
+> no aplica.
 
 ## Convergencia que conviene registrar
 
