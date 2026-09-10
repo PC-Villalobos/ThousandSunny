@@ -18,13 +18,15 @@ import { vigia, A_BORDO, DECLARADO_V } from "./latido.mjs";
 import { AlmacenMedido } from "./almacen.mjs";
 import { observarEjes } from "./sondas.mjs";
 import { informeSalud } from "./salud.mjs";
-import { hablar, backendConfigurado } from "./hablar.mjs";
+import { hablar, backendConfigurado, pedirAlActor, construirSistemaDeEncargo } from "./hablar.mjs";
+import { RegistroEncargos, dossier as dossierDe, ACCIONES } from "./encargos.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
 const RAIZ = path.resolve(CUBIERTA, "..");
 const FICHERO_SENALES = path.join(CUBIERTA, "state", "senales.jsonl");
 const FICHERO_VEREDICTOS = path.join(CUBIERTA, "state", "veredictos.jsonl");
+const FICHERO_ENCARGOS = path.join(CUBIERTA, "state", "encargos.jsonl");
 
 const args = process.argv.slice(2);
 const puerto = Number(process.env.CUBIERTA_PUERTO || 8788);
@@ -40,6 +42,26 @@ const constituciones = JSON.parse(await readFile(path.join(CUBIERTA, "world", "c
 const mundo = new Mundo({ barco, tripulacion, constituciones });
 const almacen = new AlmacenMedido();
 let contadorBitacoraPrevio = null;
+
+// El registro de encargos se RECONSTRUYE del diario al arrancar. Cerrar la
+// Cubierta y abrirla no pierde trabajo: reaplica hechos, no vuelve a ejecutar
+// nada. En replay se arranca en blanco, porque un ensayo no hereda encargos
+// reales ni los ensucia.
+async function escribirEnDiario(evento) {
+  await mkdir(path.dirname(FICHERO_ENCARGOS), { recursive: true });
+  await appendFile(FICHERO_ENCARGOS, `${JSON.stringify(evento)}\n`, "utf8");
+}
+
+const encargos = await (async () => {
+  if (ficheroReplay) return new RegistroEncargos({ escribir: null });
+  try {
+    const texto = await readFile(FICHERO_ENCARGOS, "utf8");
+    const eventos = texto.split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
+    return RegistroEncargos.reconstruir(eventos, { escribir: escribirEnDiario });
+  } catch {
+    return new RegistroEncargos({ escribir: escribirEnDiario });
+  }
+})();
 
 let fuentes = [];
 let senalesReplay = [];
@@ -267,6 +289,56 @@ const MIME = {
   ".json": "application/json; charset=utf-8",
 };
 
+/**
+ * Puente entre un encargo y un actor real.
+ *
+ * La conexion declarada en el encargo manda sobre el entorno, PERO la clave
+ * nunca viaja en el encargo: sigue viviendo en el entorno del proceso. Un
+ * encargo dice con quien hablar; no lleva credenciales dentro.
+ */
+function actorDelEncargo(encargo, nakama) {
+  const entorno = {
+    ...process.env,
+    CUBIERTA_LLM: encargo.conexion.proveedor,
+    ...(encargo.conexion.modelo ? { CUBIERTA_MODELO: encargo.conexion.modelo } : {}),
+  };
+  return async (paquete) => {
+    const sistema = construirSistemaDeEncargo({
+      nakama,
+      constitucion: mundo.constitucionDe(nakama.id),
+      dossier: paquete,
+    });
+    const ultimo = [...paquete.continuidad].reverse().find((t) => t.papel === "capitan");
+    const texto = ultimo ? ultimo.texto : paquete.objetivo;
+    const salida = await pedirAlActor({ sistema, texto, env: entorno });
+    // COSECHA: tambien aqui el barco mide lo que el mismo causa.
+    if (salida.encarnado && salida.vitales) {
+      almacen.registrar(nakama.id, { ...salida.vitales, modelo: salida.actor, fuente: "encargo" });
+    }
+    return salida;
+  };
+}
+
+/** Vista corta para la lista: sin contenidos, con lo que decide que hacer luego. */
+function resumirEncargo(e) {
+  return {
+    id: e.id,
+    objetivo: e.objetivo,
+    estado: e.estado,
+    motivo: e.motivo,
+    responsable: e.responsable.nakama,
+    proveedor: e.conexion.proveedor,
+    modelo: e.conexion.modelo,
+    turnos: e.continuidad.length,
+    consumo: e.consumo,
+    presupuesto: e.conexion.presupuesto,
+    fuentes: e.contexto.fuentes.length,
+    omitidas: e.contexto.fuentes.filter((f) => f.clase === "clinico_protegido" || f.contenido === null).length,
+    desvios_pendientes: e.desvios.filter((d) => d.veredicto === "pendiente").length,
+    actualizado: e.actualizado,
+  };
+}
+
 function json(res, codigo, cuerpo) {
   const texto = JSON.stringify(cuerpo, null, 2);
   res.writeHead(codigo, { "content-type": "application/json; charset=utf-8", "content-length": Buffer.byteLength(texto) });
@@ -355,6 +427,15 @@ const servidor = createServer(async (req, res) => {
 
     if (ruta === "/" || ruta === "/index.html") {
       const html = await readFile(path.join(CUBIERTA, "client", "index.html"));
+      res.writeHead(200, { "content-type": MIME[".html"] });
+      return res.end(html);
+    }
+
+    // El Puente de Encargos: la superficie desde la que el Capitan dirige trabajo.
+    // Pagina aparte a proposito. El barco isometrico sirve para VER el sistema;
+    // dirigirlo con WASD seria una postura, no una interfaz.
+    if (ruta === "/encargos") {
+      const html = await readFile(path.join(CUBIERTA, "client", "encargos.html"));
       res.writeHead(200, { "content-type": MIME[".html"] });
       return res.end(html);
     }
@@ -500,6 +581,82 @@ const servidor = createServer(async (req, res) => {
         }
       }
       return json(res, 200, salida);
+    }
+
+    // --- Encargos ------------------------------------------------------------
+    // El recado hace que el barco se vea; el encargo hace que el barco trabaje.
+    // Todo lo que muta un encargo pasa por el Registro, y el Registro escribe en
+    // el diario: no hay via para cambiar un encargo sin dejar rastro.
+
+    if (ruta === "/api/encargos" && req.method === "GET") {
+      return json(res, 200, {
+        modo: ficheroReplay ? "replay" : "vivo",
+        acciones_posibles: ACCIONES,
+        encargos: encargos.lista().map(resumirEncargo),
+      });
+    }
+
+    if (ruta === "/api/encargo" && req.method === "GET") {
+      const encargo = encargos.obtener(url.searchParams.get("id"));
+      if (!encargo) return json(res, 404, { ok: false, motivo: "encargo desconocido" });
+      // El dossier va SIEMPRE con el encargo: el Capitan no tiene que pedir
+      // aparte lo que el modelo va a recibir. Ver el encargo es ver el paquete.
+      return json(res, 200, { ok: true, encargo, dossier: dossierDe(encargo) });
+    }
+
+    if (ruta === "/api/encargo" && req.method === "POST") {
+      try {
+        const encargo = await encargos.abrir(await leerCuerpo(req));
+        return json(res, 200, { ok: true, encargo, dossier: dossierDe(encargo) });
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
+    }
+
+    if (ruta === "/api/encargo/decir" && req.method === "POST") {
+      const { id, texto } = await leerCuerpo(req);
+      try {
+        const turno = await encargos.decir(id, texto);
+        return json(res, 200, { ok: true, turno, encargo: encargos.obtener(id) });
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
+    }
+
+    if (ruta === "/api/encargo/conexion" && req.method === "POST") {
+      const { id, proveedor, modelo, presupuesto } = await leerCuerpo(req);
+      try {
+        const costura = await encargos.cambiarConexion(id, { proveedor, modelo, presupuesto });
+        return json(res, 200, { ok: true, costura, encargo: encargos.obtener(id) });
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
+    }
+
+    if (ruta === "/api/encargo/ejecutar" && req.method === "POST") {
+      const { id } = await leerCuerpo(req);
+      const encargo = encargos.obtener(id);
+      if (!encargo) return json(res, 404, { ok: false, motivo: "encargo desconocido" });
+      const nakama = mundo.nakama(encargo.responsable.nakama);
+      if (!nakama) {
+        return json(res, 400, { ok: false, motivo: `el responsable "${encargo.responsable.nakama}" no esta en la tripulacion` });
+      }
+      try {
+        const r = await encargos.ejecutar(id, { llamar: actorDelEncargo(encargo, nakama) });
+        return json(res, r.ok ? 200 : 409, { ...r, dossier: dossierDe(encargo) });
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
+    }
+
+    if (ruta === "/api/encargo/revisar" && req.method === "POST") {
+      const { id, decision, nota } = await leerCuerpo(req);
+      try {
+        const r = await encargos.revisar(id, { decision, nota: nota || null });
+        return json(res, r.ok ? 200 : 400, r);
+      } catch (err) {
+        return json(res, 400, { ok: false, motivo: err.message });
+      }
     }
 
     if (await servirEstatico(res, ruta.slice(1))) return undefined;

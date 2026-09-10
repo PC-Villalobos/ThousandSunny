@@ -57,6 +57,13 @@ const SUITES = [
     ausente: "el corte de pulso real vive en claude/baseo-workspace-agents-*",
   },
   {
+    id: "cubierta-encargos",
+    titulo: "Cubierta — encargos (contexto, autonomia, presupuesto, revision)",
+    ancla: "cubierta/test/test_encargos.mjs",
+    comando: () => ["node", ["cubierta/test/test_encargos.mjs"]],
+    ausente: "el encargo persistente vive en claude/optimistic-johnson-8a7pa4",
+  },
+  {
     id: "cubierta-ui",
     titulo: "Cubierta — contrato pedagogico y superficie de referencia",
     ancla: "state/cubierta_ui",

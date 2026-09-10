@@ -272,9 +272,94 @@ node cubierta/test/test_cubierta.mjs
 node cubierta/test/test_pulso.mjs
 ```
 
-62 pruebas entre las dos suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
+```bash
+node cubierta/test/test_encargos.mjs
+```
+
+97 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
 mundo no pueda mentir: que nadie se mueva sin actor, que nadie entre en la camara
 sellada, y que un dato ausente salga como `desconocido` y no como un numero.
+
+## El Encargo — dirigir trabajo, no solo verlo
+
+`http://127.0.0.1:8788/encargos`
+
+El recado hace que el barco **se vea**; el encargo hace que el barco **trabaje**.
+Son cosas distintas y no se mezclan: un recado nace de una senal, vive en memoria
+y muere con el proceso. Un encargo lo abre el Capitan, se guarda en disco y
+sobrevive a cerrar la Cubierta.
+
+Un encargo declara cinco cosas, y cada una responde a una decision del Capitan:
+
+| El Capitan decide | El encargo guarda |
+|---|---|
+| que trabajo quiere resolver | `objetivo`, `resultado_esperado`, `responsable` |
+| que contexto puede usarse | `contexto.fuentes`, cada una con su clase |
+| cuanta autonomia da | `autonomia.acciones`, denegadas por defecto |
+| con que conexion y cuanto gasto | `conexion.proveedor` y `conexion.presupuesto` |
+| que resultado acepta | `revisiones` y `resultado_aceptado` |
+
+El Puente de Encargos es una pagina aparte del barco isometrico, a proposito. El
+barco sirve para **ver** el sistema; dirigirlo con WASD seria una postura, no una
+interfaz.
+
+### Las seis reglas duras
+
+Estan en `server/encargos.mjs`, no solo aqui, y hay 35 pruebas sobre ellas
+(`node cubierta/test/test_encargos.mjs`).
+
+1. **Lo que se ve es lo que se manda.** `dossier()` es la unica construccion del
+   paquete que existe; `ejecutar()` envia eso mismo y no puede armar otro por su
+   cuenta. La pantalla ensena el paquete literal antes de que salga.
+2. **Lo clinico no llega a existir dentro del encargo.** Una fuente
+   `clinico_protegido` pierde el contenido **en la admision**, no al enseniarla:
+   el registro nunca lo guarda, el diario en disco tampoco, y lo unico que queda
+   es un identificador opaco. Un filtro de salida es una promesa; un registro que
+   nunca tuvo el dato es una propiedad. Es la Camara de Chopper aplicada al dato
+   en reposo, no solo al NPC que camina hasta la puerta.
+3. **Autonomia denegada por defecto.** El vocabulario de acciones es cerrado. Una
+   accion no concedida no se ejecuta y queda anotada como **desvio pendiente**,
+   con la misma gramatica del canon: lo sentencia el Capitan, nunca el sistema.
+4. **El presupuesto corta antes de gastar.** Un limite que se comprueba despues
+   de la llamada no es un limite, es un recibo. Y agotarse **no borra** un
+   resultado que espera revision: eso es trabajo ya pagado, y sustituirlo por
+   `agotado` haria irrevisable justo lo que ya costo dinero.
+5. **Sin actor alcanzable el encargo no avanza.** No hay salida de relleno: se
+   anota el intento con su motivo y el encargo se queda donde estaba. Misma ley
+   que el NPC mudo.
+6. **Todo se reconstruye del diario.** El estado vivo es una proyeccion de
+   `cubierta/state/encargos.jsonl`, append-only. Al arrancar se **reaplican
+   hechos**, no se re-ejecuta nada: un turno que costo dinero no se paga otra vez
+   al abrir la Cubierta.
+
+### La continuidad pertenece al encargo
+
+Cambiar de proveedor no reconstruye la conversacion: la hereda. `POST
+/api/encargo/conexion` deja una **costura** anotada con el turno exacto en el que
+se cambio, y cada turno conserva que actor lo escribio. Asi se puede leer despues
+que parte del hilo la produjo quien.
+
+Lo que viaja al modelo es solo `papel` y `texto`. La procedencia por turno se
+queda en el barco y se resume en el sello del dossier, para que el Capitan vea de
+un vistazo si esta continuidad es de un actor o de varios.
+
+La clave del proveedor **nunca viaja dentro del encargo**: sigue viviendo en el
+entorno del proceso. Un encargo dice con quien hablar, no lleva credenciales.
+
+### Endpoints del encargo
+
+| Ruta | Que hace |
+|---|---|
+| `GET /encargos` | el Puente de Encargos (pagina) |
+| `GET /api/encargos` | lista corta, con consumo y presupuesto |
+| `GET /api/encargo?id=` | encargo completo **y su dossier**, siempre juntos |
+| `POST /api/encargo` | abrir un encargo |
+| `POST /api/encargo/decir` | anotar un turno del Capitan (no llama a nadie) |
+| `POST /api/encargo/ejecutar` | un turno contra el actor, dentro de limites |
+| `POST /api/encargo/conexion` | cambiar de proveedor conservando el hilo |
+| `POST /api/encargo/revisar` | `aceptar` o `devolver`. Es el unico cierre |
+
+Un encargo que nadie reviso no esta hecho: esta esperando.
 
 ## Lo que esto todavia no es
 
@@ -282,5 +367,11 @@ sellada, y que un dato ausente salga como `desconocido` y no como un numero.
   este tipo de proyecto en la semana dos; llega cuando el esqueleto aguante.
 - **El mar y las islas no existen.** Solo el interior del barco.
 - **Un unico Capitan.** Su posicion es del cliente, no del servidor.
+- **El encargo todavia no cruza la camara sellada.** Un encargo puede *nombrar*
+  material clinico y el opaco viaja; conceder la llave por encargo, como ya se
+  hace por recado (`POST /api/llave`), sigue pendiente.
+- **El coste no se calcula, se recibe.** Si el proveedor no informa de tokens ni
+  de coste, el encargo lo declara `no informado` y no estima nada. Un tarifario
+  por modelo daria cifras reales; hoy no existe.
 - **La bitacora se lee, no se escribe.** La Cubierta observa; cuando escriba,
   sera por la puerta canonica (`state/funcion_de_sueno/lib/bitacora.mjs`).
