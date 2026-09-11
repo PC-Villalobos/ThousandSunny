@@ -1,0 +1,784 @@
+// Pruebas del Encargo. Sin framework, como el resto del repo:
+//   node cubierta/test/test_encargos.mjs
+//
+// Lo que se prueba aqui no es que el encargo funcione, sino que no pueda mentir:
+// que lo que el Capitan ve sea literalmente lo que se manda, que lo clinico no
+// llegue a existir dentro del registro, que un limite corte antes de gastar, que
+// sin actor no aparezca un resultado de relleno, y que cerrar la Cubierta y
+// abrirla no pierda ni invente nada.
+
+import assert from "node:assert/strict";
+
+import {
+  crearEncargo, admitirFuente, dossier, autorizar, puedeEjecutar,
+  anotarTurnoDelCapitan, ejecutar, cambiarConexion, revisar, sentenciar, VEREDICTOS,
+  RegistroEncargos, opacoDe,
+  ABIERTO, EN_CURSO, ESPERANDO_REVISION, ACEPTADO, DEVUELTO, AGOTADO, BLOQUEADO,
+} from "../server/encargos.mjs";
+import {
+  construirEventoApertura, construirEventoRevision, construirEventoDesvio,
+  construirEventoSentencia, cerrarEnBitacora, tocaMaterialProtegido, opacosDe,
+} from "../server/bitacora_encargo.mjs";
+import { construirEventoVeredicto, cerrarVeredictoEnBitacora } from "../server/bitacora_vigia.mjs";
+import {
+  ALLOWED_EVENT_KIND, ALLOWED_EPISTEMIC_STATUS, ALLOWED_SOURCE,
+  ALLOWED_SENSITIVITY, ALLOWED_STATUS,
+} from "../../state/funcion_de_sueno/lib/bitacora.mjs";
+
+let fallos = 0;
+let pasadas = 0;
+async function prueba(nombre, fn) {
+  try {
+    await fn();
+    pasadas += 1;
+    process.stdout.write(`  ok  ${nombre}\n`);
+  } catch (err) {
+    fallos += 1;
+    process.stdout.write(`FALLA  ${nombre}\n       ${err.message}\n`);
+  }
+}
+
+// Encargo de referencia: las tarifas del Capitan. Informacion real y NO clinica,
+// que es exactamente el material con el que este circuito debia estrenarse.
+function encargoTarifas(extra = {}) {
+  return crearEncargo({
+    objetivo: "Redactar el bloque de tarifas para el catalogo publico",
+    resultado_esperado: "Tres lineas: precio, duracion y modalidad, sin adornos",
+    responsable: { nakama: "nami" },
+    contexto: {
+      fuentes: [{
+        id: "tarifas-2026",
+        titulo: "Tarifas fijadas por el Capitan",
+        clase: "publico",
+        contenido: "Sesion de 60 min: 60 EUR. Sesion de 90 min: 85 EUR. Bono de 10 sesiones: 500 EUR.",
+      }],
+    },
+    autonomia: { acciones: ["leer", "redactar"] },
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b", presupuesto: { llamadas_max: 3 } },
+    ...extra,
+  });
+}
+
+function actorQueResponde(texto = "60 min / 60 EUR / consulta.", uso = { tokens: 120, coste_eur: 0.01 }) {
+  const visto = [];
+  const llamar = async (paquete) => {
+    visto.push(paquete);
+    return { encarnado: true, texto, actor: "ollama:qwen2.5:7b", uso };
+  };
+  return { llamar, visto };
+}
+
+process.stdout.write("\nAdmision de contexto\n");
+
+await prueba("una fuente clinica pierde el contenido EN LA ADMISION, no al enseniarla", () => {
+  const f = admitirFuente({
+    id: "sesion-S14", titulo: "Transcripcion S14", clase: "clinico_protegido",
+    contenido: "texto clinico que nunca deberia quedarse aqui",
+  });
+  assert.equal(f.contenido, null, "el registro no llega a guardar el contenido clinico");
+  assert.equal(f.opaco, opacoDe("sesion-S14"));
+  assert.ok(f.motivo_sin_contenido.includes("identificador opaco"));
+});
+
+await prueba("una clase desconocida se trata como la mas estricta, no como la mas comoda", () => {
+  const f = admitirFuente({ id: "x", clase: "confidencial-ish", contenido: "algo" });
+  assert.equal(f.clase, "clinico_protegido");
+  assert.equal(f.contenido, null);
+});
+
+await prueba("el opaco identifica la referencia, no el contenido", () => {
+  const a = admitirFuente({ id: "sesion-S14", clase: "clinico_protegido", contenido: "AAA" });
+  const b = admitirFuente({ id: "sesion-S14", clase: "clinico_protegido", contenido: "BBB" });
+  assert.equal(a.opaco, b.opaco, "el mismo material se reconoce entre sesiones");
+});
+
+process.stdout.write("\nEl dossier\n");
+
+await prueba("el dossier ensenia lo incluido y declara lo omitido con su motivo", () => {
+  const e = crearEncargo({
+    objetivo: "preparar el parte", responsable: { nakama: "chopper" },
+    contexto: { fuentes: [
+      { id: "tarifas", clase: "publico", contenido: "60 EUR" },
+      { id: "sesion-S14", clase: "clinico_protegido", contenido: "clinico" },
+      { id: "vacia", clase: "interno" },
+    ] },
+  });
+  const d = dossier(e);
+  assert.equal(d.fuentes.length, 1);
+  assert.equal(d.fuentes[0].id, "tarifas");
+  assert.equal(d.omitidas.length, 2);
+  assert.ok(d.omitidas.every((o) => o.motivo));
+  assert.equal(d.sello.fuentes_omitidas, 2);
+  assert.ok(!JSON.stringify(d).includes("clinico\""), "ningun rastro del contenido clinico en el paquete");
+});
+
+await prueba("la procedencia por turno no viaja al modelo, pero se cuenta en el sello", async () => {
+  const e = encargoTarifas();
+  anotarTurnoDelCapitan(e, "hazlo");
+  const { llamar } = actorQueResponde();
+  await ejecutar(e, { llamar });
+  const d = dossier(e);
+  assert.ok(d.continuidad.every((t) => !("actor" in t)), "el hilo que se manda es papel + texto");
+  assert.deepEqual(d.sello.actores_en_continuidad, ["capitan", "ollama:qwen2.5:7b"]);
+});
+
+await prueba("lo que se ve es lo que se manda: ejecutar no arma otro paquete", async () => {
+  const e = encargoTarifas();
+  anotarTurnoDelCapitan(e, "redacta el bloque");
+  const previsto = dossier(e);
+  const { llamar, visto } = actorQueResponde();
+  await ejecutar(e, { llamar });
+  assert.equal(visto.length, 1);
+  assert.deepEqual(visto[0], previsto, "el payload enviado es identico al dossier que vio el Capitan");
+});
+
+process.stdout.write("\nAutonomia\n");
+
+await prueba("una accion no concedida se deniega y queda anotada como desvio", () => {
+  const e = encargoTarifas();
+  const r = autorizar(e, "enviar_fuera");
+  assert.equal(r.ok, false);
+  assert.equal(e.desvios.length, 1);
+  assert.equal(e.desvios[0].veredicto, "pendiente", "la sentencia es del Capitan, no automatica");
+});
+
+await prueba("una accion fuera del vocabulario no se cuela por texto libre", () => {
+  const e = crearEncargo({
+    objetivo: "x", responsable: { nakama: "nami" },
+    autonomia: { acciones: ["redactar", "borrar_el_disco"] },
+  });
+  assert.deepEqual(e.autonomia.acciones, ["redactar"]);
+  assert.deepEqual(e.autonomia.acciones_no_reconocidas, ["borrar_el_disco"]);
+  assert.equal(autorizar(e, "borrar_el_disco").ok, false);
+});
+
+await prueba("sin 'redactar' concedido el encargo se bloquea y NO llama a nadie", async () => {
+  const e = crearEncargo({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  const { llamar, visto } = actorQueResponde();
+  const r = await ejecutar(e, { llamar });
+  assert.equal(r.ok, false);
+  assert.equal(e.estado, BLOQUEADO);
+  assert.equal(visto.length, 0, "la denegacion corta antes de la llamada");
+});
+
+await prueba("las acciones graves quedan marcadas aparte cuando se conceden", () => {
+  const e = crearEncargo({
+    objetivo: "x", responsable: { nakama: "zoro" },
+    autonomia: { acciones: ["redactar", "escribir_disco"] },
+  });
+  assert.deepEqual(e.autonomia.graves_concedidas, ["escribir_disco"]);
+});
+
+process.stdout.write("\nPresupuesto\n");
+
+await prueba("el limite de llamadas corta ANTES de gastar la siguiente", async () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.llamadas_max = 1;
+  const { llamar, visto } = actorQueResponde();
+  await ejecutar(e, { llamar });
+  assert.equal(visto.length, 1);
+  const r = await ejecutar(e, { llamar });
+  assert.equal(r.ok, false);
+  assert.equal(e.presupuesto_agotado, true);
+  assert.equal(visto.length, 1, "la segunda llamada no llego a salir");
+});
+
+await prueba("un turno estimado que rebasaria el limite no se lanza, y no agota el encargo", async () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.tokens_max = 100;
+  const { llamar, visto } = actorQueResponde();
+  const r = await ejecutar(e, { llamar, tokens_estimados: 500 });
+  assert.equal(r.ok, false);
+  assert.equal(visto.length, 0);
+  assert.notEqual(e.estado, AGOTADO, "el encargo sigue vivo: lo que no cabe es ese turno");
+});
+
+await prueba("quedarse sin presupuesto no borra un resultado que espera revision", async () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.llamadas_max = 1;
+  await ejecutar(e, { llamar: actorQueResponde("el bloque redactado").llamar });
+  assert.equal(e.estado, ESPERANDO_REVISION);
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  assert.equal(e.presupuesto_agotado, true, "el limite queda anotado");
+  assert.equal(e.estado, ESPERANDO_REVISION, "lo ya pagado sigue siendo revisable");
+  const r = revisar(e, { decision: "aceptar" });
+  assert.equal(r.ok, true);
+  assert.equal(e.resultado_aceptado.texto, "el bloque redactado");
+});
+
+await prueba("sin nada pendiente, agotar el presupuesto si deja el encargo agotado", async () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.llamadas_max = 1;
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  revisar(e, { decision: "devolver", nota: "otra vez" });
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  assert.equal(e.estado, AGOTADO);
+});
+
+await prueba("un encargo agotado no vuelve a llamar aunque se le suba el limite por la puerta de atras", async () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.llamadas_max = 1;
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  revisar(e, { decision: "devolver" });
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  const { llamar, visto } = actorQueResponde();
+  const r = await ejecutar(e, { llamar });
+  assert.equal(r.ok, false);
+  assert.equal(visto.length, 0);
+});
+
+await prueba("un consumo que el proveedor no informa se declara, no se estima", async () => {
+  const e = encargoTarifas();
+  const { llamar } = actorQueResponde("hecho", { tokens: 90 });
+  await ejecutar(e, { llamar });
+  assert.equal(e.consumo.tokens, 90);
+  assert.equal(e.consumo.coste_eur, 0);
+  assert.equal(e.consumo.sin_informar.coste, true);
+  assert.ok(e.consumo.sin_informar.nota.includes("no se estima"));
+});
+
+process.stdout.write("\nSin actor no hay resultado\n");
+
+await prueba("si el actor no esta alcanzable el encargo NO avanza y no inventa salida", async () => {
+  const e = encargoTarifas();
+  const r = await ejecutar(e, { llamar: async () => ({ encarnado: false, motivo: "ollama no responde" }) });
+  assert.equal(r.ok, false);
+  assert.equal(e.estado, ABIERTO, "vuelve a estar abierto, no esperando revision");
+  assert.equal(e.continuidad.length, 0, "no hay turno de relleno");
+  assert.equal(e.intentos[0].motivo, "ollama no responde");
+  assert.equal(e.consumo.llamadas, 0, "una llamada que no produjo nada no se cobra como turno");
+});
+
+await prueba("un error del actor se captura como intento fallido, no como excepcion suelta", async () => {
+  const e = encargoTarifas();
+  const r = await ejecutar(e, { llamar: async () => { throw new Error("ECONNREFUSED"); } });
+  assert.equal(r.ok, false);
+  assert.ok(e.intentos[0].motivo.includes("ECONNREFUSED"));
+  assert.equal(e.consumo.errores, 1);
+});
+
+process.stdout.write("\nContinuidad y costura\n");
+
+await prueba("cambiar de proveedor conserva el hilo y anota donde se cambio", async () => {
+  const e = encargoTarifas();
+  anotarTurnoDelCapitan(e, "primera vuelta");
+  await ejecutar(e, { llamar: actorQueResponde("respuesta local").llamar });
+  cambiarConexion(e, { proveedor: "openai_compat", modelo: "gpt-x" });
+  assert.equal(e.continuidad.length, 2, "el hilo pertenece al encargo, no al proveedor");
+  assert.equal(e.costuras[0].tras_turno, 2);
+  assert.equal(e.costuras[0].de.proveedor, "ollama");
+  assert.equal(e.costuras[0].a.proveedor, "openai_compat");
+});
+
+await prueba("cada turno conserva quien lo escribio aunque el proveedor cambie", async () => {
+  const e = encargoTarifas();
+  await ejecutar(e, { llamar: async () => ({ encarnado: true, texto: "A", actor: "ollama:qwen2.5:7b" }) });
+  cambiarConexion(e, { proveedor: "openai_compat", modelo: "gpt-x" });
+  e.estado = ABIERTO;
+  await ejecutar(e, { llamar: async () => ({ encarnado: true, texto: "B", actor: "openai_compat:gpt-x" }) });
+  assert.deepEqual(e.continuidad.map((t) => t.actor), ["ollama:qwen2.5:7b", "openai_compat:gpt-x"]);
+});
+
+await prueba("el presupuesto sobrevive al cambio de conexion si no se declara otro", () => {
+  const e = encargoTarifas();
+  e.conexion.presupuesto.llamadas_max = 7;
+  cambiarConexion(e, { proveedor: "openai_compat", modelo: "gpt-x" });
+  assert.equal(e.conexion.presupuesto.llamadas_max, 7);
+});
+
+await prueba("un turno vacio del Capitan no se anota", () => {
+  const e = encargoTarifas();
+  assert.throws(() => anotarTurnoDelCapitan(e, "   "));
+  assert.equal(e.continuidad.length, 0);
+});
+
+process.stdout.write("\nRevision\n");
+
+await prueba("un encargo que nadie reviso no esta hecho: esta esperando", async () => {
+  const e = encargoTarifas();
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  assert.equal(e.estado, ESPERANDO_REVISION);
+  assert.equal(e.resultado_aceptado, null);
+});
+
+await prueba("aceptar fija el resultado con el turno y el actor que lo produjo", async () => {
+  const e = encargoTarifas();
+  await ejecutar(e, { llamar: actorQueResponde("60/60, 90/85, bono 500").llamar });
+  const r = revisar(e, { decision: "aceptar", nota: "sirve" });
+  assert.equal(r.ok, true);
+  assert.equal(e.estado, ACEPTADO);
+  assert.equal(e.resultado_aceptado.texto, "60/60, 90/85, bono 500");
+  assert.equal(e.resultado_aceptado.actor, "ollama:qwen2.5:7b");
+});
+
+await prueba("devolver reabre el encargo con la nota del Capitan", async () => {
+  const e = encargoTarifas();
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  revisar(e, { decision: "devolver", nota: "falta la modalidad" });
+  assert.equal(e.estado, DEVUELTO);
+  assert.equal(e.motivo, "falta la modalidad");
+});
+
+await prueba("no se revisa lo que nadie ha ejecutado", () => {
+  const e = encargoTarifas();
+  const r = revisar(e, { decision: "aceptar" });
+  assert.equal(r.ok, false);
+  assert.ok(r.motivo.includes("no esta esperando revision"));
+});
+
+await prueba("un encargo aceptado no se vuelve a ejecutar", async () => {
+  const e = encargoTarifas();
+  await ejecutar(e, { llamar: actorQueResponde().llamar });
+  revisar(e, { decision: "aceptar" });
+  const { llamar, visto } = actorQueResponde();
+  const r = await ejecutar(e, { llamar });
+  assert.equal(r.ok, false);
+  assert.equal(visto.length, 0);
+});
+
+process.stdout.write("\nValidacion de apertura\n");
+
+await prueba("un encargo sin objetivo no es un encargo", () => {
+  assert.throws(() => crearEncargo({ responsable: { nakama: "nami" } }), /objetivo/);
+});
+
+await prueba("un encargo sin responsable no se abre", () => {
+  assert.throws(() => crearEncargo({ objetivo: "algo" }), /responsable/);
+});
+
+process.stdout.write("\nEl diario\n");
+
+await prueba("cerrar la Cubierta y abrirla devuelve el mismo encargo", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  const e = await reg.abrir({
+    objetivo: "Redactar el bloque de tarifas",
+    responsable: { nakama: "nami" },
+    contexto: { fuentes: [{ id: "tarifas-2026", clase: "publico", contenido: "60 EUR / 85 EUR / 500 EUR" }] },
+    autonomia: { acciones: ["leer", "redactar"] },
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b" },
+  });
+  await reg.decir(e.id, "empieza por el bono");
+  await reg.ejecutar(e.id, { llamar: actorQueResponde("bono de 10 sesiones: 500 EUR").llamar });
+  await reg.revisar(e.id, { decision: "aceptar", nota: "vale" });
+
+  const otra = RegistroEncargos.reconstruir(diario);
+  const rec = otra.obtener(e.id);
+  assert.equal(rec.estado, ACEPTADO);
+  assert.equal(rec.objetivo, e.objetivo);
+  assert.equal(rec.continuidad.length, 2);
+  assert.equal(rec.resultado_aceptado.texto, "bono de 10 sesiones: 500 EUR");
+  assert.equal(rec.contexto.fuentes[0].contenido, "60 EUR / 85 EUR / 500 EUR");
+});
+
+await prueba("reconstruir reaplica hechos: no vuelve a llamar a ningun actor", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  const { llamar, visto } = actorQueResponde();
+  await reg.ejecutar(e.id, { llamar });
+  assert.equal(visto.length, 1);
+  RegistroEncargos.reconstruir(diario);
+  assert.equal(visto.length, 1, "un turno que costo dinero no se paga otra vez al abrir");
+});
+
+await prueba("el diario tampoco guarda contenido clinico", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  await reg.abrir({
+    objetivo: "parte de un caso", responsable: { nakama: "chopper" },
+    contexto: { fuentes: [{ id: "sesion-S14", clase: "clinico_protegido", contenido: "SECRETO_CLINICO" }] },
+  });
+  assert.ok(!JSON.stringify(diario).includes("SECRETO_CLINICO"));
+});
+
+await prueba("un intento fallido queda en el diario y se recupera al reconstruir", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  await reg.ejecutar(e.id, { llamar: async () => ({ encarnado: false, motivo: "sin backend" }) });
+  const rec = RegistroEncargos.reconstruir(diario).obtener(e.id);
+  assert.equal(rec.intentos.length, 1);
+  assert.equal(rec.intentos[0].motivo, "sin backend");
+  assert.equal(rec.estado, ABIERTO);
+});
+
+await prueba("la costura de proveedor sobrevive a la reconstruccion", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  await reg.ejecutar(e.id, { llamar: actorQueResponde("A").llamar });
+  await reg.cambiarConexion(e.id, { proveedor: "openai_compat", modelo: "gpt-x" });
+  const rec = RegistroEncargos.reconstruir(diario).obtener(e.id);
+  assert.equal(rec.conexion.proveedor, "openai_compat");
+  assert.equal(rec.costuras.length, 1);
+  assert.equal(rec.continuidad.length, 1, "el hilo se hereda entero");
+});
+
+await prueba("la bandera de presupuesto agotado sobrevive a la reconstruccion", async () => {
+  const diario = [];
+  const reg = new RegistroEncargos({ escribir: async (ev) => { diario.push(ev); } });
+  const e = await reg.abrir({ ...encargoCrudoMinimo(), conexion: { proveedor: "ollama", presupuesto: { llamadas_max: 1 } } });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.revisar(e.id, { decision: "devolver" });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  const rec = RegistroEncargos.reconstruir(diario).obtener(e.id);
+  assert.equal(rec.presupuesto_agotado, true);
+  assert.equal(rec.estado, AGOTADO);
+});
+
+
+process.stdout.write("\nCostura con la Bitacora\n");
+
+const SECRETO = "SESION_S14_CONTENIDO_QUE_NO_DEBE_SALIR";
+
+function encargoClinico() {
+  return crearEncargo({
+    objetivo: "Preparar el parte de Marta S14",   // objetivo que nombra un caso: no debe salir
+    responsable: { nakama: "chopper" },
+    contexto: { fuentes: [
+      { id: "tarifas", clase: "publico", contenido: "60 EUR" },
+      { id: "sesion-S14", titulo: "Transcripcion", clase: "clinico_protegido", contenido: SECRETO },
+    ] },
+    autonomia: { acciones: ["leer", "redactar"] },
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b" },
+  });
+}
+
+/** Bitacora de mentira: guarda lo enviado para poder mirarlo. */
+function bitacoraFalsa(respuesta = { reachable: true, ok: true, eventId: "evt-1", writeVerified: true }) {
+  const enviados = [];
+  const appendEvent = async (payload, opciones) => {
+    enviados.push({ payload, clave: opciones.idempotencyKey });
+    return respuesta;
+  };
+  return { appendEvent, enviados };
+}
+
+await prueba("los eventos hablan el vocabulario cerrado del servidor, no uno propio", () => {
+  const ev = construirEventoApertura(encargoTarifas());
+  assert.ok(ALLOWED_EVENT_KIND.includes(ev.event_kind));
+  assert.ok(ALLOWED_EPISTEMIC_STATUS.includes(ev.epistemic_status));
+  assert.ok(ALLOWED_SOURCE.includes(ev.source));
+  assert.ok(ALLOWED_SENSITIVITY.includes(ev.sensitivity));
+  assert.ok(ALLOWED_STATUS.includes(ev.status));
+  for (const campo of ["actor", "role", "topic", "title", "message"]) {
+    assert.ok(typeof ev[campo] === "string" && ev[campo].length, `falta el obligatorio ${campo}`);
+  }
+});
+
+await prueba("MEMBRANA: el contenido de las fuentes no cruza al spine", () => {
+  const e = encargoClinico();
+  const texto = JSON.stringify(construirEventoApertura(e));
+  assert.ok(!texto.includes(SECRETO), "el contenido clinico no puede aparecer en el evento");
+  assert.ok(!texto.includes("60 EUR"), "tampoco el de una fuente publica: al spine van recuentos");
+});
+
+await prueba("MEMBRANA: con material clinico el objetivo se retiene", () => {
+  const ev = construirEventoApertura(encargoClinico());
+  assert.ok(!ev.title.includes("Marta"), "un objetivo puede nombrar un caso sin querer");
+  assert.ok(ev.title.includes("objetivo retenido"));
+  assert.ok(ev.message.includes("membrana clinica"));
+});
+
+await prueba("sin material clinico el objetivo si viaja: si no, el spine no sirve", () => {
+  const ev = construirEventoApertura(encargoTarifas());
+  assert.ok(ev.title.includes("Redactar el bloque de tarifas"));
+  assert.ok(!ev.title.includes("retenido"));
+});
+
+await prueba("lo unico que cruza de una fuente clinica es su opaco", () => {
+  const e = encargoClinico();
+  const ev = construirEventoApertura(e);
+  const opaco = opacosDe(e)[0];
+  assert.ok(opaco);
+  assert.ok(ev.relations.includes(`fuente_opaca:${opaco}`));
+  assert.equal(tocaMaterialProtegido(e), true);
+});
+
+await prueba("MEMBRANA: ni el texto de los turnos ni el resultado aceptado cruzan", async () => {
+  const e = encargoTarifas();
+  anotarTurnoDelCapitan(e, "PALABRAS_DEL_CAPITAN");
+  await ejecutar(e, { llamar: actorQueResponde("RESPUESTA_DEL_MODELO").llamar });
+  const r = revisar(e, { decision: "aceptar" });
+  const texto = JSON.stringify(construirEventoRevision(e, r.revision));
+  assert.ok(!texto.includes("PALABRAS_DEL_CAPITAN"));
+  assert.ok(!texto.includes("RESPUESTA_DEL_MODELO"));
+  assert.ok(texto.includes("no sale del encargo"));
+});
+
+await prueba("aceptar y devolver se distinguen en el estado del evento", async () => {
+  const a = encargoTarifas();
+  await ejecutar(a, { llamar: actorQueResponde().llamar });
+  const ra = revisar(a, { decision: "aceptar" });
+  assert.equal(construirEventoRevision(a, ra.revision).status, "verified");
+
+  const b = encargoTarifas();
+  await ejecutar(b, { llamar: actorQueResponde().llamar });
+  const rb = revisar(b, { decision: "devolver", nota: "falta algo" });
+  assert.equal(construirEventoRevision(b, rb.revision).status, "decided");
+});
+
+await prueba("DEGRADACION: sin bitacora el encargo abre igual y el recibo lo dice", async () => {
+  const inalcanzable = async () => ({ reachable: false, ok: false, reason: "ECONNREFUSED" });
+  const reg = new RegistroEncargos({
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent: inalcanzable }),
+  });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  assert.equal(e.estado, ABIERTO, "el encargo existe aunque la autoridad no escuche");
+  assert.equal(e.bitacora.length, 1);
+  assert.equal(e.bitacora[0].cerro, false);
+  assert.equal(e.bitacora[0].alcanzable, false);
+  assert.ok(e.bitacora[0].motivo.includes("no alcanzable"));
+});
+
+await prueba("un fallo de la costura no rompe el encargo", async () => {
+  const reg = new RegistroEncargos({ cerrar: async () => { throw new Error("boom"); } });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  assert.equal(e.estado, ABIERTO);
+  assert.equal(e.bitacora[0].cerro, false);
+  assert.ok(e.bitacora[0].motivo.includes("boom"));
+});
+
+await prueba("cierran abrir y revisar; ejecutar NO satura el spine", async () => {
+  const { appendEvent, enviados } = bitacoraFalsa();
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }) });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  await reg.decir(e.id, "primer turno");
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  assert.equal(enviados.length, 1, "el turno no cierra nada: su sitio es el diario");
+  await reg.revisar(e.id, { decision: "aceptar" });
+  assert.equal(enviados.length, 2);
+  assert.deepEqual(enviados.map((x) => x.payload.event_kind), ["decision", "result"]);
+});
+
+await prueba("la clave de idempotencia es estable y distinta por revision", async () => {
+  const { appendEvent, enviados } = bitacoraFalsa();
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }) });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.revisar(e.id, { decision: "devolver" });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.revisar(e.id, { decision: "aceptar" });
+  assert.deepEqual(enviados.map((x) => x.clave), [
+    `encargo:abrir:${e.id}`,
+    `encargo:revisar:${e.id}:1`,
+    `encargo:revisar:${e.id}:2`,
+  ]);
+});
+
+await prueba("un recibo positivo guarda el evento y su write_verified", async () => {
+  const { appendEvent } = bitacoraFalsa();
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }) });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  assert.equal(e.bitacora[0].cerro, true);
+  assert.equal(e.bitacora[0].evento, "evt-1");
+  assert.equal(e.bitacora[0].write_verified, true);
+});
+
+await prueba("un rechazo de la bitacora se guarda como recibo negativo, no como exito", async () => {
+  const rechaza = async () => ({ reachable: true, ok: false, httpStatus: 422 });
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent: rechaza }) });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  assert.equal(e.bitacora[0].cerro, false);
+  assert.equal(e.bitacora[0].alcanzable, true, "alcanzable y rechazado no es lo mismo que caida");
+  assert.ok(e.bitacora[0].motivo.includes("422"));
+});
+
+await prueba("los recibos sobreviven al diario, y reconstruir no reenvia nada", async () => {
+  const diario = [];
+  const { appendEvent, enviados } = bitacoraFalsa();
+  const reg = new RegistroEncargos({
+    escribir: async (ev) => { diario.push(ev); },
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }),
+  });
+  const e = await reg.abrir(encargoCrudoMinimo());
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.revisar(e.id, { decision: "aceptar" });
+  assert.equal(enviados.length, 2);
+
+  const rec = RegistroEncargos.reconstruir(diario, {
+    cerrar: (m, x, y) => cerrarEnBitacora(m, x, y, { appendEvent }),
+  }).obtener(e.id);
+  assert.equal(rec.bitacora.length, 2, "los recibos vuelven del diario");
+  assert.equal(rec.bitacora[0].cerro, true);
+  assert.equal(enviados.length, 2, "reaplicar hechos no vuelve a escribir en el spine");
+});
+
+await prueba("sin cerrador inyectado el encargo funciona igual, sin recibos", async () => {
+  const reg = new RegistroEncargos({});
+  const e = await reg.abrir(encargoCrudoMinimo());
+  assert.deepEqual(e.bitacora, []);
+});
+
+
+process.stdout.write("\nDesvios: anotar, sentenciar, registrar\n");
+
+/** Encargo que pedira una accion que no tiene concedida. */
+function encargoQueSeDesvia() {
+  return crearEncargo({
+    objetivo: "Redactar y mandar el bloque de tarifas",
+    responsable: { nakama: "nami" },
+    autonomia: { acciones: ["leer", "redactar"] },   // sin enviar_fuera
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b" },
+  });
+}
+
+await prueba("un desvio nace con indice estable, pendiente y sin registrar", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  autorizar(e, "escribir_disco");
+  assert.deepEqual(e.desvios.map((d) => d.n), [1, 2]);
+  assert.ok(e.desvios.every((d) => d.veredicto === "pendiente" && d.registrado === false));
+});
+
+await prueba("el evento de desvio dice que la accion NO se ejecuto", () => {
+  const e = encargoQueSeDesvia();
+  const d = (autorizar(e, "enviar_fuera"), e.desvios[0]);
+  const ev = construirEventoDesvio(e, d);
+  assert.equal(ev.status, "blocked");
+  assert.equal(ev.event_kind, "observation");
+  assert.ok(ev.message.includes("NO se ejecuto"));
+  assert.ok(ev.relations.includes("accion_denegada:enviar_fuera"));
+  assert.ok(ev.next_safe_action.includes("Sentencia el Capitan"));
+});
+
+await prueba("el desvio entra al diario aunque la bitacora no escuche", async () => {
+  const diario = [];
+  const inalcanzable = async () => ({ reachable: false, ok: false, reason: "ECONNREFUSED" });
+  const reg = new RegistroEncargos({
+    escribir: async (ev) => { diario.push(ev); },
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent: inalcanzable }),
+  });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });  // sin "redactar": desvio
+  assert.equal(e.desvios.length, 1);
+  const enDiario = diario.filter((ev) => ev.tipo === "desvio");
+  assert.equal(enDiario.length, 1, "el diario es lo que sobrevive sin autoridad");
+  assert.equal(e.desvios[0].registrado, true);
+});
+
+await prueba("un desvio ya atendido no se reintenta en bucle", async () => {
+  const { appendEvent, enviados } = bitacoraFalsa();
+  const reg = new RegistroEncargos({ cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }) });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  const desvios = enviados.filter((x) => x.payload.status === "blocked");
+  assert.equal(desvios.length, 2, "cada intento denegado es un desvio nuevo, no un reenvio");
+  assert.deepEqual(desvios.map((x) => x.clave), [
+    `encargo:desvio:${e.id}:1`, `encargo:desvio:${e.id}:2`,
+  ]);
+});
+
+await prueba("solo el Capitan sentencia, y solo con el vocabulario del canon", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  assert.deepEqual(VEREDICTOS, ["fertil", "decae"]);
+  assert.equal(sentenciar(e, { n: 1, veredicto: "regular" }).ok, false);
+  assert.equal(sentenciar(e, { n: 9, veredicto: "fertil" }).ok, false);
+  assert.equal(sentenciar(e, { n: 1, veredicto: "fertil", nivel: 3 }).ok, true);
+  assert.equal(e.desvios[0].veredicto, "fertil");
+  assert.equal(e.desvios[0].nivel, 3);
+});
+
+await prueba("un desvio no se sentencia dos veces", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "decae" });
+  const r = sentenciar(e, { n: 1, veredicto: "fertil" });
+  assert.equal(r.ok, false);
+  assert.ok(r.motivo.includes("ya se sentencio"));
+  assert.equal(e.desvios[0].veredicto, "decae", "la primera sentencia manda");
+});
+
+await prueba("un nivel fuera de N0-N5 no se guarda como si fuera valido", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "fertil", nivel: 9 });
+  assert.equal(e.desvios[0].nivel, null, "sin graduar es mejor que graduado mal");
+});
+
+await prueba("el veredicto juzga el error: NO amplia la autonomia", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "fertil" });
+  assert.equal(autorizar(e, "enviar_fuera").ok, false, "declararlo fertil no lo concede");
+  assert.equal(e.desvios.length, 2, "y vuelve a anotarse como desvio");
+  const ev = construirEventoSentencia(e, e.desvios[0]);
+  assert.ok(ev.after.includes("no amplia la autonomia"));
+});
+
+await prueba("la sentencia responde ante el spine como del Capitan, no del sistema", () => {
+  const e = encargoQueSeDesvia();
+  autorizar(e, "enviar_fuera");
+  sentenciar(e, { n: 1, veredicto: "decae", nivel: 1, nota: "se sirve a si misma" });
+  const ev = construirEventoSentencia(e, e.desvios[0]);
+  assert.equal(ev.source, "captain");
+  assert.equal(ev.event_kind, "decision");
+  assert.equal(ev.epistemic_status, "evaluated");
+  assert.ok(ev.message.includes("Buggy"));
+  assert.ok(ev.message.includes("se sirve a si misma"));
+});
+
+await prueba("desvio y sentencia sobreviven a la reconstruccion", async () => {
+  const diario = [];
+  const { appendEvent } = bitacoraFalsa();
+  const reg = new RegistroEncargos({
+    escribir: async (ev) => { diario.push(ev); },
+    cerrar: (m, e, x) => cerrarEnBitacora(m, e, x, { appendEvent }),
+  });
+  const e = await reg.abrir({
+    objetivo: "x", responsable: { nakama: "nami" }, autonomia: { acciones: ["leer"] },
+  });
+  await reg.ejecutar(e.id, { llamar: actorQueResponde().llamar });
+  await reg.sentenciar(e.id, { n: 1, veredicto: "fertil", nivel: 2, nota: "sirve" });
+
+  const rec = RegistroEncargos.reconstruir(diario).obtener(e.id);
+  assert.equal(rec.desvios.length, 1);
+  assert.equal(rec.desvios[0].veredicto, "fertil");
+  assert.equal(rec.desvios[0].nivel, 2);
+  assert.equal(rec.desvios[0].nota, "sirve");
+  assert.equal(rec.desvios[0].registrado, true, "no se re-registra al abrir la Cubierta");
+});
+
+process.stdout.write("\nDesvios del Vigia\n");
+
+await prueba("el veredicto del Vigia habla la misma gramatica del canon", () => {
+  const ev = construirEventoVeredicto({
+    ts: "2026-09-10T00:00:00Z", nakama: "jimbe", clase: "capacidad_sensible",
+    veredicto: "fertil", nivel: 2, nota: "cartografio un acceso util",
+  });
+  assert.equal(ev.source, "captain");
+  assert.equal(ev.status, "decided");
+  assert.equal(ev.topic, "cubierta_vigia", "el desvio del barco no es el del encargo");
+  assert.ok(ev.message.includes("JoyBoy"));
+  assert.ok(ev.next_safe_action.includes("Ninguna"));
+});
+
+await prueba("sin bitacora el veredicto se emitio igual y el recibo lo dice", async () => {
+  const r = await cerrarVeredictoEnBitacora(
+    { ts: "2026-09-10T00:00:00Z", nakama: "zoro", veredicto: "decae" },
+    { appendEvent: async () => ({ reachable: false, ok: false, reason: "ECONNREFUSED" }) },
+  );
+  assert.equal(r.cerro, false);
+  assert.equal(r.alcanzable, false);
+  assert.ok(r.motivo.includes("no alcanzable"));
+});
+
+function encargoCrudoMinimo() {
+  return {
+    objetivo: "algo real", responsable: { nakama: "nami" },
+    autonomia: { acciones: ["leer", "redactar"] },
+    conexion: { proveedor: "ollama", modelo: "qwen2.5:7b" },
+  };
+}
+
+process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
+process.exit(fallos ? 1 : 0);

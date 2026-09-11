@@ -258,7 +258,7 @@ buscarlo y lo ves cruzar el barco.
 | `POST /api/senal` | un agente declara actividad (y genera recado) |
 | `POST /api/recado` | crear un recado a mano |
 | `POST /api/llave` | el Capitan concede o deniega la camara sellada |
-| `POST /api/veredicto` | el Capitan sentencia un desvio: fertil o decae |
+| `POST /api/veredicto` | el Capitan sentencia un desvio del Vigia; cierra en la bitacora |
 | `POST /api/hablar` | conversar con un nakama (y cosechar sus tiempos reales) |
 | `GET /api/salud` | parte de chopper-salud: solo lo medido, por eje |
 
@@ -272,9 +272,183 @@ node cubierta/test/test_cubierta.mjs
 node cubierta/test/test_pulso.mjs
 ```
 
-62 pruebas entre las dos suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
+```bash
+node cubierta/test/test_encargos.mjs
+```
+
+124 pruebas entre las tres suites. Las que importan no comprueban que el dibujo sea bonito, sino que el
 mundo no pueda mentir: que nadie se mueva sin actor, que nadie entre en la camara
 sellada, y que un dato ausente salga como `desconocido` y no como un numero.
+
+## El Encargo — dirigir trabajo, no solo verlo
+
+`http://127.0.0.1:8788/encargos`
+
+El recado hace que el barco **se vea**; el encargo hace que el barco **trabaje**.
+Son cosas distintas y no se mezclan: un recado nace de una senal, vive en memoria
+y muere con el proceso. Un encargo lo abre el Capitan, se guarda en disco y
+sobrevive a cerrar la Cubierta.
+
+Un encargo declara cinco cosas, y cada una responde a una decision del Capitan:
+
+| El Capitan decide | El encargo guarda |
+|---|---|
+| que trabajo quiere resolver | `objetivo`, `resultado_esperado`, `responsable` |
+| que contexto puede usarse | `contexto.fuentes`, cada una con su clase |
+| cuanta autonomia da | `autonomia.acciones`, denegadas por defecto |
+| con que conexion y cuanto gasto | `conexion.proveedor` y `conexion.presupuesto` |
+| que resultado acepta | `revisiones` y `resultado_aceptado` |
+
+El Puente de Encargos es una pagina aparte del barco isometrico, a proposito. El
+barco sirve para **ver** el sistema; dirigirlo con WASD seria una postura, no una
+interfaz.
+
+### Las seis reglas duras
+
+Estan en `server/encargos.mjs`, no solo aqui, y hay 62 pruebas sobre ellas
+(`node cubierta/test/test_encargos.mjs`).
+
+1. **Lo que se ve es lo que se manda.** `dossier()` es la unica construccion del
+   paquete que existe; `ejecutar()` envia eso mismo y no puede armar otro por su
+   cuenta. La pantalla ensena el paquete literal antes de que salga.
+2. **Lo clinico no llega a existir dentro del encargo.** Una fuente
+   `clinico_protegido` pierde el contenido **en la admision**, no al enseniarla:
+   el registro nunca lo guarda, el diario en disco tampoco, y lo unico que queda
+   es un identificador opaco. Un filtro de salida es una promesa; un registro que
+   nunca tuvo el dato es una propiedad. Es la Camara de Chopper aplicada al dato
+   en reposo, no solo al NPC que camina hasta la puerta.
+3. **Autonomia denegada por defecto.** El vocabulario de acciones es cerrado. Una
+   accion no concedida no se ejecuta y queda anotada como **desvio pendiente**,
+   con la misma gramatica del canon: lo sentencia el Capitan, nunca el sistema.
+4. **El presupuesto corta antes de gastar.** Un limite que se comprueba despues
+   de la llamada no es un limite, es un recibo. Y agotarse **no borra** un
+   resultado que espera revision: eso es trabajo ya pagado, y sustituirlo por
+   `agotado` haria irrevisable justo lo que ya costo dinero.
+5. **Sin actor alcanzable el encargo no avanza.** No hay salida de relleno: se
+   anota el intento con su motivo y el encargo se queda donde estaba. Misma ley
+   que el NPC mudo.
+6. **Todo se reconstruye del diario.** El estado vivo es una proyeccion de
+   `cubierta/state/encargos.jsonl`, append-only. Al arrancar se **reaplican
+   hechos**, no se re-ejecuta nada: un turno que costo dinero no se paga otra vez
+   al abrir la Cubierta.
+
+### La continuidad pertenece al encargo
+
+Cambiar de proveedor no reconstruye la conversacion: la hereda. `POST
+/api/encargo/conexion` deja una **costura** anotada con el turno exacto en el que
+se cambio, y cada turno conserva que actor lo escribio. Asi se puede leer despues
+que parte del hilo la produjo quien.
+
+Lo que viaja al modelo es solo `papel` y `texto`. La procedencia por turno se
+queda en el barco y se resume en el sello del dossier, para que el Capitan vea de
+un vistazo si esta continuidad es de un actor o de varios.
+
+La clave del proveedor **nunca viaja dentro del encargo**: sigue viviendo en el
+entorno del proceso. Un encargo dice con quien hablar, no lleva credenciales.
+
+### Cierre en la Bitacora
+
+`RUTINAS.md` fija una invariante del barco: **«toda rutina cierra en la Bitacora
+(spine). Si una rutina no escribe al spine, no ha cerrado.»** El Encargo nacio sin
+cumplirla: abria y cerraba trabajo dejando rastro solo en su diario. Dos registros y
+una sola autoridad declarada es la grieta por la que se escapa la responsabilidad.
+
+La costura vive en `server/bitacora_encargo.mjs` y usa **la puerta canonica**,
+`state/funcion_de_sueno/lib/bitacora.mjs`. No hay un segundo cliente: escribir otro
+seria lo contrario de coser.
+
+**Cierran cuatro momentos, no los turnos:** abrir, revisar, y los dos del desvio
+—anotarlo y sentenciarlo—. Es la misma regla que ya gobierna la capa visible del
+barco: al feed de cubierta solo llegan START y CLOSE. Los turnos intermedios son el
+trabajo, y su sitio es el diario. Al spine llega lo que **abre** responsabilidad y lo
+que la **cierra**.
+
+**La membrana, dos reglas duras.**
+
+1. **El contenido nunca viaja.** Ni el texto de las fuentes, ni el de los turnos, ni
+   el resultado aceptado. Al spine van recuentos, clases y decisiones.
+2. **El objetivo viaja solo si ninguna fuente es clinica.** Basta con que una lo sea
+   para que el titulo degrade a recuentos y opacos: un objetivo lo escribe el Capitan
+   en lenguaje natural y puede nombrar un caso sin proponerselo. Es la Camara de
+   Chopper aplicada tambien a la frase que la nombra.
+
+**Degradacion identica a la del sueno.** La Cubierta puede correr donde la bitacora
+no escucha. Nada de esto lanza y nada bloquea un encargo: si la autoridad no esta, el
+encargo abre y cierra igual, y el **recibo** dice por que no cerro en el spine. Ese
+recibo se guarda en el encargo y en el diario, positivo o negativo, porque un momento
+sin cerrar no esta mal hecho: esta **sin registrar**, y son cosas distintas. La
+pantalla los ensena por encargo, y la lista resume cuantos cerraron.
+
+La clave de idempotencia es estable (`encargo:abrir:<id>`, `encargo:revisar:<id>:<n>`),
+asi que un cierre reintentado reproduce en vez de duplicar. Reconstruir el registro
+desde el diario **no reenvia nada**: los recibos se reaplican como hechos, igual que
+los turnos.
+
+En modo replay no se cierra nada en el spine: un ensayo no ensucia la autoridad.
+
+### El desvio y su sentencia
+
+Un desvio es que alguien pidio una autonomia que el encargo no le concedia. La accion
+**no se ejecuta**; se anota. Eso abre responsabilidad, y por eso cierra en el spine
+como `blocked`: dice literalmente que la accion no llego a correr y que el asunto
+queda detenido.
+
+Un desvio que solo viviera en memoria seria una alarma que nadie puede auditar
+despues. Y un veredicto pendiente sin forma de emitirlo seria teatro, asi que el
+Capitan lo sentencia: `POST /api/encargo/sentenciar`, o los dos botones de la ficha.
+
+La gramatica es la del canon (`TEATRO.md`, El glitch), no una propia:
+
+| Veredicto | Que dice | Que pasa |
+|---|---|---|
+| **fertil** (JoyBoy) | la desviacion sirve al Capitan | es creatividad; sube por la membrana Deckard |
+| **decae** (Buggy) | se sirve a su propia inercia | cuarentena restaurativa, no basura |
+
+Lleva **nivel N0-N5**; un nivel fuera de rango se guarda como `null`, porque sin
+graduar es mejor que graduado mal. La sentencia va al spine con `source: captain`,
+que ahi no es un adorno: dice de quien es la responsabilidad.
+
+**Un veredicto juzga el error, NO amplia la autonomia.** Declarar algo fertil no
+concede el permiso: la siguiente vez vuelve a denegarse y a anotarse. Si esa
+autonomia debe existir, se concede abriendo un encargo que la declare. Confundir las
+dos cosas convertiria la alarma en una puerta, y hay una prueba que lo fija.
+
+El desvio entra **primero al diario y despues al spine**: es lo que sobrevive aunque
+la autoridad no escuche. Y se atiende una sola vez — un recibo negativo tambien
+cuenta como atendido, porque reintentarlo en cada tick seria ruido.
+
+El desvio del **Vigia** —una senal que declara algo que la constitucion de ese nakama
+no contempla— es otra cosa: cambia el sujeto y el alcance, asi que vive en
+`server/bitacora_vigia.mjs` y cierra bajo `topic: cubierta_vigia`. De el solo cierra
+**el veredicto**, no la deteccion: `detectarDesvios` recalcula cada tick, y un desvio
+detectado es un estado, no un suceso. El suceso es la sentencia.
+
+### El limite de la membrana, dicho claro
+
+El objetivo se retiene cuando alguna fuente es clinica. **La membrana mira las
+fuentes, no el texto del objetivo.** Un encargo sin ninguna fuente clinica cuyo
+objetivo diga "mandar el catalogo a los pacientes" manda esa frase al spine, porque
+para el sistema no hay nada protegido en juego.
+
+Es deliberado —retener siempre el objetivo dejaria el spine sin valor para
+trazabilidad— y es tambien el borde exacto donde la regla deja de proteger. Queda
+dicho aqui para que sea una decision y no una sorpresa.
+
+### Endpoints del encargo
+
+| Ruta | Que hace |
+|---|---|
+| `GET /encargos` | el Puente de Encargos (pagina) |
+| `GET /api/encargos` | lista corta, con consumo y presupuesto |
+| `GET /api/encargo?id=` | encargo completo **y su dossier**, siempre juntos |
+| `POST /api/encargo` | abrir un encargo |
+| `POST /api/encargo/decir` | anotar un turno del Capitan (no llama a nadie) |
+| `POST /api/encargo/ejecutar` | un turno contra el actor, dentro de limites |
+| `POST /api/encargo/conexion` | cambiar de proveedor conservando el hilo |
+| `POST /api/encargo/revisar` | `aceptar` o `devolver`. Es el unico cierre |
+| `POST /api/encargo/sentenciar` | el Capitan juzga un desvio: `fertil` o `decae`, con nivel |
+
+Un encargo que nadie reviso no esta hecho: esta esperando.
 
 ## Lo que esto todavia no es
 
@@ -282,5 +456,13 @@ sellada, y que un dato ausente salga como `desconocido` y no como un numero.
   este tipo de proyecto en la semana dos; llega cuando el esqueleto aguante.
 - **El mar y las islas no existen.** Solo el interior del barco.
 - **Un unico Capitan.** Su posicion es del cliente, no del servidor.
-- **La bitacora se lee, no se escribe.** La Cubierta observa; cuando escriba,
-  sera por la puerta canonica (`state/funcion_de_sueno/lib/bitacora.mjs`).
+- **El encargo todavia no cruza la camara sellada.** Un encargo puede *nombrar*
+  material clinico y el opaco viaja; conceder la llave por encargo, como ya se
+  hace por recado (`POST /api/llave`), sigue pendiente.
+- **El coste no se calcula, se recibe.** Si el proveedor no informa de tokens ni
+  de coste, el encargo lo declara `no informado` y no estima nada. Un tarifario
+  por modelo daria cifras reales; hoy no existe.
+- **De la capa de observacion solo escribe el veredicto.** Senales, recados y
+  cambios de presencia no cierran en la bitacora: un fantasma o un `discordante` son
+  estados que se recalculan, no sucesos. Cuando alguno merezca registro, sera por la
+  misma puerta canonica.

@@ -12,6 +12,7 @@
     "test:hub-utils": "node state/usopp/odysseus-extraction/phase0-local-test/test_hub_utils.js",
     "test:sueno": "python3 -m unittest discover -s state/funcion_de_sueno -p 'test_*.py' -v",
     "test:pulso": "node cubierta/test/test_pulso.mjs",
-    "test:cubierta-barco": "node cubierta/test/test_cubierta.mjs"
+    "test:cubierta-barco": "node cubierta/test/test_cubierta.mjs",
+    "test:encargos": "node cubierta/test/test_encargos.mjs"
   }
 }

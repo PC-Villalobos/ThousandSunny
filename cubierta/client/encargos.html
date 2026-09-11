@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puente de Encargos — Thousand Sunny</title>
+<style>
+  :root {
+    --tinta: #f0e2c4;
+    --tinta-suave: rgba(240, 226, 196, 0.62);
+    --panel: rgba(9, 16, 25, 0.86);
+    --borde: rgba(240, 226, 196, 0.16);
+    --ok: #8fd36a;
+    --aviso: #e0a04a;
+    --malo: #e0714a;
+    --frio: #6fa8d6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #050a10; color: var(--tinta); min-height: 100vh;
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header { padding: 18px 20px 6px; border-bottom: 1px solid var(--borde); }
+  header h1 { margin: 0; font-size: 18px; letter-spacing: 0.02em; }
+  header p { margin: 4px 0 0; color: var(--tinta-suave); font-size: 12px; }
+  header a { color: var(--frio); }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 16px; padding: 16px 20px 40px; align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 14px; }
+  .panel h2 {
+    margin: 0 0 10px; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--tinta-suave); font-weight: 600;
+  }
+  .fila { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; padding: 3px 0; }
+  .fila .v { font-variant-numeric: tabular-nums; font-weight: 600; }
+  button {
+    font: inherit; font-size: 12px; cursor: pointer; color: var(--tinta);
+    background: rgba(111, 168, 214, 0.14); border: 1px solid rgba(111, 168, 214, 0.45);
+    border-radius: 7px; padding: 6px 11px;
+  }
+  button:hover { background: rgba(111, 168, 214, 0.24); }
+  button.grave { background: rgba(224, 113, 74, 0.14); border-color: rgba(224, 113, 74, 0.5); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  input, textarea, select {
+    font: inherit; font-size: 13px; width: 100%; color: var(--tinta);
+    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--borde);
+    border-radius: 7px; padding: 7px 9px; margin-bottom: 8px;
+  }
+  label { display: block; font-size: 11px; color: var(--tinta-suave); margin-bottom: 3px; letter-spacing: 0.04em; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li.encargo {
+    border: 1px solid var(--borde); border-radius: 8px; padding: 9px 10px;
+    margin-bottom: 8px; cursor: pointer;
+  }
+  li.encargo:hover { border-color: rgba(111, 168, 214, 0.5); }
+  li.encargo.viva { border-left: 3px solid var(--frio); }
+  .objetivo { font-weight: 600; font-size: 13px; }
+  .estado { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .estado.aceptado { color: var(--ok); }
+  .estado.esperando_revision { color: var(--aviso); }
+  .estado.bloqueado, .estado.agotado, .estado.devuelto { color: var(--malo); }
+  .meta { color: var(--tinta-suave); font-size: 11px; margin-top: 2px; }
+  pre {
+    white-space: pre-wrap; word-break: break-word; margin: 0;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--borde);
+    border-radius: 7px; padding: 9px 10px; font-size: 12px;
+  }
+  .turno { border-left: 2px solid var(--borde); padding-left: 10px; margin-bottom: 10px; }
+  .turno .quien { font-size: 11px; color: var(--tinta-suave); letter-spacing: 0.06em; }
+  .turno.capitan { border-left-color: var(--frio); }
+  .omitida {
+    border: 1px dashed rgba(224, 113, 74, 0.5); border-radius: 7px;
+    padding: 7px 9px; margin-bottom: 6px; font-size: 12px; color: #f2b49a;
+  }
+  .nota { color: var(--tinta-suave); font-size: 11px; margin-top: 6px; }
+  .barra { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 3px; }
+  .barra i { display: block; height: 100%; background: var(--frio); }
+  .barra.lleno i { background: var(--malo); }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .vacio { color: var(--tinta-suave); font-size: 12px; }
+  .recibo { font-size: 12px; padding: 6px 9px; border-radius: 7px; margin-bottom: 5px; }
+  .recibo.si { background: rgba(143, 211, 106, 0.12); border: 1px solid rgba(143, 211, 106, 0.42); }
+  .recibo.no { background: rgba(224, 160, 74, 0.12); border: 1px solid rgba(224, 160, 74, 0.45); color: #f2c483; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Puente de Encargos</h1>
+  <p>
+    Un encargo es trabajo dirigido: contexto visible, autonomia acotada, presupuesto con corte
+    y un resultado que cierra el Capitan. La continuidad pertenece al encargo, no al proveedor.
+    <a href="/">Volver al barco</a>
+  </p>
+</header>
+
+<main>
+  <section>
+    <div class="panel" style="margin-bottom:16px">
+      <h2>Abrir encargo</h2>
+      <form id="alta">
+        <label for="objetivo">Que trabajo quieres resolver</label>
+        <input id="objetivo" required placeholder="Redactar el bloque de tarifas del catalogo">
+
+        <label for="esperado">Que resultado aceptas</label>
+        <input id="esperado" placeholder="Precio, duracion y modalidad, en tres lineas">
+
+        <label for="nakama">Quien responde</label>
+        <select id="nakama"></select>
+
+        <label for="fuente_titulo">Contexto: titulo de la fuente</label>
+        <input id="fuente_titulo" placeholder="Tarifas fijadas por el Capitan">
+
+        <label for="fuente_clase">Clase de la fuente</label>
+        <select id="fuente_clase">
+          <option value="publico">publico</option>
+          <option value="interno" selected>interno</option>
+          <option value="clinico_protegido">clinico protegido (no entra al encargo)</option>
+        </select>
+
+        <label for="fuente_contenido">Contenido</label>
+        <textarea id="fuente_contenido" rows="4" placeholder="Pegar aqui el material que el modelo puede usar"></textarea>
+
+        <label>Autonomia concedida</label>
+        <div id="acciones" style="margin-bottom:8px"></div>
+
+        <label for="proveedor">Conexion</label>
+        <select id="proveedor">
+          <option value="ollama">ollama (local)</option>
+          <option value="openai_compat">openai_compat</option>
+          <option value="ninguno">ninguno</option>
+        </select>
+        <input id="modelo" placeholder="modelo (opcional)">
+        <label for="llamadas">Presupuesto: llamadas maximas</label>
+        <input id="llamadas" type="number" min="1" value="6">
+
+        <button type="submit">Abrir encargo</button>
+        <p class="nota">La clave del proveedor no viaja en el encargo: vive en el entorno del proceso.</p>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>Encargos</h2>
+      <ul id="lista"><li class="vacio">Cargando...</li></ul>
+    </div>
+  </section>
+
+  <section id="detalle" class="panel">
+    <h2>Detalle</h2>
+    <p class="vacio">Elige un encargo de la lista, o abre uno nuevo.</p>
+  </section>
+</main>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+let elegido = null;
+let acciones = [];
+
+async function pedir(ruta, cuerpo) {
+  const opciones = cuerpo
+    ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(cuerpo) }
+    : {};
+  const res = await fetch(ruta, opciones);
+  return res.json();
+}
+
+// --- alta ---------------------------------------------------------------------
+const mundo = await pedir("/api/barco");
+$("nakama").innerHTML = mundo.tripulacion.nakamas
+  .map((n) => `<option value="${n.id}">${n.nombre} — ${n.rol}</option>`).join("");
+
+const catalogo = await pedir("/api/encargos");
+acciones = catalogo.acciones_posibles;
+$("acciones").innerHTML = acciones.map((a) => `
+  <label style="display:inline-flex;gap:5px;align-items:center;margin:0 10px 4px 0;font-size:12px;color:var(--tinta)">
+    <input type="checkbox" value="${a}" style="width:auto;margin:0" ${a === "leer" || a === "redactar" ? "checked" : ""}> ${a}
+  </label>`).join("");
+
+$("alta").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const contenido = $("fuente_contenido").value.trim();
+  const fuentes = contenido || $("fuente_titulo").value.trim()
+    ? [{
+        id: ($("fuente_titulo").value.trim() || "fuente").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        titulo: $("fuente_titulo").value.trim() || "sin titulo",
+        clase: $("fuente_clase").value,
+        contenido,
+      }]
+    : [];
+  const r = await pedir("/api/encargo", {
+    objetivo: $("objetivo").value.trim(),
+    resultado_esperado: $("esperado").value.trim(),
+    responsable: { nakama: $("nakama").value },
+    contexto: { fuentes },
+    autonomia: { acciones: [...$("acciones").querySelectorAll("input:checked")].map((c) => c.value) },
+    conexion: {
+      proveedor: $("proveedor").value,
+      modelo: $("modelo").value.trim() || null,
+      presupuesto: { llamadas_max: Number($("llamadas").value) || 6 },
+    },
+  });
+  if (!r.ok) return alert(r.motivo);
+  $("alta").reset();
+  elegido = r.encargo.id;
+  await refrescar();
+});
+
+// --- lista --------------------------------------------------------------------
+async function refrescar() {
+  const { encargos } = await pedir("/api/encargos");
+  $("lista").innerHTML = encargos.length
+    ? encargos.map((e) => `
+      <li class="encargo ${e.estado === "esperando_revision" ? "viva" : ""}" data-id="${e.id}">
+        <div class="objetivo">${escapar(e.objetivo)}</div>
+        <div class="estado ${e.estado}">${e.estado.replace(/_/g, " ")}</div>
+        <div class="meta">${e.responsable} &middot; ${e.proveedor}${e.modelo ? ":" + escapar(e.modelo) : ""}
+          &middot; ${e.turnos} turno(s) &middot; ${e.consumo.llamadas}/${e.presupuesto.llamadas_max} llamadas</div>
+        <div class="meta">bitacora: ${e.bitacora.cerrados}/${e.bitacora.momentos} momento(s) cerrado(s)${
+          e.bitacora.cerrados < e.bitacora.momentos ? " &middot; solo en el diario" : ""}</div>
+      </li>`).join("")
+    : '<li class="vacio">Ningun encargo abierto. El barco no finge trabajo que no existe.</li>';
+  for (const li of $("lista").querySelectorAll("li.encargo")) {
+    li.addEventListener("click", () => { elegido = li.dataset.id; pintarDetalle(); });
+  }
+  if (elegido) await pintarDetalle();
+}
+
+// --- detalle ------------------------------------------------------------------
+async function pintarDetalle() {
+  const r = await pedir(`/api/encargo?id=${encodeURIComponent(elegido)}`);
+  if (!r.ok) { $("detalle").innerHTML = "<h2>Detalle</h2><p class='vacio'>Ese encargo ya no esta.</p>"; return; }
+  const e = r.encargo;
+  const d = r.dossier;
+  const p = e.conexion.presupuesto;
+  const gastado = Math.min(1, e.consumo.llamadas / p.llamadas_max);
+
+  $("detalle").innerHTML = `
+    <h2>Encargo</h2>
+    <div class="objetivo" style="font-size:15px">${escapar(e.objetivo)}</div>
+    <div class="meta">${escapar(e.resultado_esperado || "sin resultado esperado declarado")}</div>
+    <div class="estado ${e.estado}" style="margin-top:6px">${e.estado.replace(/_/g, " ")}</div>
+    ${e.motivo ? `<div class="meta">${escapar(e.motivo)}</div>` : ""}
+
+    <h2 style="margin-top:16px">Lo que recibe el modelo</h2>
+    <p class="nota" style="margin-top:0">Esto es literalmente el paquete que sale hacia el actor. No hay un contexto oculto detras.</p>
+    ${d.fuentes.length
+      ? d.fuentes.map((f) => `<div style="margin-bottom:8px"><div class="meta">${escapar(f.titulo)} [${f.clase}]</div><pre>${escapar(f.contenido)}</pre></div>`).join("")
+      : '<p class="vacio">Ninguna fuente admitida: el modelo trabaja solo con el objetivo.</p>'}
+    ${d.omitidas.length
+      ? `<h2 style="margin-top:14px">Material que existe y no se entrega</h2>` +
+        d.omitidas.map((o) => `<div class="omitida"><b>${escapar(o.titulo || o.id)}</b> [${o.clase}]${o.opaco ? " &middot; " + o.opaco : ""}<br>${escapar(o.motivo)}</div>`).join("")
+      : ""}
+
+    <h2 style="margin-top:16px">Autonomia y conexion</h2>
+    <div class="fila"><span>acciones concedidas</span><span class="v">${d.autonomia.acciones.join(", ") || "ninguna"}</span></div>
+    <div class="fila"><span>proveedor</span><span class="v">${e.conexion.proveedor}${e.conexion.modelo ? ":" + escapar(e.conexion.modelo) : ""}</span></div>
+    <div class="fila"><span>llamadas</span><span class="v">${e.consumo.llamadas} / ${p.llamadas_max}</span></div>
+    <div class="barra ${gastado >= 1 ? "lleno" : ""}"><i style="width:${Math.round(gastado * 100)}%"></i></div>
+    <div class="fila"><span>tokens</span><span class="v">${e.consumo.sin_informar?.tokens ? "no informado" : e.consumo.tokens}</span></div>
+    <div class="fila"><span>coste</span><span class="v">${e.consumo.sin_informar?.coste ? "no informado" : e.consumo.coste_eur + " EUR"}</span></div>
+    <div class="fila"><span>intentos fallidos</span><span class="v">${e.consumo.errores}</span></div>
+    ${e.consumo.sin_informar ? `<p class="nota">${escapar(e.consumo.sin_informar.nota)}</p>` : ""}
+    ${e.presupuesto_agotado ? '<p class="nota" style="color:var(--malo)">Presupuesto agotado: no saldra ninguna llamada mas.</p>' : ""}
+
+    ${e.costuras.length ? `<h2 style="margin-top:16px">Costuras de proveedor</h2>` +
+      e.costuras.map((c) => `<div class="meta">tras el turno ${c.tras_turno}: ${c.de.proveedor} &rarr; ${c.a.proveedor}</div>`).join("") : ""}
+
+    ${e.desvios.length ? `<h2 style="margin-top:16px">Desvios</h2>
+      <p class="nota" style="margin-top:0">La accion no se ejecuto. Un veredicto juzga el error, no concede el permiso:
+        si esa autonomia debe existir, se concede abriendo un encargo que la declare.</p>` +
+      e.desvios.map((x) => `<div class="omitida">
+        <b>${escapar(x.accion)}</b> &middot; ${escapar(x.motivo)}
+        ${x.veredicto === "pendiente"
+          ? `<div class="acciones" style="margin-top:7px">
+               <input type="number" min="0" max="5" placeholder="nivel N0-N5" id="niv-${x.n}"
+                 style="width:120px;margin:0">
+               <button data-desvio="${x.n}" data-v="fertil">Fertil (JoyBoy)</button>
+               <button data-desvio="${x.n}" data-v="decae" class="grave">Decae (Buggy)</button>
+             </div>`
+          : `<div class="meta" style="margin-top:4px">sentenciado <b>${x.veredicto}</b>${
+               x.nivel !== null && x.nivel !== undefined ? ` &middot; nivel N${x.nivel}` : " &middot; sin graduar"}${
+               x.nota ? ` &middot; ${escapar(x.nota)}` : ""}</div>`}
+      </div>`).join("") : ""}
+
+    <h2 style="margin-top:16px">Hilo (${e.continuidad.length} turnos, ${d.sello.actores_en_continuidad.length} actor(es))</h2>
+    ${e.continuidad.length
+      ? e.continuidad.map((t) => `
+        <div class="turno ${t.papel}">
+          <div class="quien">${t.papel === "capitan" ? "Capitan" : escapar(t.actor || "actor")}</div>
+          <div>${escapar(t.texto)}</div>
+        </div>`).join("")
+      : '<p class="vacio">Todavia no ha hablado nadie.</p>'}
+    ${e.intentos.length ? e.intentos.map((i) => `<div class="omitida">intento fallido: ${escapar(i.motivo)}</div>`).join("") : ""}
+
+    <h2 style="margin-top:16px">Cierre en la Bitacora</h2>
+    <p class="nota" style="margin-top:0">Solo abrir y revisar cierran en la autoridad; los turnos viven en el diario.
+      Al spine van recuentos y decisiones: ni el contenido de las fuentes ni el texto del resultado salen de aqui.</p>
+    ${e.bitacora.length
+      ? e.bitacora.map((b) => `<div class="recibo ${b.cerro ? "si" : "no"}">
+          <b>${b.momento}</b> &middot; ${b.cerro
+            ? `registrado como ${escapar(b.evento || "?")} &middot; write_verified: ${b.write_verified}`
+            : `sin cerrar &middot; ${escapar(b.motivo || "sin motivo")}`}
+        </div>`).join("")
+      : '<p class="vacio">Ningun momento registrado todavia.</p>'}
+
+    <h2 style="margin-top:16px">Turno del Capitan</h2>
+    <textarea id="decir" rows="3" placeholder="Que le pides ahora"></textarea>
+    <div class="acciones">
+      <button id="b-decir">Anotar turno</button>
+      <button id="b-ejecutar" ${e.estado === "aceptado" || e.presupuesto_agotado ? "disabled" : ""}>Ejecutar</button>
+      <button id="b-aceptar" ${e.estado === "esperando_revision" ? "" : "disabled"}>Aceptar resultado</button>
+      <button id="b-devolver" class="grave" ${e.estado === "esperando_revision" ? "" : "disabled"}>Devolver</button>
+    </div>
+    ${e.resultado_aceptado ? `
+      <h2 style="margin-top:16px">Resultado aceptado</h2>
+      <pre>${escapar(e.resultado_aceptado.texto || "")}</pre>
+      <p class="nota">Turno ${e.resultado_aceptado.turno}, producido por ${escapar(e.resultado_aceptado.actor || "actor desconocido")}.</p>` : ""}
+  `;
+
+  for (const boton of $("detalle").querySelectorAll("button[data-desvio]")) {
+    boton.addEventListener("click", async () => {
+      const n = Number(boton.dataset.desvio);
+      const bruto = $(`niv-${n}`)?.value;
+      const nivel = bruto === "" || bruto === undefined ? null : Number(bruto);
+      const nota = prompt(`Nota de la sentencia (${boton.dataset.v}):`, "");
+      if (nota === null) return;
+      const r2 = await pedir("/api/encargo/sentenciar", {
+        id: e.id, n, veredicto: boton.dataset.v, nivel, nota,
+      });
+      if (!r2.ok) alert(r2.motivo);
+      await refrescar();
+    });
+  }
+
+  $("b-decir").addEventListener("click", async () => {
+    const texto = $("decir").value.trim();
+    if (!texto) return;
+    const r2 = await pedir("/api/encargo/decir", { id: e.id, texto });
+    if (!r2.ok) alert(r2.motivo);
+    await refrescar();
+  });
+  $("b-ejecutar").addEventListener("click", async (ev) => {
+    ev.target.disabled = true;
+    ev.target.textContent = "Ejecutando...";
+    const r2 = await pedir("/api/encargo/ejecutar", { id: e.id });
+    if (!r2.ok) alert(`El encargo no avanzo: ${r2.motivo}`);
+    await refrescar();
+  });
+  $("b-aceptar").addEventListener("click", async () => {
+    await pedir("/api/encargo/revisar", { id: e.id, decision: "aceptar" });
+    await refrescar();
+  });
+  $("b-devolver").addEventListener("click", async () => {
+    const nota = prompt("Que falta para que valga:");
+    if (nota === null) return;
+    await pedir("/api/encargo/revisar", { id: e.id, decision: "devolver", nota });
+    await refrescar();
+  });
+}
+
+function escapar(s) {
+  return String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+await refrescar();
+</script>
+</body>
+</html>

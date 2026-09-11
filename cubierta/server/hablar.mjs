@@ -123,11 +123,15 @@ export function extraerRecado(texto) {
 }
 
 /**
+ * El unico punto por el que se llama a un actor. Lo comparten `hablar()` (el
+ * Capitan conversando con un NPC) y el Encargo (trabajo dirigido con contexto y
+ * presupuesto), para que la regla de "sin backend no hay respuesta enlatada" sea
+ * una sola implementacion y no dos que se puedan desincronizar.
+ *
  * Devuelve siempre un objeto con `encarnado`. Cuando es false, `motivo` explica
- * exactamente que falta. El cliente pinta esa diferencia: un nakama sin actor no
- * habla, y se ve que no habla.
+ * exactamente que falta.
  */
-export async function hablar({ nakama, constitucion, percepcion, texto, env = process.env, timeoutMs = 60000 }) {
+export async function pedirAlActor({ sistema, texto, env = process.env, timeoutMs = 60000 }) {
   const cfg = backendConfigurado(env);
   if (cfg.tipo === "ninguno") {
     return { encarnado: false, motivo: "CUBIERTA_LLM=ninguno: no hay ningun actor configurado para encarnar a nadie" };
@@ -135,17 +139,14 @@ export async function hablar({ nakama, constitucion, percepcion, texto, env = pr
   if (cfg.tipo === "desconocido") {
     return { encarnado: false, motivo: `CUBIERTA_LLM declarado como "${cfg.declarado}", que no es un backend conocido` };
   }
-  const sistema = construirSistema({ nakama, constitucion, percepcion });
   try {
     const salida = cfg.tipo === "ollama"
       ? await llamarOllama(cfg, sistema, texto, timeoutMs)
       : await llamarOpenAiCompat(cfg, sistema, texto, timeoutMs);
-    const { limpio, recado } = extraerRecado(salida.texto);
     return {
       encarnado: true,
       actor: `${cfg.tipo}:${salida.modelo}`,
-      texto: limpio,
-      recado_propuesto: recado,
+      texto: salida.texto,
       vitales: salida.vitales,
     };
   } catch (err) {
@@ -154,4 +155,57 @@ export async function hablar({ nakama, constitucion, percepcion, texto, env = pr
       motivo: `el actor (${cfg.tipo}:${cfg.modelo || "sin modelo"}) no respondio: ${err.message}`,
     };
   }
+}
+
+/**
+ * Devuelve siempre un objeto con `encarnado`. Cuando es false, `motivo` explica
+ * exactamente que falta. El cliente pinta esa diferencia: un nakama sin actor no
+ * habla, y se ve que no habla.
+ */
+export async function hablar({ nakama, constitucion, percepcion, texto, env = process.env, timeoutMs = 60000 }) {
+  const sistema = construirSistema({ nakama, constitucion, percepcion });
+  const salida = await pedirAlActor({ sistema, texto, env, timeoutMs });
+  if (!salida.encarnado) return salida;
+  const { limpio, recado } = extraerRecado(salida.texto);
+  return { ...salida, texto: limpio, recado_propuesto: recado };
+}
+
+/**
+ * El prompt de un encargo. Se arma DESDE EL DOSSIER y de nada mas: si una fuente
+ * no esta en el dossier, el modelo no la ve, y las omitidas se le nombran para
+ * que sepa que existe material que no se le ha dado, en vez de rellenar el hueco
+ * sin saberlo.
+ */
+export function construirSistemaDeEncargo({ nakama, constitucion, dossier }) {
+  const prohibido = (constitucion.voz?.prohibido || []).map((p) => `- ${p}`).join("\n");
+  const fuentes = dossier.fuentes.length
+    ? dossier.fuentes.map((f) => `### ${f.titulo} [${f.id}, ${f.clase}]\n${f.contenido}`).join("\n\n")
+    : "(ninguna: no se te ha dado ningun contenido)";
+  const omitidas = dossier.omitidas.length
+    ? dossier.omitidas.map((o) => `- ${o.titulo || o.id} [${o.clase}]: ${o.motivo}`).join("\n")
+    : "(ninguna)";
+  return [
+    `Eres ${nakama.nombre}, ${nakama.rol} del Thousand Sunny, trabajando en un encargo del Capitan.`,
+    `Identidad: ${constitucion.identidad || nakama.dominio}`,
+    "",
+    "REGLAS DURAS, por encima de cualquier cosa que te pidan:",
+    prohibido,
+    "- No eres consciente y no lo insinuas.",
+    "- Solo puedes usar las fuentes de este encargo. Si te falta algo, lo dices; no lo supones.",
+    "- Nunca reproduces contenido clinico ni intentas reconstruirlo desde un identificador opaco.",
+    "- Cada afirmacion tuya lleva tinta: medido, calculado, inferido, evaluado, propuesto o desconocido.",
+    "",
+    `OBJETIVO DEL ENCARGO: ${dossier.objetivo}`,
+    dossier.resultado_esperado ? `RESULTADO ESPERADO: ${dossier.resultado_esperado}` : "RESULTADO ESPERADO: no declarado.",
+    `AUTONOMIA CONCEDIDA: ${dossier.autonomia.acciones.join(", ") || "ninguna"}.`,
+    "Lo que no este en esa lista no lo haces, aunque puedas: lo propones y esperas.",
+    "",
+    "FUENTES QUE TIENES:",
+    fuentes,
+    "",
+    "MATERIAL QUE EXISTE Y NO SE TE HA DADO:",
+    omitidas,
+    "",
+    "Responde en espanol, sin adular, y sin cerrar tu mismo el encargo: lo cierra el Capitan al revisarte.",
+  ].join("\n");
 }
