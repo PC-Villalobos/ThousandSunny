@@ -39,6 +39,30 @@ GitHub event) so the ship dreams itself while the crew sleeps. See
 
 More crew members will board as the system grows.
 
+## Running the Cubierta
+
+The Cubierta is the visible layer: an isometric ship where the system's real
+state shows up as spatial activity. It is a single Node process, no
+dependencies, bound to loopback.
+
+```bash
+npm run cubierta          # -> http://127.0.0.1:8788
+npm run cubierta:replay   # same, driven by a fixture; every response says so
+```
+
+| | |
+|---|---|
+| Port | **8788** — override with `CUBIERTA_PUERTO` |
+| Host | `127.0.0.1` — override with `CUBIERTA_HOST` |
+| Health | `GET /api/salud` (crew), `GET /api/snapshot` (world + sources) |
+
+`8765` is **not** the Cubierta: that is the Bitacora de Hipatia, the operational
+authority. The Cubierta reads it and reports whether it answers, but does not
+depend on it — with the Bitacora down the ship still opens and says so.
+
+With nothing else running you get a dark ship and four sources declaring why
+they are silent. That is correct, not a failure: no signal, no movement.
+
 ## Crew registry
 
 The crew and its capabilities are defined in portable, model-agnostic Markdown,

@@ -5,6 +5,7 @@
 // no hay animacion decorativa. Todo desplazamiento de un NPC es la ejecucion de
 // un paso de un recado, y todo recado nace de una senal real de un agente.
 
+import { estatuto } from "../../shared/epistemico.mjs";
 import {
   construirMapas,
   buscarRutaEntreCubiertas,
@@ -149,6 +150,99 @@ export class Mundo {
     };
     this.recados.push(recado);
     return recado;
+  }
+
+  /**
+   * Rehidrata recados desde instantaneas ya leidas del log. No toca disco: la
+   * IO es del servidor, este modulo sigue siendo puro.
+   *
+   * Lo que sobrevive a un reinicio es el ESTADO DEL RECADO, nunca la
+   * coreografia. Las posiciones no se persisten: se vuelven a derivar, y sin
+   * ningun actor encarnando el barco arranca quieto (regla dura). Por eso un
+   * paso que quedo `en_ruta` o `en_sitio` vuelve a `pendiente`: el viaje no
+   * llego a ocurrir, y darlo por hecho seria justo la mentira que este mundo no
+   * se permite. No es defensa teorica -- `avanzar()` con la ruta vacia devuelve
+   * true al instante, asi que un paso restaurado en ruta "llegaria" sin haber
+   * andado, y uno en sitio terminaria su trabajo sin estar alli.
+   *
+   * `esperando_llave` SI se conserva: una decision pendiente del Capitan es un
+   * hecho durable, no coreografia, y perderla seria peor que restaurarla.
+   *
+   * Ultima entrada por id gana. Lo que no se puede cargar no se ignora en
+   * silencio: vuelve en `descartados` con su motivo, para que quien llama lo
+   * declare.
+   */
+  rehidratarRecados(instantaneas = []) {
+    const porId = new Map();
+    const descartados = [];
+    for (const snap of instantaneas) {
+      if (!snap || typeof snap !== "object") {
+        descartados.push({ id: null, motivo: "entrada que no es un objeto" });
+        continue;
+      }
+      if (!snap.id) {
+        descartados.push({ id: null, motivo: "recado sin id" });
+        continue;
+      }
+      if (!this.nakama(snap.nakama)) {
+        descartados.push({ id: snap.id, motivo: `nakama desconocido: ${snap.nakama}` });
+        continue;
+      }
+      if (!Array.isArray(snap.pasos)) {
+        descartados.push({ id: snap.id, motivo: "recado sin pasos" });
+        continue;
+      }
+      porId.set(snap.id, snap);
+    }
+
+    const recados = [...porId.values()].map((snap) => ({
+      ...snap,
+      pasos: snap.pasos.map((paso) => (
+        paso.estado === PASO_EN_RUTA || paso.estado === PASO_EN_SITIO
+          ? { ...paso, estado: PASO_PENDIENTE }
+          : { ...paso }
+      )),
+    }));
+    recados.sort((a, b) => String(a.creado).localeCompare(String(b.creado)));
+
+    this.recados = recados;
+    this.podarRecados();
+    return { cargados: this.recados.length, descartados };
+  }
+
+  /**
+   * Rehidrata artefactos desde entradas ya leidas del log. Como en los recados,
+   * la IO es del servidor: aqui no se toca disco.
+   *
+   * Un artefacto no muta despues de nacer -- es el registro de algo que ya
+   * ocurrio --, asi que no hay "ultima version gana": hay deduplicacion por id.
+   * Se conserva el orden del mundo, el mas reciente primero.
+   *
+   * Lo que no se puede cargar vuelve declarado, nunca en silencio.
+   */
+  rehidratarArtefactos(entradas = []) {
+    const porId = new Map();
+    const descartados = [];
+    for (const a of entradas) {
+      if (!a || typeof a !== "object") {
+        descartados.push({ id: null, motivo: "entrada que no es un objeto" });
+        continue;
+      }
+      if (!a.id) {
+        descartados.push({ id: null, motivo: "artefacto sin id" });
+        continue;
+      }
+      if (!a.recado) {
+        descartados.push({ id: a.id, motivo: "artefacto sin recado de origen" });
+        continue;
+      }
+      porId.set(a.id, a);
+    }
+    const artefactos = [...porId.values()]
+      .sort((x, y) => String(y.ts).localeCompare(String(x.ts)))
+      .slice(0, 40);
+    this.artefactos = artefactos;
+    return { cargados: this.artefactos.length, descartados };
   }
 
   /** Decision del Capitan sobre una puerta sellada. Solo el Capitan llama aqui. */
@@ -354,7 +448,17 @@ export class Mundo {
         evidencia: recado.evidencia,
         recursos: recado.pasos.map((p) => p.recurso),
         ts: new Date().toISOString(),
-        tinta: recado.evidencia ? "medido" : "propuesto",
+        // El estatuto sale del nucleo canonico, no de una tinta propia. `medido`
+        // era justo el termino que no dice quien midio, y el canon lo retiro.
+        // Sin evidencia el artefacto no dice "propuesto" como si fuera un juicio
+        // del agente: dice que la evidencia NO SE REGISTRO, que es lo cierto.
+        // Con una sola referencia no se afirma `observed` ni se rebaja a otra
+        // cosa: se declara el hueco.
+        estatuto: estatuto({
+          ausente: !recado.evidencia,
+          naturaleza: recado.evidencia?.naturaleza || "directa",
+          referencias: Array.isArray(recado.evidencia?.referencias) ? recado.evidencia.referencias : [],
+        }),
       });
       this.artefactos = this.artefactos.slice(0, 40);
     }
