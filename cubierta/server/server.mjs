@@ -7,7 +7,7 @@
 // declara (`modo: "replay"`), para que nadie confunda un ensayo con el barco.
 
 import { createServer } from "node:http";
-import { readFile, appendFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,6 +18,7 @@ import { vigia, A_BORDO, DECLARADO_V } from "./latido.mjs";
 import { AlmacenMedido } from "./almacen.mjs";
 import { observarEjes } from "./sondas.mjs";
 import { informeSalud } from "./salud.mjs";
+import { presentarEstatuto } from "../../shared/epistemico.mjs";
 import { hablar, backendConfigurado } from "./hablar.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,8 @@ const CUBIERTA = path.resolve(AQUI, "..");
 const RAIZ = path.resolve(CUBIERTA, "..");
 const FICHERO_SENALES = path.join(CUBIERTA, "state", "senales.jsonl");
 const FICHERO_VEREDICTOS = path.join(CUBIERTA, "state", "veredictos.jsonl");
+const FICHERO_RECADOS = path.join(CUBIERTA, "state", "recados.jsonl");
+const FICHERO_ARTEFACTOS = path.join(CUBIERTA, "state", "artefactos.jsonl");
 
 const args = process.argv.slice(2);
 const puerto = Number(process.env.CUBIERTA_PUERTO || 8788);
@@ -227,7 +230,9 @@ function construirSnapshot() {
     encarnaciones: encarnaciones.map((e) => ({ nakama: e.nakama, actor: e.actor, desde: e.desde, tarea: e.tarea, estado: e.estado })),
     nakamas,
     recados: mundo.recados.slice(-12),
-    artefactos: mundo.artefactos.slice(0, 12),
+    // Invariante 2: ningun enum crudo llega al lector. El estatuto del artefacto
+    // sale traducido, con titulo y detalle, igual que el de los ejes.
+    artefactos: mundo.artefactos.slice(0, 12).map((a) => ({ ...a, estatuto: presentarEstatuto(a.estatuto) })),
     clima: calcularClima({
       fuentes,
       encarnaciones,
@@ -241,16 +246,168 @@ function construirSnapshot() {
   };
 }
 
+// --- Recados: lo abierto sobrevive al reinicio --------------------------------
+//
+// `senales.jsonl` y `veredictos.jsonl` ya se persistian; los recados no. Vivian
+// en memoria, asi que cualquier reinicio se llevaba por delante TODO el trabajo
+// abierto: al volver, el barco no sabia que estaba haciendo.
+//
+// El log es JSONL append-only, como el resto del circuito soberano: una
+// instantanea del recado cada vez que cambia su estado logico. Al arrancar se
+// reproduce -- ultima entrada por id gana -- y se compacta, para que no crezca
+// sin fin.
+//
+// Lo que NO se persiste, a proposito: la coreografia. Posiciones, rumbo y ruta
+// se vuelven a derivar. Ver `Mundo.rehidratarRecados`.
+// El replay NO toca el log soberano, ni para leer ni para escribir. Un fixture
+// escrito en `recados.jsonl` seria indistinguible de trabajo real en el
+// siguiente arranque: exactamente la confusion entre el ensayo y el barco que
+// toda respuesta declara con `modo: "replay"`.
+const persistenciaViva = () => !ficheroReplay;
+
+async function lineasDe(fichero) {
+  let texto;
+  try {
+    texto = await readFile(fichero, "utf8");
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      process.stderr.write(`No se pudo leer ${fichero}: ${err.message}. La Cubierta arranca sin ese registro.\n`);
+    }
+    return null;
+  }
+  const entradas = [];
+  let ilegibles = 0;
+  for (const linea of texto.split("\n")) {
+    if (!linea.trim()) continue;
+    try { entradas.push(JSON.parse(linea)); } catch { ilegibles += 1; }
+  }
+  return { entradas, ilegibles };
+}
+
+function declararPerdidas(nombre, ilegibles, descartados) {
+  // Una perdida se declara, nunca se traga.
+  if (ilegibles) process.stdout.write(`  ${nombre}: ${ilegibles} linea(s) ilegibles, saltadas\n`);
+  for (const d of descartados) {
+    process.stdout.write(`  ${nombre} descartado ${d.id || "(sin id)"}: ${d.motivo}\n`);
+  }
+}
+
+async function cargarRecados() {
+  let texto;
+  try {
+    texto = await readFile(FICHERO_RECADOS, "utf8");
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      process.stderr.write(`No se pudo leer ${FICHERO_RECADOS}: ${err.message}. La Cubierta arranca sin recados previos.\n`);
+    }
+    return;
+  }
+
+  const instantaneas = [];
+  let ilegibles = 0;
+  for (const linea of texto.split("\n")) {
+    if (!linea.trim()) continue;
+    try { instantaneas.push(JSON.parse(linea)); } catch { ilegibles += 1; }
+  }
+
+  const { cargados, descartados } = mundo.rehidratarRecados(instantaneas);
+  process.stdout.write(`Recados recuperados del disco: ${cargados}\n`);
+  // Una perdida se declara, nunca se traga: si el log traia algo que no se pudo
+  // cargar, aqui se dice cual y por que.
+  if (ilegibles) process.stdout.write(`  ${ilegibles} linea(s) ilegibles en el log, saltadas\n`);
+  for (const d of descartados) {
+    process.stdout.write(`  descartado ${d.id || "(sin id)"}: ${d.motivo}\n`);
+  }
+
+  await mkdir(path.dirname(FICHERO_RECADOS), { recursive: true });
+  await writeFile(FICHERO_RECADOS, mundo.recados.map((r) => `${JSON.stringify(r)}\n`).join(""), "utf8");
+}
+
+async function persistirRecados(recados) {
+  if (!recados.length) return;
+  await mkdir(path.dirname(FICHERO_RECADOS), { recursive: true });
+  await appendFile(FICHERO_RECADOS, recados.map((r) => `${JSON.stringify(r)}\n`).join(""), "utf8");
+}
+
+// Ids de artefacto ya escritos: un artefacto no muta, asi que se escribe una vez.
+const artefactosEscritos = new Set();
+
+async function cargarArtefactos() {
+  const leido = await lineasDe(FICHERO_ARTEFACTOS);
+  if (!leido) return;
+  const { cargados, descartados } = mundo.rehidratarArtefactos(leido.entradas);
+  process.stdout.write(`Artefactos recuperados del disco: ${cargados}\n`);
+  declararPerdidas("artefactos", leido.ilegibles, descartados);
+  for (const a of mundo.artefactos) artefactosEscritos.add(a.id);
+  await mkdir(path.dirname(FICHERO_ARTEFACTOS), { recursive: true });
+  await writeFile(FICHERO_ARTEFACTOS, mundo.artefactos.map((a) => `${JSON.stringify(a)}\n`).join(""), "utf8");
+}
+
+async function persistirArtefactosNuevos() {
+  const nuevos = mundo.artefactos.filter((a) => !artefactosEscritos.has(a.id));
+  if (!nuevos.length) return;
+  for (const a of nuevos) artefactosEscritos.add(a.id);
+  await mkdir(path.dirname(FICHERO_ARTEFACTOS), { recursive: true });
+  await appendFile(FICHERO_ARTEFACTOS, nuevos.map((a) => `${JSON.stringify(a)}\n`).join(""), "utf8");
+}
+
+// Los veredictos del Capitan YA se escribian a disco; lo que no se hacia era
+// volver a leerlos. Estaban en el fichero y desaparecian de la pantalla en cada
+// reinicio: un registro que existe y no se ve es peor que no tenerlo.
+async function cargarVeredictos() {
+  const leido = await lineasDe(FICHERO_VEREDICTOS);
+  if (!leido) return;
+  const validos = leido.entradas.filter((v) => v && typeof v === "object" && v.veredicto);
+  const descartados = leido.entradas.length - validos.length;
+  validos.sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  veredictos.push(...validos.slice(0, 40));
+  process.stdout.write(`Veredictos del Capitan recuperados del disco: ${veredictos.length}\n`);
+  if (descartados) process.stdout.write(`  veredictos: ${descartados} entrada(s) sin veredicto, saltadas\n`);
+  declararPerdidas("veredictos", leido.ilegibles, []);
+}
+
+// Antes del primer tick: al volver, el barco tiene que saber que estaba haciendo
+// -- y con que volvio. En replay no se lee nada: el ensayo arranca limpio.
+if (persistenciaViva()) {
+  await cargarRecados();
+  await cargarArtefactos();
+  await cargarVeredictos();
+} else {
+  process.stdout.write("MODO REPLAY: no se lee ni se escribe el estado real.\n");
+}
+
 // --- Bucle -------------------------------------------------------------------
 const clientes = new Set();
 
 setInterval(() => {
+  // Solo se escribe cuando cambia el estado logico de un recado -- su estado o
+  // el paso en que va --, no en cada tick: la coreografia no se persiste.
+  const antes = new Map(mundo.recados.map((r) => [r.id, `${r.estado}|${r.indice}`]));
   mundo.tick(encarnadosVerificados());
   almacen.podar();
+  if (!persistenciaViva()) return;
+  const cambiados = mundo.recados.filter((r) => antes.get(r.id) !== `${r.estado}|${r.indice}`);
+  if (cambiados.length) {
+    persistirRecados(cambiados).catch((err) => {
+      process.stderr.write(`No se pudo persistir el recado: ${err.message}\n`);
+    });
+  }
+  // La evidencia de lo ya cerrado tambien sobrevive: sin esto un reinicio
+  // conservaba el recado y se llevaba lo que el nakama trajo de vuelta.
+  persistirArtefactosNuevos().catch((err) => {
+    process.stderr.write(`No se pudo persistir el artefacto: ${err.message}\n`);
+  });
 }, 250);
 
 setInterval(() => { sondear().catch(() => {}); }, 3000);
-await sondear();
+// Un sondeo inicial que falle no puede impedir el arranque. Si una fuente cae
+// -- la bitacora de Hipatia entre ellas --, la Cubierta abre igual y lo declara
+// en /api/snapshot. Morir aqui seria justo el acoplamiento que no se permite:
+// la autoridad operativa puede estar callada sin llevarse la navegacion por
+// delante.
+await sondear().catch((err) => {
+  process.stderr.write(`Sondeo inicial incompleto: ${err.message}. La Cubierta abre igual.\n`);
+});
 
 setInterval(() => {
   if (!clientes.size) return;
@@ -398,6 +555,17 @@ const servidor = createServer(async (req, res) => {
         // Un latido que repite la misma tarea no abre un recado nuevo.
         recado = mundo.recadoEquivalente({ nakama: senal.nakama, objetivo, recursos: senal.recursos });
         reutilizado = Boolean(recado);
+        // El agente vuelve con algo. La evidencia se adjunta al recado VIVO, para
+        // que el artefacto que salga al cerrarlo la lleve: sin esto la evidencia
+        // solo podia declararse al abrir el recado -- es decir, antes de existir --
+        // y todo artefacto nacia sin ella.
+        if (recado && senal.evidencia) {
+          recado.evidencia = senal.evidencia;
+          recado.actualizado = new Date().toISOString();
+          if (persistenciaViva()) persistirRecados([recado]).catch((err) => {
+            process.stderr.write(`No se pudo persistir la evidencia del recado: ${err.message}\n`);
+          });
+        }
         if (!recado) {
           recado = mundo.crearRecado({
             nakama: senal.nakama,
@@ -507,6 +675,27 @@ const servidor = createServer(async (req, res) => {
   } catch (err) {
     return json(res, 500, { ok: false, motivo: err.message });
   }
+});
+
+// Si el puerto no se puede tomar, el fallo se explica y se nombra la variable
+// con la que se cambia. Sin esto Node tira un 'error' sin manejar y el Capitan
+// ve una traza cruda en vez de saber que hacer.
+servidor.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    process.stderr.write(
+      `El puerto ${puerto} de ${host} ya esta ocupado.\n` +
+      `Si es otra Cubierta, ya la tienes abierta en http://${host}:${puerto}\n` +
+      `Si es otro proceso, arranca en otro puerto:  CUBIERTA_PUERTO=8789 npm run cubierta\n`
+    );
+  } else if (err.code === "EACCES") {
+    process.stderr.write(
+      `Sin permiso para escuchar en ${host}:${puerto}.\n` +
+      `Elige un puerto por encima de 1024 con CUBIERTA_PUERTO.\n`
+    );
+  } else {
+    process.stderr.write(`La Cubierta no pudo escuchar en ${host}:${puerto}: ${err.message}\n`);
+  }
+  process.exit(1);
 });
 
 servidor.listen(puerto, host, () => {

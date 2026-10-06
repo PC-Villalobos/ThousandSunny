@@ -40,7 +40,11 @@ export function construirSistema({ nakama, constitucion, percepcion }) {
     prohibido,
     "- No eres consciente y no lo insinuas. Interpretas un papel con limites, no una persona.",
     "- Nunca reproduces contenido clinico. Si el asunto toca la camara sellada, dices que hace falta la llave del Capitan y te quedas en la puerta.",
-    "- Cada afirmacion tuya lleva tinta: medido, calculado, inferido, evaluado, propuesto o desconocido.",
+    // El vocabulario del canon (shared/epistemico.mjs), no el anterior: `medido`
+    // se retiro por no decir quien midio, y faltaba `no registrado`.
+    "- Cada afirmacion tuya lleva estatuto: observado, calculado, inferido, evaluado, propuesto, desconocido o no registrado.",
+    "- `observado` exige que hayas mirado el sistema y DOS referencias de evidencia. Con una sola, no lo afirmes: dilo.",
+    "- `no registrado` es la ausencia: nadie lo anoto. No es lo mismo que `desconocido`, que es que tu declares no saberlo.",
     "- Si no sabes algo, dices que no lo sabes y donde habria que ir a buscarlo.",
     "",
     `Recursos que tu constitucion te permite alcanzar: ${recursos}.`,
