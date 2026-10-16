@@ -65,15 +65,31 @@ test("lo que no se ejecuta esta nombrado con su razon, nunca omitido", () => {
 });
 
 test("correr las pruebas de state/ no escribe dentro de state/", () => {
-  const sucio = () =>
-    spawnSync("git", ["status", "--porcelain", "state"], { cwd: RAIZ, encoding: "utf8" }).stdout.trim();
-  assert.equal(sucio(), "", "el arbol ya venia sucio: esta prueba no puede decidir nada");
+  // Compara el CONJUNTO de rutas sucias antes y despues, no «limpio o sucio».
+  // La primera version exigia el arbol limpio para poder decidir, y eso rompia
+  // `npm test` a cualquiera que estuviese editando un cierre o un parte de
+  // sueno —trabajo rutinario aqui—. Lo que importa no es que `state/` este
+  // inmaculado: es que el corredor no anada nada.
+  const sucias = () =>
+    new Set(
+      spawnSync("git", ["status", "--porcelain", "state"], { cwd: RAIZ, encoding: "utf8" })
+        .stdout.split("\n")
+        .filter((l) => l.trim())
+        .map((l) => l.slice(3).trim()),
+    );
+  const antes = sucias();
 
   const r = spawnSync("node", ["scripts/test-estado.mjs"], { cwd: RAIZ, encoding: "utf8" });
   assert.equal(r.status, 0, `el corredor fallo:\n${r.stdout}\n${r.stderr}`);
 
+  const nuevas = [...sucias()].filter((p) => !antes.has(p));
+  assert.deepEqual(nuevas, [], `el corredor dejo ficheros nuevos dentro de state/: ${nuevas.join(", ")}`);
+
   // El fallo exacto del 2026-10-16: una raiz de datos soberanos creada dentro
-  // de la proyeccion por su propia prueba.
-  assert.ok(!existsSync(path.join(RAIZ, "state", "hipatia_bridge_runtime", "closure")), "aparecio closure/");
-  assert.equal(sucio(), "", "el corredor dejo ficheros dentro de state/");
+  // de la proyeccion por su propia prueba. Se comprueba aparte de git porque un
+  // `.gitignore` futuro dejaria ciega la comprobacion de arriba.
+  assert.ok(
+    !existsSync(path.join(RAIZ, "state", "hipatia_bridge_runtime", "closure")),
+    "aparecio closure/ dentro de la proyeccion de Hipatia",
+  );
 });

@@ -622,7 +622,7 @@ donde caen respecto de **la entrega del §3**.
 
 | PR | Motivo |
 |---|---|
-| #88 | ~~Su rectificacion del §5 ya esta en el tronco (1.8).~~ **Corregido el 2026-10-16: esta clasificacion era falsa y #88 NO se ha cerrado.** Ver el acta abajo. |
+| #88 | ~~Su rectificacion del §5 ya esta en el tronco (1.8).~~ Esa clasificacion era falsa: le faltaba la rectificacion del cierre del 2026-07-25. **Resuelto el 2026-10-16 con GO del Capitan:** esas 37 lineas ya estan en el tronco, su mitad de `POSICION.md` no se arrastra, y entonces si queda cerrable por redundancia. Ver el acta abajo. |
 
 ### Conservados fuera del camino critico
 
@@ -650,7 +650,7 @@ Con GO del Capitan a «lo que quede del rumbo». Lo que quedaba, repartido con h
 | Pendiente | Donde se cierra |
 |---|---|
 | **#114**, unico PR del camino critico | Aqui. **Fusionado** en `29bc4c2` |
-| **#88**, clasificado «cerrar por redundancia» | **En ningun sitio: la clasificacion era falsa.** Sigue abierto |
+| **#88**, clasificado «cerrar por redundancia» | La clasificacion era falsa; **resuelto con GO aparte el mismo dia**: su rectificacion del cierre aterriza, su mitad de `POSICION.md` no |
 | **Huerfanas de `state/`** (melampo + los 7 de Hipatia) | Aqui. Cerradas con `test:estado` |
 | **Conservados** (#106, #112, #113, #111, #109, #82, #90, #91, #115, partes nocturnos) | **No en este ciclo**, por decision del propio §5: se deciden por lote |
 | **1.a** (el empuje de `fb82863`) y **A5** (el recorrido) | En la maquina del Capitan |
@@ -678,6 +678,27 @@ Tampoco se fusiona: #88 esta en conflicto (`dirty`), y resolverlo significaria *
 no se hace aqui. **Decision del Capitan**, con la pregunta ya acotada: ¿debe el cierre del
 2026-07-25 llevar su rectificacion, aunque el §5 del ancla haya seguido avanzando sin ella?
 
+**Contestado el mismo dia: GO.** El cierre del 2026-07-25 lleva su rectificacion. Las 37 lineas
+entran **tal como las escribio su autor**, no reescritas: el tronco no habia tocado ese fichero
+desde la base de #88, asi que lo que aterriza es exactamente su aportacion y nada mas.
+
+Lo que **no** se arrastra, y por que:
+
+- **La mitad de `POSICION.md` se queda fuera.** Su fila del §5 y su pendiente nº3 sostienen el
+  analisis de la «vista parcial»; el tronco lleva uno **posterior y mas especifico** —el anillo de
+  roles mal configurado—. Traerla seria hacer retroceder el ancla, y hacerlo desde una sesion
+  cloud, que es justo lo que el §7 prohibe. Su nota de cabecera («Segunda correccion, el mismo
+  dia…») si es historia aditiva y tampoco esta en el tronco: **la puede llevar el Capitan desde su
+  maquina** si la quiere; no la escribo yo.
+- **El PR no se fusiona.** Esta en conflicto, y el conflicto vive precisamente en
+  `POSICION.md`. Se aterriza su contenido unico por otra via y el PR queda cerrado por
+  redundancia —esta vez de verdad—, con un comentario que dice donde fue cada mitad.
+
+La consecuencia epistemica importa mas que el fichero: ese cierre documentaba un modo de fallo
+—concluir sobre el tronco sin ver la mitad agentica— y el propio analisis volvio a caer en el. Sin
+la rectificacion, el cierre conservaba la conclusion falsa sin la correccion al lado. Con ella,
+conserva las dos, que es la convencion de la casa: **el error no se borra, se rectifica al lado**.
+
 #### Las huerfanas de `state/`, cerradas
 
 `scripts/test-estado.mjs` reclama `state/` **menos** las superficies con dueno
@@ -694,7 +715,7 @@ que necesitan, y 1 **no es una suite**: `hub-server.phase0-local-test.js` es el 
 v2.0 —pide `express` y `ws`—, disfrazado por el nombre del directorio. Ejecutarlo por barrido
 habria sido arrancar un servidor creyendo correr una prueba.
 
-#### Dos cosas que solo se supieron ejecutando
+#### Tres cosas que solo se supieron ejecutando
 
 1. **Las pruebas de Hipatia escriben en su propio arbol.** Corri `test_closure_core_ola2_1.py`
    en su sitio y creo `closure/` y un fichero con nombre de ruta de Obsidian **dentro de
@@ -706,6 +727,13 @@ habria sido arrancar un servidor creyendo correr una prueba.
 2. **Una copia compartida hace la tanda dependiente del orden.** `closure` va antes que
    `projection` alfabeticamente, asi que la prueba del cierre rompia a la del manifiesto en la
    misma copia. Es **una copia limpia por fichero**, no una por superficie.
+3. **El propio guardia estaba mal planteado, y lo descubrio el trabajo siguiente.** Exigia el
+   arbol de `state/` **limpio** para poder decidir, asi que en cuanto hubo un cambio legitimo ahi
+   dentro —la rectificacion del cierre de #88, horas despues— `npm test` se puso en rojo sin que
+   nada estuviese roto. Un guardia que falla con trabajo honesto en curso no protege: estorba.
+   Arreglado el mismo dia: compara el **conjunto de rutas sucias antes y despues** y falla solo si
+   el corredor **anade** alguna. Vuelto a ver fallar con el arbol ya sucio y el corredor forzado a
+   ejecutar en su sitio, que es la unica forma de saber que sigue vigilando.
 
 #### Verificado ejecutando, incluido ver fallar al guardia
 
@@ -717,6 +745,7 @@ habria sido arrancar un servidor creyendo correr una prueba.
 | `state/` | **11 ficheros barridos**, ninguno sin caja; 5 de Python en copia limpia, 8 de melampo |
 | `git status state` despues de correrlo | limpio |
 | Guardia de la copia, con el corredor forzado a ejecutar en su sitio | **en rojo**, nombrando `closure/` |
+| El mismo guardia, ya arreglado, con `state/` sucio de antemano | **en rojo** igual: distingue lo que anade el corredor de lo que ya habia |
 | Pruebas del propio corredor | 5 de 5 |
 | `#114` sobre el tronco tras fusionar | `POSICION.md` con los tres arboles, `npm test` exit 0 |
 
@@ -726,7 +755,9 @@ habria sido arrancar un servidor creyendo correr una prueba.
   lote y no en este ciclo—, y un GO a «lo que quede del rumbo» no es un GO a saltarse el reparto
   que el rumbo establece. Siguen fuera: Vegapunk sin GO-1, PuenteDeMando sin cambios, y los
   partes nocturnos agenticos sin decidir.
-- **#88 queda abierto a proposito**, con la pregunta acotada arriba.
+- ~~**#88 queda abierto a proposito**, con la pregunta acotada arriba.~~ **Contestada el mismo dia
+  con GO:** ver arriba. Queda pendiente, solo para su maquina, la nota de cabecera de
+  `POSICION.md` que este fichero no escribe.
 - **1.a y A5 siguen siendo del Capitan.** Nada de aqui las mueve.
 - **Las dos pruebas `SIN CONFIG` no se arreglan.** Necesitan `config/bridge_roots.json` y
   `config/git_repositories.json`, que la proyeccion excluye deliberadamente. Inventar esa
