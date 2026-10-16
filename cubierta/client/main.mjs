@@ -275,7 +275,7 @@ function pintarHud() {
   $("fuentes").innerHTML = snapshot.fuentes.map((f) => `
     <div class="fila">
       <span class="punto ${esc(f.estado)}"></span>
-      <span style="flex:1"><b>${esc(f.id)}</b>${f.motivo ? `<span class="motivo"><br>${esc(f.motivo)}</span>` : ""}</span>
+      <span style="flex:1"><b>${esc(f.id)}</b>${f.nota ? `<span class="nota"> ${esc(f.nota)}</span>` : ""}${f.motivo ? `<span class="motivo"><br>${esc(f.motivo)}</span>` : ""}</span>
     </div>`).join("") || '<div class="silencio">sin fuentes</div>';
 
   const campana = snapshot.vigia?.campana || [];

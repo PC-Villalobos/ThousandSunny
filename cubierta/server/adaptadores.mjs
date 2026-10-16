@@ -17,7 +17,8 @@ function ahora() {
 }
 
 function sinSenal(id, motivo) {
-  return { id, estado: ESTADO_SIN_SENAL, ts: ahora(), motivo, datos: null };
+  // `nota` en null, no ausente: toda fuente trae la misma forma, calle o hable.
+  return { id, estado: ESTADO_SIN_SENAL, ts: ahora(), motivo, nota: null, datos: null };
 }
 
 async function pedirJson(url, timeoutMs) {
@@ -74,12 +75,26 @@ export async function leerBitacora({ raiz, url, timeoutMs = 1500 } = {}) {
     if (!salud || salud.reachable === false || salud.ok === false) {
       return sinSenal("bitacora", `bitacora no alcanzable en ${destino}`);
     }
+    // El cliente devuelve { ok, reachable, httpStatus, payload }: los datos de
+    // /api/health viajan DENTRO de payload. Leerlos de la raiz daba `eventos:
+    // null` y `version: null` con la Bitacora contestando — observado el
+    // 2026-10-16 contra el runtime real, la primera vez que hubo un 8765 vivo
+    // que mirar. Se conservan las dos lecturas antiguas por si otro cliente
+    // entrega el cuerpo plano.
+    const cuerpo = salud.payload ?? salud.body ?? salud;
+    const eventos = cuerpo?.events ?? null;
+    const version = cuerpo?.version ?? null;
     return {
       id: "bitacora",
       estado: ESTADO_OK,
       ts: ahora(),
       motivo: null,
-      datos: { url: destino, eventos: salud.events ?? salud.body?.events ?? null, version: salud.version ?? salud.body?.version ?? null },
+      // `nota` es el gemelo de `motivo` para el caso vivo: una linea ya
+      // resumida que la Cubierta puede mostrar tal cual. Sin ella la pantalla
+      // solo tenia un punto verde, y una autoridad que contesta sin decir que
+      // contesta es indistinguible de una que calla.
+      nota: version || eventos !== null ? `${version || "version n/d"} — ${eventos ?? "n/d"} eventos` : null,
+      datos: { url: destino, eventos, version },
     };
   } catch (err) {
     return sinSenal("bitacora", `error hablando con la bitacora: ${err.message}`);
