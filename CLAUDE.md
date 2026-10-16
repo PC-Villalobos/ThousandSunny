@@ -187,8 +187,8 @@ npm run test:sueno        # sleep function: Python suites + the Node ones in lib
   on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script
   definition shadow the other.
 - **A test nobody runs protects nothing.** The aggregator sweeps the surfaces it
-  claims (`shared/`, `cubierta/`, `state/cubierta_ui/`) and fails, naming the file,
-  if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
+  claims (`shared/`, `cubierta/`, `state/cubierta_ui/`, `scripts/`) and fails,
+  naming the file, if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
   directory, wire it: a green `npm test` with a suite unrun is the exact failure
   this guard exists to prevent.
 
@@ -225,6 +225,12 @@ update it — it is levantado from branches and test runs, not from the captain'
 - No emoji in generated code or committed files unless the captain asks.
 - Theatre cognitivo is the enemy; real artefacts are the goal. Don't create documentation for its own sake.
 - Prefer editing existing files to creating new ones.
+- **Work that exists on one disk only is not preserved.** `node scripts/preservar.mjs
+  <ruta-del-repo-local> [--commit <sha>]` inspects a local repo and names the exact push that
+  makes it reachable in this one, on a `preserva/*` branch with disjoint history. It is a dry run
+  until `--ejecutar`, it never forces, and it warns that uncommitted files do not travel. Custody,
+  not integration: a preservation branch decides nothing about whether that work becomes a
+  component. See the 1.a record in `docs/RUMBO_INTEGRACION.md`.
 - When in doubt about canonical paths, ask the captain; do not guess.
 - Any scheduled task that cannot observe its target must be classified `pending-rearchitect` and must not emit empty alerts. Honest silence is worth more than false noise.
 - All operational closes require a handoff with `contexto`, `decision`, `continuidad`, and `session_ref`. Events without `packetId` or a canonical actor go to Cuarentena.

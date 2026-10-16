@@ -117,7 +117,7 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 
 | Orden | Accion | Prueba |
 |---|---|---|
-| 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. |
+| 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. **En curso desde el 2026-10-16** con GO del Capitan: la herramienta esta en el tronco, el empuje es del Capitan. Ver el acta abajo. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. **Sigue abierta:** nada de lo hecho aqui la cumple. |
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
 | 1.d | ~~**Fijar el arranque en un sitio**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** un tercero la levanto desde un arbol limpio leyendo solo el repo. Ver el acta abajo. |
@@ -442,6 +442,78 @@ La ultima fila es el arreglo de portabilidad: en Windows `python3` no suele esta
   pasa 11 de 11, y su unico caso de red apunta a `127.0.0.1:9` —puerto muerto a proposito— y solo
   afirma booleanos y un `note`; el `reason`, que si depende de plataforma, no se afirma. Sin la
   ruta del fichero y el texto de la asercion, ese fallo **no es asignable** a este arbol.
+
+
+### Acta de 1.a — custodia de `cubierta-world` (2026-10-16)
+
+Con GO del Capitan. **1.a no se cierra desde cloud, y esta acta no pretende lo contrario.** Su
+prueba es que `fb82863` sea alcanzable desde fuera de su maquina, y el commit no esta en git ni
+en este contenedor: el empuje solo puede salir del disco donde vive. Lo que si se podia hacer
+aqui es que ese empuje deje de depender de que alguien recuerde tres ordenes de git bien escritas.
+
+**Mecanismo elegido: rama de preservacion, no repo nuevo.** `cubierta-world` tiene historia
+disjunta de este repo; una rama suya en ThousandSunny lo hace alcanzable sin tocar el tronco, sin
+abrir PR y sin fusionar nada. Es **custodia, no integracion**. La razon de no crear un repo
+dedicado es deliberada: eso inclinaria la decision «componente o derivado», que es del Capitan y
+sigue sin tomar. Esta rama no la inclina — preserva el trabajo y la deja intacta. Si manana se
+decide repo propio, mover una rama preservada es trivial; recuperar un disco que fallo, no.
+
+**Herramienta:** `scripts/preservar.mjs`. Por defecto es un **ensayo**: nombra el empuje exacto
+y no empuja nada. Lo que comprueba antes de afirmar:
+
+| Comprobacion | Por que esta |
+|---|---|
+| La ruta es un repo de git alcanzable | Si el trabajo nunca se commiteo, no hay nada que empujar: lo dice con su remedio |
+| El SHA pedido existe en ese repo | `fb82863` esta **INFERIDO del relato**, no leido. Si no existe, se nombra en vez de fallar en el empuje |
+| El arbol esta limpio | Un empuje preserva **commits**, no ficheros sin commitear. Si hay cambios sueltos, avisa y dice cuantos |
+| El remoto ya lo tiene | Idempotente: si ya esta a salvo, no toca nada y lo dice |
+| El commit pedido es ancestro de HEAD | Si no lo es, recibe rama propia; si no, se perderia por el camino |
+| Verificacion despues del empuje | `ls-remote` contra el SHA. Un empuje sin confirmar se declara **SIN VERIFICAR**, no se canta como hecho |
+
+No fuerza nunca. Si la rama remota existe y el empuje no es avance directo, git lo rechaza, y eso
+es lo correcto: historia preservada no se sobreescribe.
+
+**Lo que el Capitan ejecuta en su maquina**, desde su copia de ThousandSunny al dia
+(`git pull`), con la ruta real del repo de `cubierta-world` (ensayo primero, que no empuja nada):
+
+```
+node scripts/preservar.mjs "C:\ruta\a\cubierta-world" --commit fb82863
+node scripts/preservar.mjs "C:\ruta\a\cubierta-world" --commit fb82863 --ejecutar
+```
+
+Deja la rama `preserva/cubierta-world` en ThousandSunny. Hecho eso, 1.a se puede comprobar desde
+cualquier sitio, esta sesion incluida: `git ls-remote origin refs/heads/preserva/cubierta-world`.
+
+**El agujero que aparecio al hacerlo:** la primera version de estas pruebas quedo huerfana. El
+guardia de 1.c barre `shared/`, `cubierta/` y `state/cubierta_ui/`, y `scripts/` —donde viven los
+corredores mismos— estaba **fuera del perimetro**. El agregador decia `4 de 4` «sin huerfanas»
+con 11 pruebas nuevas sin ejecutar. Mismo tipo de agujero que 1.c, un nivel mas arriba otra vez.
+Arreglado: `scripts` entra en las superficies reclamadas y las pruebas de herramientas son la
+quinta suite.
+
+**Verificado ejecutando, incluido ver fallar al guardia:**
+
+| Comprobacion | Resultado |
+|---|---|
+| `npm test` completo | exit 0 |
+| Agregador | **`5 de 5`**, «sin huerfanas» |
+| Funcion de sueno | `2 de 2` |
+| Pruebas del preservador | 11 de 11 — 8 con git inyectado, 3 contra git real sobre repos sinteticos |
+| El refspec que el script nombra | Ejecutado contra un `--bare` local: crea la rama con el SHA exacto |
+| Segunda pasada sobre el mismo repo ya empujado | `ya esta a salvo`, cero empujes (idempotencia, ejecutada) |
+| Huerfana plantada en `scripts/` **antes** de ampliar el perimetro | exit **0** — el agujero era real |
+| La misma huerfana **despues** | **exit 1**, nombrando el fichero |
+
+**Limites, declarados:**
+
+- **1.a sigue abierta.** Mientras el empuje no se haga, el riesgo es identico al del 2026-09-05:
+  el trabajo vive en un disco. La herramienta no preserva nada por si sola.
+- **No se ha comprobado que `fb82863` exista.** Sigue siendo INFERIDO. El ensayo lo dira en su
+  maquina en un segundo; si el SHA no es ese, el script lo nombra en vez de tragarselo.
+- **No se decide «componente o derivado»**, ni para `cubierta-world` ni para `CubiertaLocal`. Esa
+  decision es del Capitan y esta rama no la adelanta.
+- **El empuje puede fallar por credenciales** en esa maquina. Si `ls-remote` no contesta, el script
+  avisa y no asume que ya esta a salvo.
 
 ---
 
