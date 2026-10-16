@@ -150,11 +150,47 @@ The sleep function runs a four-phase audit over `state/`:
 - Never produce new canon (Deckard canon requires pillar, status, source, and certainty level).
 - If `streak >= 3` (same actor+role 3 consecutive cycles), mark `rotate:true` in the ledger and warn in the report.
 
+**Tests:** `npm run test:sueno` runs both halves — the Python suites under
+`state/funcion_de_sueno/` and the Node ones in `lib/`. It resolves the interpreter
+(`PYTHON`, then `python3`, then `python`) and, finding none, says so with the remedy
+instead of dying on an opaque ENOENT — `python3` is usually absent from PATH on
+Windows. Override with `PYTHON=py npm run test:sueno`.
+
 **Environment secrets** (set in the Routine environment, never committed):
 - `BITACORA_GAS_URL` — GAS web app `/exec` endpoint
 - `BITACORA_GAS_TOKEN` — shared token the GAS validates
 
 If `BITACORA_GAS_URL` is unset, the GAS block is left in the report as a fallback.
+
+## Cubierta (the visible layer)
+
+Landed on the trunk on 2026-09-05 (PRs #104 and #98). One Node process, no
+dependencies, bound to loopback.
+
+```bash
+npm run cubierta          # -> http://127.0.0.1:8788
+npm run test:cubierta     # the aggregator: all four suites, or it names the missing one
+npm run test:sueno        # sleep function: Python suites + the Node ones in lib/
+```
+
+- **Port `8788`**, override with `CUBIERTA_PUERTO`; host `127.0.0.1`, override
+  with `CUBIERTA_HOST`. If the port is taken the process says so and names the
+  variable — it does not die with a stack trace.
+- **`8765` is the Bitacora de Hipatia, not the Cubierta.** Probing 8765 tells you
+  nothing about whether the Cubierta is up. Do not confuse the two.
+- **Hipatia is authority, not dependency.** The Cubierta reads the Bitacora and
+  declares in `/api/snapshot` whether it answers, naming the URL when it does
+  not. With Hipatia down the ship still opens. Pinned by tests in
+  `cubierta/test/test_cubierta.mjs`; do not couple them.
+- Two surfaces carry the name Cubierta: `cubierta/` (the isometric ship) and
+  `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
+  on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script
+  definition shadow the other.
+- **A test nobody runs protects nothing.** The aggregator sweeps the surfaces it
+  claims (`shared/`, `cubierta/`, `state/cubierta_ui/`) and fails, naming the file,
+  if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
+  directory, wire it: a green `npm test` with a suite unrun is the exact failure
+  this guard exists to prevent.
 
 ## State directory (this repo)
 
@@ -177,6 +213,12 @@ carries the last arc's verified state, inherited pendings, and captain's decisio
 Never author `POSICION.md` from a cloud session, and never leave a placeholder in its place.
 Its content comes from the captain's machine. A stub satisfies the auditor's search while
 carrying no position, which is the exact failure this anchor exists to prevent.
+
+**Then read the current heading.** `docs/RUMBO_INTEGRACION.md` is the rumbo of record for the
+current cycle: the single deliverable, its acceptance test, the two fronts, and which open PRs
+are on the critical path versus conserved outside it. `POSICION.md` says where the ship is;
+the rumbo says where this cycle is taking it. Unlike the position anchor, a cloud session may
+update it — it is levantado from branches and test runs, not from the captain's disk.
 
 ## House rules
 

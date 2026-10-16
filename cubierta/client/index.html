@@ -72,6 +72,18 @@
   .tinta.medido { border-color: rgba(143,211,106,0.5); color: #b8e39c; }
   .tinta.calculado { border-color: rgba(111,168,214,0.5); color: #a5cbe8; }
   .tinta.desconocido { border-color: rgba(240,226,196,0.2); }
+  /* Claves canonicas de shared/epistemico.mjs. Las de arriba son del vocabulario
+     anterior y se conservan hasta que no quede nada emitiendolas. */
+  .tinta.observed { border-color: rgba(143,211,106,0.5); color: #b8e39c; }
+  .tinta.calculated { border-color: rgba(111,168,214,0.5); color: #a5cbe8; }
+  .tinta.inferred, .tinta.evaluated, .tinta.proposed { border-color: rgba(240,226,196,0.32); }
+  .tinta.unknown, .tinta.not_recorded { border-color: rgba(240,226,196,0.2); }
+  /* Sin estatuto afirmado: ni verde ni degradado a otro valor. Se ve distinto
+     porque es distinto -- el hueco declarado del canon. */
+  .tinta.sin_estatuto { border-color: rgba(224,168,86,0.55); color: #e0a856; }
+  .evidencia { display: block; font-size: 11px; color: var(--tinta-suave); margin-top: 3px; }
+  .evidencia.sin { font-style: italic; opacity: 0.75; }
+  .evidencia.aviso { color: #e0a856; }
 
   button {
     font: inherit; color: var(--tinta); cursor: pointer;
