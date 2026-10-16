@@ -10,7 +10,7 @@
     "test:cubierta": "node scripts/test-cubierta.mjs",
     "test:security": "node state/usopp/odysseus-extraction/phase0-local-test/test_phase0_security_kernel.js",
     "test:hub-utils": "node state/usopp/odysseus-extraction/phase0-local-test/test_hub_utils.js",
-    "test:sueno": "python3 -m unittest discover -s state/funcion_de_sueno -p 'test_*.py' -v",
+    "test:sueno": "node scripts/test-sueno.mjs",
     "test:pulso": "node cubierta/test/test_pulso.mjs",
     "test:cubierta-barco": "node cubierta/test/test_cubierta.mjs"
   }

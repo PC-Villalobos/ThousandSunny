@@ -34,6 +34,36 @@ function pruebasDe(relativo) {
     .map((f) => path.join(relativo, f));
 }
 
+/** Un fichero es de pruebas si se llama `*.test.mjs` o `test_*.mjs`. */
+function esFicheroDePrueba(relativo) {
+  const base = path.basename(relativo);
+  return base.endsWith(".test.mjs") || /^test_.*\.mjs$/.test(base);
+}
+
+/** Separadores a `/` para poder comparar rutas en Windows y en Linux igual. */
+function normalizar(relativo) {
+  return relativo.split(path.sep).join("/");
+}
+
+/** Ficheros de prueba bajo un directorio, a cualquier profundidad. */
+function barrer(relativo) {
+  const dir = path.join(RAIZ, relativo);
+  if (!existsSync(dir)) return [];
+  const encontrados = [];
+  for (const entrada of readdirSync(dir, { withFileTypes: true })) {
+    if (entrada.name === "node_modules" || entrada.name.startsWith(".")) continue;
+    const hijo = path.join(relativo, entrada.name);
+    if (entrada.isDirectory()) encontrados.push(...barrer(hijo));
+    else if (esFicheroDePrueba(hijo)) encontrados.push(normalizar(hijo));
+  }
+  return encontrados;
+}
+
+// Superficies que este agregador reclama. Si aparece un fichero de pruebas aqui
+// dentro que ninguna suite ejecuta, es una huerfana y se declara como fallo: una
+// prueba que nadie corre no protege nada, y descubrirlo mas tarde cuesta mas.
+const RECLAMADAS = ["shared", "cubierta", "state/cubierta_ui"];
+
 const SUITES = [
   {
     id: "epistemico",
@@ -63,6 +93,7 @@ const SUITES = [
     comando: () => {
       const ficheros = [
         ...pruebasDe("state/cubierta_ui"),
+        ...pruebasDe("state/cubierta_ui/baseline/server"),
         ...pruebasDe("state/cubierta_ui/runtime_candidate/server"),
         ...pruebasDe("state/cubierta_ui/preview"),
       ];
@@ -75,6 +106,7 @@ const SUITES = [
 let ejecutadas = 0;
 let fallidas = 0;
 const ausentes = [];
+const cubiertos = new Set();
 
 for (const suite of SUITES) {
   const hay = existsSync(path.join(RAIZ, suite.ancla));
@@ -85,6 +117,7 @@ for (const suite of SUITES) {
   }
   process.stdout.write(`\n=== ${suite.titulo} (${suite.id}) ===\n`);
   const [bin, args] = comando;
+  for (const arg of args) if (esFicheroDePrueba(arg)) cubiertos.add(normalizar(arg));
   const r = spawnSync(bin, args, { cwd: RAIZ, stdio: "inherit" });
   ejecutadas += 1;
   if (r.status !== 0) fallidas += 1;
@@ -100,6 +133,12 @@ for (const suite of ausentes) {
   process.stdout.write(`         ${suite.ausente}\n`);
 }
 
+const huerfanas = RECLAMADAS.flatMap((raiz) => barrer(raiz)).filter((f) => !cubiertos.has(f));
+for (const f of huerfanas) {
+  process.stdout.write(`HUERFANA ${f}: existe y ninguna suite lo ejecuta\n`);
+  process.stdout.write("         engancha el fichero a una suite de este agregador\n");
+}
+
 if (!ejecutadas) {
   process.stdout.write("\nNinguna suite de Cubierta encontrada: el cableado esta roto.\n");
   process.exit(1);
@@ -108,4 +147,8 @@ if (fallidas) {
   process.stdout.write(`\n${fallidas} suite(s) con fallos.\n`);
   process.exit(1);
 }
-process.stdout.write("todas las suites presentes pasan\n");
+if (huerfanas.length) {
+  process.stdout.write(`\n${huerfanas.length} fichero(s) de pruebas sin suite.\n`);
+  process.exit(1);
+}
+process.stdout.write("todas las suites presentes pasan, sin huerfanas\n");

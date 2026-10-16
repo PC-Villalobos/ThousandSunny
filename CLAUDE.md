@@ -150,6 +150,12 @@ The sleep function runs a four-phase audit over `state/`:
 - Never produce new canon (Deckard canon requires pillar, status, source, and certainty level).
 - If `streak >= 3` (same actor+role 3 consecutive cycles), mark `rotate:true` in the ledger and warn in the report.
 
+**Tests:** `npm run test:sueno` runs both halves — the Python suites under
+`state/funcion_de_sueno/` and the Node ones in `lib/`. It resolves the interpreter
+(`PYTHON`, then `python3`, then `python`) and, finding none, says so with the remedy
+instead of dying on an opaque ENOENT — `python3` is usually absent from PATH on
+Windows. Override with `PYTHON=py npm run test:sueno`.
+
 **Environment secrets** (set in the Routine environment, never committed):
 - `BITACORA_GAS_URL` — GAS web app `/exec` endpoint
 - `BITACORA_GAS_TOKEN` — shared token the GAS validates
@@ -164,6 +170,7 @@ dependencies, bound to loopback.
 ```bash
 npm run cubierta          # -> http://127.0.0.1:8788
 npm run test:cubierta     # the aggregator: all four suites, or it names the missing one
+npm run test:sueno        # sleep function: Python suites + the Node ones in lib/
 ```
 
 - **Port `8788`**, override with `CUBIERTA_PUERTO`; host `127.0.0.1`, override
@@ -179,6 +186,11 @@ npm run test:cubierta     # the aggregator: all four suites, or it names the mis
   `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
   on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script
   definition shadow the other.
+- **A test nobody runs protects nothing.** The aggregator sweeps the surfaces it
+  claims (`shared/`, `cubierta/`, `state/cubierta_ui/`) and fails, naming the file,
+  if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
+  directory, wire it: a green `npm test` with a suite unrun is the exact failure
+  this guard exists to prevent.
 
 ## State directory (this repo)
 

@@ -385,6 +385,60 @@ de la unidad de trabajo **de la Cubierta** —el recado—, que es la unica obse
 sesion cloud y la unica que la prueba de A2 puede medir. Coser recado y mision del hub es trabajo
 aparte, y no esta hecho.
 
+### Correccion de 1.c — las suites huerfanas (2026-10-16)
+
+1.c cerro «la cuarta suite» y dejo el agregador diciendo `4 de 4`. Conte las cuatro que el
+agregador nombra y **no comprobe si habia ficheros de prueba fuera de esa lista**. Habia 29
+pruebas que nadie ejecutaba, y `npm test` estaba verde con ellas dentro:
+
+| Donde | Pruebas | Por que no corrian |
+|---|---|---|
+| `state/cubierta_ui/baseline/server/` | 10 | la suite `cubierta-ui` enumeraba tres directorios y este no estaba, dentro de la superficie que ella misma reclama |
+| `state/funcion_de_sueno/lib/` | 19 | `test:sueno` solo invocaba `unittest`; los `*.test.mjs` de esa misma funcion no los llamaba nadie |
+
+Las 19 incluyen la degradacion de la Bitacora de Hipatia: 11 casos que comprueban que un sumidero
+apagado no lanza y que el ciclo sigue. La prueba del desacoplamiento existia y no se ejecutaba.
+
+**Una prueba que nadie corre no protege nada**, y el agregador se escribio precisamente para que
+`npm test` no pudiera estar verde con la mitad sin ejecutar. El agujero era del mismo tipo que el
+que vino a tapar, un nivel mas arriba: no vigilaba su propio perimetro.
+
+**Lo que cambia:**
+
+- `state/cubierta_ui/baseline/server` entra en la suite `cubierta-ui`: 58 → 68 pruebas.
+- El agregador **barre las superficies que reclama** (`shared/`, `cubierta/`, `state/cubierta_ui/`)
+  y, si encuentra un `*.test.mjs` o `test_*.mjs` que ninguna suite ejecuta, lo nombra y sale con
+  error. Una huerfana nueva ya no puede nacer en silencio.
+- `test:sueno` pasa a `scripts/test-sueno.mjs`: resuelve el interprete (`PYTHON`, `python3`,
+  `python`), **descubre los ficheros por barrido en vez de por lista**, y declara la ausencia con
+  su remedio. Lo que falta se dice; no se omite.
+
+**Verificado ejecutando, incluido ver fallar a los guardias:**
+
+| Comprobacion | Resultado |
+|---|---|
+| `npm test` completo | exit 0 |
+| Agregador | `4 de 4`, 68 en `cubierta-ui`, «sin huerfanas» |
+| Funcion de sueno | `2 de 2`: 81 de Python y 19 de Node |
+| Huerfana plantada bajo una superficie reclamada | **exit 1**, nombrando el fichero |
+| Prueba de Python plantada en `lib/` (donde `discover` no llega) | **exit 1**, con el remedio |
+| Sin ningun Python en el PATH | exit 0, `1 de 2`, `AUSENTE python` + remedio — **ya no muere con un ENOENT opaco** |
+
+La ultima fila es el arreglo de portabilidad: en Windows `python3` no suele estar en PATH, y
+`npm test` moria por el nombre del interprete, no por el contenido de nada.
+
+**Limites de esta correccion, declarados y no arreglados:**
+
+- Siguen huerfanas `state/melampo_lab/melampo.test.mjs` (8 pruebas) y los 7 `test_*.py` de
+  `state/hipatia_bridge_runtime/tests/`. Son otras superficies —un laboratorio y el puente de
+  Hipatia—, fuera de este encargo. Quedan dichas aqui para que no se pierdan otra vez.
+- **El fallo de Bitacora en Windows que reporto Codex no se reproduce aqui.** `bitacora.test.mjs`
+  pasa 11 de 11, y su unico caso de red apunta a `127.0.0.1:9` —puerto muerto a proposito— y solo
+  afirma booleanos y un `note`; el `reason`, que si depende de plataforma, no se afirma. Sin la
+  ruta del fichero y el texto de la asercion, ese fallo **no es asignable** a este arbol.
+
+---
+
 ---
 
 ## 5. Reparto de los frentes abiertos
