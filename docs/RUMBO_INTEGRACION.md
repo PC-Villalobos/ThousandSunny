@@ -438,6 +438,8 @@ La ultima fila es el arreglo de portabilidad: en Windows `python3` no suele esta
 - Siguen huerfanas `state/melampo_lab/melampo.test.mjs` (8 pruebas) y los 7 `test_*.py` de
   `state/hipatia_bridge_runtime/tests/`. Son otras superficies —un laboratorio y el puente de
   Hipatia—, fuera de este encargo. Quedan dichas aqui para que no se pierdan otra vez.
+  **Cerradas el mismo dia, mas tarde**, con GO del Capitan a lo que quedaba del rumbo:
+  `npm run test:estado`. Ver el acta del cierre del §5.
 - **El fallo de Bitacora en Windows que reporto Codex no se reproduce aqui.** `bitacora.test.mjs`
   pasa 11 de 11, y su unico caso de red apunta a `127.0.0.1:9` —puerto muerto a proposito— y solo
   afirma booleanos y un `note`; el `reason`, que si depende de plataforma, no se afirma. Sin la
@@ -596,9 +598,11 @@ donde caen respecto de **la entrega del §3**.
 
 ### En el camino critico
 
+**Vacio desde el 2026-10-16.** #114 era el unico y aterrizo ese dia con GO del Capitan.
+
 | PR | Que aporta | Nota |
 |---|---|---|
-| #114 | `POSICION.md`: los tres arboles del World y §1 al dia | El mas barato: un fichero, 4 commits por detras. Es el ancla que toda sesion lee al arrancar. |
+| ~~#114~~ | `POSICION.md`: los tres arboles del World y §1 al dia | **Fusionado el 2026-10-16** en `29bc4c2`. Ver abajo. |
 
 ### Aterrizados
 
@@ -608,13 +612,17 @@ donde caen respecto de **la entrega del §3**.
 | #101 | **Cerrado solo** al fusionar #104: su head quedo como ancestro del tronco. |
 | #98 | **Fusionado el 2026-09-05** en `9c33576`. Trajo `state/cubierta_ui` y cerro el `3 de 4`. |
 | #116 | **Fusionado el 2026-10-16** en `b9d9f6b`. Trajo este rumbo y los dos frentes: A1-A6, la persistencia del recorrido y el guardia de huerfanas. |
+| #118 | **Fusionado el 2026-10-16** en `d83e63f`. Rumbo al dia tras la fusion y cierre del arco. |
+| #119 | **Fusionado el 2026-10-16** en `440945d`. La herramienta de custodia de 1.a y el perimetro de `scripts/`. |
+| #120 | **Fusionado el 2026-10-16** en `5fc030d`. A3 con Hipatia viva: observada, rota y arreglada. |
+| #114 | **Fusionado el 2026-10-16** en `29bc4c2`. El ancla de posicion con los tres arboles del World. |
 | #96 | **Cerrado solo** al fusionar #98: no habia solape con el, habia una pila. |
 
 ### Cerrar por haber aterrizado o por redundancia
 
 | PR | Motivo |
 |---|---|
-| #88 | Su rectificacion del §5 ya esta en el tronco (1.8). |
+| #88 | ~~Su rectificacion del §5 ya esta en el tronco (1.8).~~ **Corregido el 2026-10-16: esta clasificacion era falsa y #88 NO se ha cerrado.** Ver el acta abajo. |
 
 ### Conservados fuera del camino critico
 
@@ -633,6 +641,98 @@ donde caen respecto de **la entrega del §3**.
 
 **PuenteDeMando no recibe cambios en este ciclo.** Es adaptador: publica hacia fuera y no gobierna
 protocolo. Nada de la entrega del §3 pasa por GAS. Se dice aqui para que no haga falta preguntarlo.
+
+
+### Acta del cierre del §5 — y un error del propio reparto (2026-10-16)
+
+Con GO del Capitan a «lo que quede del rumbo». Lo que quedaba, repartido con honestidad:
+
+| Pendiente | Donde se cierra |
+|---|---|
+| **#114**, unico PR del camino critico | Aqui. **Fusionado** en `29bc4c2` |
+| **#88**, clasificado «cerrar por redundancia» | **En ningun sitio: la clasificacion era falsa.** Sigue abierto |
+| **Huerfanas de `state/`** (melampo + los 7 de Hipatia) | Aqui. Cerradas con `test:estado` |
+| **Conservados** (#106, #112, #113, #111, #109, #82, #90, #91, #115, partes nocturnos) | **No en este ciclo**, por decision del propio §5: se deciden por lote |
+| **1.a** (el empuje de `fb82863`) y **A5** (el recorrido) | En la maquina del Capitan |
+
+#### #88 no se cierra, y el rumbo se equivocaba al decir que si
+
+El §1.8 afirmaba: «la rectificacion de PR #88 ya esta en el tronco; el PR sigue abierto sin
+aportar nada». **Comprobado, es inexacto por los dos lados:**
+
+- En `POSICION.md` el tronco **no dice lo que #88 proponia**: dice algo **posterior y
+  distinto**. #88 sostiene «la rotacion no estaba rota: era vista parcial, y las rachas de 10 y
+  11 eran artefacto de leer solo el tronco». El tronco dice «la alarma estaba bien; el anillo
+  estaba mal» —`Groot` no figuraba en `config.roles`, `findIndex` devolvia `-1`— y remata con
+  «de 42 ciclos, 40 los durmio la maquina y 2 un agente. No habia a quien rotar». Son dos
+  analisis con conclusiones distintas; el del tronco es mas tardio y mas especifico, pero no es
+  el de #88.
+- #88 toca **ademas** `state/cierres/CIERRE_ARCO_20260725.md`: 37 lineas de rectificacion de
+  aquel cierre, con el recalculo del ledger consolidado. **Eso no esta en el tronco**
+  —comprobado por busqueda: cero apariciones—. Cerrarlo por redundante habria **perdido
+  contenido**, y en un fichero de cierre, que por convencion de la casa conserva el error en vez
+  de borrarlo.
+
+Tampoco se fusiona: #88 esta en conflicto (`dirty`), y resolverlo significaria **reescribir el
+§5 de `POSICION.md` desde una sesion cloud** para dejar un analisis que el tronco ya supero. Eso
+no se hace aqui. **Decision del Capitan**, con la pregunta ya acotada: ¿debe el cierre del
+2026-07-25 llevar su rectificacion, aunque el §5 del ancla haya seguido avanzando sin ella?
+
+#### Las huerfanas de `state/`, cerradas
+
+`scripts/test-estado.mjs` reclama `state/` **menos** las superficies con dueno
+(`funcion_de_sueno` para `test:sueno`, `cubierta_ui` para `test:cubierta`), barre cuatro formas
+de nombrar una prueba —`*.test.mjs`, `test_*.mjs`, `test_*.py` y `*test*.js`— y **obliga a que
+cada fichero caiga en una de cuatro cajas**: se ejecuta aqui, lo corre otro script de npm, no es
+una suite, o le falta configuracion local que la proyeccion excluye. Lo que no cae en ninguna es
+huerfana y sale con error. Se cierra la **clase** de fallo, no las dos instancias conocidas: una
+prueba nueva bajo `state/` entra sola, sin lista a mano que olvidar.
+
+De los **11 ficheros barridos**: 6 se ejecutan (8 pruebas de melampo y 5 ficheros de Python de
+Hipatia), 2 ya los corria `npm test` por otra entrada, 2 se declaran sin la configuracion local
+que necesitan, y 1 **no es una suite**: `hub-server.phase0-local-test.js` es el servidor del hub
+v2.0 —pide `express` y `ws`—, disfrazado por el nombre del directorio. Ejecutarlo por barrido
+habria sido arrancar un servidor creyendo correr una prueba.
+
+#### Dos cosas que solo se supieron ejecutando
+
+1. **Las pruebas de Hipatia escriben en su propio arbol.** Corri `test_closure_core_ola2_1.py`
+   en su sitio y creo `closure/` y un fichero con nombre de ruta de Obsidian **dentro de
+   `state/hipatia_bridge_runtime/`**. Eso viola la regla de la casa —no se muta `state/` fuera
+   de las tres rutas permitidas— y de paso rompio su propia prueba del manifiesto, que comprueba
+   que ninguna raiz de datos soberanos este proyectada. **Fue error mio**, los ficheros quedaron
+   sin seguimiento y se borraron; nada se commiteo. El corredor corre ahora sobre **copia**, y
+   hay una prueba que falla si alguien vuelve a correrlo en su sitio: se la vio fallar.
+2. **Una copia compartida hace la tanda dependiente del orden.** `closure` va antes que
+   `projection` alfabeticamente, asi que la prueba del cierre rompia a la del manifiesto en la
+   misma copia. Es **una copia limpia por fichero**, no una por superficie.
+
+#### Verificado ejecutando, incluido ver fallar al guardia
+
+| Comprobacion | Resultado |
+|---|---|
+| `npm test` completo, con `test:estado` dentro | exit **0** |
+| Cubierta | **45 pasadas**; agregador `5 de 5` «sin huerfanas» |
+| Funcion de sueno | `2 de 2` |
+| `state/` | **11 ficheros barridos**, ninguno sin caja; 5 de Python en copia limpia, 8 de melampo |
+| `git status state` despues de correrlo | limpio |
+| Guardia de la copia, con el corredor forzado a ejecutar en su sitio | **en rojo**, nombrando `closure/` |
+| Pruebas del propio corredor | 5 de 5 |
+| `#114` sobre el tronco tras fusionar | `POSICION.md` con los tres arboles, `npm test` exit 0 |
+
+#### Limites, declarados
+
+- **Los conservados siguen conservados.** No es pereza: lo fija el propio §5 —se deciden por
+  lote y no en este ciclo—, y un GO a «lo que quede del rumbo» no es un GO a saltarse el reparto
+  que el rumbo establece. Siguen fuera: Vegapunk sin GO-1, PuenteDeMando sin cambios, y los
+  partes nocturnos agenticos sin decidir.
+- **#88 queda abierto a proposito**, con la pregunta acotada arriba.
+- **1.a y A5 siguen siendo del Capitan.** Nada de aqui las mueve.
+- **Las dos pruebas `SIN CONFIG` no se arreglan.** Necesitan `config/bridge_roots.json` y
+  `config/git_repositories.json`, que la proyeccion excluye deliberadamente. Inventar esa
+  configuracion seria fabricar un verde.
+
+---
 
 ---
 
@@ -667,9 +767,14 @@ Tres reglas que este rumbo fija sobre el reparto:
 ## 7. Lo que este fichero no hace
 
 - **No fusiona por su cuenta.** Hasta el 2026-10-16 no habia fusionado nada; ese dia, con GO
-  explicito del Capitan, se fusiono **#116** —este mismo trabajo— en `b9d9f6b`. La regla no
-  cambia: ninguna accion del §4 o del §5 se ejecuta sin GO, y varias caen sobre ramas de
-  otros actores que este fichero no toca.
+  explicito del Capitan en cada caso, se fusionaron **#116** (`b9d9f6b`), **#118** (`d83e63f`),
+  **#119** (`440945d`), **#120** (`5fc030d`) y **#114** (`29bc4c2`) —los cuatro primeros, este
+  mismo trabajo; el quinto, el ancla de posicion del camino critico—. La regla no cambia:
+  ninguna accion del §4 o del §5 se ejecuta sin GO, y varias caen sobre ramas de otros actores
+  que este fichero no toca. **Y un GO amplio no es un GO a todo:** el 2026-10-16, con GO a «lo
+  que quede del rumbo», #88 **no** se cerro pese a estar clasificado para cerrar, porque la
+  clasificacion resulto falsa, y los conservados siguieron conservados porque el reparto lo
+  dice.
 - **No autoriza GO-1 de Vegapunk**, ni relaja ninguna autorizacion operacional existente.
 - **No escribe en `POSICION.md`.** Esta sesion es cloud; el ancla de posicion se levanta en la
   maquina del Capitan.

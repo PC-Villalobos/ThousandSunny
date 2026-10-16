@@ -171,6 +171,7 @@ dependencies, bound to loopback.
 npm run cubierta          # -> http://127.0.0.1:8788
 npm run test:cubierta     # the aggregator: all four suites, or it names the missing one
 npm run test:sueno        # sleep function: Python suites + the Node ones in lib/
+npm run test:estado       # the state/ surfaces nobody else runs; declares what it cannot
 ```
 
 - **Port `8788`**, override with `CUBIERTA_PUERTO`; host `127.0.0.1`, override
@@ -204,6 +205,19 @@ npm run test:sueno        # sleep function: Python suites + the Node ones in lib
   naming the file, if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
   directory, wire it: a green `npm test` with a suite unrun is the exact failure
   this guard exists to prevent.
+- **`state/` has no unrun corner either.** `scripts/test-estado.mjs` claims
+  `state/` minus the surfaces with their own runner (`funcion_de_sueno`,
+  `cubierta_ui`), sweeps for `*.test.mjs`, `test_*.mjs`, `test_*.py` and
+  `*test*.js`, and every file must land in one of four boxes — it runs here,
+  another npm script runs it, it only looks like a suite, or the projection
+  excludes the local config it needs. Anything else is an orphan and fails. A new
+  test under `state/` enters on its own; there is no hand-written list to forget.
+- **The Hipatia tests write into the tree they run in.** `test_closure_core_ola2_1.py`
+  creates `closure/` and an Obsidian-shaped view in the root of
+  `state/hipatia_bridge_runtime/`, which both mutates `state/` and breaks that
+  projection's own manifest test. `test:estado` runs each one on a **fresh copy**,
+  one per file — sharing a copy makes the tanda order-dependent. Never run them in
+  place.
 
 ## State directory (this repo)
 
