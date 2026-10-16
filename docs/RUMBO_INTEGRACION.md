@@ -86,7 +86,13 @@ Una sola. Escrita como prueba de aceptacion, para que se sepa si se ha cumplido 
 | A5 | Sin transporte humano | El recorrido A1-A4 se completa sin copiar un solo mensaje entre Claude y Codex. |
 | A6 | Preservacion | Nada de A1-A4 se pierde al cerrar y volver a abrir. |
 
-### Estado de la entrega, al 2026-09-06
+### Estado de la entrega, al 2026-10-16
+
+**La entrega esta en el tronco.** PR #116 fusionado el 2026-10-16 en `b9d9f6b`, con GO del
+Capitan. Hasta ese momento A1-A6 vivian en una rama y el tronco mostraba la Cubierta sin
+2.a, 2.b ni 2.c: cualquier actor que lo mirase diagnosticaba —con razon— un prototipo. Esa
+contradiccion se cerro. Verificado sobre el tronco, no sobre la rama: `npm test` en exit 0,
+agregador `4 de 4` «sin huerfanas», funcion de sueno `2 de 2`.
 
 | # | Estado | Sostenido por |
 |---|---|---|
@@ -459,6 +465,7 @@ donde caen respecto de **la entrega del §3**.
 | #104 | **Fusionado el 2026-09-05** en `a78cfa4`. Trajo `cubierta/` entera y el nucleo epistemico. |
 | #101 | **Cerrado solo** al fusionar #104: su head quedo como ancestro del tronco. |
 | #98 | **Fusionado el 2026-09-05** en `9c33576`. Trajo `state/cubierta_ui` y cerro el `3 de 4`. |
+| #116 | **Fusionado el 2026-10-16** en `b9d9f6b`. Trajo este rumbo y los dos frentes: A1-A6, la persistencia del recorrido y el guardia de huerfanas. |
 | #96 | **Cerrado solo** al fusionar #98: no habia solape con el, habia una pila. |
 
 ### Cerrar por haber aterrizado o por redundancia
@@ -517,8 +524,10 @@ Tres reglas que este rumbo fija sobre el reparto:
 
 ## 7. Lo que este fichero no hace
 
-- **No fusiona nada.** No toca ninguna rama ajena ni cierra ningun PR. Las acciones del §4 y §5
-  requieren GO del Capitan, y varias caen sobre ramas de otros actores.
+- **No fusiona por su cuenta.** Hasta el 2026-10-16 no habia fusionado nada; ese dia, con GO
+  explicito del Capitan, se fusiono **#116** —este mismo trabajo— en `b9d9f6b`. La regla no
+  cambia: ninguna accion del §4 o del §5 se ejecuta sin GO, y varias caen sobre ramas de
+  otros actores que este fichero no toca.
 - **No autoriza GO-1 de Vegapunk**, ni relaja ninguna autorizacion operacional existente.
 - **No escribe en `POSICION.md`.** Esta sesion es cloud; el ancla de posicion se levanta en la
   maquina del Capitan.
