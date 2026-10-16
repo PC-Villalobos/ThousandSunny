@@ -98,7 +98,7 @@ agregador `4 de 4` «sin huerfanas», funcion de sueno `2 de 2`.
 |---|---|---|
 | A1 | **Cumplida** | 1.d. Prueba del tercero: arbol limpio, solo el repo, `npm run cubierta` responde en 8788 |
 | A2 | **Cumplida** | 2.a. Reinicio con y sin actor; lo mostrado coincide con el disco |
-| A3 | **A medias** | 1.e. Con Hipatia **caida**, verificado. Con Hipatia **viva**, no observado: desde cloud no hay un `8765` al que llamar |
+| A3 | **Cumplida y observada** | 1.e para la mitad caida. La mitad **viva**, el 2026-10-16: se levanto el runtime real de Hipatia en el contenedor y se vio en navegador. Aparecio rota y se arreglo. Ver el acta abajo |
 | A4 | **Cumplida y observada** | 2.b. Navegador real contra el `#artefactos` renderizado, en los dos casos del umbral |
 | A5 | **Del Capitan** | El recorrido A1-A4 se completo aqui por HTTP sin transporte humano, pero A5 se mide en **su** uso, no en el mio |
 | A6 | **Cumplida y observada** | 2.c. Recorrido completo, cerrar y reabrir: nada se perdio, y se ve |
@@ -121,7 +121,7 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
 | 1.d | ~~**Fijar el arranque en un sitio**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** un tercero la levanto desde un arbol limpio leyendo solo el repo. Ver el acta abajo. |
-| 1.e | ~~**Senal de Hipatia sin acoplamiento**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** A3 verificada en vivo y fijada con pruebas. Ver el acta abajo. |
+| 1.e | ~~**Senal de Hipatia sin acoplamiento**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida** para el desacoplamiento. **Correccion del 2026-10-16:** donde esta fila decia «A3 verificada en vivo», «en vivo» era con Hipatia **caida**; la mitad viva no se habia observado nunca, y al observarse estaba rota. Ver el acta de A3 abajo. |
 
 #### Acta de 1.b — la fusion del 2026-09-05
 
@@ -514,6 +514,76 @@ quinta suite.
   decision es del Capitan y esta rama no la adelanta.
 - **El empuje puede fallar por credenciales** en esa maquina. Si `ls-remote` no contesta, el script
   avisa y no asume que ya esta a salvo.
+
+---
+
+
+### Acta de A3 — Hipatia viva, observada por primera vez (2026-10-16)
+
+Con GO del Capitan. A3 llevaba desde el 2026-09-05 «a medias» por una razon material y no por
+falta de ganas: **no habia ningun `8765` vivo al que llamar desde cloud**. Esta sesion lo
+resolvio levantando el runtime real: `state/hipatia_bridge_runtime/server/bitacora_server.py`,
+copiado al scratchpad —mismos SHA-256, comprobados— para no escribir nada dentro de `state/`.
+No es un doble: es el codigo de Hipatia, con su `verify_chain` rehaciendo la cadena de hashes
+antes de contestar.
+
+`GET /api/health` respondio: `{"ok": true, "version": "v1.1", "events": 0, "schemas": [], "bind": "127.0.0.1:8765"}`.
+
+**Hallazgo 1 — Hipatia no arranca sin Obsidian.** El servidor se niega a arrancar si no existe
+`D:\La maceta de Groot\...\MOC_BITACORA_HIPATIA_LOCAL_v1.md`: una ruta absoluta de Windows,
+en `update_obsidian_moc`, que lanza `RuntimeError`. Hubo que crear una fixture de laboratorio
+con los dos marcadores diarios para que levantara. Esto invierte la regla de la casa: la
+Cubierta trata a Hipatia como **autoridad, no dependencia**, y Hipatia depende de un vault que
+la propia arquitectura declara **espejo, no fuente de verdad**. Queda **hallado y no arreglado**:
+su README ya marca esas tres rutas como `inherited_pending_review` y la decision es del Capitan.
+
+**Hallazgo 2 — la mitad viva estaba rota, y por eso A3 existia.** Con la Bitacora contestando, la
+Cubierta declaraba la fuente `ok` y entregaba `eventos: null, version: null`. Causa: el cliente
+`bitacora.mjs` devuelve `{ ok, reachable, httpStatus, payload }` y el adaptador leia
+`salud.events ?? salud.body?.events` — los datos viajan dentro de `payload`. Seis semanas
+invisible, porque la unica mitad observable era la caida. El comentario de la propia suite lo
+confesaba sin saberlo: «estas dos pruebas fijan **esa mitad**».
+
+**Hallazgo 3 — aun arreglado, no se veia.** El cliente pintaba de cada fuente solo el `id`, el
+punto de color y el `motivo`. El `motivo` solo existe cuando la fuente calla, asi que con
+Hipatia **viva** el Capitan veia un punto verde y nada mas: indistinguible de una autoridad que
+no dice nada. A3 pide que la Cubierta lo indique **sin comprobarlo por fuera**, y no lo hacia.
+
+**Lo que cambia:**
+
+- `leerBitacora` lee de `payload` (conservando las dos lecturas antiguas por si otro cliente
+  entrega el cuerpo plano). El `??` respeta el cero: un ledger vacio son **0 eventos**, no dato
+  desconocido.
+- Cada fuente gana `nota`: el gemelo de `motivo` para el caso vivo, una linea ya resumida que la
+  pantalla muestra tal cual. `sinSenal` la pone en `null` para que toda fuente tenga la misma
+  forma, calle o hable.
+- El cliente pinta `nota` junto al `id`. Con Hipatia viva la fila dice **`bitacora v1.1 — 0 eventos`**.
+- Cuatro pruebas nuevas fijan la mitad viva, con **doble propio en puerto efimero**: la suite no
+  depende de que Hipatia este encendida, que es la regla que esa seccion defiende.
+
+**Verificado ejecutando, incluido ver fallar al guardia:**
+
+| Comprobacion | Resultado |
+|---|---|
+| Runtime real de Hipatia en el contenedor | arranco: `0 eventos verificados`, cadena rehecha |
+| `GET /api/health` | `{ok:true, version:"v1.1", events:0, schemas:[], bind:"127.0.0.1:8765"}` |
+| `/api/snapshot` **antes** del arreglo, con Hipatia viva | `estado:"ok"` con `eventos:null, version:null` — el fallo, observado |
+| `/api/snapshot` **despues** | `eventos:0`, `version:"v1.1"`, `nota:"v1.1 — 0 eventos"` |
+| Navegador real (Chromium), Hipatia **viva** | fila `bitacora v1.1 — 0 eventos`, punto `ok`, **cero errores de pagina** |
+| Navegador real, Hipatia **detenida** y recargando | fila `bitacora no alcanzable en http://127.0.0.1:8765`, punto `sin_senal`, **el barco sigue abierto** |
+| Regresion plantada a proposito (volver a leer de la raiz) | **3 pruebas en rojo**, `null !== 22` y `null !== 0` |
+| `npm test` completo | exit 0 — Cubierta **45 pasadas**, agregador `5 de 5`, sueno `2 de 2` |
+
+**Limites, declarados:**
+
+- **El ledger de aqui tiene 0 eventos.** Es el codigo real, no los datos reales: `events/` esta
+  deliberadamente fuera de la proyeccion. La ruta de codigo es la misma con 0 que con 22 —lo fija
+  la prueba— pero **su instancia, con su volumen, sigue sin observarse desde aqui**.
+- **La fixture del MOC es de laboratorio**, vive en el scratchpad y no entra al repo. Sin ella,
+  Hipatia no arranca fuera de su maquina: eso es el hallazgo 1, no un detalle de montaje.
+- **`schemas` no se muestra.** Llega en la respuesta y no se pinta. No se amplia la entrega por
+  eso; queda dicho.
+- **A5 sigue siendo del Capitan.** Esto se midio en mi uso, no en el suyo.
 
 ---
 

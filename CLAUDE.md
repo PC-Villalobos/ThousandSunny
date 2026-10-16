@@ -181,7 +181,20 @@ npm run test:sueno        # sleep function: Python suites + the Node ones in lib
 - **Hipatia is authority, not dependency.** The Cubierta reads the Bitacora and
   declares in `/api/snapshot` whether it answers, naming the URL when it does
   not. With Hipatia down the ship still opens. Pinned by tests in
-  `cubierta/test/test_cubierta.mjs`; do not couple them.
+  `cubierta/test/test_cubierta.mjs`; do not couple them. Each source carries
+  `motivo` when it is silent and `nota` when it answers — for the Bitacora,
+  `version` and event count, which the client shows beside the id. Both halves
+  are pinned, the live one with its own double on an ephemeral port: a test must
+  never need a real 8765.
+- **A live 8765 from a cloud session is reproducible.** Copy
+  `state/hipatia_bridge_runtime/server/*.py` to the scratchpad (never run it in
+  place: startup creates `events/`, `index/` and `daily/` next to it, inside
+  `state/`) and run `python3 server/bitacora_server.py` from there. It refuses to
+  start unless the Obsidian MOC exists — a hardcoded absolute Windows path in
+  `update_obsidian_moc` — so a fixture carrying the two
+  `BITACORA_DAILY_LINKS` markers is needed at that relative path. That
+  dependency on the vault is a finding of its own, recorded in the A3 record in
+  `docs/RUMBO_INTEGRACION.md`, not a montage detail.
 - Two surfaces carry the name Cubierta: `cubierta/` (the isometric ship) and
   `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
   on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script

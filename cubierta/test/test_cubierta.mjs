@@ -6,6 +6,7 @@
 // sellada, y que un dato ausente salga como "desconocido" y no como un numero.
 
 import assert from "node:assert/strict";
+import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,7 +37,7 @@ function presenciaDe(senal, opciones = {}) {
   return evaluarPresencia({ senal, ejes: ejesConEscritura(), ...opciones });
 }
 import { extraerRecado, hablar } from "../server/hablar.mjs";
-import { leerBitacora, leerFuentes, ESTADO_SIN_SENAL } from "../server/adaptadores.mjs";
+import { leerBitacora, leerFuentes, ESTADO_SIN_SENAL, ESTADO_OK } from "../server/adaptadores.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
@@ -348,8 +349,19 @@ await prueba("se extrae el recado que el nakama propone al final de su mensaje",
 //
 // La Bitacora de Hipatia (127.0.0.1:8765) es la autoridad operativa desde el
 // 2026-07-24. Autoridad no es dependencia: si esta callada, la Cubierta lo dice
-// y sigue navegable. Estas dos pruebas fijan esa mitad, que es la que se puede
-// romper sin que nadie lo note -- un `await` mal puesto en el arranque basta.
+// y sigue navegable.
+//
+// Durante seis semanas aqui solo se fijo la mitad CAIDA, por una razon material:
+// no habia ningun 8765 vivo al que llamar desde una sesion cloud. El 2026-10-16
+// se levanto el runtime real de `state/hipatia_bridge_runtime` en el contenedor
+// y la mitad viva aparecio rota: la Cubierta declaraba `ok` y entregaba
+// `eventos: null, version: null` mientras la Bitacora contestaba `{events,
+// version}`. Un punto verde sin cifras es indistinguible de una autoridad que
+// calla, y ninguna prueba lo veia.
+//
+// Las pruebas de abajo fijan las DOS mitades. La viva levanta su propio doble en
+// un puerto efimero: la suite no depende de que Hipatia este encendida, que es
+// exactamente la regla que esta seccion defiende.
 
 await prueba("con la bitacora caida la fuente sale sin_senal y con motivo, nunca ok", async () => {
   const r = await leerBitacora({ raiz: RAIZ_REPO, url: "http://127.0.0.1:9", timeoutMs: 800 });
@@ -371,6 +383,67 @@ await prueba("la bitacora caida no se lleva por delante a las demas fuentes", as
   // Ninguna fuente puede quedar sin declarar por culpa de otra: cada una trae
   // su estado, y ninguna lanza. Es lo que permite abrir con Hipatia callada.
   for (const f of fuentes) assert.ok(f.estado && f.ts, `la fuente ${f.id} llega sin declarar estado`);
+});
+
+/**
+ * Doble de la Bitacora en un puerto efimero. La respuesta es la del runtime
+ * real, copiada de lo que `GET /api/health` devolvio el 2026-10-16:
+ *   { ok, version, events, schemas, bind }
+ */
+async function conBitacoraViva(respuesta, codigo, fn) {
+  const srv = createServer((req, res) => {
+    if (req.url !== "/api/health") { res.statusCode = 404; res.end("{}"); return; }
+    res.statusCode = codigo;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(respuesta));
+  });
+  await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+  const url = `http://127.0.0.1:${srv.address().port}`;
+  try { return await fn(url); } finally { await new Promise((ok) => srv.close(ok)); }
+}
+
+const SALUD_REAL = { ok: true, version: "v1.1", events: 22, schemas: ["hipatia-bitacora-v1.1"], bind: "127.0.0.1:8765" };
+
+await prueba("con la bitacora viva llegan las cifras que entrega, no null", async () => {
+  await conBitacoraViva(SALUD_REAL, 200, async (url) => {
+    const r = await leerBitacora({ raiz: RAIZ_REPO, url, timeoutMs: 800 });
+    assert.equal(r.estado, ESTADO_OK);
+    // La regresion exacta del 2026-10-16: el cliente devuelve los datos dentro
+    // de `payload`, y leerlos de la raiz daba null con la autoridad hablando.
+    assert.equal(r.datos.eventos, 22, "el contador de eventos llega, no se pierde en payload");
+    assert.equal(r.datos.version, "v1.1", "la version llega, no se pierde en payload");
+    assert.equal(r.datos.url, url, "y se dice contra quien se hablo");
+  });
+});
+
+await prueba("cero eventos es un dato, no una ausencia", async () => {
+  await conBitacoraViva({ ...SALUD_REAL, events: 0, schemas: [] }, 200, async (url) => {
+    const r = await leerBitacora({ raiz: RAIZ_REPO, url, timeoutMs: 800 });
+    assert.equal(r.estado, ESTADO_OK);
+    // Un ledger vacio responde 0. Confundir 0 con null es volver al fallo de
+    // antes por otra puerta: `??` no debe tragarse el cero.
+    assert.equal(r.datos.eventos, 0, "un ledger vacio son cero eventos, no dato desconocido");
+  });
+});
+
+await prueba("la nota dice lo que se ve en pantalla; callada, no hay nota", async () => {
+  await conBitacoraViva(SALUD_REAL, 200, async (url) => {
+    const vivo = await leerBitacora({ raiz: RAIZ_REPO, url, timeoutMs: 800 });
+    assert.ok(vivo.nota, "una autoridad que contesta tiene que poder decirlo en la pantalla");
+    assert.ok(vivo.nota.includes("v1.1"), "la nota nombra la version");
+    assert.ok(vivo.nota.includes("22"), "y el contador");
+  });
+  const muerto = await leerBitacora({ raiz: RAIZ_REPO, url: "http://127.0.0.1:9", timeoutMs: 800 });
+  assert.equal(muerto.nota, null, "sin senal no se escribe nota: para eso esta el motivo");
+  assert.ok(muerto.motivo, "y el motivo sigue ahi");
+});
+
+await prueba("una bitacora que contesta con error no se declara ok", async () => {
+  await conBitacoraViva({ ok: false, error: "cadena de hashes rota" }, 500, async (url) => {
+    const r = await leerBitacora({ raiz: RAIZ_REPO, url, timeoutMs: 800 });
+    assert.equal(r.estado, ESTADO_SIN_SENAL, "responder no es estar sana");
+    assert.equal(r.datos, null, "y sin salud no se inventan cifras");
+  });
 });
 
 // --- Lo abierto sobrevive al reinicio ---------------------------------------
