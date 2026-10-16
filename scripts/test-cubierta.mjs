@@ -62,7 +62,7 @@ function barrer(relativo) {
 // Superficies que este agregador reclama. Si aparece un fichero de pruebas aqui
 // dentro que ninguna suite ejecuta, es una huerfana y se declara como fallo: una
 // prueba que nadie corre no protege nada, y descubrirlo mas tarde cuesta mas.
-const RECLAMADAS = ["shared", "cubierta", "state/cubierta_ui"];
+const RECLAMADAS = ["shared", "cubierta", "state/cubierta_ui", "scripts"];
 
 const SUITES = [
   {
@@ -100,6 +100,20 @@ const SUITES = [
       return ficheros.length ? ["node", ["--test", ...ficheros]] : null;
     },
     ausente: "el contrato pedagogico vive en agent/cubierta-not-recorded-preview",
+  },
+  {
+    // Los propios corredores viven aqui. Mientras `scripts/` quedo fuera del
+    // perimetro reclamado, un fichero de pruebas suyo no era huerfana para nadie:
+    // el agregador decia "4 de 4, sin huerfanas" con 11 pruebas sin ejecutar. El
+    // mismo agujero que este guardia existe para cerrar, un nivel mas arriba.
+    id: "herramientas",
+    titulo: "Herramientas del repo — preservacion y corredores",
+    ancla: "scripts",
+    comando: () => {
+      const ficheros = pruebasDe("scripts");
+      return ficheros.length ? ["node", ["--test", ...ficheros]] : null;
+    },
+    ausente: "no hay pruebas de herramientas en scripts/ en este arbol",
   },
 ];
 
