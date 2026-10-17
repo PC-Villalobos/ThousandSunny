@@ -38,6 +38,7 @@ from git_evidence import (
     github_status,
     local_status as git_local_status,
 )
+import vault
 from git_actions import (
     authorize_operation as authorize_git_operation,
     cancel_operation as cancel_git_operation,
@@ -59,7 +60,9 @@ EVENTS_FILE = ROOT / "events" / "bitacora_events.jsonl"
 DB_FILE = ROOT / "index" / "bitacora.sqlite"
 HTML_FILE = ROOT / "runtime" / "bitacora-local.html"
 DAILY_DIR = ROOT / "daily"
-OBSIDIAN_ROOT = Path(r"D:\La maceta de Groot\40_Biblioteca_Hipatia\_bitacora_v1")
+# Resuelto por la frontera del vault: valor heredado por defecto, sobreescribible
+# por entorno, y espejo opcional. Ver server/vault.py.
+OBSIDIAN_ROOT = vault.raiz()
 OBSIDIAN_DAILY = OBSIDIAN_ROOT / "daily"
 OBSIDIAN_MOC = OBSIDIAN_ROOT / "MOC_BITACORA_HIPATIA_LOCAL_v1.md"
 ALLOWED_SENSITIVITY = {"public_safe", "internal"}
@@ -257,7 +260,12 @@ def render_daily(events: list[dict]) -> None:
         date = event["timestamp_local"][:10]
         grouped.setdefault(date, []).append(event)
     DAILY_DIR.mkdir(parents=True, exist_ok=True)
-    OBSIDIAN_DAILY.mkdir(parents=True, exist_ok=True)
+    # La vista local es la que no puede faltar. La del vault es espejo: si su
+    # raiz no esta, no se crea nada ahi. Crearla a ciegas llenaba el arbol de
+    # directorios llamados `D:\...` en cualquier plataforma que no fuese Windows.
+    espejo = vault.activo(OBSIDIAN_ROOT)
+    if espejo:
+        OBSIDIAN_DAILY.mkdir(parents=True, exist_ok=True)
     for date, day_events in grouped.items():
         lines = [
             "---",
@@ -318,11 +326,17 @@ def render_daily(events: list[dict]) -> None:
             lines.extend([f"Hash: `{event['event_hash']}`", ""])
         content = "\n".join(lines) + "\n"
         (DAILY_DIR / f"{date}.md").write_text(content, encoding="utf-8", newline="\n")
-        (OBSIDIAN_DAILY / f"{date}.md").write_text(content, encoding="utf-8", newline="\n")
+        if espejo:
+            (OBSIDIAN_DAILY / f"{date}.md").write_text(content, encoding="utf-8", newline="\n")
     update_obsidian_moc(sorted(grouped, reverse=True))
 
 
 def update_obsidian_moc(dates: list[str]) -> None:
+    # Sin vault no hay MOC que mantener, y eso no es un error: el espejo es
+    # opcional. Con vault montado y MOC ausente si lo es, porque entonces no es
+    # ausencia sino incoherencia de una superficie que si esta.
+    if not vault.activo(OBSIDIAN_ROOT):
+        return
     if not OBSIDIAN_MOC.exists():
         raise RuntimeError(f"no existe el MOC de Obsidian: {OBSIDIAN_MOC}")
     start_marker = "<!-- BITACORA_DAILY_LINKS_START -->"
@@ -810,6 +824,12 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
+    # Se dice una vez, al arrancar, y no en cada evento: la ausencia se declara,
+    # pero no se convierte en ruido.
+    if vault.activo(OBSIDIAN_ROOT):
+        print(f"Espejo de Obsidian activo en {OBSIDIAN_ROOT}")
+    else:
+        print(vault.motivo_inactivo(OBSIDIAN_ROOT))
     events = synchronize()
     server = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Bitácora Hipatia Local v1.1 — http://{HOST}:{PORT} — {len(events)} eventos verificados")

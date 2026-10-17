@@ -536,8 +536,9 @@ antes de contestar.
 en `update_obsidian_moc`, que lanza `RuntimeError`. Hubo que crear una fixture de laboratorio
 con los dos marcadores diarios para que levantara. Esto invierte la regla de la casa: la
 Cubierta trata a Hipatia como **autoridad, no dependencia**, y Hipatia depende de un vault que
-la propia arquitectura declara **espejo, no fuente de verdad**. Queda **hallado y no arreglado**:
-su README ya marca esas tres rutas como `inherited_pending_review` y la decision es del Capitan.
+la propia arquitectura declara **espejo, no fuente de verdad**. ~~Queda hallado y no arreglado.~~
+**Resuelto el mismo dia, mas tarde, con GO del Capitan.** Ver el acta de la frontera del vault,
+abajo.
 
 **Hallazgo 2 — la mitad viva estaba rota, y por eso A3 existia.** Con la Bitacora contestando, la
 Cubierta declaraba la fuente `ok` y entregaba `eventos: null, version: null`. Causa: el cliente
@@ -581,8 +582,10 @@ no dice nada. A3 pide que la Cubierta lo indique **sin comprobarlo por fuera**, 
 - **El ledger de aqui tiene 0 eventos.** Es el codigo real, no los datos reales: `events/` esta
   deliberadamente fuera de la proyeccion. La ruta de codigo es la misma con 0 que con 22 —lo fija
   la prueba— pero **su instancia, con su volumen, sigue sin observarse desde aqui**.
-- **La fixture del MOC es de laboratorio**, vive en el scratchpad y no entra al repo. Sin ella,
-  Hipatia no arranca fuera de su maquina: eso es el hallazgo 1, no un detalle de montaje.
+- ~~**La fixture del MOC es de laboratorio**, vive en el scratchpad y no entra al repo. Sin ella,
+  Hipatia no arranca fuera de su maquina: eso es el hallazgo 1, no un detalle de montaje.~~
+  **Ya no hace falta ninguna fixture:** con la frontera del vault, Hipatia arranca sin vault. Ver
+  el acta de abajo.
 - **`schemas` no se muestra.** Llega en la respuesta y no se pinta. No se amplia la entrega por
   eso; queda dicho.
 - **A5 sigue siendo del Capitan.** Esto se midio en mi uso, no en el suyo.
@@ -762,6 +765,72 @@ habria sido arrancar un servidor creyendo correr una prueba.
 - **Las dos pruebas `SIN CONFIG` no se arreglan.** Necesitan `config/bridge_roots.json` y
   `config/git_repositories.json`, que la proyeccion excluye deliberadamente. Inventar esa
   configuracion seria fabricar un verde.
+
+---
+
+
+### Acta de la frontera del vault — Hipatia deja de depender de Obsidian (2026-10-16)
+
+Con GO del Capitan. Cierra el hallazgo 1 del acta de A3 y, con el, los **tres**
+`inherited_pending_review` que el manifiesto de la proyeccion arrastraba desde el 2026-07-27.
+
+**El problema, en una linea:** `bitacora_server.py` lanzaba `RuntimeError` si no existia el MOC
+del vault —una ruta absoluta de Windows, en `update_obsidian_moc`—, asi que **la autoridad
+operativa no se podia levantar en ninguna maquina que no fuese la del Capitan**. Y eso invierte la
+regla de la casa dos veces: la Cubierta trata a Hipatia como autoridad y no dependencia, y la
+arquitectura declara que el vault es **espejo, no fuente de verdad**. La autoridad dependia del
+espejo.
+
+**Precedente dentro del propio runtime:** la capa de adaptadores (`bridge_core`) ya resuelve sus
+raices desde `config/bridge_roots.json`. Las tres constantes de modulo eran la excepcion, no la
+norma. No se invento un patron: se aplico el que ya estaba.
+
+**La decision, en `server/vault.py`:**
+
+| Caso | Comportamiento |
+|---|---|
+| Vault en su sitio (valor por defecto **heredado**) | **Identico a antes**, escritura por escritura |
+| Otra raiz | `HIPATIA_OBSIDIAN_ROOT`, sin tocar codigo |
+| Raiz **inexistente** | Espejo inactivo y **declarado** al arrancar, con su remedio. No se escribe ni se crea nada ahi |
+| Vault presente y **MOC ausente** | **Sigue lanzando.** No es ausencia, es incoherencia de una superficie que si esta |
+| Espejo inactivo y `event_absorbed` | **False.** Absorber es haber llegado a la vista humana; sin espejo que mirar no se afirma |
+
+Esa ultima fila es la que no se podia decidir a la ligera. Debilitar el predicado a «basta la copia
+local» habria cambiado el significado de un **estado de gobierno** porque falte un directorio. Se
+elige no afirmar lo que no se puede ver, que es la ley de la casa.
+
+**El cerrojo cambia de sentido, no desaparece.** La prueba del manifiesto obligaba a *declarar*
+cada ruta absoluta del codigo; ahora **prohibe que quede ninguna**, y a cambio exige que cada
+enlace al vault conste como opcional, sobreescribible, con su variable de entorno y con su ruta por
+defecto coincidiendo con la que dice `vault.py`. Los dos escritores del vault siguen enumerados
+uno a uno: el espejo es opcional, no libre.
+
+**Verificado ejecutando, con el servidor real:**
+
+| Comprobacion | Resultado |
+|---|---|
+| Arranque **sin vault ninguno** | `espejo de Obsidian inactivo: no existe …` + `0 eventos verificados`; `/api/health` responde **200** |
+| La raiz del vault tras ese arranque | **no se creo** — era el defecto que en Linux llenaba el arbol de directorios `D:\…` |
+| Arranque **con vault montado** | `Espejo de Obsidian activo en …` |
+| `POST /api/events` con vault montado | `write_verified: true`; vista diaria en `daily/2026-10-16.md` del vault y **el MOC enlazando el dia** |
+| Pruebas de la frontera | **6 de 6**, incluida la incoherencia (vault presente, MOC ausente → lanza) |
+| Prueba del manifiesto, con el contrato nuevo | 6 de 6 |
+| `test_closure_core_ola2_1.py` | pasa: exige el informe fisico siempre, y el del vault solo con vault |
+| `npm test` completo | exit 0 |
+
+**Limites, declarados:**
+
+- **Esto no esta desplegado en su maquina.** La proyeccion va **por delante** del runtime hasta que
+  el Capitan corra `deploy/sync_to_local.ps1 -Apply`, que compara hashes, exige el `8765` parado y
+  deja backup. El manifiesto lo dice con dos campos nuevos para que nadie lea esos hashes como «lo
+  que corre ahora mismo».
+- **Cambia el comportamiento con el vault desmontado**, y eso es una decision, no un arreglo
+  neutro: antes era una caida ruidosa de la autoridad entera; ahora es el espejo apagado y dicho.
+  Si lo que queria era caerse, se revierte en una linea.
+- **Las dos pruebas `SIN CONFIG` siguen igual.** Necesitan `config/bridge_roots.json` y
+  `config/git_repositories.json`, excluidos de la proyeccion. Esto no las toca.
+- **`server/vault.py` es fichero nuevo del runtime**, no solo de la proyeccion: entra en el
+  manifiesto porque sin el los dos modulos que lo importan no arrancan alli.
 
 ---
 
