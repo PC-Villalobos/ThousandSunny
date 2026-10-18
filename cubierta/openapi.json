@@ -1,0 +1,1277 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cubierta del Thousand Sunny",
+    "version": "1.0.0",
+    "description": "Contrato HTTP de la Cubierta (cubierta/server/server.mjs). Un proceso local, atado a 127.0.0.1:8788 por defecto (CUBIERTA_HOST, CUBIERTA_PUERTO). cubierta/test/test_openapi.mjs comprueba que cada ruta del servidor esta aqui, que cada ruta de aqui existe en el servidor, y que las respuestas reales cumplen estos esquemas. Los esquemas fijan los campos que se garantizan; una respuesta puede llevar mas.\n\nTodo POST pasa por una guarda de origen: exige content-type application/json y rechaza peticiones de otro sitio (sec-fetch-site) o de un Origin que no sea local. Sin eso, cualquier pagina abierta en el navegador del Capitan podria mandar un POST a localhost."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8788",
+      "description": "La Cubierta en la maquina del Capitan"
+    }
+  ],
+  "tags": [
+    {
+      "name": "barco",
+      "description": "El barco vivo: tripulacion, fuentes, recados"
+    },
+    {
+      "name": "capitan",
+      "description": "Decisiones que solo toma el Capitan"
+    },
+    {
+      "name": "estado",
+      "description": "Que hay, que funciona, que falta y si ya se resolvio"
+    },
+    {
+      "name": "paginas",
+      "description": "HTML para el navegador"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "paginas"
+        ],
+        "operationId": "portada",
+        "summary": "La Cubierta (barco isometrico)",
+        "description": "/index.html sirve lo mismo.",
+        "responses": {
+          "200": {
+            "description": "Pagina HTML",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/estado": {
+      "get": {
+        "tags": [
+          "paginas",
+          "estado"
+        ],
+        "operationId": "paginaEstado",
+        "summary": "Pantalla del estado del barco",
+        "responses": {
+          "200": {
+            "description": "Pagina HTML",
+            "content": {
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/stream": {
+      "get": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "flujo",
+        "summary": "La instantanea del barco en directo",
+        "description": "Server-Sent Events. Cada evento `data:` lleva una Instantanea en JSON, la primera nada mas conectar.",
+        "responses": {
+          "200": {
+            "description": "Flujo de eventos",
+            "content": {
+              "text/event-stream": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/snapshot": {
+      "get": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "instantanea",
+        "summary": "Instantanea del barco",
+        "description": "En modo replay, `modo` es `replay` y `aviso_replay` lo dice: un ensayo nunca se confunde con el barco.",
+        "responses": {
+          "200": {
+            "description": "Instantanea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instantanea"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/barco": {
+      "get": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "barco",
+        "summary": "Mapa, tripulacion y constituciones",
+        "responses": {
+          "200": {
+            "description": "Definicion estatica del barco",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Barco"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/salud": {
+      "get": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "salud",
+        "summary": "Parte de chopper-salud",
+        "description": "No lee lo que el actor afirma de si mismo: con las sondas caidas dice `no puedo medirte` por eje, no numeros.",
+        "responses": {
+          "200": {
+            "description": "Parte de salud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salud"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/senal": {
+      "post": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "senal",
+        "summary": "Un agente declara que esta trabajando",
+        "description": "Se anade a cubierta/state/senales.jsonl. Con `nakama` y `recursos` abre un recado, o reutiliza el equivalente si el latido repite la misma tarea.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Senal"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senal registrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSenal"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Rechazo"
+          },
+          "403": {
+            "$ref": "#/components/responses/Prohibido"
+          }
+        }
+      }
+    },
+    "/api/recado": {
+      "post": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "recado",
+        "summary": "Abrir un recado para un nakama",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoRecado"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recado abierto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaRecado"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Rechazo"
+          },
+          "403": {
+            "$ref": "#/components/responses/Prohibido"
+          }
+        }
+      }
+    },
+    "/api/llave": {
+      "post": {
+        "tags": [
+          "capitan"
+        ],
+        "operationId": "llave",
+        "summary": "La llave de la camara sellada",
+        "description": "Solo el Capitan, y desde el puente. Un recado que no espera llave devuelve `ok: false` con su motivo.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Llave"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resultado de la decision",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resultado"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Rechazo"
+          },
+          "403": {
+            "$ref": "#/components/responses/Prohibido"
+          }
+        }
+      }
+    },
+    "/api/veredicto": {
+      "post": {
+        "tags": [
+          "capitan"
+        ],
+        "operationId": "veredicto",
+        "summary": "Sentencia del Capitan sobre un desvio",
+        "description": "Se anade a cubierta/state/veredictos.jsonl. El juez es siempre el Capitan.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Veredicto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Veredicto registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaVeredicto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Rechazo"
+          },
+          "403": {
+            "$ref": "#/components/responses/Prohibido"
+          }
+        }
+      }
+    },
+    "/api/hablar": {
+      "post": {
+        "tags": [
+          "barco"
+        ],
+        "operationId": "hablar",
+        "summary": "Hablar con un nakama",
+        "description": "Sin backend configurado (CUBIERTA_LLM=ninguno) responde `encarnado: false` con su motivo: nadie finge encarnar a nadie.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Hablar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Respuesta del nakama, o por que no hay nadie que responda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaHablar"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Prohibido"
+          },
+          "404": {
+            "$ref": "#/components/responses/Rechazo"
+          }
+        }
+      }
+    },
+    "/api/estado": {
+      "get": {
+        "tags": [
+          "estado"
+        ],
+        "operationId": "estado",
+        "summary": "Lo afirmado y lo comprobado",
+        "description": "Lee cubierta/estado/registro.json y comprueba cada prueba citada contra el arbol y contra git en esta misma peticion.",
+        "responses": {
+          "200": {
+            "description": "Estado del barco",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Estado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/estado/buscar": {
+      "get": {
+        "tags": [
+          "estado"
+        ],
+        "operationId": "buscarEstado",
+        "summary": "Esto ya lo resolvimos?",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Consulta, hasta 200 caracteres",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados y fuentes consultadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Busqueda"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": [
+          "paginas"
+        ],
+        "operationId": "contrato",
+        "summary": "Este mismo contrato",
+        "responses": {
+          "200": {
+            "description": "La especificacion OpenAPI",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "openapi",
+                    "info",
+                    "paths"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "Rechazo": {
+        "description": "Peticion rechazada, con su motivo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Prohibido": {
+        "description": "La guarda de origen rechazo el POST",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "ok",
+          "motivo"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "motivo": {
+            "type": "string"
+          }
+        }
+      },
+      "Resultado": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "recado": {
+            "$ref": "#/components/schemas/Recado"
+          }
+        }
+      },
+      "Instantanea": {
+        "type": "object",
+        "required": [
+          "ts",
+          "contract_version",
+          "modo",
+          "aviso_replay",
+          "ventana_senal_ms",
+          "fuentes",
+          "encarnaciones",
+          "nakamas",
+          "recados",
+          "artefactos",
+          "clima",
+          "vigia",
+          "veredictos",
+          "backend_habla",
+          "encarnados"
+        ],
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contract_version": {
+            "type": "string"
+          },
+          "modo": {
+            "type": "string",
+            "enum": [
+              "vivo",
+              "replay"
+            ]
+          },
+          "aviso_replay": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ventana_senal_ms": {
+            "type": "integer"
+          },
+          "fuentes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fuente"
+            }
+          },
+          "encarnaciones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "nakama",
+                "actor"
+              ]
+            }
+          },
+          "nakamas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NakamaVivo"
+            }
+          },
+          "recados": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Recado"
+            }
+          },
+          "artefactos": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "clima": {
+            "type": "object"
+          },
+          "vigia": {
+            "type": "object",
+            "required": [
+              "campana",
+              "nota"
+            ]
+          },
+          "veredictos": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "backend_habla": {
+            "type": "object",
+            "required": [
+              "tipo",
+              "modelo"
+            ],
+            "properties": {
+              "tipo": {
+                "type": "string"
+              },
+              "modelo": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "encarnados": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Fuente": {
+        "type": "object",
+        "required": [
+          "id",
+          "estado"
+        ],
+        "description": "Una fuente callada lleva `motivo`; una que responde puede llevar `nota`.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nota": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "NakamaVivo": {
+        "type": "object",
+        "required": [
+          "id",
+          "estado",
+          "verificado",
+          "presencia"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "verificado": {
+            "type": "boolean"
+          },
+          "presencia": {
+            "type": "string"
+          },
+          "vitales": {
+            "type": "array",
+            "description": "Una entrada por eje medido, con su estatuto; ningun numero sin fuente"
+          },
+          "desvios": {
+            "type": "array"
+          },
+          "ultima_senal": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "silencio_ms": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "Recado": {
+        "type": "object",
+        "required": [
+          "id",
+          "nakama",
+          "estado",
+          "pasos"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nakama": {
+            "type": "string"
+          },
+          "actor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "objetivo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "estado": {
+            "type": "string"
+          },
+          "pasos": {
+            "type": "array"
+          },
+          "evidencia": {},
+          "motivo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Barco": {
+        "type": "object",
+        "required": [
+          "barco",
+          "tripulacion",
+          "constituciones"
+        ],
+        "properties": {
+          "barco": {
+            "type": "object"
+          },
+          "tripulacion": {
+            "type": "object"
+          },
+          "constituciones": {
+            "type": "object"
+          }
+        }
+      },
+      "Salud": {
+        "type": "object",
+        "required": [
+          "ts",
+          "contract_version",
+          "generado_por",
+          "regla",
+          "resumen",
+          "tripulacion"
+        ],
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contract_version": {
+            "type": "string"
+          },
+          "generado_por": {
+            "type": "string",
+            "enum": [
+              "chopper-salud"
+            ]
+          },
+          "regla": {
+            "type": "string"
+          },
+          "resumen": {
+            "type": "object",
+            "required": [
+              "a_bordo",
+              "declarado",
+              "mudo",
+              "discordante",
+              "no_observable"
+            ]
+          },
+          "tripulacion": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "nakama",
+                "presencia",
+                "ejes"
+              ]
+            }
+          }
+        }
+      },
+      "Senal": {
+        "type": "object",
+        "required": [
+          "actor"
+        ],
+        "properties": {
+          "actor": {
+            "type": "string",
+            "description": "Quien encarna: el modelo o substrato que trabaja"
+          },
+          "nakama": {
+            "type": "string"
+          },
+          "tarea": {
+            "type": "string"
+          },
+          "recursos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidencia": {}
+        }
+      },
+      "RespuestaSenal": {
+        "type": "object",
+        "required": [
+          "ok",
+          "senal",
+          "recado",
+          "recado_reutilizado"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "senal": {
+            "type": "object",
+            "required": [
+              "actor",
+              "ts"
+            ]
+          },
+          "recado": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Recado"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recado_reutilizado": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NuevoRecado": {
+        "type": "object",
+        "required": [
+          "nakama"
+        ],
+        "properties": {
+          "nakama": {
+            "type": "string"
+          },
+          "objetivo": {
+            "type": "string"
+          },
+          "recursos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actor": {
+            "type": "string"
+          },
+          "evidencia": {}
+        }
+      },
+      "RespuestaRecado": {
+        "type": "object",
+        "required": [
+          "ok",
+          "recado"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "recado": {
+            "$ref": "#/components/schemas/Recado"
+          }
+        }
+      },
+      "Llave": {
+        "type": "object",
+        "required": [
+          "recado",
+          "decision"
+        ],
+        "properties": {
+          "recado": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "conceder",
+              "denegar"
+            ]
+          },
+          "nota": {
+            "type": "string"
+          }
+        }
+      },
+      "Veredicto": {
+        "type": "object",
+        "required": [
+          "veredicto"
+        ],
+        "properties": {
+          "nakama": {
+            "type": "string"
+          },
+          "clase": {
+            "type": "string"
+          },
+          "veredicto": {
+            "type": "string",
+            "enum": [
+              "fertil",
+              "decae"
+            ],
+            "description": "fertil (JoyBoy) o decae (Buggy), segun TEATRO.md"
+          },
+          "nivel": {
+            "type": "integer"
+          },
+          "nota": {
+            "type": "string"
+          }
+        }
+      },
+      "RespuestaVeredicto": {
+        "type": "object",
+        "required": [
+          "ok",
+          "veredicto"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "veredicto": {
+            "type": "object",
+            "required": [
+              "ts",
+              "veredicto",
+              "juez"
+            ],
+            "properties": {
+              "juez": {
+                "type": "string",
+                "enum": [
+                  "capitan"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Hablar": {
+        "type": "object",
+        "required": [
+          "nakama",
+          "texto"
+        ],
+        "properties": {
+          "nakama": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string",
+            "maxLength": 4000
+          }
+        }
+      },
+      "RespuestaHablar": {
+        "type": "object",
+        "required": [
+          "encarnado"
+        ],
+        "properties": {
+          "encarnado": {
+            "type": "boolean"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "vitales": {
+            "type": "object"
+          },
+          "recado": {
+            "$ref": "#/components/schemas/Recado"
+          }
+        }
+      },
+      "Estado": {
+        "type": "object",
+        "required": [
+          "leido",
+          "arbol",
+          "aviso",
+          "estados",
+          "filas",
+          "esperas",
+          "problemas"
+        ],
+        "properties": {
+          "leido": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "arbol": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Commit corto del arbol leido, o null sin git"
+          },
+          "aviso": {
+            "type": "string"
+          },
+          "estados": {
+            "type": "object"
+          },
+          "filas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Afirmacion"
+            }
+          },
+          "esperas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Afirmacion"
+            }
+          },
+          "problemas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Afirmacion": {
+        "type": "object",
+        "required": [
+          "id",
+          "que",
+          "estado",
+          "etiqueta",
+          "nivel",
+          "fecha",
+          "edad_dias",
+          "entorno",
+          "evidencias",
+          "respaldo",
+          "siguiente",
+          "espera"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "que": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "observado",
+              "probado",
+              "rama",
+              "escrito",
+              "solo_en_disco",
+              "falta"
+            ]
+          },
+          "etiqueta": {
+            "type": "string"
+          },
+          "nivel": {
+            "type": "string"
+          },
+          "detalle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fecha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "edad_dias": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "entorno": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evidencias": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Evidencia"
+            }
+          },
+          "respaldo": {
+            "type": "string",
+            "enum": [
+              "comprobado",
+              "roto",
+              "sin_comprobar",
+              "sin_pruebas"
+            ]
+          },
+          "siguiente": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "quien": {
+                "type": "string",
+                "enum": [
+                  "capitan",
+                  "tripulacion"
+                ]
+              },
+              "que": {
+                "type": "string"
+              }
+            }
+          },
+          "espera": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "tipo": {
+                "type": "string",
+                "enum": [
+                  "decision",
+                  "observacion"
+                ]
+              },
+              "pregunta": {
+                "type": "string"
+              },
+              "alternativas": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      },
+      "Evidencia": {
+        "type": "object",
+        "required": [
+          "tipo",
+          "comprobada",
+          "motivo",
+          "enlace"
+        ],
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "fichero",
+              "doc",
+              "prueba",
+              "commit",
+              "pr",
+              "ultimo"
+            ]
+          },
+          "comprobada": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "true comprobada, false citada y no aparece, null no comprobable aqui"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "enlace": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Busqueda": {
+        "type": "object",
+        "required": [
+          "consulta",
+          "palabras",
+          "consultadas",
+          "resultados",
+          "nota"
+        ],
+        "properties": {
+          "consulta": {
+            "type": "string"
+          },
+          "palabras": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "consultadas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "fuente",
+                "tipo",
+                "leida"
+              ]
+            }
+          },
+          "resultados": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tipo",
+                "fuente",
+                "etiqueta",
+                "nivel"
+              ],
+              "properties": {
+                "tipo": {
+                  "type": "string",
+                  "enum": [
+                    "registro",
+                    "documento"
+                  ]
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "nota": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

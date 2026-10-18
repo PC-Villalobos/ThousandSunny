@@ -44,6 +44,7 @@
   #cabecera { top: 14px; left: 14px; min-width: 260px; max-width: 320px; }
   #cabecera .nombre { font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
   #cabecera .cubierta { color: var(--tinta-suave); font-size: 12px; margin-top: 2px; }
+  #cabecera .enlace-estado { display: inline-block; margin-top: 6px; color: var(--frio); font-size: 13px; }
 
   #lateral { top: 14px; right: 14px; width: 320px; max-height: calc(100vh - 130px); overflow-y: auto; }
   #pie { bottom: 14px; left: 14px; right: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -142,6 +143,7 @@
   <section class="panel" id="cabecera">
     <div class="nombre">Thousand Sunny</div>
     <div class="cubierta" id="cubierta-actual">—</div>
+    <a class="enlace-estado" href="/estado">Estado del barco</a>
     <div id="aviso-replay"></div>
     <div class="clima" id="clima"></div>
   </section>

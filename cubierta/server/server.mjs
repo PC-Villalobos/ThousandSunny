@@ -20,6 +20,7 @@ import { observarEjes } from "./sondas.mjs";
 import { informeSalud } from "./salud.mjs";
 import { presentarEstatuto } from "../../shared/epistemico.mjs";
 import { hablar, backendConfigurado } from "./hablar.mjs";
+import { construirEstado, buscar } from "./estado.mjs";
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const CUBIERTA = path.resolve(AQUI, "..");
@@ -28,6 +29,7 @@ const FICHERO_SENALES = path.join(CUBIERTA, "state", "senales.jsonl");
 const FICHERO_VEREDICTOS = path.join(CUBIERTA, "state", "veredictos.jsonl");
 const FICHERO_RECADOS = path.join(CUBIERTA, "state", "recados.jsonl");
 const FICHERO_ARTEFACTOS = path.join(CUBIERTA, "state", "artefactos.jsonl");
+const FICHERO_REGISTRO = path.join(CUBIERTA, "estado", "registro.json");
 
 const args = process.argv.slice(2);
 const puerto = Number(process.env.CUBIERTA_PUERTO || 8788);
@@ -526,6 +528,31 @@ const servidor = createServer(async (req, res) => {
     // sondas caidas devuelve "no puedo medirte" por eje, no numeros.
     if (ruta === "/api/salud") {
       return json(res, 200, informeSalud({ filas: pasarVigia().filas, almacen }));
+    }
+
+    // Estado del barco: que hay, que funciona, que falta y si ya se resolvio. El
+    // registro se relee en cada peticion: lo que se comprueba es el arbol de
+    // AHORA, no el del arranque.
+    if (ruta === "/estado") {
+      const html = await readFile(path.join(CUBIERTA, "client", "estado.html"));
+      res.writeHead(200, { "content-type": MIME[".html"] });
+      return res.end(html);
+    }
+
+    // El contrato de esta API, tal cual: cubierta/test/test_openapi.mjs comprueba
+    // que coincide con las rutas de este fichero y con lo que responden.
+    if (ruta === "/openapi.json") {
+      const contrato = await readFile(path.join(CUBIERTA, "openapi.json"));
+      res.writeHead(200, { "content-type": MIME[".json"] });
+      return res.end(contrato);
+    }
+
+    if (ruta === "/api/estado" || ruta === "/api/estado/buscar") {
+      const registro = JSON.parse(await readFile(FICHERO_REGISTRO, "utf8"));
+      const estado = await construirEstado({ raiz: RAIZ, registro });
+      if (ruta === "/api/estado") return json(res, 200, estado);
+      const consulta = String(url.searchParams.get("q") || "").slice(0, 200);
+      return json(res, 200, await buscar({ raiz: RAIZ, registro, estado, consulta }));
     }
 
     if (ruta === "/stream") {

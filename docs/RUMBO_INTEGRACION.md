@@ -832,7 +832,59 @@ uno a uno: el espejo es opcional, no libre.
 - **`server/vault.py` es fichero nuevo del runtime**, no solo de la proyeccion: entra en el
   manifiesto porque sin el los dos modulos que lo importan no arrancan alli.
 
+**Fusionado el 2026-10-18** con GO del Capitan, como `71689c1` (PR #123), probado antes sobre el
+tronco del dia: `npm test` exit 0. El despliegue en su Hipatia **no** se ha hecho y sigue siendo
+decision suya; la pantalla de estado lo lista como tal.
+
 ---
+
+### Acta de la pantalla de estado — que hay, que funciona, que falta (2026-10-18)
+
+Con GO del Capitan, despues de una conversacion con Octavio sobre construir de fuera hacia dentro.
+La necesidad la dijo el propio Capitan: *«que tengo hecho, que esta funcionando de lo que tengo
+hecho, que me falta»*, y *«hace 3 meses disenamos una cosa que resolvia esto y ahora otra vez
+estamos intentando resolverlo de nuevo»*. Primero fue una maqueta; Codex la reviso y pidio cuatro
+cambios antes de integrarla. Los cuatro estan dentro.
+
+**Que es:** `GET /estado` en la Cubierta, enlazada desde su cabecera. Lee
+`cubierta/estado/registro.json` —lo que se **afirma**, escrito a mano— y comprueba en cada
+lectura, contra el arbol y contra git, cada prueba que cita. Lo afirmado y lo comprobado salen
+juntos y separados.
+
+| Lo que pidio Codex | Como queda |
+|---|---|
+| Separar estado tecnico y decision pendiente | `estado` y `espera` son campos distintos. Algo puede estar probado y esperar una decision. Una decision exige al menos dos alternativas con su consecuencia, o la entrada se rechaza y se declara |
+| «Visto funcionando» con fecha y entorno | Cada entrada lleva fecha, edad en dias y entorno. Una observacion de un contenedor no se presenta como disponibilidad en la maquina del Capitan |
+| Evidencia que se pueda abrir | Cada prueba enlaza su fichero, commit o PR. Las de fichero y documento se comprueban (el documento tiene que seguir diciendo la frase citada), los commits contra git, y los PR se enlazan pero se marcan **no comprobables aqui** |
+| Una busqueda vacia no es «hay que construirlo» | La busqueda recorre el registro, el rumbo, `CLAUDE.md` y los cierres, nombra lo que consulto y dice que no consulta PR, ramas ni otros discos. Una mencion en un documento sale como mencion, no como solucion |
+
+Y una regla de Codex que el registro cumple: **un problema tecnico no es tarea del Capitan.** El
+conflicto de #117 sale como `siguiente` de la tripulacion; solo la decision de aterrizarlo es suya.
+
+**Dos comprobaciones que vigilan el propio registro:** toda prueba de fichero que cita tiene que
+existir (si se mueve un fichero, el registro cambia con el o la suite falla), y el commit
+`fb82863` se afirma **ausente**: el dia que sea alcanzable, la pantalla dice que el registro esta
+desfasado.
+
+| Comprobacion | Resultado |
+|---|---|
+| Suite `cubierta-estado` | 18 pruebas; tres reglas rotas a proposito hicieron fallar las suyas |
+| Agregador | `suites ejecutadas: 6 de 6`, sin huerfanas |
+| `npm test` | exit 0 |
+| Navegador real, 1280 y 390 px | 14 filas, 5 esperas, la busqueda devuelve la capsula de julio; sin errores de consola. A 390 px desbordaba por rutas largas: se vio y se arreglo |
+
+**Lo que no es:** el registro sigue escrito a mano, y la pantalla no lee GitHub; esa fila aparece
+como **Falta**. Nada privado entra en el registro: el repositorio es publico, y una prueba lo
+vigila.
+
+**El contrato OpenAPI, el mismo dia y con GO del Capitan.** Octavio senalo que se estaba
+reinventando lo que ya resuelve OpenAPI, y en lo que toca a la API tenia razon: las rutas de la
+Cubierta no estaban descritas en ningun sitio fuera de `server.mjs`. Ahora `cubierta/openapi.json`
+(3.1, servido en `/openapi.json`) las describe todas, y `cubierta/test/test_openapi.mjs` lo
+mantiene honesto en las dos direcciones: rutas del servidor contra rutas del contrato, y
+respuestas reales contra sus esquemas. En su primera ejecucion la prueba encontro un error del
+propio contrato (`vitales` es una lista, no un objeto); se corrigio el contrato, no la prueba. Lo
+que OpenAPI no cubre —que esta hecho y si funciona— sigue en el registro de estado.
 
 ---
 
