@@ -11,6 +11,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { carpetaDe, inspeccionar, parsear, SIN_REMOTO } from "./preservar.mjs";
 
@@ -192,7 +193,8 @@ test("sobre git real: sin --remoto y con --ejecutar no se empuja nada, ni siquie
   const { repo, bare } = montar();
   // Un origin configurado es justo la tentacion: el script no debe usarlo por su cuenta.
   execFileSync("git", ["-C", repo, "remote", "add", "origin", bare]);
-  const script = path.join(path.dirname(new URL(import.meta.url).pathname), "preservar.mjs");
+  // fileURLToPath, no URL.pathname: en Windows pathname da "/C:/..." y Node no encuentra el script.
+  const script = fileURLToPath(new URL("./preservar.mjs", import.meta.url));
   const r = spawnSync(process.execPath, [script, repo, "--ejecutar"], { encoding: "utf8" });
   assert.equal(r.status, 1, "sale con error");
   assert.match(r.stdout, /falta --remoto/);
