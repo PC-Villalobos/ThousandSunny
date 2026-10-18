@@ -87,6 +87,13 @@ const SUITES = [
     ausente: "el corte de pulso real vive en claude/baseo-workspace-agents-*",
   },
   {
+    id: "cubierta-estado",
+    titulo: "Cubierta — estado del barco (afirmado / comprobado)",
+    ancla: "cubierta/test/test_estado.mjs",
+    comando: () => ["node", ["--test", "cubierta/test/test_estado.mjs"]],
+    ausente: "la pantalla de estado entra con la rama del 2026-10-18",
+  },
+  {
     id: "cubierta-ui",
     titulo: "Cubierta — contrato pedagogico y superficie de referencia",
     ancla: "state/cubierta_ui",

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estado del barco — Thousand Sunny</title>
+<style>
+  :root {
+    --fondo: #050a10;
+    --tinta: #f0e2c4;
+    --tinta-suave: rgba(240, 226, 196, 0.72);
+    --panel: #0b1520;
+    --panel-2: #12202f;
+    --borde: rgba(240, 226, 196, 0.18);
+    --ok: #8fd36a;
+    --aviso: #e0a04a;
+    --malo: #ef8a66;
+    --frio: #8cbde4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  a { color: var(--frio); }
+  a:hover { color: #b9d8f0; }
+  main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; display: flex; flex-direction: column; gap: 24px; }
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  h1 { margin: 0; font-size: 34px; line-height: 1.15; }
+  h2 { margin: 0 0 12px; font-size: 18px; }
+  .sub { margin: 4px 0 0; color: var(--tinta-suave); }
+  .meta { font: 13px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: var(--tinta-suave); text-align: right; }
+  .aviso { border: 1px solid rgba(224, 160, 74, 0.5); background: rgba(224, 160, 74, 0.1); color: #f2c483; border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .malo { border-color: rgba(239, 138, 102, 0.6); background: rgba(239, 138, 102, 0.1); color: #f6b29a; }
+  section.caja { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 18px 20px; }
+  .esperas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+  .espera { background: var(--panel-2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .espera .que { font-weight: 600; }
+  .espera ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .espera .tipo { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--aviso); }
+  form { display: flex; flex-wrap: wrap; gap: 10px; }
+  input[type=search] { flex: 999 1 300px; min-width: 0; height: 46px; border-radius: 10px; border: 1px solid rgba(240,226,196,0.4); background: #0f1b28; color: var(--tinta); padding: 0 14px; font: inherit; }
+  button { min-height: 44px; border-radius: 22px; border: 1px solid rgba(240,226,196,0.45); background: transparent; color: var(--tinta); padding: 0 16px; font: inherit; font-size: 14px; cursor: pointer; }
+  button[aria-pressed=true] { background: var(--tinta); color: var(--fondo); border-color: var(--tinta); }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--frio); outline-offset: 2px; }
+  .resultados { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .resultado { border-top: 1px solid var(--borde); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .fuentes { font-size: 13px; color: var(--tinta-suave); margin-top: 10px; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .fila { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 14px 0; border-top: 1px solid var(--borde); }
+  .fila:first-child { border-top: 0; }
+  .fila .izq { flex: 0 0 170px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+  .fila .centro { flex: 999 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .fila .que { font-weight: 600; font-size: 16px; }
+  .fila .det { color: var(--tinta-suave); font-size: 14px; }
+  .pruebas { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; font-size: 13px; }
+  .pruebas .marca { font-family: ui-monospace, Menlo, Consolas, monospace; margin-right: 6px; }
+  .si { color: var(--ok); } .no { color: var(--malo); } .nada { color: var(--tinta-suave); }
+  .sig { font-size: 14px; }
+  .chapa { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; border: 1px solid; }
+  .e-observado { color: #0d2a10; background: var(--ok); border-color: var(--ok); }
+  .e-probado { color: #0b1f33; background: var(--frio); border-color: var(--frio); }
+  .e-rama { color: #e3c8f5; border-color: #b58bd6; }
+  .e-escrito { color: var(--tinta-suave); border-color: rgba(240,226,196,0.4); }
+  .e-solo_en_disco { color: #0b0f14; background: var(--aviso); border-color: var(--aviso); }
+  .e-falta { color: var(--malo); border-color: var(--malo); border-style: dashed; }
+  .e-documento { color: var(--tinta-suave); border-color: rgba(240,226,196,0.3); border-style: dotted; }
+  .edad { font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--tinta-suave); }
+  .vacio { color: var(--tinta-suave); }
+  .pruebas li, .fuentes, .det, .espera, .meta, .sig, .aviso { overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Estado del barco</h1>
+      <p class="sub">Que tengo, que funciona, que falta y si esto ya lo resolvimos.</p>
+    </div>
+    <div class="meta">
+      <div id="lectura">leyendo...</div>
+      <div><a href="/">volver a la Cubierta</a></div>
+    </div>
+  </header>
+
+  <div class="aviso" id="aviso" role="note">Cargando el estado...</div>
+  <div class="aviso malo" id="problemas" role="alert" hidden></div>
+
+  <section class="caja" aria-labelledby="t-esperas">
+    <h2 id="t-esperas">Esperan algo tuyo</h2>
+    <div class="esperas" id="esperas"></div>
+  </section>
+
+  <section class="caja" aria-labelledby="t-buscar">
+    <h2 id="t-buscar">Esto ya lo resolvimos?</h2>
+    <form id="buscador" role="search">
+      <label for="q" class="vacio" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Buscar en lo hecho</label>
+      <input id="q" type="search" name="q" placeholder="Escribe lo que necesitas: contexto entre modelos, retomar un encargo..." autocomplete="off">
+      <button type="submit">Buscar</button>
+    </form>
+    <div class="resultados" id="resultados" aria-live="polite"></div>
+  </section>
+
+  <section class="caja" aria-labelledby="t-todo">
+    <h2 id="t-todo">Todo lo que hay</h2>
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar por estado"></div>
+    <div id="filas"></div>
+  </section>
+</main>
+<script type="module" src="/client/estado.mjs"></script>
+</body>
+</html>

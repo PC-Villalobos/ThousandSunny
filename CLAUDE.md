@@ -169,7 +169,7 @@ dependencies, bound to loopback.
 
 ```bash
 npm run cubierta          # -> http://127.0.0.1:8788
-npm run test:cubierta     # the aggregator: all four suites, or it names the missing one
+npm run test:cubierta     # the aggregator: every suite, or it names the missing one
 npm run test:sueno        # sleep function: Python suites + the Node ones in lib/
 npm run test:estado       # the state/ surfaces nobody else runs; declares what it cannot
 ```
@@ -214,6 +214,13 @@ npm run test:estado       # the state/ surfaces nobody else runs; declares what 
   `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
   on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script
   definition shadow the other.
+- **`/estado` is the captain's view of the ship**: what exists, what works, what is
+  missing, and whether something was already solved. It reads `cubierta/estado/registro.json`
+  (hand-written claims) and checks every cited proof against the tree and git on each request.
+  Change a claim there, with its proof; never edit the page to say more than the registry backs.
+  Technical state (`estado`) and what waits on the captain (`espera`) are separate fields, and a
+  decision needs at least two alternatives with their consequences. The repo is public: nothing
+  private goes in the registry.
 - **A test nobody runs protects nothing.** The aggregator sweeps the surfaces it
   claims (`shared/`, `cubierta/`, `state/cubierta_ui/`, `scripts/`) and fails,
   naming the file, if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test
