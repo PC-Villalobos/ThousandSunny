@@ -433,4 +433,7 @@ await prueba("lo que el agente afirma nunca entra como valor del parte", () => {
 });
 
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
-process.exit(fallos ? 1 : 0);
+// exitCode y no process.exit(): salir a la fuerza con conexiones aun cerrandose
+// tumba a Node en Windows (`!(handle->flags & UV_HANDLE_CLOSING)`, async.c) y
+// la suite fallaba con todas sus pruebas en verde. Observado el 2026-10-18.
+process.exitCode = fallos ? 1 : 0;

@@ -886,6 +886,18 @@ respuestas reales contra sus esquemas. En su primera ejecucion la prueba encontr
 propio contrato (`vitales` es una lista, no un objeto); se corrigio el contrato, no la prueba. Lo
 que OpenAPI no cubre —que esta hecho y si funciona— sigue en el registro de estado.
 
+**Correccion de A3 en Windows (2026-10-18).** Al pasar `npm test` en la maquina del Capitan, para
+juntar la pantalla de Codex con la del tronco, salieron dos fallos que el contenedor no puede ver:
+
+| Fallo | Causa | Arreglo |
+|---|---|---|
+| Cuatro pruebas de la Bitacora en rojo | `leerBitacora` hacia `import()` de una ruta cruda. En Windows `C:\...` se lee como el esquema `c:` y el cliente no cargaba nunca: **en la maquina del Capitan la Cubierta decia `sin_senal` con Hipatia viva** | `pathToFileURL(...).href`. Prueba nueva que reproduce el mismo fallo en Linux con un `#` en la ruta: fallo antes, pasa despues |
+| La suite revienta al salir con todo en verde | `process.exit()` con conexiones aun cerrandose: aserción de libuv en Windows | `process.exitCode` en `test_cubierta.mjs` y `test_pulso.mjs`, y el doble de la Bitacora cierra sus conexiones antes de cerrarse |
+
+Esto corrige el alcance de la fila A3: «cumplida y observada» lo fue **en el contenedor**. En la
+maquina del Capitan la mitad viva no habia funcionado nunca. El segundo arreglo no se puede
+reproducir desde aqui; queda confirmado cuando `npm test` pase en Windows.
+
 ---
 
 ## 6. Como se trabaja a partir de aqui

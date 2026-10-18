@@ -399,10 +399,36 @@ async function conBitacoraViva(respuesta, codigo, fn) {
   });
   await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
   const url = `http://127.0.0.1:${srv.address().port}`;
-  try { return await fn(url); } finally { await new Promise((ok) => srv.close(ok)); }
+  try { return await fn(url); } finally {
+    srv.closeAllConnections();
+    await new Promise((ok) => srv.close(ok));
+  }
 }
 
 const SALUD_REAL = { ok: true, version: "v1.1", events: 22, schemas: ["hipatia-bitacora-v1.1"], bind: "127.0.0.1:8765" };
+
+// El cliente de la Bitacora se carga con import() desde una ruta del disco. Una
+// ruta cruda no es una URL: en Windows `C:\...` se lee como el esquema `c:` y
+// el cliente nunca carga, asi que en la maquina del Capitan la Cubierta decia
+// `sin_senal` con Hipatia viva. Observado el 2026-10-18 en Windows. Aqui se
+// reproduce el mismo fallo con un `#` en la ruta, que en una URL abre el
+// fragmento: con una URL de fichero de verdad, las dos rutas cargan.
+await prueba("el cliente de la bitacora carga desde una ruta que no es una URL valida tal cual", async () => {
+  const { mkdtemp, mkdir, copyFile, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const raiz = await mkdtemp(path.join(tmpdir(), "raiz #cubierta-"));
+  try {
+    const lib = path.join(raiz, "state", "funcion_de_sueno", "lib");
+    await mkdir(lib, { recursive: true });
+    await copyFile(path.join(RAIZ_REPO, "state", "funcion_de_sueno", "lib", "bitacora.mjs"), path.join(lib, "bitacora.mjs"));
+    await conBitacoraViva(SALUD_REAL, 200, async (url) => {
+      const r = await leerBitacora({ raiz, url, timeoutMs: 800 });
+      assert.equal(r.estado, ESTADO_OK, `la fuente callo: ${r.motivo}`);
+    });
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
 
 await prueba("con la bitacora viva llegan las cifras que entrega, no null", async () => {
   await conBitacoraViva(SALUD_REAL, 200, async (url) => {
@@ -637,4 +663,7 @@ await prueba("un artefacto sin recado de origen se declara, no se cuela", () => 
 });
 
 process.stdout.write(`\n${pasadas} pasadas, ${fallos} fallidas\n\n`);
-process.exit(fallos ? 1 : 0);
+// exitCode y no process.exit(): salir a la fuerza con conexiones aun cerrandose
+// tumba a Node en Windows (`!(handle->flags & UV_HANDLE_CLOSING)`, async.c) y
+// la suite fallaba con todas sus pruebas en verde. Observado el 2026-10-18.
+process.exitCode = fallos ? 1 : 0;
