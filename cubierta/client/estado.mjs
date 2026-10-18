@@ -28,6 +28,10 @@ function abrirDetalle(f) {
     contenido.append(nodo("section", { class: "espera" },
       nodo("strong", { texto: "Espera tu decisión" }),
       nodo("p", { texto: f.espera.pregunta }),
+      Array.isArray(f.espera.alternativas) && f.espera.alternativas.length
+        ? nodo("ul", {}, ...f.espera.alternativas.map((a) => nodo("li", {},
+          nodo("strong", { texto: `${a.opcion}: ` }), document.createTextNode(a.consecuencia))))
+        : null,
       nodo("p", { texto: "Consultar este detalle no registra ninguna decisión." })));
   }
   $("detalle").showModal();
@@ -111,7 +115,7 @@ function pintarFila(f, conBoton = true) {
   const centro = nodo("div", { class: "centro" },
     nodo("span", { class: "que", texto: f.que }),
     f.detalle ? nodo("span", { class: "det", texto: f.detalle }) : null,
-    f.entorno ? nodo("span", { class: "det", texto: `Donde: ${f.entorno}` }) : null,
+    f.entorno ? nodo("span", { class: "det entorno", texto: `Donde: ${f.entorno}` }) : null,
     pruebas,
   );
   if (f.respaldo === "roto") {
