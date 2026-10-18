@@ -211,7 +211,21 @@
           "ref": "440945d"
         }
       ],
-      "palabras": "preservar disco guardar custodia rama empujar"
+      "palabras": "preservar disco guardar custodia rama empujar",
+      "espera": {
+        "tipo": "decision",
+        "pregunta": "preservar.mjs: a donde envia por defecto?",
+        "alternativas": [
+          {
+            "opcion": "Exigir --remoto",
+            "consecuencia": "Sin destino por defecto: nadie publica en ThousandSunny por no escribir el destino."
+          },
+          {
+            "opcion": "Dejarlo en ThousandSunny",
+            "consecuencia": "Comodo para lo que si puede ser publico, pero un olvido publica trabajo privado."
+          }
+        ]
+      }
     },
     {
       "id": "hipatia-sin-obsidian",
@@ -322,15 +336,15 @@
     },
     {
       "id": "cubierta-world",
-      "que": "cubierta-world (commit fb82863)",
-      "estado": "solo_en_disco",
-      "fecha": "2026-09-05",
-      "entorno": "tu maquina",
+      "que": "cubierta-world (commits fb82863 y 7e28db4)",
+      "estado": "rama",
+      "fecha": "2026-10-18",
+      "entorno": "rama preserva/cubierta-world en un repo privado de custodia; comprobado desde la maquina del Capitan",
       "evidencias": [
         {
           "tipo": "doc",
           "ref": "docs/RUMBO_INTEGRACION.md",
-          "ancla": "| 1.a | **Dar remoto a `cubierta-world`**"
+          "ancla": "**Cierre de 1.a (2026-10-18).**"
         },
         {
           "tipo": "commit",
@@ -340,19 +354,20 @@
       ],
       "espera": {
         "tipo": "decision",
-        "pregunta": "Que hacemos con cubierta-world?",
+        "pregunta": "cubierta-world: componente o derivado?",
         "alternativas": [
           {
-            "opcion": "Preservarlo",
-            "consecuencia": "node scripts/preservar.mjs <ruta> --ejecutar lo deja en una rama preserva/* alcanzable desde fuera."
+            "opcion": "Componente",
+            "consecuencia": "Se trae a la Cubierta lo que sirva, limpio de lo privado, en un PR propio; la rama de custodia queda como origen."
           },
           {
-            "opcion": "Declararlo derivado de cubierta/",
-            "consecuencia": "Se anota en el rumbo y deja de contar como pendiente."
+            "opcion": "Derivado de cubierta/",
+            "consecuencia": "Se anota en el rumbo; la rama de custodia se conserva como historial y deja de contar como pendiente."
           }
         ]
       },
-      "palabras": "cubierta world disco preservar mundo"
+      "palabras": "cubierta world disco preservar mundo custodia privado",
+      "detalle": "Preservado con sus cambios commiteados (7e28db4). No va a ThousandSunny porque este repo es publico y cubierta-world contiene nombres de areas protegidas y material privado. Desde aqui solo se comprueba que sigue fuera del repo publico."
     },
     {
       "id": "contrato-openapi",

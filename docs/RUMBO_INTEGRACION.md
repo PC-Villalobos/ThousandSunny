@@ -117,7 +117,7 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 
 | Orden | Accion | Prueba |
 |---|---|---|
-| 1.a | **Dar remoto a `cubierta-world`** o declararlo formalmente derivado de `cubierta/`. Hoy es trabajo que solo existe en un disco. **En curso desde el 2026-10-16** con GO del Capitan: la herramienta esta en el tronco, el empuje es del Capitan. Ver el acta abajo. | El commit `fb82863` es alcanzable desde fuera de la maquina del Capitan, o consta por escrito que se descarta. **Sigue abierta:** nada de lo hecho aqui la cumple. |
+| 1.a | ~~**Dar remoto a `cubierta-world`**~~ — **HECHO el 2026-10-18**, en un repo **privado** de custodia, no en ThousandSunny. Ver el cierre al final del acta abajo. | **Cumplida:** `fb82863` es alcanzable fuera de la maquina del Capitan, en la rama `preserva/cubierta-world` de un repo privado, junto con `7e28db4`. Comprobado desde su maquina; desde una sesion cloud no se ve. Queda abierta la otra mitad: componente o derivado. |
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
 | 1.d | ~~**Fijar el arranque en un sitio**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** un tercero la levanto desde un arbol limpio leyendo solo el repo. Ver el acta abajo. |
@@ -516,6 +516,25 @@ quinta suite.
   decision es del Capitan y esta rama no la adelanta.
 - **El empuje puede fallar por credenciales** en esa maquina. Si `ls-remote` no contesta, el script
   avisa y no asume que ya esta a salvo.
+
+**Cierre de 1.a (2026-10-18).** Con GO del Capitan, y ejecutado por Claude Code en su maquina:
+
+- **Lo que habia de verdad.** El repo existe y contiene `fb82863`, pero el arbol tenia 7 ficheros
+  modificados y 5 sin seguimiento: un empuje de los commits los habria dejado fuera. Se
+  commitearon como `7e28db4` antes de preservar.
+- **Por que no fue a ThousandSunny.** Este repo es publico. La revision para publicar encontro, sin
+  secretos ni credenciales, tres cosas que no deben publicarse: nombres de areas protegidas por las
+  reglas del barco, una pregunta sacada de una grabacion privada y el mapa de carpetas de la
+  maquina del Capitan. Limpiarlas en un commit nuevo no basta, porque la historia las conserva.
+- **Donde quedo.** Rama `preserva/cubierta-world` (= `7e28db4`, que contiene `fb82863`) en un repo
+  **privado** de custodia de la cuenta del Capitan, comprobado como privado antes de empujar. Una
+  rama por trabajo: el mismo sitio sirve para el siguiente que solo viva en un disco.
+- **Lo que no se comprueba desde aqui.** Ese repo no es visible desde una sesion cloud. La pantalla
+  de estado lo dice asi: lo comprobable aqui es que `fb82863` **sigue fuera** del repo publico.
+- **Lo que queda abierto.** «Componente o derivado» sigue siendo decision del Capitan. Y
+  `scripts/preservar.mjs` sigue apuntando por defecto a ThousandSunny, el repo publico: si la
+  custodia privada es la norma, el destino por defecto deberia dejar de serlo. Las dos decisiones
+  estan en la pantalla de estado.
 
 ---
 
