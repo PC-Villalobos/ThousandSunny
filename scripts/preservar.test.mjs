@@ -7,12 +7,14 @@
 
 import assert from "node:assert/strict";
 import test from "node:test";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { carpetaDe, inspeccionar, parsear, REMOTO_POR_DEFECTO } from "./preservar.mjs";
+import { carpetaDe, inspeccionar, parsear, SIN_REMOTO } from "./preservar.mjs";
+
+const DESTINO = "/custodia/privada.git";
 
 /** git falso: responde segun los primeros argumentos. */
 function gitFalso(tabla) {
@@ -40,13 +42,13 @@ test("carpetaDe entiende rutas de Windows y de POSIX", () => {
 });
 
 test("parsear deriva la rama de la carpeta y acepta las opciones", () => {
-  const o = parsear(["C:\\Sunny\\cubierta-world", "--commit", "fb82863", "--ejecutar"]);
+  const o = parsear(["C:\\Sunny\\cubierta-world", "--remoto", DESTINO, "--commit", "fb82863", "--ejecutar"]);
   assert.equal(o.error, "");
   assert.equal(o.ruta, "C:\\Sunny\\cubierta-world");
   assert.equal(o.rama, "preserva/cubierta-world");
   assert.equal(o.commit, "fb82863");
   assert.equal(o.ejecutar, true);
-  assert.equal(o.remoto, REMOTO_POR_DEFECTO);
+  assert.equal(o.remoto, DESTINO);
 });
 
 test("parsear se queja de lo que no entiende, en vez de adivinar", () => {
@@ -54,11 +56,11 @@ test("parsear se queja de lo que no entiende, en vez de adivinar", () => {
   assert.match(parsear(["x", "--rama"]).error, /necesita un valor/);
   assert.match(parsear(["x", "--otra"]).error, /opcion desconocida/);
   assert.match(parsear(["x", "y"]).error, /ruta repetida/);
-  assert.equal(parsear(["x"]).ejecutar, false, "sin --ejecutar nunca empuja");
+  assert.equal(parsear(["x", "--remoto", DESTINO]).ejecutar, false, "sin --ejecutar nunca empuja");
 });
 
 test("una ruta que no es repo se declara con su remedio", () => {
-  const plan = inspeccionar(parsear(["/no/existe"]), gitFalso({ "rev-parse --git-dir": { ok: false, salida: "fatal" } }));
+  const plan = inspeccionar(parsear(["/no/existe", "--remoto", DESTINO]), gitFalso({ "rev-parse --git-dir": { ok: false, salida: "fatal" } }));
   assert.equal(plan.ok, false);
   assert.match(plan.motivo, /no es un repo de git alcanzable/);
   assert.match(plan.remedio, /git init/);
@@ -67,7 +69,7 @@ test("una ruta que no es repo se declara con su remedio", () => {
 
 test("un commit que no existe se nombra y no se da por bueno", () => {
   const plan = inspeccionar(
-    parsear(["/repo", "--commit", "fb82863"]),
+    parsear(["/repo", "--remoto", DESTINO, "--commit", "fb82863"]),
     gitFalso({ ...SANO, "rev-parse --verify fb82863^{commit}": { ok: false, salida: "fatal" } }),
   );
   assert.equal(plan.ok, false);
@@ -77,7 +79,7 @@ test("un commit que no existe se nombra y no se da por bueno", () => {
 
 test("un arbol sucio se avisa: el empuje no se lleva lo no commiteado", () => {
   const plan = inspeccionar(
-    parsear(["/repo"]),
+    parsear(["/repo", "--remoto", DESTINO]),
     gitFalso({ ...SANO, "status --porcelain": { ok: true, salida: " M uno.js\n?? dos.js" } }),
   );
   assert.equal(plan.ok, true);
@@ -87,7 +89,7 @@ test("un arbol sucio se avisa: el empuje no se lleva lo no commiteado", () => {
 
 test("si el remoto ya lo tiene, no se empuja nada", () => {
   const plan = inspeccionar(
-    parsear(["/repo"]),
+    parsear(["/repo", "--remoto", DESTINO]),
     gitFalso({ ...SANO, "ls-remote": { ok: true, salida: `${"a".repeat(40)}\trefs/heads/preserva/repo` } }),
   );
   assert.equal(plan.ok, true);
@@ -97,13 +99,32 @@ test("si el remoto ya lo tiene, no se empuja nada", () => {
 
 test("un remoto que no contesta se avisa y el empuje sigue en pie", () => {
   const plan = inspeccionar(
-    parsear(["/repo"]),
+    parsear(["/repo", "--remoto", DESTINO]),
     gitFalso({ ...SANO, "ls-remote": { ok: false, salida: "fatal: Authentication failed" } }),
   );
   assert.equal(plan.ok, true);
   assert.ok(plan.avisos.some((a) => /no se pudo consultar/.test(a)));
   assert.ok(plan.avisos.some((a) => /credenciales/.test(a)));
   assert.equal(plan.empujes.length, 1, "no se asume que ya esta a salvo solo porque no se pudo mirar");
+});
+
+// --- sin destino no hay empuje (2026-10-18) ---
+
+test("sin --remoto, parsear lo declara: no hay destino por defecto", () => {
+  assert.equal(parsear(["/repo"]).error, SIN_REMOTO);
+  assert.equal(parsear(["/repo", "--ejecutar"]).error, SIN_REMOTO, "ni siquiera con --ejecutar");
+  assert.equal(parsear(["/repo", "--remoto", DESTINO]).error, "");
+});
+
+test("sin --remoto, inspeccionar no llama a git ni una vez", () => {
+  const llamadas = [];
+  const espia = (ruta, args) => { llamadas.push(args.join(" ")); return { ok: true, salida: "" }; };
+  const plan = inspeccionar(parsear(["/repo", "--ejecutar"]), espia);
+  assert.equal(plan.ok, false);
+  assert.match(plan.motivo, /falta --remoto/);
+  assert.match(plan.remedio, /publico/, "el remedio avisa de mirar si el destino es publico");
+  assert.deepEqual(plan.empujes, []);
+  assert.deepEqual(llamadas, [], "ni ls-remote ni push: nada sale de la maquina");
 });
 
 // --- con git de verdad ---
@@ -165,4 +186,17 @@ test("sobre git real: un commit que si es ancestro viaja en el mismo empuje", ()
   const plan = inspeccionar(parsear([repo, "--remoto", bare, "--rama", "preserva/trabajo", "--commit", primero]));
   assert.equal(plan.empujes.length, 1);
   assert.ok(plan.lineas.some((l) => /es ancestro de HEAD: viaja en el mismo empuje/.test(l)));
+});
+
+test("sobre git real: sin --remoto y con --ejecutar no se empuja nada, ni siquiera a origin", () => {
+  const { repo, bare } = montar();
+  // Un origin configurado es justo la tentacion: el script no debe usarlo por su cuenta.
+  execFileSync("git", ["-C", repo, "remote", "add", "origin", bare]);
+  const script = path.join(path.dirname(new URL(import.meta.url).pathname), "preservar.mjs");
+  const r = spawnSync(process.execPath, [script, repo, "--ejecutar"], { encoding: "utf8" });
+  assert.equal(r.status, 1, "sale con error");
+  assert.match(r.stdout, /falta --remoto/);
+  assert.doesNotMatch(r.stdout, /empujando|VERIFICADO/);
+  const refs = execFileSync("git", ["-C", bare, "for-each-ref"], { encoding: "utf8" });
+  assert.equal(refs.trim(), "", "el remoto sigue vacio");
 });

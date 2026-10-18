@@ -117,7 +117,7 @@ Arranque inequivoco de la referencia, estado recuperable y preservacion de los c
 
 | Orden | Accion | Prueba |
 |---|---|---|
-| 1.a | ~~**Dar remoto a `cubierta-world`**~~ — **HECHO el 2026-10-18**, en un repo **privado** de custodia, no en ThousandSunny. Ver el cierre al final del acta abajo. | **Cumplida:** `fb82863` es alcanzable fuera de la maquina del Capitan, en la rama `preserva/cubierta-world` de un repo privado, junto con `7e28db4`. Comprobado desde su maquina; desde una sesion cloud no se ve. Queda abierta la otra mitad: componente o derivado. |
+| 1.a | ~~**Dar remoto a `cubierta-world`**~~ — **HECHO el 2026-10-18**, en un repo **privado** de custodia, no en ThousandSunny. Ver el cierre al final del acta abajo. | **Cumplida:** `fb82863` es alcanzable fuera de la maquina del Capitan, en la rama `preserva/cubierta-world` de un repo privado, junto con `7e28db4`. Comprobado desde su maquina y, por separado, por Codex; desde una sesion cloud no se ve. La otra mitad, decidida el mismo dia: **derivado provisional** de `cubierta/`. |
 | 1.b | ~~**Aterrizar PR #104** en el tronco~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida.** Ver el acta abajo. |
 | 1.c | ~~**Cerrar la cuarta suite**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** el agregador dice `4 de 4` y no declara ninguna ausencia. Ver el acta abajo. |
 | 1.d | ~~**Fijar el arranque en un sitio**~~ — **HECHO el 2026-09-05** con GO del Capitan. | **Cumplida:** un tercero la levanto desde un arbol limpio leyendo solo el repo. Ver el acta abajo. |
@@ -535,6 +535,19 @@ quinta suite.
   `scripts/preservar.mjs` sigue apuntando por defecto a ThousandSunny, el repo publico: si la
   custodia privada es la norma, el destino por defecto deberia dejar de serlo. Las dos decisiones
   estan en la pantalla de estado.
+
+**Decisiones del Capitan sobre el cierre (2026-10-18).** Con la custodia confirmada por Claude Code y,
+de forma independiente, por Codex:
+
+- **`cubierta-world` es derivado provisional de `cubierta/`.** No se integra. Conserva su
+  procedencia: la rama de custodia privada, con `fb82863` y `7e28db4`. Si algo de ella hace falta,
+  entra limpio de lo privado en un PR propio, y esa rama es su origen. «Provisional» quiere decir
+  que se puede revisar, no que siga pendiente.
+- **`preservar.mjs` no tiene destino por defecto.** Sin `--remoto` se para antes de llamar a git:
+  no consulta ni empuja nada, ni siquiera al `origin` del repo local. Lo fijan tres pruebas en
+  `scripts/preservar.test.mjs`, una con git real y un `--ejecutar` que no deja ninguna rama en el
+  remoto; las tres fallan si se quita la guarda. Los comandos del acta de arriba necesitan ahora
+  `--remoto <url>`.
 
 ---
 

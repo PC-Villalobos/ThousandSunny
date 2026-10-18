@@ -195,7 +195,7 @@
       "id": "preservar",
       "que": "Guardar trabajo que vive en un solo disco",
       "estado": "probado",
-      "fecha": "2026-10-16",
+      "fecha": "2026-10-18",
       "entorno": "contenedor cloud",
       "evidencias": [
         {
@@ -207,24 +207,20 @@
           "ref": "scripts/preservar.test.mjs"
         },
         {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "**`preservar.mjs` no tiene destino por defecto.**"
+        },
+        {
           "tipo": "commit",
           "ref": "440945d"
         }
       ],
       "palabras": "preservar disco guardar custodia rama empujar",
-      "espera": {
-        "tipo": "decision",
-        "pregunta": "preservar.mjs: a donde envia por defecto?",
-        "alternativas": [
-          {
-            "opcion": "Exigir --remoto",
-            "consecuencia": "Sin destino por defecto: nadie publica en ThousandSunny por no escribir el destino."
-          },
-          {
-            "opcion": "Dejarlo en ThousandSunny",
-            "consecuencia": "Comodo para lo que si puede ser publico, pero un olvido publica trabajo privado."
-          }
-        ]
+      "detalle": "Sin destino por defecto desde el 2026-10-18: sin --remoto se para antes de llamar a git.",
+      "siguiente": {
+        "quien": "capitan",
+        "que": "Usar el repo privado de custodia para lo siguiente que solo viva en un disco"
       }
     },
     {
@@ -336,7 +332,7 @@
     },
     {
       "id": "cubierta-world",
-      "que": "cubierta-world (commits fb82863 y 7e28db4)",
+      "que": "cubierta-world: derivado provisional de cubierta/",
       "estado": "rama",
       "fecha": "2026-10-18",
       "entorno": "rama preserva/cubierta-world en un repo privado de custodia; comprobado desde la maquina del Capitan",
@@ -344,7 +340,7 @@
         {
           "tipo": "doc",
           "ref": "docs/RUMBO_INTEGRACION.md",
-          "ancla": "**Cierre de 1.a (2026-10-18).**"
+          "ancla": "**`cubierta-world` es derivado provisional de `cubierta/`.**"
         },
         {
           "tipo": "commit",
@@ -352,22 +348,8 @@
           "debe": "faltar"
         }
       ],
-      "espera": {
-        "tipo": "decision",
-        "pregunta": "cubierta-world: componente o derivado?",
-        "alternativas": [
-          {
-            "opcion": "Componente",
-            "consecuencia": "Se trae a la Cubierta lo que sirva, limpio de lo privado, en un PR propio; la rama de custodia queda como origen."
-          },
-          {
-            "opcion": "Derivado de cubierta/",
-            "consecuencia": "Se anota en el rumbo; la rama de custodia se conserva como historial y deja de contar como pendiente."
-          }
-        ]
-      },
-      "palabras": "cubierta world disco preservar mundo custodia privado",
-      "detalle": "Preservado con sus cambios commiteados (7e28db4). No va a ThousandSunny porque este repo es publico y cubierta-world contiene nombres de areas protegidas y material privado. Desde aqui solo se comprueba que sigue fuera del repo publico."
+      "palabras": "cubierta world disco preservar mundo custodia privado derivado",
+      "detalle": "Decidido el 2026-10-18: no se integra. Conserva su procedencia en la rama preserva/cubierta-world de un repo privado de custodia (fb82863 y 7e28db4), comprobada por Claude Code y por Codex. Si algo de ella hace falta, entra limpio de lo privado en un PR propio. Desde aqui solo se comprueba que sigue fuera del repo publico."
     },
     {
       "id": "contrato-openapi",

@@ -278,8 +278,10 @@ update it — it is levantado from branches and test runs, not from the captain'
 - Theatre cognitivo is the enemy; real artefacts are the goal. Don't create documentation for its own sake.
 - Prefer editing existing files to creating new ones.
 - **Work that exists on one disk only is not preserved.** `node scripts/preservar.mjs
-  <ruta-del-repo-local> [--commit <sha>]` inspects a local repo and names the exact push that
-  makes it reachable in this one, on a `preserva/*` branch with disjoint history. It is a dry run
+  <ruta-del-repo-local> --remoto <url> [--commit <sha>]` inspects a local repo and names the exact
+  push that makes it reachable at `--remoto`, on a `preserva/*` branch with disjoint history. There
+  is **no default destination**: without `--remoto` it stops before calling git. This repo is
+  public, so private work goes to a private custody repo, never here by omission. It is a dry run
   until `--ejecutar`, it never forces, and it warns that uncommitted files do not travel. Custody,
   not integration: a preservation branch decides nothing about whether that work becomes a
   component. See the 1.a record in `docs/RUMBO_INTEGRACION.md`.

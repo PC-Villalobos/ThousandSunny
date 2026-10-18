@@ -15,6 +15,13 @@
 //   - No fuerza. Si la rama remota ya existe y el empuje no es avance directo,
 //     git lo rechaza, y eso esta bien: historia preservada no se sobreescribe.
 //
+// SIN DESTINO POR DEFECTO (2026-10-18)
+// Hasta esa fecha el destino por defecto era ThousandSunny, que es publico. Al
+// preservar `cubierta-world` la revision encontro material que no debia
+// publicarse, y se custodio en un repo privado. Un olvido de `--remoto` habria
+// publicado ese trabajo. Por eso el destino se escribe siempre: sin el, el script
+// se para antes de llamar a git, y no consulta ni empuja nada.
+//
 // REGLA DE ESTE FICHERO
 // La misma de la casa: lo que no se puede comprobar se declara, no se supone. Un
 // SHA que no existe se nombra; un arbol sucio se avisa, porque un empuje preserva
@@ -25,18 +32,23 @@
 //   node scripts/preservar.mjs <ruta-del-repo-local> [opciones]
 //     --rama <nombre>    rama de preservacion (por defecto preserva/<carpeta>)
 //     --commit <sha>     commit concreto a preservar ademas de HEAD
-//     --remoto <url>     destino (por defecto ThousandSunny)
+//     --remoto <url>     destino, OBLIGATORIO: no hay destino por defecto
 //     --ejecutar         empuja de verdad; sin esto es un ensayo
 
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const REMOTO_POR_DEFECTO = "https://github.com/PC-Villalobos/ThousandSunny.git";
-
 export const USO = [
-  "uso: node scripts/preservar.mjs <ruta-del-repo-local> [--rama <nombre>]",
-  "     [--commit <sha>] [--remoto <url>] [--ejecutar]",
+  "uso: node scripts/preservar.mjs <ruta-del-repo-local> --remoto <url>",
+  "     [--rama <nombre>] [--commit <sha>] [--ejecutar]",
+].join("\n");
+
+export const SIN_REMOTO = "falta --remoto: no hay destino por defecto";
+export const REMEDIO_SIN_REMOTO = [
+  "escribe el destino con --remoto <url>. Antes de elegirlo, mira si es publico:",
+  "lo que se empuja a un repo publico lo puede leer cualquiera, historia incluida.",
+  "Para trabajo que no deba publicarse, usa un repo privado de custodia.",
 ].join("\n");
 
 /** Corre git en otro arbol. Separado para poder inyectarlo en las pruebas. */
@@ -53,7 +65,7 @@ export function carpetaDe(ruta) {
 }
 
 export function parsear(argv) {
-  const o = { ruta: "", rama: "", commit: "", remoto: REMOTO_POR_DEFECTO, ejecutar: false, error: "" };
+  const o = { ruta: "", rama: "", commit: "", remoto: "", ejecutar: false, error: "" };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === "--ejecutar") o.ejecutar = true;
@@ -75,6 +87,7 @@ export function parsear(argv) {
     }
   }
   if (!o.ruta) o.error = "falta la ruta del repo local";
+  else if (!o.remoto) o.error = SIN_REMOTO;
   if (!o.rama && o.ruta) o.rama = `preserva/${carpetaDe(o.ruta)}`;
   return o;
 }
@@ -88,6 +101,7 @@ export function inspeccionar(o, git = ejecutarGit) {
   const avisos = [];
   const fallo = (motivo, remedio) => ({ ok: false, motivo, remedio, lineas, avisos, empujes: [] });
 
+  if (o.error === SIN_REMOTO) return fallo(o.error, REMEDIO_SIN_REMOTO);
   if (o.error) return fallo(o.error, USO);
 
   const esRepo = git(o.ruta, ["rev-parse", "--git-dir"]);
