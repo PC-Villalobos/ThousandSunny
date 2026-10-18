@@ -7,6 +7,7 @@
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 export const ESTADO_OK = "ok";
 export const ESTADO_SIN_SENAL = "sin_senal";
@@ -66,8 +67,10 @@ export async function leerOllama({ url = "http://127.0.0.1:11434", timeoutMs = 1
  */
 export async function leerBitacora({ raiz, url, timeoutMs = 1500 } = {}) {
   try {
+    // import() pide una URL, no una ruta: `C:\...` en Windows se lee como el
+    // esquema `c:` y el cliente no cargaba nunca (observado el 2026-10-18).
     const mod = await import(
-      path.join(raiz, "state", "funcion_de_sueno", "lib", "bitacora.mjs")
+      pathToFileURL(path.join(raiz, "state", "funcion_de_sueno", "lib", "bitacora.mjs")).href
     ).catch(() => null);
     if (!mod) return sinSenal("bitacora", "cliente state/funcion_de_sueno/lib/bitacora.mjs no encontrado");
     const destino = url || mod.bitacoraUrl();

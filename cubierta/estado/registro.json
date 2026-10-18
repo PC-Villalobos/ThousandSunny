@@ -34,7 +34,7 @@
       "estado": "observado",
       "fecha": "2026-10-16",
       "entorno": "contenedor cloud, navegador headless contra el runtime real de Hipatia",
-      "detalle": "Con la Bitacora viva aparecio rota y se arreglo en el mismo dia.",
+      "detalle": "Con la Bitacora viva aparecio rota y se arreglo en el mismo dia. En Windows no funcionaba: el cliente se cargaba con una ruta y no con una URL de fichero, asi que en la maquina del Capitan la Cubierta decia sin senal con Hipatia viva. Arreglado el 2026-10-18; falta verlo alli.",
       "evidencias": [
         {
           "tipo": "doc",
@@ -54,7 +54,11 @@
           "ref": 120
         }
       ],
-      "palabras": "hipatia bitacora 8765 disponibilidad caida viva"
+      "palabras": "hipatia bitacora 8765 disponibilidad caida viva",
+      "siguiente": {
+        "quien": "capitan",
+        "que": "Con Hipatia viva, abrir la Cubierta en tu maquina y ver la Bitacora en verde"
+      }
     },
     {
       "id": "a4-accion",
