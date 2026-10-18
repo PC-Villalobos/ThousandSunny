@@ -539,6 +539,14 @@ const servidor = createServer(async (req, res) => {
       return res.end(html);
     }
 
+    // El contrato de esta API, tal cual: cubierta/test/test_openapi.mjs comprueba
+    // que coincide con las rutas de este fichero y con lo que responden.
+    if (ruta === "/openapi.json") {
+      const contrato = await readFile(path.join(CUBIERTA, "openapi.json"));
+      res.writeHead(200, { "content-type": MIME[".json"] });
+      return res.end(contrato);
+    }
+
     if (ruta === "/api/estado" || ruta === "/api/estado/buscar") {
       const registro = JSON.parse(await readFile(FICHERO_REGISTRO, "utf8"));
       const estado = await construirEstado({ raiz: RAIZ, registro });

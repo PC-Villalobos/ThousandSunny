@@ -221,6 +221,10 @@ npm run test:estado       # the state/ surfaces nobody else runs; declares what 
   Technical state (`estado`) and what waits on the captain (`espera`) are separate fields, and a
   decision needs at least two alternatives with their consequences. The repo is public: nothing
   private goes in the registry.
+- **`cubierta/openapi.json` is the Cubierta's HTTP contract** (OpenAPI 3.1, served at
+  `/openapi.json`). `cubierta/test/test_openapi.mjs` fails if a route in `server.mjs` is missing
+  from it, if it describes a route the server does not handle, or if a real response breaks its
+  schema. Add or change a route and the contract changes in the same commit.
 - **A test nobody runs protects nothing.** The aggregator sweeps the surfaces it
   claims (`shared/`, `cubierta/`, `state/cubierta_ui/`, `scripts/`) and fails,
   naming the file, if a `*.test.mjs` or `test_*.mjs` there is in no suite. If you add a test

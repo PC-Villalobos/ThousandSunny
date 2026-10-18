@@ -877,6 +877,15 @@ desfasado.
 como **Falta**. Nada privado entra en el registro: el repositorio es publico, y una prueba lo
 vigila.
 
+**El contrato OpenAPI, el mismo dia y con GO del Capitan.** Octavio senalo que se estaba
+reinventando lo que ya resuelve OpenAPI, y en lo que toca a la API tenia razon: las rutas de la
+Cubierta no estaban descritas en ningun sitio fuera de `server.mjs`. Ahora `cubierta/openapi.json`
+(3.1, servido en `/openapi.json`) las describe todas, y `cubierta/test/test_openapi.mjs` lo
+mantiene honesto en las dos direcciones: rutas del servidor contra rutas del contrato, y
+respuestas reales contra sus esquemas. En su primera ejecucion la prueba encontro un error del
+propio contrato (`vitales` es una lista, no un objeto); se corrigio el contrato, no la prueba. Lo
+que OpenAPI no cubre —que esta hecho y si funciona— sigue en el registro de estado.
+
 ---
 
 ## 6. Como se trabaja a partir de aqui

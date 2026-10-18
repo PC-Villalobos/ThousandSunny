@@ -4,8 +4,13 @@
   "repositorio": "https://github.com/PC-Villalobos/ThousandSunny",
   "rama": "claude/franky-feature-O1BkB",
   "buscar_en": {
-    "ficheros": ["docs/RUMBO_INTEGRACION.md", "CLAUDE.md"],
-    "directorios": ["state/cierres"]
+    "ficheros": [
+      "docs/RUMBO_INTEGRACION.md",
+      "CLAUDE.md"
+    ],
+    "directorios": [
+      "state/cierres"
+    ]
   },
   "entradas": [
     {
@@ -15,7 +20,11 @@
       "fecha": "derivada",
       "entorno": "el ultimo parte presente en este arbol",
       "evidencias": [
-        { "tipo": "ultimo", "dir": "state/funcion_de_sueno/reports", "patron": "^sleep_report_(\\d{4}-\\d{2}-\\d{2})T" }
+        {
+          "tipo": "ultimo",
+          "dir": "state/funcion_de_sueno/reports",
+          "patron": "^sleep_report_(\\d{4}-\\d{2}-\\d{2})T"
+        }
       ],
       "palabras": "sueno nocturno auditoria parte rutina"
     },
@@ -27,10 +36,23 @@
       "entorno": "contenedor cloud, navegador headless contra el runtime real de Hipatia",
       "detalle": "Con la Bitacora viva aparecio rota y se arreglo en el mismo dia.",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A3 | **Cumplida y observada**" },
-        { "tipo": "prueba", "ref": "cubierta/test/test_cubierta.mjs" },
-        { "tipo": "commit", "ref": "5fc030d" },
-        { "tipo": "pr", "ref": 120 }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A3 | **Cumplida y observada**"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "cubierta/test/test_cubierta.mjs"
+        },
+        {
+          "tipo": "commit",
+          "ref": "5fc030d"
+        },
+        {
+          "tipo": "pr",
+          "ref": 120
+        }
       ],
       "palabras": "hipatia bitacora 8765 disponibilidad caida viva"
     },
@@ -41,10 +63,20 @@
       "fecha": "2026-09-06",
       "entorno": "contenedor cloud, navegador headless",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A4 | **Cumplida y observada**" },
-        { "tipo": "prueba", "ref": "cubierta/test/test_cubierta.mjs" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A4 | **Cumplida y observada**"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "cubierta/test/test_cubierta.mjs"
+        }
       ],
-      "siguiente": { "quien": "capitan", "que": "Verla en tu maquina: la observacion es de un contenedor" },
+      "siguiente": {
+        "quien": "capitan",
+        "que": "Verla en tu maquina: la observacion es de un contenedor"
+      },
       "palabras": "accion nami evidencia artefacto resultado"
     },
     {
@@ -54,8 +86,15 @@
       "fecha": "2026-09-06",
       "entorno": "contenedor cloud, navegador headless",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A6 | **Cumplida y observada**" },
-        { "tipo": "prueba", "ref": "cubierta/test/test_cubierta.mjs" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A6 | **Cumplida y observada**"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "cubierta/test/test_cubierta.mjs"
+        }
       ],
       "palabras": "persistencia reabrir cerrar guardar sesion perder"
     },
@@ -66,10 +105,20 @@
       "fecha": "2026-09-05",
       "entorno": "contenedor cloud, arbol limpio, solo el repo",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A1 | **Cumplida**" },
-        { "tipo": "fichero", "ref": "cubierta/server/server.mjs" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A1 | **Cumplida**"
+        },
+        {
+          "tipo": "fichero",
+          "ref": "cubierta/server/server.mjs"
+        }
       ],
-      "siguiente": { "quien": "capitan", "que": "npm run cubierta en tu maquina y abrir http://127.0.0.1:8788" },
+      "siguiente": {
+        "quien": "capitan",
+        "que": "npm run cubierta en tu maquina y abrir http://127.0.0.1:8788"
+      },
       "palabras": "cubierta arranque arrancar puerto 8788 comando"
     },
     {
@@ -80,8 +129,15 @@
       "entorno": "contenedor cloud",
       "detalle": "Reinicio con y sin actor; lo mostrado coincide con el disco.",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A2 | **Cumplida**" },
-        { "tipo": "prueba", "ref": "cubierta/test/test_cubierta.mjs" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A2 | **Cumplida**"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "cubierta/test/test_cubierta.mjs"
+        }
       ],
       "palabras": "retomar mision reinicio reiniciar continuar recado"
     },
@@ -93,7 +149,11 @@
       "entorno": "contenedor cloud, por HTTP",
       "detalle": "A1-A4 se completaron sin transporte humano, pero A5 se mide en tu uso, no en el de la tripulacion.",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| A5 | **Del Capitan**" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| A5 | **Del Capitan**"
+        }
       ],
       "espera": {
         "tipo": "observacion",
@@ -108,10 +168,22 @@
       "fecha": "2026-10-18",
       "entorno": "contenedor cloud, npm test sobre el tronco",
       "evidencias": [
-        { "tipo": "fichero", "ref": "scripts/test-estado.mjs" },
-        { "tipo": "prueba", "ref": "scripts/test-estado.test.mjs" },
-        { "tipo": "commit", "ref": "989568d" },
-        { "tipo": "commit", "ref": "6f4b1f5" }
+        {
+          "tipo": "fichero",
+          "ref": "scripts/test-estado.mjs"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "scripts/test-estado.test.mjs"
+        },
+        {
+          "tipo": "commit",
+          "ref": "989568d"
+        },
+        {
+          "tipo": "commit",
+          "ref": "6f4b1f5"
+        }
       ],
       "palabras": "tests pruebas suite huerfanas estado npm"
     },
@@ -122,9 +194,18 @@
       "fecha": "2026-10-16",
       "entorno": "contenedor cloud",
       "evidencias": [
-        { "tipo": "fichero", "ref": "scripts/preservar.mjs" },
-        { "tipo": "prueba", "ref": "scripts/preservar.test.mjs" },
-        { "tipo": "commit", "ref": "440945d" }
+        {
+          "tipo": "fichero",
+          "ref": "scripts/preservar.mjs"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "scripts/preservar.test.mjs"
+        },
+        {
+          "tipo": "commit",
+          "ref": "440945d"
+        }
       ],
       "palabras": "preservar disco guardar custodia rama empujar"
     },
@@ -136,17 +217,35 @@
       "entorno": "contenedor cloud, sobre el tronco",
       "detalle": "Esta en el tronco desde hoy. Tu Hipatia sigue corriendo la version anterior.",
       "evidencias": [
-        { "tipo": "fichero", "ref": "state/hipatia_bridge_runtime/server/vault.py" },
-        { "tipo": "prueba", "ref": "state/hipatia_bridge_runtime/tests/test_vault_boundary.py" },
-        { "tipo": "commit", "ref": "71689c1" },
-        { "tipo": "pr", "ref": 123 }
+        {
+          "tipo": "fichero",
+          "ref": "state/hipatia_bridge_runtime/server/vault.py"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "state/hipatia_bridge_runtime/tests/test_vault_boundary.py"
+        },
+        {
+          "tipo": "commit",
+          "ref": "71689c1"
+        },
+        {
+          "tipo": "pr",
+          "ref": 123
+        }
       ],
       "espera": {
         "tipo": "decision",
         "pregunta": "Desplegarlo en tu Hipatia?",
         "alternativas": [
-          { "opcion": "Desplegar", "consecuencia": "Antes hay que reconciliar la copia rescatada que corre hoy con la proyeccion del repo; despues, sync_to_local.ps1 -Apply en tu maquina." },
-          { "opcion": "Esperar", "consecuencia": "El codigo queda en el tronco y tu Hipatia sigue como esta." }
+          {
+            "opcion": "Desplegar",
+            "consecuencia": "Antes hay que reconciliar la copia rescatada que corre hoy con la proyeccion del repo; despues, sync_to_local.ps1 -Apply en tu maquina."
+          },
+          {
+            "opcion": "Esperar",
+            "consecuencia": "El codigo queda en el tronco y tu Hipatia sigue como esta."
+          }
         ]
       },
       "palabras": "hipatia obsidian vault espejo desplegar despliegue"
@@ -159,15 +258,27 @@
       "entorno": "rama de PR #117",
       "detalle": "Unidad de trabajo persistente en la Cubierta, con su superficie /encargos. En conflicto con el tronco.",
       "evidencias": [
-        { "tipo": "pr", "ref": 117 }
+        {
+          "tipo": "pr",
+          "ref": 117
+        }
       ],
-      "siguiente": { "quien": "tripulacion", "que": "Traer el tronco, resolver el conflicto y volver a pasar sus pruebas" },
+      "siguiente": {
+        "quien": "tripulacion",
+        "que": "Traer el tronco, resolver el conflicto y volver a pasar sus pruebas"
+      },
       "espera": {
         "tipo": "decision",
         "pregunta": "Aterriza el Encargo en la Cubierta?",
         "alternativas": [
-          { "opcion": "Aterrizarlo", "consecuencia": "La Cubierta gana encargos que se retoman desde cualquier conversacion. Son 17 ficheros y unas 4.500 lineas que revisar." },
-          { "opcion": "Descartarlo", "consecuencia": "Se cierra el PR y queda como historial; lo util se recupera a trozos." }
+          {
+            "opcion": "Aterrizarlo",
+            "consecuencia": "La Cubierta gana encargos que se retoman desde cualquier conversacion. Son 17 ficheros y unas 4.500 lineas que revisar."
+          },
+          {
+            "opcion": "Descartarlo",
+            "consecuencia": "Se cierra el PR y queda como historial; lo util se recupera a trozos."
+          }
         ]
       },
       "palabras": "encargo encargos retomar trabajo modelo conversacion contexto unidad sobrevive"
@@ -180,15 +291,27 @@
       "entorno": "ramas de PR #90 y #91",
       "detalle": "Contrato context-capsule.v1 con orden de autoridad unico, y su caso de aceptacion.",
       "evidencias": [
-        { "tipo": "pr", "ref": 90 },
-        { "tipo": "pr", "ref": 91 }
+        {
+          "tipo": "pr",
+          "ref": 90
+        },
+        {
+          "tipo": "pr",
+          "ref": 91
+        }
       ],
       "espera": {
         "tipo": "decision",
         "pregunta": "Es la capsula v1 la base de los arneses de contexto?",
         "alternativas": [
-          { "opcion": "Si", "consecuencia": "Se aterrizan #90 y #91 y lo siguiente se construye encima." },
-          { "opcion": "No", "consecuencia": "Se cierran como historial; el diseno sigue consultable en GitHub." }
+          {
+            "opcion": "Si",
+            "consecuencia": "Se aterrizan #90 y #91 y lo siguiente se construye encima."
+          },
+          {
+            "opcion": "No",
+            "consecuencia": "Se cierran como historial; el diseno sigue consultable en GitHub."
+          }
         ]
       },
       "palabras": "contexto arneses arnes modelo modelos conversacion recontextualizar capsula memoria portatil"
@@ -200,18 +323,55 @@
       "fecha": "2026-09-05",
       "entorno": "tu maquina",
       "evidencias": [
-        { "tipo": "doc", "ref": "docs/RUMBO_INTEGRACION.md", "ancla": "| 1.a | **Dar remoto a `cubierta-world`**" },
-        { "tipo": "commit", "ref": "fb82863", "debe": "faltar" }
+        {
+          "tipo": "doc",
+          "ref": "docs/RUMBO_INTEGRACION.md",
+          "ancla": "| 1.a | **Dar remoto a `cubierta-world`**"
+        },
+        {
+          "tipo": "commit",
+          "ref": "fb82863",
+          "debe": "faltar"
+        }
       ],
       "espera": {
         "tipo": "decision",
         "pregunta": "Que hacemos con cubierta-world?",
         "alternativas": [
-          { "opcion": "Preservarlo", "consecuencia": "node scripts/preservar.mjs <ruta> --ejecutar lo deja en una rama preserva/* alcanzable desde fuera." },
-          { "opcion": "Declararlo derivado de cubierta/", "consecuencia": "Se anota en el rumbo y deja de contar como pendiente." }
+          {
+            "opcion": "Preservarlo",
+            "consecuencia": "node scripts/preservar.mjs <ruta> --ejecutar lo deja en una rama preserva/* alcanzable desde fuera."
+          },
+          {
+            "opcion": "Declararlo derivado de cubierta/",
+            "consecuencia": "Se anota en el rumbo y deja de contar como pendiente."
+          }
         ]
       },
       "palabras": "cubierta world disco preservar mundo"
+    },
+    {
+      "id": "contrato-openapi",
+      "que": "Contrato OpenAPI de la Cubierta",
+      "estado": "probado",
+      "fecha": "2026-10-18",
+      "entorno": "contenedor cloud, contra la Cubierta arrancada",
+      "detalle": "Las rutas del servidor y las del contrato tienen que coincidir, y las respuestas reales cumplen sus esquemas. Se sirve en /openapi.json.",
+      "evidencias": [
+        {
+          "tipo": "fichero",
+          "ref": "cubierta/openapi.json"
+        },
+        {
+          "tipo": "prueba",
+          "ref": "cubierta/test/test_openapi.mjs"
+        }
+      ],
+      "siguiente": {
+        "quien": "tripulacion",
+        "que": "Describir con el mismo estandar la API del hub cuando este en el repo"
+      },
+      "palabras": "openapi swagger contrato api rutas especificacion interfaz endpoints"
     },
     {
       "id": "pr-abiertos",
@@ -219,7 +379,10 @@
       "estado": "falta",
       "detalle": "Hoy los PR se citan, pero no se leen: GitHub no se consulta desde la Cubierta.",
       "evidencias": [],
-      "siguiente": { "quien": "tripulacion", "que": "Leerlos con un token local, o declararlo fuera de alcance" },
+      "siguiente": {
+        "quien": "tripulacion",
+        "que": "Leerlos con un token local, o declararlo fuera de alcance"
+      },
       "palabras": "pull request github abiertos borrador ramas"
     }
   ]

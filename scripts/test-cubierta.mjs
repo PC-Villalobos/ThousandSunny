@@ -94,6 +94,13 @@ const SUITES = [
     ausente: "la pantalla de estado entra con la rama del 2026-10-18",
   },
   {
+    id: "cubierta-contrato",
+    titulo: "Cubierta — contrato OpenAPI contra rutas y respuestas reales",
+    ancla: "cubierta/test/test_openapi.mjs",
+    comando: () => ["node", ["--test", "cubierta/test/test_openapi.mjs"]],
+    ausente: "el contrato OpenAPI entra con la rama del 2026-10-18",
+  },
+  {
     id: "cubierta-ui",
     titulo: "Cubierta — contrato pedagogico y superficie de referencia",
     ancla: "state/cubierta_ui",
