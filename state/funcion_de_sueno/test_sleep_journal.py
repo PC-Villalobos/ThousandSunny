@@ -253,6 +253,8 @@ class TestPrueba8ParidadDeMotores(unittest.TestCase):
             ["node", "--input-type=module", "-e", script],
             capture_output=True,
             text=True,
+            # Node escribe UTF-8; sin esto, en Windows Python lee con cp1252 y rompe la "ñ".
+            encoding="utf-8",
             cwd=str(HERE),
         )
         self.assertEqual(res.returncode, 0, res.stderr)
