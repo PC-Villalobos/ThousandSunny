@@ -4,6 +4,39 @@
 
 const $ = (id) => document.getElementById(id);
 
+async function leerJSON(url, opciones = {}) {
+  const inicio = performance.now();
+  let estado = "sin respuesta";
+  try {
+    const respuesta = await fetch(url, opciones);
+    estado = String(respuesta.status);
+    if (!respuesta.ok) throw new Error(`El servicio respondió ${respuesta.status}`);
+    return await respuesta.json();
+  } finally {
+    const lista = $("peticiones");
+    const destino = new URL(url, location.href);
+    lista.prepend(nodo("li", { texto: `${new Date().toLocaleTimeString()} · GET ${destino.pathname} · ${estado} · ${Math.round(performance.now() - inicio)} ms` }));
+    while (lista.children.length > 20) lista.lastElementChild.remove();
+  }
+}
+
+function abrirDetalle(f) {
+  $("titulo-detalle").textContent = f.que;
+  const contenido = $("detalle-cuerpo");
+  contenido.replaceChildren(pintarFila(f, false));
+  if (f.espera) {
+    contenido.append(nodo("section", { class: "espera" },
+      nodo("strong", { texto: "Espera tu decisión" }),
+      nodo("p", { texto: f.espera.pregunta }),
+      Array.isArray(f.espera.alternativas) && f.espera.alternativas.length
+        ? nodo("ul", {}, ...f.espera.alternativas.map((a) => nodo("li", {},
+          nodo("strong", { texto: `${a.opcion}: ` }), document.createTextNode(a.consecuencia))))
+        : null,
+      nodo("p", { texto: "Consultar este detalle no registra ninguna decisión." })));
+  }
+  $("detalle").showModal();
+}
+
 function nodo(etiqueta, atributos = {}, ...hijos) {
   const el = document.createElement(etiqueta);
   for (const [k, v] of Object.entries(atributos)) {
@@ -58,11 +91,14 @@ function pintarEsperas(estado) {
       tarjeta.append(lista);
     }
     tarjeta.append(nodo("span", { class: "edad", texto: `${f.etiqueta} · ${edad(f)}` }));
+    const abrir = nodo("button", { type: "button", class: "primario", texto: "Revisar frente →" });
+    abrir.addEventListener("click", () => abrirDetalle(f));
+    tarjeta.append(abrir);
     caja.append(tarjeta);
   }
 }
 
-function pintarFila(f) {
+function pintarFila(f, conBoton = true) {
   const pruebas = nodo("ul", { class: "pruebas" });
   if (!f.evidencias.length) pruebas.append(nodo("li", { class: "nada", texto: "sin pruebas citadas" }));
   for (const ev of f.evidencias) {
@@ -79,7 +115,7 @@ function pintarFila(f) {
   const centro = nodo("div", { class: "centro" },
     nodo("span", { class: "que", texto: f.que }),
     f.detalle ? nodo("span", { class: "det", texto: f.detalle }) : null,
-    f.entorno ? nodo("span", { class: "det", texto: `Donde: ${f.entorno}` }) : null,
+    f.entorno ? nodo("span", { class: "det entorno", texto: `Donde: ${f.entorno}` }) : null,
     pruebas,
   );
   if (f.respaldo === "roto") {
@@ -89,6 +125,11 @@ function pintarFila(f) {
     centro.append(nodo("span", { class: "sig" },
       nodo("strong", { texto: `Siguiente (${f.siguiente.quien_etiqueta}): ` }),
       document.createTextNode(f.siguiente.que)));
+  }
+  if (conBoton) {
+    const abrir = nodo("button", { type: "button", class: "abrir", texto: "Abrir detalle →", "aria-label": `Abrir detalle de ${f.que}` });
+    abrir.addEventListener("click", () => abrirDetalle(f));
+    centro.append(abrir);
   }
   return nodo("div", { class: "fila" },
     nodo("div", { class: "izq" },
@@ -114,13 +155,23 @@ function pintarFilas(estado) {
     filtros.append(b);
   }
   const filas = $("filas");
-  filas.replaceChildren(...estado.filas.filter((f) => filtro === "todos" || f.estado === filtro).map(pintarFila));
+  const visibles = estado.filas.filter((f) => filtro === "todos" || f.estado === filtro);
+  $("contador").textContent = `${visibles.length} de ${estado.filas.length} frentes · estado técnico y decisiones, por separado.`;
+  filas.replaceChildren(...visibles.map((f) => pintarFila(f)));
 }
 
+let numeroBusqueda = 0;
 async function buscar(consulta) {
+  const numero = ++numeroBusqueda;
   const caja = $("resultados");
   caja.replaceChildren(nodo("p", { class: "vacio", texto: "Buscando..." }));
-  const r = await fetch(`/api/estado/buscar?q=${encodeURIComponent(consulta)}`).then((x) => x.json());
+  let r;
+  try { r = await leerJSON(`/api/estado/buscar?q=${encodeURIComponent(consulta)}`); }
+  catch (err) {
+    if (numero === numeroBusqueda) caja.replaceChildren(nodo("p", { class: "no", texto: `La búsqueda falló: ${err.message}` }));
+    return;
+  }
+  if (numero !== numeroBusqueda) return;
   caja.replaceChildren();
   if (!r.palabras.length) {
     caja.append(nodo("p", { class: "vacio", texto: "Escribe al menos una palabra con contenido." }));
@@ -147,10 +198,13 @@ async function buscar(consulta) {
 }
 
 async function cargar() {
+  $("actualizar").disabled = true;
   try {
-    const estado = await fetch("/api/estado").then((r) => r.json());
+    const estado = await leerJSON("/api/estado");
+    $("aviso").classList.remove("malo");
     $("lectura").textContent = `leido ${estado.leido.slice(0, 16).replace("T", " ")} UTC · arbol ${estado.arbol || "sin git"}`;
     $("aviso").textContent = estado.aviso;
+    $("problemas").hidden = true;
     if (estado.problemas.length) {
       const p = $("problemas");
       p.hidden = false;
@@ -161,6 +215,8 @@ async function cargar() {
   } catch (err) {
     $("aviso").textContent = `No se pudo leer el estado: ${err.message}`;
     $("aviso").classList.add("malo");
+  } finally {
+    $("actualizar").disabled = false;
   }
 }
 
@@ -172,3 +228,5 @@ $("buscador").addEventListener("submit", (ev) => {
 });
 
 cargar();
+$("actualizar").addEventListener("click", cargar);
+$("cerrar-detalle").addEventListener("click", () => $("detalle").close());
