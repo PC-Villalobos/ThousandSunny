@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import uuid
 
+import vault
 from closure_core import (
     OBSIDIAN_REPORT,
     PHYSICAL_REPORT,
@@ -71,7 +72,12 @@ def main() -> int:
     assert cabos[cabo_id]["state"] == "closed"
     data = dashboard()
     assert not any(item["cabo_id"] == cabo_id for item in data["verified_unabsorbed"])
-    assert PHYSICAL_REPORT.exists() and OBSIDIAN_REPORT.exists()
+    # El informe fisico es la autoridad y no puede faltar. El del vault es su
+    # espejo: solo se exige cuando el vault esta montado, porque desde el
+    # 2026-10-16 el espejo es opcional y su ausencia no detiene el cierre.
+    assert PHYSICAL_REPORT.exists()
+    if vault.activo():
+        assert OBSIDIAN_REPORT.exists()
     print({
         "ok": True,
         "mission_id": mission_id,

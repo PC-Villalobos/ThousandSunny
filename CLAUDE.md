@@ -190,12 +190,26 @@ npm run test:estado       # the state/ surfaces nobody else runs; declares what 
 - **A live 8765 from a cloud session is reproducible.** Copy
   `state/hipatia_bridge_runtime/server/*.py` to the scratchpad (never run it in
   place: startup creates `events/`, `index/` and `daily/` next to it, inside
-  `state/`) and run `python3 server/bitacora_server.py` from there. It refuses to
-  start unless the Obsidian MOC exists — a hardcoded absolute Windows path in
-  `update_obsidian_moc` — so a fixture carrying the two
-  `BITACORA_DAILY_LINKS` markers is needed at that relative path. That
-  dependency on the vault is a finding of its own, recorded in the A3 record in
-  `docs/RUMBO_INTEGRACION.md`, not a montage detail.
+  `state/`) and run `python3 server/bitacora_server.py` from there. Since
+  2026-10-16 that is all it takes: no vault fixture, no MOC.
+- **The Obsidian vault is a mirror, so it is optional.** `server/vault.py`
+  resolves the vault root — the inherited absolute path by default,
+  `HIPATIA_OBSIDIAN_ROOT` to point elsewhere. If that root does not exist the
+  mirror is off, the startup line says so with its remedy, and **nothing is
+  written or created there**; with the vault mounted, behaviour is identical to
+  before, write for write. A vault that is present but inconsistent (mounted, MOC
+  missing) still raises: that is incoherence, not absence. And with the mirror off
+  `event_absorbed` returns False — absorption into the vault is not asserted
+  when it cannot be observed. Until 2026-10-16 Hipatia refused to start without
+  the MOC, so the operational authority could not be raised on any machine but the
+  captain's; the decision closing that is the A3-Obsidian record in
+  `docs/RUMBO_INTEGRACION.md`.
+- **`deploy/runtime-manifest.json` is the deployment key, not documentation.**
+  `sync_to_local.ps1` compares each projected file's SHA-256 against it and
+  refuses to copy on a mismatch. Edit anything under
+  `state/hipatia_bridge_runtime/` and you must regenerate those hashes, or the
+  captain's deploy throws. The projection now **leads** the live runtime until he
+  runs `sync_to_local.ps1 -Apply` himself, and the manifest says so.
 - Two surfaces carry the name Cubierta: `cubierta/` (the isometric ship) and
   `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
   on the trunk and `scripts/test-cubierta.mjs` runs both — never let one script

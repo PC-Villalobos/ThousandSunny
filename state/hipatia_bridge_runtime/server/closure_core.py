@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import vault
 from bridge_core import list_operation_states
 from git_actions import list_operation_states as list_git_operation_states
 
@@ -18,9 +19,11 @@ ROOT = Path(__file__).resolve().parents[1]
 EVENTS_FILE = ROOT / "events" / "bitacora_events.jsonl"
 CLOSURE_FILE = ROOT / "closure" / "closure_records.jsonl"
 PHYSICAL_REPORT = ROOT / "closure" / "CIERRE_OPERATIVO.md"
-OBSIDIAN_REPORT = Path(r"D:\La maceta de Groot\40_Biblioteca_Hipatia\_bitacora_v1\CIERRE_OPERATIVO.md")
+# Resueltos por la frontera del vault: valor heredado por defecto,
+# sobreescribible por entorno, y espejo opcional. Ver server/vault.py.
+OBSIDIAN_REPORT = vault.raiz() / "CIERRE_OPERATIVO.md"
 PHYSICAL_DAILY = ROOT / "daily"
-OBSIDIAN_DAILY = Path(r"D:\La maceta de Groot\40_Biblioteca_Hipatia\_bitacora_v1\daily")
+OBSIDIAN_DAILY = vault.raiz() / "daily"
 LOCK = threading.RLock()
 
 MISSION_STATES = {"active", "blocked", "verified", "absorbed", "closed", "superseded"}
@@ -237,6 +240,13 @@ def event_absorbed(event: dict) -> bool:
     event_id = event.get("event_id", "")
     if not date or not event_id:
         return False
+    # Absorber significa haber llegado tambien a la vista humana del vault.
+    # Con el espejo inactivo eso no se puede comprobar, y entonces no se da por
+    # cierto: se devuelve False. Debilitar el predicado a "basta la copia local"
+    # seria cambiar el significado de un estado de gobierno por la via de que
+    # falte un directorio.
+    if not vault.activo():
+        return False
     physical = PHYSICAL_DAILY / f"{date}.md"
     obsidian = OBSIDIAN_DAILY / f"{date}.md"
     return (
@@ -345,5 +355,8 @@ def render_report() -> None:
     content = "\n".join(lines) + "\n"
     PHYSICAL_REPORT.parent.mkdir(parents=True, exist_ok=True)
     PHYSICAL_REPORT.write_text(content, encoding="utf-8", newline="\n")
-    OBSIDIAN_REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OBSIDIAN_REPORT.write_text(content, encoding="utf-8", newline="\n")
+    # El informe fisico es la autoridad; el del vault es su espejo. Sin vault no
+    # se crea su raiz ni se escribe dentro.
+    if vault.activo():
+        OBSIDIAN_REPORT.parent.mkdir(parents=True, exist_ok=True)
+        OBSIDIAN_REPORT.write_text(content, encoding="utf-8", newline="\n")
