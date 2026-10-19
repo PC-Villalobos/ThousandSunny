@@ -49,20 +49,8 @@ Dos cosas que este arco tampoco hace, por la misma razón que ayer:
   en la Biblioteca:** `20_interno` pasa de 0 a 2 ficheros. 574 fórmulas, recalculadas sin errores
   y verificadas contra cálculo independiente. Regenerable desde el `.py`.
 
-**Situación fiscal levantada**
-
-- Modelo 036 leído: **dos actividades**, ambas sección 2 (profesionales, retención 7 %):
-  **776** (psicología, exenta de IVA) y **826** (docente/surf, sujeta al 21 % al facturar a la
-  escuela, no al alumno).
-- **Casilla 501 marcada** («exclusivamente operaciones no sujetas o exentas») — incompatible con
-  el surf sujeto. Sin corregirla, se repercutiría un IVA sin cauce declarado para ingresarlo.
-- **Casilla 600 marcada** con fecha 15/06/2026 → obligación de pagos fraccionados; el plazo del
-  modelo 130 del 2T venció el 20/07/2026.
-- Las dos proformas a la escuela (`Downloads`) tienen el **desglose semanal descuadrado**: 4
-  semanas / 20 clases frente a las 25 del concepto. Y ofrecen pago en efectivo, justo lo que se
-  está dejando atrás. La cuestión del IVA vale **76,75 €/mes** de ingreso real (~900 €/año).
-- Factura 2026/001 fijada: 25 clases × 25 € de base = 625 € + 131,25 IVA − 43,75 retención =
-  **712,50 €**, fecha de emisión 31/07 → 3T (evita el trimestre ya vencido).
+**Situación fiscal levantada.** El detalle se retiró del repo público el 2026-10-19 por ser dato
+fiscal y de negocio.
 
 **Hallazgo lateral:** en `Downloads/Thousand Sunny` hay integración de Telegram operativa del
 propio Sunny (`usopp-telegram-demo.mjs`, `reply-governance-telegram.mjs`, `telegram-e2e.sh`).
@@ -77,15 +65,13 @@ investigación*).
 1. **Los tres commits sin subir** — `f1aafb9`, `983f6e5`, `7a24934` en
    `claude/franky-feature-O1BkB`. Heredado de ayer, sigue abierto: el shell del VM de Cowork no
    tiene salida a internet (`403 from proxy after CONNECT`). Lo hace el Capitán desde su terminal.
-2. **036 de modificación** — desmarcar la 501 y alta en obligación de IVA, **antes de emitir la
-   factura con IVA**. Añadir ROI (casilla 582) si las suscripciones de IA van a nombre de la
-   actividad.
-3. **Modelo 130 del 2T 2026** — plazo vencido el 20/07. Comprobar si había obligación.
+2. *(retirado del repo público el 2026-10-19: dato fiscal)*
+3. *(retirado del repo público el 2026-10-19: dato fiscal)*
 4. **Decidir la numeración canónica de dominios** y escribir el diccionario de las 28 variables
    con anclajes 1–5. Prerrequisito de cualquier análisis agregado y de cualquier recogida nueva.
 5. *(retirado del repo público el 2026-10-19: dato clínico)*
 6. *(retirado del repo público el 2026-10-19: dato clínico)*
-7. **Prorrata general o especial** para 2026.
+7. *(retirado del repo público el 2026-10-19: dato fiscal)*
 8. **Verificar `OneDrive` / `Documents`** — 0 ficheros visibles; si es Files On-Demand, marcar
    "conservar siempre en este dispositivo" antes de contar con ese material.
 9. *(retirado del repo público el 2026-10-19: dato clínico)*
@@ -98,13 +84,9 @@ investigación*).
 ## Decisiones tomadas
 
 - **El primer ayuno es la administración fiscal del autónomo.** Descartados la clínica
-  (consentimiento, art. 9 RGPD) y el surf como plataforma de gestión (no es su negocio: es
-  monitor que factura a la escuela de Willy y Laura).
-- **El surf NO se declara como actividad clínica** para acogerse a la exención sanitaria. Sería
-  simulación con el número de colegiado detrás, dejaría descubierta la responsabilidad civil por
-  ambos lados, y quemaría el eje diferencial *biopsicosocial a través del surf* convirtiéndolo en
-  coartada fiscal. La versión legítima queda guardada: surf integrado en el proceso de **sus
-  propios** pacientes, en su consulta, declarado como actividad aparte.
+  (consentimiento, art. 9 RGPD) y el surf como plataforma de gestión.
+- Una decisión fiscal y profesional sobre la actividad de surf se retiró del repo público el
+  2026-10-19.
 - **Fuente de verdad:** Biblioteca de Hipatia + Obsidian + GitHub + sistema local. Drive queda
   como tránsito. Duplicado en disco local y en el Toshiba externo.
 - **El Sunny es una oficina con empleados agénticos**, agnóstica de proveedor (Laboon + Brook) y
@@ -127,11 +109,7 @@ investigación*).
 - **La Biblioteca tiene 2 ficheros de contenido.** Celebrar el movimiento, no medir el hueco.
 - **No juzgar el Sunny por su rendimiento clínico:** es una plataforma, y lo que le falta es
   **un** caso de uso cerrado de punta a punta, no más especificación.
-- **El cuello del negocio es la segunda sesión, no la captación.** Llegan primeras visitas; no
-  hay segundas. Una web propia no resuelve eso.
 - **Doctorado ≠ investigación.** No dar por parado lo segundo porque lo primero esté congelado.
-- El Capitán está formalizando en plena temporada alta una relación que llevaba años en efectivo.
-  El silencio de la escuela ante las proformas es cálculo, no indiferencia.
 
 ## Sutras destilados en este arco
 
