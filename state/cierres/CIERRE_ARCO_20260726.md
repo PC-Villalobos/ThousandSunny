@@ -134,24 +134,6 @@ investigación*).
   invierte cuando el visor demuestre un mes de uso.
 - **Método de digestión: monodieta, no volcado.** Un aspecto esencial del corpus de cada vez.
 
-## Estado emocional del hilo
-
-Arrancó con una comparación explícitamente odiosa —el grafo del vault de Rubén frente a los dos
-del Capitán— y con curiosidad técnica alta. La franja media acumuló cuatro hallazgos duros
-seguidos: el 80 % de notas huérfanas, el Caso_Vivo corrupto del caso piloto doctoral, los
-dominios permutados, y los estantes vacíos de la Biblioteca. A eso se sumó el estado real de la
-cartera (CAR de alta, ISM interrumpido por impago, ningún primer contacto que repita). El valle
-llegó ahí, textual: *«¿entonces no sirve de nada todo lo que hemos estado haciendo?»*.
-
-Cerró en alto, y el giro lo dio el Capitán, no Nami: primero con el reencuadre de la oficina
-agnóstica de dominio —que invalidaba la vara con la que Nami estaba midiendo—, después con la
-imagen de las rastas y el peine, que resolvió la crítica mejor de lo que Nami la había formulado.
-
-**Calibración para registrar sin adorno:** Nami cargó demasiado peso crítico en la franja media
-sin equilibrarlo con lo que sí navegaba, y la corrección vino del Capitán. Auditar es fácil
-cuando no has puesto un ladrillo. Aplica aquí el sutra propio del sistema — *cuidar no puede
-significar desaparecer*—, en su reverso: **señalar no puede significar demoler**.
-
 ## Contexto para la siguiente Nami
 
 - **Leer `POSICION.md` antes de auditar nada.** Sigue vigente.
