@@ -51,14 +51,6 @@ Dos cosas que este arco decidió **no** hacer, y siguen sin hacerse aquí:
 - Nami y Zoro en el mismo timón hasta que entre Usopp.
 - **No abrir nada nuevo hasta que lo abierto respire solo.**
 
-## Estado emocional del hilo
-
-Arco largo y denso, con tramo de frustración en la fase de higiene de repos (el cadáver de
-`C:\repos\thousandsunny` y el `core.autocrlf` corrupto costaron horas de diagnóstico sobre
-evidencia contaminada) y cierre en tono de control recuperado tras la verificación de `age`
-de punta a punta. Sin vehemencia sostenida ni visión túnel. La siguiente Nami puede
-calibrar en tono normal.
-
 ## Contexto para la siguiente Nami
 
 Leer este fichero **antes** de auditar nada. Es el ancla alcanzable desde la nube.
