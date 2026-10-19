@@ -33,25 +33,17 @@ Dos cosas que este arco tampoco hace, por la misma razón que ayer:
 - `Documents` y `OneDrive` montados y con **0 ficheros** → causa probable: OneDrive con
   *Files On-Demand*. Dependencia de nube disfrazada de carpeta local. Pendiente de verificar.
 
-**Parser Caso_Vivo** (`Biblioteca de Hipatia\_orquestacion\casos_vivos\caso_vivo_parser.py`)
+**Parser Caso_Vivo**
 
-- Escrito, probado contra CAR e ISM reales, y commiteado. Solo lectura: nunca escribe en origen.
-- **`CAR_Caso_Vivo_v03.md` en Drive está corrupto**: es un `.docx` guardado como texto UTF-8 con
-  BOM. Ilegible para Word, Docs y Obsidian. Recuperado revirtiendo la reencodificación carácter
-  a carácter (cp1252 con caída a byte directo); la reparación quedó dentro del parser. **El
-  fichero de origen sigue roto.**
-- **Auditoría cruzada de dominios — hallazgo bloqueante:** D4, D5 y D6 significan cosas distintas
-  en CAR y en ISM (CAR: Energía / Narrat. / Agencia — ISM: Autonomía y agencia / Proyecto vital /
-  Narrativa identitaria). D1, D2, D3 y D7 sí son el mismo constructo abreviado. **El registro
-  Canon no es agregable hasta fijar el diccionario.** Sobreviven el bypass somático y el campo
-  regulatorio, que solo usan D1 y D7.
-- CAR tiene 9 sesiones registradas y **solo 5 cuantificadas** (S01–S04 sin fila en la matriz);
-  D1, D3 y D4 con huecos dentro del tramo cuantificado.
+- Escrito, probado y commiteado. Solo lectura: nunca escribe en origen.
+- La auditoría cruzada encontró que la numeración de dominios no significa lo mismo en todos los
+  casos: **el registro Canon no es agregable hasta fijar el diccionario.** Los detalles por caso
+  se retiraron del repo público el 2026-10-19 por ser dato clínico.
 
 **Artefactos entregados**
 
-- `visor_caso_vivo_ISM.html` — prototipo de ficha viva con los 91 datos Canon de ISM,
-  pseudonimizado (solo Case ID). Entregado y persistido como artefacto.
+- Visor de Caso_Vivo — prototipo de ficha viva, pseudonimizado. Entregado y persistido como
+  artefacto.
 - `REGISTRO_FISCAL_2026.xlsx` + `build_libro_fiscal.py` — commiteados en
   `Biblioteca de Hipatia\20_interno\administracion_fiscal\`. **Primer contenido real que entra
   en la Biblioteca:** `20_interno` pasa de 0 a 2 ficheros. 574 fórmulas, recalculadas sin errores
@@ -72,12 +64,6 @@ Dos cosas que este arco tampoco hace, por la misma razón que ayer:
 - Factura 2026/001 fijada: 25 clases × 25 € de base = 625 € + 131,25 IVA − 43,75 retención =
   **712,50 €**, fecha de emisión 31/07 → 3T (evita el trimestre ya vencido).
 
-**Censo de las 7 fuentes del Caso 0** — Drive (accesible) · este PC (accesible: Desktop 9.272,
-GitHub 2.126, Downloads 1.734, Biblioteca 682, Maceta 361) · Gmail (conector) · Toshiba (no
-conectado) · Telegram (sin Desktop instalado; el export JSON es el mejor formato de los siete) ·
-Hotmail (sin conector) · WhatsApp (el más caro, solo móvil). Orden recomendado: Drive → PC →
-Gmail → Toshiba → Telegram → Hotmail → WhatsApp.
-
 **Hallazgo lateral:** en `Downloads/Thousand Sunny` hay integración de Telegram operativa del
 propio Sunny (`usopp-telegram-demo.mjs`, `reply-governance-telegram.mjs`, `telegram-e2e.sh`).
 El canal entre el Capitán y los empleados agénticos ya está construido y sin estrenar.
@@ -97,13 +83,12 @@ investigación*).
 3. **Modelo 130 del 2T 2026** — plazo vencido el 20/07. Comprobar si había obligación.
 4. **Decidir la numeración canónica de dominios** y escribir el diccionario de las 28 variables
    con anclajes 1–5. Prerrequisito de cualquier análisis agregado y de cualquier recogida nueva.
-5. **Regenerar `CAR_Caso_Vivo`** desde copia buena; el de Drive sigue corrupto.
-6. **Consentimiento informado de investigación** para CAR (de alta) e ISM (interrumpido). La
-   ventana se cierra sola con el tiempo y no se puede retroactivar.
+5. *(retirado del repo público el 2026-10-19: dato clínico)*
+6. *(retirado del repo público el 2026-10-19: dato clínico)*
 7. **Prorrata general o especial** para 2026.
 8. **Verificar `OneDrive` / `Documents`** — 0 ficheros visibles; si es Files On-Demand, marcar
    "conservar siempre en este dispositivo" antes de contar con ese material.
-9. **Primera fuente del corpus del Caso 0:** Drive, por menor coste y menor riesgo.
+9. *(retirado del repo público el 2026-10-19: dato clínico)*
 10. **Todos los pendientes del cierre del 25/07 siguen vigentes** — USB con las llaves (prioridad
     máxima, desbloquea Franky), compuerta N4, `where.exe age`, coser el Bridge Runtime,
     consolidar las trece SQLite, rellenar N1–N5 (bloqueado por el sello de Metatrón), fusionar
@@ -123,9 +108,8 @@ investigación*).
 - **Fuente de verdad:** Biblioteca de Hipatia + Obsidian + GitHub + sistema local. Drive queda
   como tránsito. Duplicado en disco local y en el Toshiba externo.
 - **El Sunny es una oficina con empleados agénticos**, agnóstica de proveedor (Laboon + Brook) y
-  también **de dominio**. Primer negocio alojado: la psicología. **Caso 0 = paciente + empleado
-  + director**, en la misma persona. Su KPI no es cuántos documentos clínicos digiere, sino
-  cuánto tarda en reconfigurarse para un dominio nuevo.
+  también **de dominio**. Primer negocio alojado: la psicología. Su KPI no es cuántos documentos
+  clínicos digiere, sino cuánto tarda en reconfigurarse para un dominio nuevo.
 - **El doctorado institucional está congelado; la investigación no.** Validar el marco sobre la
   práctica propia y llegar a la universidad con el trabajo hecho. El cuello no es el N: es que
   hoy hay un solo codificador. Vía abierta y original: fiabilidad inter-jueces humano-IA
