@@ -6,8 +6,10 @@ Fuente versionada del código y los contratos que ejecuta Hipatia Local en
 ## Frontera de autoridad
 
 - Este directorio contiene código, pruebas, esquema y herramientas de despliegue.
-- La instancia operativa vive fuera de Git, normalmente en
-  `D:\Biblioteca de Hipatia\_bitacora`.
+- La instancia operativa vive fuera de Git. Desde el 2026-10-20 corre en
+  `C:\HipatiaLocal\_bitacora`, la carpeta que contiene `scripts\bitacora_server.py`; hasta entonces vivia en `D:\Biblioteca de Hipatia\_bitacora`.
+  Por eso `deploy/sync_to_local.ps1` no tiene destino por defecto: exige
+  `-RuntimeRoot` con la ruta real.
 - La autoridad de cierre sigue siendo el JSONL operativo. Esta proyección no
   sustituye, reconstruye ni importa los datos soberanos.
 - PuenteDeMando y Sites son superficies de interfaz. No son fuentes del escritor
@@ -36,7 +38,7 @@ Desde este directorio:
 
 ```powershell
 .\tests\run_portable.ps1
-.\deploy\sync_to_local.ps1
+.\deploy\sync_to_local.ps1 -RuntimeRoot <ruta-del-runtime>
 ```
 
 La segunda orden solo compara. No escribe. Para desplegar hace falta invocar

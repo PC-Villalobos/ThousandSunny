@@ -1,13 +1,18 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string]$RuntimeRoot = 'D:\Biblioteca de Hipatia\_bitacora',
+    [string]$RuntimeRoot,
 
     [Parameter()]
     [switch]$Apply
 )
 
 $ErrorActionPreference = 'Stop'
+# Sin destino por defecto desde el 2026-10-20: el runtime dejo D: y la ruta la
+# indica quien despliega. Un valor por defecto obsoleto apunta a donde ya no esta.
+if ([string]::IsNullOrWhiteSpace($RuntimeRoot)) {
+    throw 'Falta -RuntimeRoot: no hay destino por defecto. Indica la carpeta del runtime de Hipatia en esta maquina (desde el 2026-10-20 vive bajo C:\HipatiaLocal; antes, en D:\Biblioteca de Hipatia\_bitacora).'
+}
 $projectionRoot = Split-Path -Parent $PSScriptRoot
 $manifestPath = Join-Path $PSScriptRoot 'runtime-manifest.json'
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json

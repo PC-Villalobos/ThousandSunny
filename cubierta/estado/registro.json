@@ -254,7 +254,7 @@
         "alternativas": [
           {
             "opcion": "Desplegar",
-            "consecuencia": "Antes hay que reconciliar la copia rescatada que corre hoy con la proyeccion del repo; despues, sync_to_local.ps1 -Apply en tu maquina."
+            "consecuencia": "Antes hay que reconciliar la copia rescatada que corre hoy con la proyeccion del repo; despues, sync_to_local.ps1 -RuntimeRoot <ruta> -Apply en tu maquina; el runtime ya no esta en D:."
           },
           {
             "opcion": "Esperar",
