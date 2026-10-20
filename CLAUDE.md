@@ -210,7 +210,7 @@ npm run test:estado       # the state/ surfaces nobody else runs; declares what 
   `state/hipatia_bridge_runtime/` and you must regenerate those hashes, or the
   captain's deploy throws. The projection now **leads** the live runtime until he
   runs `sync_to_local.ps1 -RuntimeRoot <path> -Apply` himself, and the manifest says so.
-  Since 2026-10-20 the live runtime is under `C:\HipatiaLocal`, not D:, and the script has
+  Since 2026-10-20 the live runtime is `C:\HipatiaLocal\_bitacora`, not D:, and the script has
   no default destination: without `-RuntimeRoot` it stops before comparing anything.
 - Two surfaces carry the name Cubierta: `cubierta/` (the isometric ship) and
   `state/cubierta_ui/` (the pedagogic contract and reference surface). Both are
