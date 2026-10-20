@@ -5,8 +5,9 @@
     "kind": "local_operational_runtime",
     "authority": "code_observed_not_data_canon",
     "default_root": "D:\\Biblioteca de Hipatia\\_bitacora",
+    "default_root_note": "Ruta del runtime cuando se capturo, el 2026-07-27. Desde el 2026-10-20 el runtime corre bajo C:\\HipatiaLocal y sync_to_local.ps1 no tiene destino por defecto: exige -RuntimeRoot.",
     "projection_leads_runtime_since": "2026-10-16",
-    "projection_leads_runtime_note": "La frontera del vault (server/vault.py y sus dos consumidores) se decidio en el repo. Hasta que deploy/sync_to_local.ps1 -Apply corra en la maquina del Capitan, estos hashes describen la proyeccion, no el runtime en ejecucion."
+    "projection_leads_runtime_note": "La frontera del vault (server/vault.py y sus dos consumidores) se decidio en el repo. Hasta que deploy/sync_to_local.ps1 -RuntimeRoot <ruta> -Apply corra en la maquina del Capitan, estos hashes describen la proyeccion, no el runtime en ejecucion."
   },
   "files": [
     {
