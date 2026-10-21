@@ -227,9 +227,9 @@
       "id": "hipatia-sin-obsidian",
       "que": "Hipatia arranca sin depender del vault de Obsidian",
       "estado": "probado",
-      "fecha": "2026-10-18",
+      "fecha": "2026-10-21",
       "entorno": "contenedor cloud, sobre el tronco",
-      "detalle": "Esta en el tronco desde hoy. Tu Hipatia sigue corriendo la version anterior.",
+      "detalle": "Esta en el tronco desde el 2026-10-18. Tu Hipatia sigue corriendo la version anterior. Reconciliacion hecha el 2026-10-21: lo que corre en tu maquina solo difiere del repo en las rutas del vault, que pasaron de D: a C:. No hay logica que llevar al repo; en el tronco esas rutas salen de una sola variable de entorno.",
       "evidencias": [
         {
           "tipo": "fichero",
@@ -254,11 +254,11 @@
         "alternativas": [
           {
             "opcion": "Desplegar",
-            "consecuencia": "Antes hay que reconciliar la copia rescatada que corre hoy con la proyeccion del repo; despues, sync_to_local.ps1 -RuntimeRoot <ruta> -Apply en tu maquina; el runtime ya no esta en D:."
+            "consecuencia": "Primero fijar HIPATIA_OBSIDIAN_ROOT con la ruta del vault en C: en el arranque de Hipatia; sin ella el espejo se apaga y el vault deja de recibir. Despues parar Hipatia, sync_to_local.ps1 -RuntimeRoot <ruta> -Apply y arrancar comprobando que el espejo sale activo."
           },
           {
             "opcion": "Esperar",
-            "consecuencia": "El codigo queda en el tronco y tu Hipatia sigue como esta."
+            "consecuencia": "El codigo queda en el tronco y tu Hipatia sigue como esta, escribiendo en el vault de C: con sus rutas fijas."
           }
         ]
       },
